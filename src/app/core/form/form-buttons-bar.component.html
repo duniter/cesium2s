@@ -1,0 +1,22 @@
+<ion-toolbar>
+  <ion-row no-padding nowrap>
+    <ion-col>
+      <ng-content></ng-content>
+    </ion-col>
+
+    <ion-col size="auto">
+      <ion-button fill="clear" color="dark" (click)="onCancel.emit()" [disabled]="disabledCancel">
+        <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+      </ion-button>
+
+      <ion-button fill="solid" (click)="onCancel.emit()" *ngIf="onNext.observers.length">
+        <ion-label translate>COMMON.BTN_NEXT</ion-label>
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+
+      <ion-button [fill]="disabled? 'clear' : 'solid'" (click)="onSave.emit($event)" color="danger" [disabled]="disabled">
+        <ion-label translate>COMMON.BTN_SAVE</ion-label>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-toolbar>

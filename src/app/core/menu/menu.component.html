@@ -1,0 +1,85 @@
+<ion-split-pane>
+
+  <ion-menu side="start" content="content">
+    <ion-header>
+
+      <mat-toolbar padding *ngIf="!isLogin">
+        <img src="./assets/img/logo_60px.png" [title]="'APP_NAME'|translate" />
+      </mat-toolbar>
+
+      <ion-toolbar [@fadeInAnimation] *ngIf="isLogin" class="ion-toolbar-top">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <div class="user-avatar" [class.primary]="!account?.avatar" [ngStyle]="{'background-image':'url('+(account?.avatar||'./assets/img/person.png')+')'}">
+              </div>
+            </ion-col>
+            <ion-col size="8" class="user-logo">
+              <img src="./assets/img/logo_60px.png" [title]="'APP_NAME'|translate" />
+            </ion-col>
+          </ion-row>
+          <ion-row no-padding>
+            <ion-text>
+              <h4 full class="no-margin  bold text-white username">
+                {{account?.firstName}} {{account?.lastName}}
+              </h4>
+              <span>{{account?.email}}</span>
+            </ion-text>
+          </ion-row>
+
+          <ion-row no-padding class="other-data">
+            <ion-col no-padding>
+              <ion-button small expand="full" color="light" menuClose [routerLink]="['/account']">
+                <ion-icon name="contact" slot="start"></ion-icon>
+                <ion-label translate>MENU.BTN_ACCOUNT</ion-label>
+              </ion-button>
+            </ion-col>
+            <ion-col no-padding padding-left>
+              <ion-button small expand="full" color="light" menuClose (click)="logout()">
+                <ion-icon name="log-out" slot="start"></ion-icon>
+                <ion-label translate>MENU.BTN_LOGOUT</ion-label>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+        </ion-grid>
+
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content [class.has-user-header]="isLogin">
+
+      <ion-list no-lines>
+        <ng-container *ngFor="let item of filteredItems | async; trackBy: trackByFn">
+          <ion-item menuClose tappable class="text-1x" [routerLink]="item.path" routerDirection="root" routerLinkActive="selected"
+            (click)="menu.close()" [routerLinkActiveOptions]="{exact: (item.path == '/')}" *ngIf="!loading && item.path"
+            [@fadeInAnimation]>
+            <ion-icon color="primary" slot="start" [name]="item.icon"></ion-icon>
+            <ion-label color="primary">{{item.title|translate}}</ion-label>
+          </ion-item>
+          <ion-item-divider *ngIf="!loading && !item.path" [@fadeInAnimation]>
+            <ion-label>
+              {{item.title|translate}}
+            </ion-label>
+          </ion-item-divider>
+        </ng-container>
+      </ion-list>
+    </ion-content>
+
+
+    <ion-footer>
+      <ion-toolbar (click)="openAboutModal($event)">
+        <ion-icon name="ios-help-circle-outline" color="primary"></ion-icon>&nbsp;
+        <span>
+          {{'MENU.FOOTER_VERSION_ABOUT'| translate: {version: appVersion} }}
+        </span>
+      </ion-toolbar>
+    </ion-footer>
+  </ion-menu>
+
+
+  <div no-padding main #content style="width:100%;">
+    <ng-content></ng-content>
+  </div>
+
+</ion-split-pane>

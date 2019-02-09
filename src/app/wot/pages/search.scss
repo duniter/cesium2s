@@ -1,0 +1,50 @@
+.mat-table {
+  .mat-column-select {
+    overflow: initial;
+    max-width: 50px;
+    padding-left: 16px;
+  }
+  .mat-column-id {
+    max-width: 40px;
+  }
+  .mat-column-actions {
+    max-width: 80px;
+  }
+  .mat-input-element:disabled {
+    color: inherit;
+  }
+  .mat-form-field-infix {
+    word-wrap: break-word;
+    width: auto !important; //max-width: 150px;
+  }
+  .mat-form-field-infix input {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mat-form-field {
+    width: 100%;
+  }
+  .mat-header-row,
+  .mat-row {
+    max-height: 44px;
+    padding: 0 0px;
+  }
+  .mat-form-field-wrapper {
+    padding-bottom: 10px;
+  }
+  .mat-cell .avatar {
+    height: 40px;
+    width: 40px;
+    margin: 2px 0px 0px 0px;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  .mat-column-avatar {
+    max-width: 50px;
+  }
+}

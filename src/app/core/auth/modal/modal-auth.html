@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button class="visible-xs visible-sm" (click)="cancel()">
+        {{'COMMON.BTN_CANCEL'|translate}}
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      {{'AUTH.TITLE'|translate}}
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-spinner *ngIf="loading"></ion-spinner>
+
+      <ion-button visible-xs visible-sm (click)="doSubmit()" *ngIf="!loading">
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form-auth (onSubmit)="doSubmit()" (onCancel)="cancel()" #form>
+  </form-auth>
+</ion-content>
+
+
+
+<ion-footer hidden-xs hidden-sm>
+
+  <ion-toolbar>
+
+    <ion-row no-padding nowrap>
+      <ion-col></ion-col>
+
+      <!-- buttons -->
+      <ion-col size="auto">
+        <ion-button fill="clear" (click)="cancel()">
+          <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+        </ion-button>
+
+        <ion-button [fill]="form.invalid ? 'clear' : 'solid'" [disabled]="loading || form.invalid" (click)="doSubmit()">
+          <ion-label translate>AUTH.BTN_LOGIN</ion-label>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+
+  </ion-toolbar>
+</ion-footer>

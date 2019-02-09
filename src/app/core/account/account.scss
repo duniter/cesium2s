@@ -1,0 +1,17 @@
+@import 'core';
+
+mat-tab-group .mat-tab-body-content {
+  @extend [padding];
+}
+
+mat-tab-group .mat-tab-body-content {
+  display: grid;
+}
+
+form {
+  width: 100%;
+
+  mat-form-field {
+    width: 100%;
+  }
+}

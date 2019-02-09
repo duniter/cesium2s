@@ -1,0 +1,35 @@
+<form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event, form.value)" class="form-container" (keyup.enter)="doSubmit($event, form.value)"
+  padding>
+
+  <!-- error -->
+  <ion-item *ngIf="error && !loading">
+    <ion-icon color="danger" slot="start" name="alert"></ion-icon>
+    <ion-label color="danger" class="error" [innerHTML]="error|translate"></ion-label>
+  </ion-item>
+
+  <!-- Username -->
+  <mat-form-field>
+    <input matInput [appAutofocus]="true" [autofocusDelay]="500" [placeholder]="'USER.EMAIL'|translate" formControlName="username"
+      autocomplete="section-red username">
+    <mat-error *ngIf="form.controls.username.hasError('required') && form.controls.username.dirty" translate>ERROR.FIELD_REQUIRED</mat-error>
+    <mat-error *ngIf="form.controls.username.hasError('email') && form.controls.username.dirty">
+      <span>{{'ERROR.FIELD_NOT_VALID_EMAIL' | translate }}</span>
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Password -->
+  <mat-form-field>
+    <input matInput [placeholder]="'USER.PASSWORD'|translate" formControlName="password" autocomplete="section-red current-password"
+      type="password">
+    <mat-error *ngIf="form.controls.password.hasError('required') && form.controls.password.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
+  </mat-form-field>
+
+  <!-- Not register yet ? -->
+  <p class="padding" style="text-align: center;">
+    <span translate>AUTH.NO_ACCOUNT_QUESTION</span>
+    <br />
+    <a href="#" (click)="register()">
+      <span translate>AUTH.BTN_REGISTER</span>
+    </a>
+  </p>
+</form>

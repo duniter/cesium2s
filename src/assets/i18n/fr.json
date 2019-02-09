@@ -1,0 +1,184 @@
+{
+  "APP_NAME": "Cesium",
+  "COMMON": {
+    "BTN_CANCEL": "Annuler",
+    "BTN_ADD": "Ajouter",
+    "BTN_APPLY": "Appliquer",
+    "BTN_EDIT": "Modifier",
+    "BTN_CLOSE": "Fermer",
+    "BTN_DONE": "Terminer",
+    "BTN_DELETE": "Supprimer",
+    "BTN_VALIDATE": "Valider",
+    "BTN_NOT_SAVE": "Ne PAS sauvegarder",
+    "BTN_SAVE": "Sauvegarder",
+    "BTN_FILTER": "Filtrer",
+    "BTN_RELOAD": "Mettre à jour",
+    "BTN_REFRESH": "Rafraichir",
+    "BTN_SEARCH": "Rechercher",
+    "BTN_NEXT": "Suivant",
+    "BTN_BACK": "Retour",
+    "BTN_SEND": "Envoyer",
+    "BTN_UNDO": "Annuler les modifications",
+    "BTN_TABLE_EDIT": "Editer dans le tableau",
+    "BTN_TABLE_OPEN": "Editer dans un formulaire",
+    "CREATED_ON": "Créé le ",
+
+    "DATE_PATTERN": "DD/MM/YYYY",
+    "DATE_TIME_PATTERN": "DD/MM/YYYY HH:mm",
+    "DATE_FILE_PATTERN": "YYYY-MM-DD",
+    "DATE_SHORT_PATTERN": "DD/MM/YY",
+    "DATE_MONTH_YEAR_PATTERN": "MM/YYYY",
+    "DATE_PLACEHOLDER": "jj/mm/aaaa",
+
+    "DDMMSS_PLACEHOLDER": "DD° MM' SS\" N|S",
+    "DDMM_PLACEHOLDER": "DD° MM.MMM' N|S",
+    "DD_PLACEHOLDER": "+DD.DDD°",
+    "DDDMMSS_PLACEHOLDER": "DDD° MM' SS\" E|W",
+    "DDDMM_PLACEHOLDER": "DDD° MM.MMM' E|W",
+    "DDD_PLACEHOLDER": "+DDD.DDD°",
+
+    "METADATA": "Métadonnées :",
+
+    "DATE": "Date",
+    "HOUR": "Heure",
+    "MINUTE": "Minute",
+    "HOUR_PLACEHOLDER": "hh:mm",
+    "MINUTE_PLACEHOLDER": "mm",
+
+    "YES": "Oui",
+    "NO": "Non",
+
+    "UPDATED_ON": "Mise à jour le",
+    "RECORDER": "Saisisseur",
+
+    "DISPLAYED_COLUMNS": "Colonnes visibles"
+  },
+  "MENU": {
+    "HOME": "Accueil",
+    "WOT": "Annuaire",
+    "ADMINISTRATION_DIVIDER": "Administration",
+    "FOOTER_VERSION_ABOUT": "v{{version}} | à propos",
+    "BTN_ACCOUNT": "Compte",
+    "BTN_LOGOUT": "Quitter"
+  },
+  "ABOUT": {
+    "TITLE": "À propos",
+    "VERSION": "<b>v{{version}}</b>",
+    "REPORT_ISSUE": "N'hésitez pas à nous remonter les anomalies rencontrés !",
+    "BTN_REPORT_ISSUE": "Remonter un problème",
+    "SOURCE_CODE": "Code source :",
+    "DEVELOPED_BY": "Développé par :"
+  },
+  "HOME": {
+    "WELCOME": "Bienvenue dans Cesium 2 (beta) !",
+    "DESCRIPTION": "Gérer votre portefeuille n'a jamais été rapide !",
+    "BTN_WOT_SEARCH": "Rechercher dans l'annuaire",
+    "NOT_THIS_ACCOUNT_QUESTION": "Vous n'êtes pas <b>{{displayName}}</b> ?",
+    "BTN_DISCONNECT": "Déconnecter ce compte",
+    "BTN_MY_ACCOUNT": "Mon compte"
+  },
+  "AUTH": {
+    "TITLE": "Authentification",
+    "BTN_LOGIN": "Se connecter",
+    "BTN_REGISTER": "Créer un compte",
+    "NO_ACCOUNT_QUESTION": "Vous n'avez pas encore de compte ?"
+  },
+  "REGISTER": {
+    "TITLE": "Inscription",
+    "STEP_UID": "Pseudonyme",
+    "STEP_SALT": "Identifiant secret",
+    "STEP_PASSWORD": "Mot de passe",
+    "STEP_USER_DETAILS": "Coordonnées",
+    "CONFIRM_UID": "Pseudonyme (confirmation)",
+    "CONFIRM_SALT": "Identifiant secret (confirmation)",
+    "CONFIRM_PASSWORD": "Mot de passe (confirmation)",
+    "CONFIRMED": {
+      "TITLE": "Finalisation de l'inscription",
+      "LOADING": "Attente de la confirmation...",
+      "SUB_TITLE": "Inscription terminée !",
+      "SUCCESS": "Votre demande d'adhésion <b>{{uid}}</b> a bien été validée.<br/>Votre inscription est maintenant <b>terminée</b> !",
+      "LOGIN_HELP": "Pour vous connecter, <b>cliquez ci-dessous</b> :"
+    },
+    "ERROR": {
+      "NOT_SAME_EMAIL": "Les emails ne correspondent pas",
+      "NOT_SAME_PASSWORD": "Les mots de passe ne correspondent pas",
+      "EMAIL_ALREADY_REGISTERED": "Email déjà enregistrée"
+    }
+  },
+  "ACCOUNT": {
+    "TITLE": "Mon compte",
+    "EMAIL_NOT_CONFIRMED_LABEL": "L'email de ce compte n'a pas encore validé : <b>consultez votre boite mail</b> et cliquez sur le lien fourni.",
+    "EMAIL_NOT_RECEIVED_QUESTION": "Si vous n'avez pas reçu l'email de validation,<br/>vous pouvez <b>demander un nouvel envoi</b> :",
+    "BTN_RESEND": "Renvoyer",
+    "USER_DETAILS": {
+      "TITLE": "Profile",
+      "DESCRIPTION": "Voici les données enregistrées concernant votre compte :",
+      "TECHNICAL_DIVIDER": "Information techniques",
+      "PROFILE": "Profil utilisateur",
+      "PUBKEY": "Clé publique pour la signature numérique"
+    },
+    "SETTINGS": {
+      "TITLE": "Préférences",
+      "DESCRIPTION": "Voici les réglages possibles pour l'usage de l'application :",
+      "LOCALE": "Langue",
+      "LAT_LONG_FORMAT": "Format latitude/longitude"
+    }
+  },
+  "IDENTITY": {
+    "UID": "Uid",
+    "EMAIL": "Email",
+    "PASSWORD": "Mot de passe",
+    "PUBKEY": "Clé publique"
+  },
+  "WOT": {    
+    "SEARCH": {
+      "TITLE": "Annuaire",
+      "FILTER": {
+        "SEARCH": "Recherche : pseudo, clé publique..."
+      }
+    }
+  },
+  "ERROR": {
+    "FIELD_REQUIRED": "Champ obligatoire.",
+    "FIELD_TOO_SHORT": "Valeur trop courte.",
+    "FIELD_TOO_SHORT_WITH_LENGTH": "Valeur trop courte ({{minLength}} caractères min)",
+    "FIELD_TOO_LONG": "Valeur trop longue",
+    "FIELD_TOO_LONG_WITH_LENGTH": "Valeur trop longue ({{maxLength}} caractères max)",
+    "FIELD_MIN": "La valeur minimale autorisée est {{min}}",
+    "FIELD_MIN_COMPACT": "Min autorisée={{min}}",
+    "FIELD_MAX": "La valeur maximale autorisée est {{max}}",
+    "FIELD_MAX_COMPACT": "Max autorisé={{max}}",
+    "FIELD_MAXIMUM_DECIMALS": "Nombre de décimale incorrect ({{max}} max)",
+    "FIELD_MAXIMUM_DECIMALS_COMPACT": "Nb décimale max={{max}}",
+    "FIELD_INVALID": "Valeur non valide",
+    "FIELD_NOT_VALID_INTEGER": "Valeur entière attendue",
+    "FIELD_NOT_VALID_UID": "Pseudonyme invalide",
+    "FIELD_NOT_VALID_DATE": "Date invalide",
+    "FIELD_NOT_VALID_HOUR_MINUTE": "Heure/minute invalide",
+    "FIELD_NOT_VALID_DATE_TIME": "Date/heure invalide",
+    "FIELD_NOT_VALID_LATITUDE": "Latitude invalide",
+    "FIELD_NOT_VALID_LONGITUDE": "Longitude invalide",
+    "FIELD_NOT_VALID_PUBKEY": "Clé publique invalide",
+    "SPACE_NOT_ALLOW": "Espaces ou caractères spéciaux non autorisés",
+    "SCRYPT_ERROR": "Erreur de generation des clefs d'ouverture du compte",
+    "UNKNOWN_ACCOUNT_UID": "Aucun compte ne correspond à ce pseudonyme.",
+    "BAD_PASSWORD": "Mot de passe incorrect.",
+    "UID_ALREADY_REGISTERED": "Pseudonyme déjà enregistrée",
+    "UNKNOWN_NETWORK_ERROR": "Erreur de communication avec le serveur.<small><br/>Si le problème persiste, veuillez contacter votre administrateur.</small>",
+    "BAD_UPDATE_DATE": "Sauvegarde impossible (modification concurrente détectée).",
+    "DATA_LOCKED": "Sauvegarde impossible (donnée verrouillée).",
+    "LOAD_ACCOUNT_ERROR": "Erreur de chargement du compte utilisateur.<small><br/>Si le problème persiste, veuillez contacter votre administrateur.</small>",
+    "SAVE_ACCOUNT_ERROR": "Erreur lors de la sauvegarde de votre compte.<small><br/>Si le problème persiste, veuillez contacter votre administrateur.</small>",
+    "ACCOUNT_NOT_EXISTS": "Votre compte semble inexistant, et ne peut donc être sauvegardé.<small><br/>Si le problème persiste, veuillez contacter votre administrateur.</small>",
+    "UNAUTHORIZED": "Echec de l'authentification sur le serveur",
+    "AUTH_SERVER_ERROR": "Erreur lors de l'authentification sur le serveur",
+    "AUTH_CHALLENGE_ERROR": "Erreur lors de l'authentification sur le serveur (récupration du challenge)",
+    "TABLE_INVALID_ROW_ERROR": "Il existe une ligne en erreur"
+  },
+  "CONFIRM": {
+    "ALERT_HEADER": "Confirmation",
+    "SAVE": "Des mofifications n'ont pas été enregistrées.<br/><br/>Voulez-vous <b>sauvegarder</b> avant de continuer ?",
+    "CANCEL_CHANGES": "Vos dernières modifications seront annulées.<br/><br/><b>Êtes-vous sûr</b> de vouloir continuer ?",
+    "DELETE": "Cette opération est irreversible.<br/><br/><b>Êtes-vous sûr</b> de vouloir continuer ?"
+  }
+}

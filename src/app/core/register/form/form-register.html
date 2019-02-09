@@ -1,0 +1,128 @@
+<mat-horizontal-stepper linear #stepper="matHorizontalStepper">
+
+  <!-- Step 1: Uid -->
+  <mat-step [stepControl]="forms[0]" *ngIf="forms[0].controls; let controls">
+
+    <form [formGroup]="forms[0]" class="form-container" padding (keyup.enter)="slideNext()">
+      <ng-template matStepLabel>{{'REGISTER.STEP_EMAIL'|translate}}</ng-template>
+
+      <!-- Uid -->
+      <mat-form-field>
+        <input matInput [appAutofocus]="true" [autofocusDelay]="500" [placeholder]="'IDENTITY.UID'|translate"
+          formControlName="email" autocomplete="section-blue username" required>
+        <mat-error *ngIf="controls.uid.hasError('required') && controls.uid.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="controls.uid.hasError('uid') && !controls.uid.hasError('required') && controls.uid.touched">
+          <span>{{'ERROR.FIELD_NOT_VALID_UID' | translate }}</span>
+        </mat-error>
+        <mat-error *ngIf="controls.uid.hasError('availability') && controls.uid.touched" translate>REGISTER.ERROR.UID_ALREADY_REGISTERED</mat-error>
+
+      </mat-form-field>
+
+    </form>
+  </mat-step>
+
+  <!-- Step 2: Salt -->
+  <mat-step [stepControl]="forms[1]" *ngIf="forms[1].controls; let controls">
+
+    <form [formGroup]="forms[1]" class="form-container" padding (keyup.enter)="slideNext()">
+
+      <ng-template matStepLabel>{{'REGISTER.STEP_SALT'|translate}}</ng-template>
+
+      <!-- Password -->
+      <mat-form-field>
+        <input matInput [placeholder]="'USER.SALT'|translate" formControlName="salt" autocomplete="section-red new-password"
+          type="password" required>
+        <mat-error *ngIf="controls.salt.hasError('required') && controls.salt.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="controls.salt.hasError('minlength') && controls.salt.touched">
+          <span>{{'ERROR.FIELD_TOO_SHORT_WITH_LENGTH' | translate: {minLength: 8} }}</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Confirm password -->
+      <mat-form-field>
+        <input matInput [placeholder]="'REGISTER.CONFIRM_SALT'|translate" formControlName="confirmSalt"
+          autocomplete="section-red new-password" type="password">
+        <mat-error *ngIf="controls.confirmSalt.hasError('required') && controls.confirmSalt.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="controls.confirmSalt.hasError('equals') && controls.confirmSalt.touched">
+          <span>{{'REGISTER.ERROR.NOT_SAME_SALT' | translate }}</span>
+        </mat-error>
+      </mat-form-field>
+
+    </form>
+  </mat-step>
+
+  <!-- Step 3: Password -->
+  <mat-step [stepControl]="forms[2]" *ngIf="forms[2].controls; let controls">
+
+    <form [formGroup]="forms[2]" class="form-container" padding (keyup.enter)="slideNext()">
+
+      <ng-template matStepLabel>{{'REGISTER.STEP_PASSWORD'|translate}}</ng-template>
+
+      <!-- Password -->
+      <mat-form-field>
+        <input matInput [placeholder]="'USER.PASSWORD'|translate" formControlName="password" autocomplete="section-red new-password"
+          type="password" required>
+        <mat-error *ngIf="controls.password.hasError('required') && controls.password.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="controls.password.hasError('minlength') && controls.password.touched">
+          <span>{{'ERROR.FIELD_TOO_SHORT_WITH_LENGTH' | translate: {minLength: 8} }}</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Confirm password -->
+      <mat-form-field>
+        <input matInput [placeholder]="'REGISTER.CONFIRM_PASSWORD'|translate" formControlName="confirmPassword"
+          autocomplete="section-red new-password" type="password">
+        <mat-error *ngIf="controls.confirmPassword.hasError('required') && controls.confirmPassword.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="controls.confirmPassword.hasError('equals') && controls.confirmPassword.touched">
+          <span>{{'REGISTER.ERROR.NOT_SAME_PASSWORD' | translate }}</span>
+        </mat-error>
+      </mat-form-field>
+
+    </form>
+  </mat-step>
+
+
+  <!-- Step 3: user details -->
+  <mat-step [stepControl]="forms[3]" *ngIf="forms[3].controls; let controls">
+
+    <form [formGroup]="forms[3]" (ngSubmit)="doSubmit($event)" class="form-container" padding (keyup.enter)="doSubmit()">
+
+      <ng-template matStepLabel>{{'REGISTER.STEP_USER_DETAILS'|translate}}</ng-template>
+
+      <!-- error -->
+      <ion-item *ngIf="error && !sending">
+        <ion-icon color="danger" slot="start" name="alert"></ion-icon>
+        <ion-label color="danger" class="error" [innerHTML]="error|translate"></ion-label>
+      </ion-item>
+
+      <!-- Last name -->
+      <mat-form-field>
+        <input matInput [placeholder]="'USER.LAST_NAME'|translate" formControlName="lastName" autocomplete="section-blue family-name"
+          required>
+        <mat-error *ngIf="controls.lastName.hasError('required') && controls.lastName.dirty" translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="controls.lastName.hasError('minlength') && controls.lastName.dirty">
+          <span>{{'ERROR.FIELD_TOO_SHORT_WITH_LENGTH' | translate: {minLength: 2} }}</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- First name -->
+      <mat-form-field>
+        <input matInput [placeholder]="'USER.FIRST_NAME'|translate" formControlName="firstName" autocomplete="section-blue given-name"
+          required>
+        <mat-error *ngIf="controls.firstName.hasError('required') && controls.firstName.dirty" translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="controls.firstName.hasError('minlength') && controls.firstName.dirty">
+          <span>{{'ERROR.FIELD_TOO_SHORT_WITH_LENGTH' | translate: {minLength: 2} }}</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Additional fields -->
+      <ng-container *ngFor="let field of additionalFields">
+        <mat-autocomplete-field [placeholder]="field.label|translate" [formControlName]="field.name" [service]="field.dataService"
+          [filter]="field.dataFilter" [serviceOptions]="field.dataServiceOptions" [required]="field.required"
+          [displayWith]="referentialToString">
+        </mat-autocomplete-field>
+      </ng-container>
+
+    </form>
+  </mat-step>
+</mat-horizontal-stepper>

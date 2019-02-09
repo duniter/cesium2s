@@ -1,0 +1,193 @@
+{
+  "APP_NAME": "Cesium",
+  "COMMON": {
+    "BTN_CANCEL": "Cancel",
+    "BTN_ADD": "Add",
+    "BTN_APPLY": "Apply",
+    "BTN_EDIT": "Edit",
+    "BTN_CLOSE": "Close",
+    "BTN_DONE": "Done",
+    "BTN_DELETE": "Delete",
+    "BTN_VALIDATE": "Validate",
+    "BTN_NOT_SAVE": "do NOT save",
+    "BTN_SAVE": "Save",
+    "BTN_FILTER": "Filter",
+    "BTN_RELOAD": "Reload",
+    "BTN_REFRESH": "Refresh",
+    "BTN_SEARCH": "Search",
+    "BTN_NEXT": "Next",
+    "BTN_BACK": "Back",
+    "BTN_SEND": "Send",
+    "BTN_UNDO": "Unod changes",
+    "BTN_TABLE_EDIT": "Edit in the table",
+    "BTN_TABLE_OPEN": "Edit in a form",
+    "CREATED_ON": "Created on",
+
+    "DATE_PATTERN": "MM/DD/YYYY",
+    "DATE_TIME_PATTERN": "MM/DD/YYYY HH:mm",
+    "DATE_FILE_PATTERN": "YYYY-MM-DD",
+    "DATE_SHORT_PATTERN": "DD/MM/YY",
+    "DATE_MONTH_YEAR_PATTERN": "MM/YYYY",
+    "DATE_PLACEHOLDER": "mm/dd/yyyy",
+
+    "DDMMSS_PLACEHOLDER": "DD° MM' SS\" N|S",
+    "DDMM_PLACEHOLDER": "DD° MM.MMM' N|S",
+    "DD_PLACEHOLDER": "+DD.DDD°",
+    "DDDMMSS_PLACEHOLDER": "DDD° MM' SS\" E|W",
+    "DDDMM_PLACEHOLDER": "DDD° MM.MMM' E|W",
+    "DDD_PLACEHOLDER": "+DDD.DDD°",
+
+    "METADATA": "Metadata:",
+
+    "DATE": "Date",
+    "HOUR": "Hour",
+    "MINUTE": "Minute",
+    "HOUR_PLACEHOLDER": "hh",
+    "MINUTE_PLACEHOLDER": "mm",
+
+    "YES": "yes",
+    "NO": "No",
+
+    "UPDATED_ON": "Last modification on",
+    "RECORDER": "Recorder",
+
+    "DISPLAYED_COLUMNS": "Displayed columns"
+  },
+  "MENU": {
+    "HOME": "Home",
+    "WOT": "Registry",
+    "ADMINISTRATION_DIVIDER": "Administration",
+    "FOOTER_VERSION_ABOUT": "v{{version}} | About",
+    "BTN_ACCOUNT": "Account",
+    "BTN_LOGOUT": "Log out"
+  },
+  "ABOUT": {
+    "TITLE": "About",
+    "VERSION": "<b>v{{version}}</b>",
+    "REPORT_ISSUE": "Please report any issue to us!",
+    "BTN_REPORT_ISSUE": "Report an issue",
+    "SOURCE_CODE": "Source core:",
+    "DEVELOPED_BY": "Developed by:"
+  },
+  "HOME": {
+    "WELCOME": "Welcome Cesium 2 (beta)!",
+    "DESCRIPTION": "Wallet for libre currency.",
+    "BTN_TRIPS": "Search trips",
+    "NOT_THIS_ACCOUNT_QUESTION": "You are not <b>{{displayName}}</b>?",
+    "BTN_DISCONNECT": "Disconnect this account",
+    "BTN_MY_ACCOUNT": "My account"
+  },
+  "AUTH": {
+    "TITLE": "Authentication",
+    "BTN_LOGIN": "Log In",
+    "BTN_REGISTER": "Sign up",
+    "NO_ACCOUNT_QUESTION": "Don't have a account?"
+  },
+  "REGISTER": {
+    "TITLE": "Registration",
+    "STEP_EMAIL": "Email",
+    "STEP_PASSWORD": "Password",
+    "STEP_USER_DETAILS": "user details",
+    "CONFIRM_EMAIL": "Email (confirmation)",
+    "CONFIRM_PASSWORD": "Password (confirmation)",
+    "CONFIRMED": {
+      "TITLE": "Finalization of registration",
+      "LOADING": "Waiting confirmation...",
+      "SUB_TITLE": "Registration completed!",
+      "SUCCESS": "Your email address <b>{{email}}</b> has been validated.<br/>Your registration is now <b>complete</b>!",
+      "LOGIN_HELP": "To login, <b>click below</b>:"
+    },
+    "ERROR": {
+      "NOT_SAME_EMAIL": "Emails not matched",
+      "NOT_SAME_PASSWORD": "Passwords not matched",
+      "EMAIL_ALREADY_REGISTERED": "Email already registered"
+    }
+  },
+  "ACCOUNT": {
+    "TITLE": "My account",
+    "EMAIL_NOT_CONFIRMED_LABEL": "The email of this account has not yet validated: <b>check your mailbox</b> and click on the link provided.",
+    "EMAIL_NOT_RECEIVED_QUESTION": "If you did not receive the validation email, <br/>you can <b>request a new mailing</b>:",
+    "BTN_RESEND": "Resend",
+    "USER_DETAILS": {
+      "TITLE": "Profile",
+      "DESCRIPTION": "Here are the registered data about your account:",
+      "TECHNICAL_DIVIDER": "Technical information",
+      "PROFILE": "User Profile",
+      "PUBKEY": "Public key for digital signature"
+    },
+    "SETTINGS": {
+      "TITLE": "Settings",
+      "DESCRIPTION": "Here are the possible settings for the use of the application:",
+      "LOCALE": "Language",
+      "LAT_LONG_FORMAT": "Latitude/longitude format"
+    }
+  },
+  "IDENTITY": {
+    "UID": "Uid",
+    "PUBKEY": "Public key"
+  },
+  "USER": {
+    "AVATAR": "Avatar",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "FIRST_NAME": "First name",
+    "LAST_NAME": "Last name",
+    "PSEUDONYM": "Uid (pseudonym)",
+    "PUBKEY": "Public key",
+    "PROFILE": "Profile",
+    "PROFILE_ADMIN": "Administrator",
+    "PROFILE_USER": "Observer",
+    "PROFILE_GUEST": "Invité"
+  },
+  "WOT": {
+    "SEARCH": {
+      "TITLE": "Annuaire",
+      "FILTER": {
+        "SEARCH": "Search: pubkey, uid,..."
+      }
+    }
+  },
+  "ERROR": {
+    "FIELD_REQUIRED": "This field is required.",
+    "FIELD_TOO_SHORT": "This field value is too short.",
+    "FIELD_TOO_SHORT_WITH_LENGTH": "Value is too short (min {{minLength]] characters).",
+    "FIELD_TOO_LONG": "Value is exceeding max length.",
+    "FIELD_TOO_LONG_WITH_LENGTH": "Value is too long (max {{maxLength}} characters).",
+    "FIELD_MIN": "Minimal value: {{min}}",
+    "FIELD_MIN_COMPACT": "Min value={{min}}",
+    "FIELD_MAX": "Maximum value: {{max}}",
+    "FIELD_MAX_COMPACT": "Max value={{max}}",
+    "FIELD_MAXIMUM_DECIMALS": "Invalid number of decimals ({{max}} max)",
+    "FIELD_MAXIMUM_DECIMALS_COMPACT": "Nb decimals max={{max}}",
+    "FIELD_INVALID": "Invalid value",
+    "FIELD_NOT_VALID_INTEGER": "Expected integer value",
+    "FIELD_NOT_VALID_UID": "Invalid uid address",
+    "FIELD_NOT_VALID_DATE": "Invalid date",
+    "FIELD_NOT_VALID_HOUR_MINUTE": "Invalid hour/minute",
+    "FIELD_NOT_VALID_DATE_TIME": "Invalid date/hour",
+    "FIELD_NOT_VALID_LATITUDE": "Invalid latitude",
+    "FIELD_NOT_VALID_LONGITUDE": "Invalid longitude",
+    "FIELD_NOT_VALID_PUBKEY": "Invalid public key",
+    "SPACE_NOT_ALLOW": "Spaces or special characters not allowed",
+    "SCRYPT_ERROR": "Unable to create account keys",
+    "UNKNOWN_ACCOUNT_UID": "No account matches this uid.",
+    "BAD_PASSWORD": "Incorrect password.",
+    "UID_ALREADY_REGISTERED": "Uid already registered",
+    "UNKNOWN_NETWORK_ERROR": "Error communicating with the server.<small><br/>If the problem persists, please contact your administrator.</small>",
+    "BAD_UPDATE_DATE": "Unable to save.<small><br/>Concurrent change detected. Please reload this page and retry.</small>",
+    "DATA_LOCKED": "Unable to save.<small><br/>Data locked on server. Please retry later</small>",
+    "LOAD_ACCOUNT_ERROR": "Erreur de chargement du compte utilisateur.<small><br/>If the problem persists, please contact your administrator.</small>",
+    "SAVE_ACCOUNT_ERROR": "Error saving your account.<small><br/>If the problem persists, please contact your administrator.</small>",
+    "ACCOUNT_NOT_EXISTS": "Your account does not appear to exist and can not be backed up.<small><br/>If the problem persists, please contact your administrator.</small>",
+    "UNAUTHORIZED": "Failed authentication on the server",
+    "AUTH_SERVER_ERROR": "Error during authentication on the server",
+    "AUTH_CHALLENGE_ERROR": "Error during authentication on the server (loading challenge failed)",
+    "TABLE_INVALID_ROW_ERROR": "A row is invalid"
+  },
+  "CONFIRM": {
+    "ALERT_HEADER": "Confirmation",
+    "SAVE": "Do you want to save your changes?",
+    "CANCEL_CHANGES": "Your last changes will be canceled.<br/><br/><b>Are you sure</b> you want to continue?",
+    "DELETE": "This operation is irreversible.<br/><br/><b>Are you sure</b> you want to continue?"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Cesium 2",
+  "short_name": "Cesium 2",
+  "manifest_version": 2,
+  "version": "0.0.1",
+  "default_locale": "en",
+  "icons": [{
+    "src": "assets/img/logo.png",
+    "sizes": "96x96",
+    "type": "image/png"
+  }],
+  "background_color": "#4e8ef7",
+  "theme_color": "#4e8ef7",
+  "start_url": "/",
+  "display": "standalone"
+}

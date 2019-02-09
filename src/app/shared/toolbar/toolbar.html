@@ -1,0 +1,31 @@
+<ion-header [class]="class">
+  <ion-toolbar [color]="color">
+
+    <ion-buttons slot="start">
+      <ion-back-button icon="arrow-back">
+      </ion-back-button>
+
+      <ion-menu-toggle>
+        <ion-button>
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+
+    <ion-title>{{ title }}</ion-title>
+
+    <ion-buttons slot="end">
+
+      <ng-content></ng-content>
+
+      <ion-button (click)="enableSearchBar()" *ngIf="hasSearch">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+      <ion-button (click)="onValidate.emit($event)" class="visible-xs visible-sm" *ngIf="hasValidate">
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <mat-progress-bar [color]="'primary'" [mode]="progressBarMode | async">
+  </mat-progress-bar>
+</ion-header>

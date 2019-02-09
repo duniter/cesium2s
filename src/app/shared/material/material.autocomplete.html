@@ -1,0 +1,32 @@
+<mat-form-field [floatLabel]="floatLabel">
+
+  <!-- If required -->
+  <input matInput [placeholder]="placeholder" [matAutocomplete]="autoCombo" [formControl]="formControl" *ngIf="required"
+    [readonly]="readonly" required>
+
+  <!-- If not required -->
+  <input matInput [placeholder]="placeholder" [matAutocomplete]="autoCombo" [formControl]="formControl" *ngIf="!required"
+    [readonly]="readonly">
+
+  <mat-error *ngIf="formControl.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
+  <mat-error *ngIf="formControl.hasError('entity')" translate>ERROR.FIELD_INVALID</mat-error>
+</mat-form-field>
+
+<!-- combo -->
+<mat-autocomplete autoActiveFirstOption #autoCombo="matAutocomplete" [displayWith]="displayWith">
+  <ion-row class="mat-autocomplete-header">
+    <ion-col size="2">
+      <ion-text translate>REFERENTIAL.LABEL</ion-text>
+    </ion-col>
+    <ion-col>
+      <ion-text translate>REFERENTIAL.NAME</ion-text>
+    </ion-col>
+  </ion-row>
+
+  <mat-option *ngFor="let item of items | async" [value]="item">
+    <ion-row>
+      <ion-col size="2" [innerHTML]="item.label | highlight: {search: formControl.value }"></ion-col>
+      <ion-col [innerHTML]="item.name | highlight: {search: formControl.value }"></ion-col>
+    </ion-row>
+  </mat-option>
+</mat-autocomplete>

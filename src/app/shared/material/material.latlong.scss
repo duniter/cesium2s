@@ -1,0 +1,15 @@
+:host {
+  min-width: 100px;
+  [nowrap] {
+    flex-wrap: nowrap;
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-error {
+  text-align: right;
+  width: 100%
+}

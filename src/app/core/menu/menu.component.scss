@@ -1,0 +1,84 @@
+@import 'core';
+
+
+
+
+
+ion-menu {
+
+  .user-avatar {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: ion-color(secondary, base);
+    border: solid 1px ion-color(primary, base);
+    overflow: hidden !important;
+    font-size: 80px !important;
+    line-height: 80px;
+    height: 80px !important;
+    width: 80px !important;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .user-logo {
+    text-align: right;
+  }
+
+  .username {
+    padding-top: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .scroll-content {
+    margin-top: 79px !important;
+  }
+
+  .has-user-header .scroll-content {
+    margin-top: 188px !important;
+  }
+
+  ion-text {
+    color: ion-color(primary, base);
+  }
+
+  ion-item.selected {
+    background-color: ion-color(light100, base);
+  }
+
+  ion-toolbar.ion-toolbar-top {
+    position: relative;
+    top: 0;
+    z-index: 99;
+  }
+
+  ion-content.has-profile-header {
+    --offset-top: 188px;
+  }
+
+  ion-content.no-profile-header {
+    --offset-top: 79px;
+  }
+
+  ion-footer {
+    ion-toolbar {
+      text-align: center;
+      cursor: pointer;
+    }
+  }
+}
+
+
+@media screen and (min-width: $screen-sm) {
+  ion-menu ion-scroll {
+    overflow-y: auto !important;
+  }
+}

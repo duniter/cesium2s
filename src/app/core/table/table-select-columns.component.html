@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button class="visible-xs visible-sm" (click)="cancel()">
+        {{'COMMON.BTN_CANCEL'|translate}}
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      {{'COMMON.DISPLAYED_COLUMNS'|translate}}
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button icon-only class="visible-xs visible-sm" (click)="close()">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+    <!-- See doc: https://beta.ionicframework.com/docs/api/reorder/ -->
+
+    <ion-reorder-group disabled="false" (ionItemReorder)="reorderItems($event)">
+      <ion-item *ngFor="let column of columns">
+        <ion-label>{{column.label|translate}}</ion-label>
+        <ion-reorder slot="end"></ion-reorder>
+        <ion-toggle slot="end" [checked]="column.visible" (ionChange)="column.visible=!column.visible"></ion-toggle>
+      </ion-item>
+    </ion-reorder-group>
+  </ion-list>
+</ion-content>
+
+
+<ion-footer hidden-xs hidden-sm>
+  <ion-toolbar>
+
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-col size="auto">
+        <ion-button mat-button fill="clear" (click)="cancel()">
+          <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+        </ion-button>
+
+        <ion-button mat-raised-button fill="solid" (click)="close()">
+          <ion-label translate>COMMON.BTN_APPLY</ion-label>
+        </ion-button>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-toolbar>
+</ion-footer>

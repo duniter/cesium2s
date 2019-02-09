@@ -1,0 +1,92 @@
+<!-- readonly -->
+<mat-form-field *ngIf="readonly">
+  <input matInput hidden type="text" readonly="true" [formControl]="formControl">
+  <span>{{formControl.value|dateFormat: {time: displayTime} }}</span>
+</mat-form-field>
+
+<!-- writable + mobile + no time (day without time) -->
+<mat-form-field [floatLabel]="floatLabel" [formGroup]="form" *ngIf="!readonly && mobile && !displayTime">
+
+  <ion-icon name="calendar" matPrefix></ion-icon>
+  <mat-label *ngIf="form.controls['day'].value">{{placeholder}}</mat-label>
+  <input matInput type="text" [formControl]="formControl" hidden>
+  <ion-datetime matInput formControlName="day" [displayFormat]="displayPattern" [placeholder]="placeholder" [doneText]=" 'COMMON.BTN_DONE'|translate"
+    [cancelText]=" 'COMMON.BTN_CANCEL'|translate">
+  </ion-datetime>
+</mat-form-field>
+
+<!-- writable + no time (day without time) -->
+<mat-form-field [floatLabel]="floatLabel" [formGroup]="form" *ngIf="!readonly && !mobile && !displayTime">
+
+  <mat-label>{{placeholder}}</mat-label>
+
+  <input matInput autocomplete="off" type="text" [textMask]="{mask: mask, keepCharPositions: true, placeholderChar: placeholderChar}"
+    formControlName="day" [placeholder]="'COMMON.DATE_PLACEHOLDER'|translate" (blur)="markAsTouched()"
+    (keyup.arrowdown)="openDatePicker($event)" (click)="openDatePickerIfTouchUi($event)" [required]="required">
+  <input matInput type="text" [formControl]="formControl" hidden [matDatepicker]="datePicker1" (dateChange)="onDatePickerChange($event)">
+
+  <button type="button" matSuffix (click)="openDatePicker($event)" mat-icon-button tabindex="-1" [disabled]="formControl.disabled">
+    <mat-icon>keyboard_arrow_down</mat-icon>
+  </button>
+  <mat-datepicker [touchUi]="touchUi" [disabled]="formControl.disabled" #datePicker1></mat-datepicker>
+
+  <mat-error *ngIf="formControl.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
+  <mat-error *ngIf="formControl.hasError('validDate')" translate>ERROR.FIELD_NOT_VALID_DATE</mat-error>
+</mat-form-field>
+
+<!-- writable + mobile + time -->
+<mat-form-field *ngIf="!readonly && mobile && displayTime" [floatLabel]="floatLabel" [class.mat-form-field-invalid]="formControl?.invalid">
+
+  <ion-icon name="calendar" matPrefix></ion-icon>
+  <mat-label *ngIf="form.controls['day'].value">{{placeholder}}</mat-label>
+
+  <input matInput type="text" [formControl]="formControl" hidden>
+  <ion-datetime matInput [formControl]="form.controls['day']" [displayFormat]="displayPattern" [placeholder]="placeholder"
+    [doneText]="'COMMON.BTN_DONE'|translate" [cancelText]="'COMMON.BTN_CANCEL'|translate">
+  </ion-datetime>
+
+</mat-form-field>
+
+<!-- writable + desktop + time -->
+<ion-grid no-padding *ngIf="!readonly && !mobile && displayTime">
+  <ion-row no-padding [formGroup]="form" nowrap>
+
+    <!-- day -->
+    <ion-col no-padding class="day">
+      <mat-form-field [floatLabel]="floatLabel" [class.mat-form-field-invalid]="form?.controls['day'].invalid">
+
+        <mat-label>{{placeholder}}</mat-label>
+
+        <input matInput autocomplete="off" type="text" [textMask]="{mask: mask, keepCharPositions: true, placeholderChar: placeholderChar}"
+          formControlName="day" [placeholder]="'COMMON.DATE_PLACEHOLDER'|translate" (blur)="markAsTouched()"
+          (keyup.arrowdown)="openDatePicker($event)" (click)="openDatePickerIfTouchUi($event)" [required]="required">
+
+        <input matInput type="text" [formControl]="formControl" hidden [matDatepicker]="datePicker3" (dateChange)="onDatePickerChange($event)">
+        <button type="button" matSuffix (click)="openDatePicker($event)" mat-icon-button tabindex="-1" [disabled]="formControl.disabled">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <mat-datepicker [touchUi]="touchUi" [disabled]="formControl.disabled" #datePicker3></mat-datepicker>
+
+      </mat-form-field>
+      <div class="mat-form-field-subscript mat-form-field-subscript-wrapper" *ngIf="formControl.invalid">
+        <mat-error *ngIf="formControl.touched && form.controls.hour.touched && formControl.hasError('required')"
+          translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="formControl.touched && form.controls.hour.touched && formControl.hasError('validDate')"
+          translate>ERROR.FIELD_NOT_VALID_DATE_TIME</mat-error>
+        <mat-error *ngIf="formControl.touched && formControl.hasError('pattern')" translate>ERROR.FIELD_NOT_VALID_HOUR_MINUTE</mat-error>
+      </div>
+    </ion-col>
+
+    <!-- hour -->
+    <ion-col no-padding class="hour">
+      <mat-form-field [floatLabel]="floatLabel" [class.mat-form-field-invalid]="form.controls.hour.invalid">
+        <mat-label *ngIf="placeholder && floatLabel != 'never'" translate>COMMON.HOUR</mat-label>
+        <input matInput type="text" min="0" max="23" [textMask]="{mask: hourMask, keepCharPositions: true, placeholderChar: placeholderChar}"
+          autocomplete="off" [placeholder]="'COMMON.HOUR_PLACEHOLDER'|translate" formControlName="hour" (blur)="markAsTouched()">
+      </mat-form-field>
+    </ion-col>
+
+  </ion-row>
+
+
+</ion-grid>

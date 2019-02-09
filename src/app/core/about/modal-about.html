@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button class="visible-xs visible-sm" (click)="cancel()">
+        {{'COMMON.BTN_CLOSE'|translate}}
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      {{'ABOUT.TITLE'|translate}}
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-list no-line>
+
+    <!-- Version info -->
+    <ion-item>
+      <ion-icon slot="start" name="none" item-start color="dark"></ion-icon>
+      <ion-label>
+        <h2>
+
+          {{'APP_NAME'|translate}}
+          <span [innerHTML]="'ABOUT.VERSION'| translate: {version: appVersion}"></span>
+        </h2>
+      </ion-label>
+    </ion-item>
+
+    <!-- Report issue -->
+    <ion-item>
+      <ion-icon slot="start" name="bug" color="dark"></ion-icon>
+      <ion-label>
+        <p>
+          {{'ABOUT.REPORT_ISSUE'|translate}}
+        </p>
+        <p>
+          <a color="primary" href="https://git.duniter.org/clients/cesium-grp/cesium2/issues" target="_system">{{'ABOUT.BTN_REPORT_ISSUE'|translate}}</a>
+        </p>
+      </ion-label>
+    </ion-item>
+
+    <!-- Source code -->
+    <ion-item>
+      <ion-icon slot="start" name="code" color="dark"></ion-icon>
+      <ion-label>
+        <p>
+          {{'ABOUT.SOURCE_CODE'|translate}}
+        </p>
+        <p>
+          <a color="primary" href="https://git.duniter.org/clients/cesium-grp/cesium2" target="_system">https://git.duniter.org/clients/cesium-grp/cesium2</a>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer hidden-xs hidden-sm>
+  <ion-toolbar>
+    <ion-row no-padding nowrap>
+      <ion-col></ion-col>
+      <ion-col size="auto">
+        <ion-button fill="solid" color="secondary" (click)="cancel()">{{'COMMON.BTN_CLOSE'|translate}}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

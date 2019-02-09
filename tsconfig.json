@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "allowSyntheticDefaultImports": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es2017",
+      "dom",
+      // This is need for graphql 
+      // see https://stackoverflow.com/questions/45810696/ionic2-apollo-graphql-eror-cannot-find-name-asynciterator#45812540
+      "esnext.asynciterable"
+    ],
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "compileOnSave": false,
+  "atom": {
+    "rewriteTsconfig": false
+  }
+}

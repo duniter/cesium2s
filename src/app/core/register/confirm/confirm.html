@@ -1,0 +1,58 @@
+<app-toolbar [title]="'REGISTER.CONFIRMED.TITLE'|translate" color="primary">
+</app-toolbar>
+
+
+<ion-content padding class="bg-image-cover center">
+
+  <p class="hidden-xs" padding>&nbsp;<br /><br /></p>
+  <p class="hidden-xs">&nbsp;</p>
+
+
+  <ion-card>
+    <ion-card-content>
+
+      <div>
+        <h4 *ngIf="loading">
+          <span translate>REGISTER.CONFIRMED.LOADING</span>
+        </h4>
+
+        <p *ngIf="loading">
+          <ion-spinner></ion-spinner>
+        </p>
+
+        <!-- error -->
+        <ion-item *ngIf="!loading && error">
+          <ion-icon color="danger" slot="start" name="alert"></ion-icon>
+          <ion-label color="danger" class="error" [innerHTML]="error|translate"></ion-label>
+        </ion-item>
+      </div>
+
+      <div *ngIf="!loading && !error">
+        <h4>
+          <ion-icon name="checkmark"></ion-icon>
+          <span translate>REGISTER.CONFIRMED.SUB_TITLE</span>
+        </h4>
+
+        <ion-text>
+          <p [innerHTML]="'REGISTER.CONFIRMED.SUCCESS'|translate: {email: email}"></p>
+          <p *ngIf="!isLogin" [innerHTML]="'REGISTER.CONFIRMED.LOGIN_HELP'|translate"></p>
+        </ion-text>
+
+      </div>
+
+    </ion-card-content>
+
+    <ion-footer *ngIf="!loading">
+      <ion-button expand="full" color="primary" [routerLink]="['/account']" *ngIf="!isLogin">
+        <ion-icon name="log-in" slot="start"></ion-icon>
+        <span translate>AUTH.BTN_LOGIN</span>
+      </ion-button>
+
+      <ion-button expand="full" color="secondary" [routerLink]="['/account']" *ngIf="isLogin">
+        <ion-icon name="contact" slot="start"></ion-icon>
+        <span translate>HOME.BTN_MY_ACCOUNT</span>
+      </ion-button>
+    </ion-footer>
+  </ion-card>
+
+</ion-content>

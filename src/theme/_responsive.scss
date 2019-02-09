@@ -1,0 +1,331 @@
+// --------------------------------------------------
+// Responsive: Utility var
+// --------------------------------------------------
+$screen-xxs-max: 400px;
+$screen-xs: 401px;
+$screen-xs-max: 767px;
+$screen-sm: 768px;
+$screen-sm-max: 991px;
+$screen-md: 992px;
+$screen-md-max: 1199px;
+$screen-lg: 1200px;
+
+// --------------------------------------------------
+// Hidden/Visible responsive
+// --------------------------------------------------
+@media screen and (max-width: $screen-xxs-max) {
+  @-ms-viewport {
+    width: 320px;
+  }
+}
+
+// Extra small device: Phones (<767px)
+@media screen and (max-width: $screen-xs-max) {
+
+  [hidden-xs],
+  .hidden-xs {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  [padding-top-xs],
+  .padding-top-xs {
+    padding-top: 10px;
+  }
+}
+
+@media screen and (min-width: $screen-sm) {
+
+  [hidden-xs],
+  .hidden-xs {
+    display: inherit;
+    visibility: visible;
+  }
+}
+
+@media screen and (max-width: $screen-xs-max) {
+
+  [visible-xs],
+  .visible-xs {
+    display: inherit !important;
+    visibility: visible !important;
+  }
+}
+
+@media screen and (min-width: $screen-sm) {
+
+  [visible-xs],
+  .visible-xs {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+
+@media screen and (max-width: $screen-xs-max) {
+
+  [padding-xs],
+  .padding-xs {
+    padding: 15px !important;
+  }
+}
+
+@media screen and (min-width: $screen-sm) {
+
+  [padding-xs],
+  .padding-xs {
+    padding: inherit;
+  }
+}
+
+@media screen and (max-width: $screen-xs-max) {
+
+  [no-padding-xs].scroll-content,
+  [no-padding-xs],
+  .no-padding-xs .scroll-content,
+  .no-padding-xs {
+    padding: 0px !important;
+  }
+}
+
+@media screen and (min-width: $screen-sm) {
+
+  [no-padding-xs].scroll-content,
+  [no-padding-xs],
+  .no-padding-xs .scroll-content,
+  .no-padding-xs {
+    padding: inherit;
+  }
+}
+
+@media screen and (max-width: $screen-xs-max) {
+
+  [no-margin-xs],
+  .no-margin-xs {
+    margin: 0px !important;
+  }
+}
+
+@media screen and (min-width: $screen-sm) {
+
+  [no-margin-xs],
+  .no-margin-xs {
+    margin: inherit;
+  }
+}
+
+// Small devices: Tablets (≥768px)
+@media screen and (max-width: $screen-sm-max) and (min-width: $screen-sm) {
+
+  [hidden-sm],
+  .hidden-sm {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+
+@media screen and (min-width: $screen-md) {
+
+  [hidden-sm],
+  .hidden-sm {
+    display: inherit;
+    visibility: visible;
+  }
+
+  .row.hidden-sm {
+    display: flex !important;
+  }
+
+  .button.hidden-sm {
+    display: flex;
+  }
+}
+
+@media screen and (max-width: $screen-xs-max) {
+
+  [hidden-sm],
+  .hidden-sm {
+    display: inherit;
+    visibility: visible;
+  }
+}
+
+@media screen and (max-width: $screen-sm-max) {
+
+  [visible-sm],
+  .visible-sm {
+    display: inherit !important;
+    visibility: visible !important;
+  }
+
+  .button.visible-sm {
+    display: block !important;
+  }
+}
+
+@media screen and (min-width: $screen-md) {
+
+  [visible-sm],
+  .visible-sm {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+@media screen and (max-width: $screen-xs-max) {
+
+  [visible-sm],
+  .visible-sm {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+// Medium devices: Desktops (≥992px)
+@media screen and (min-width: $screen-md) and (max-width: $screen-md-max) {
+  .hidden-md {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+
+@media screen and (min-width: $screen-lg) {
+  .hidden-md {
+    display: inherit;
+    visibility: visible;
+  }
+}
+
+@media screen and (max-width: $screen-sm-max) {
+  .hidden-md {
+    display: inherit;
+    visibility: visible;
+  }
+}
+
+@media screen and (min-width: $screen-md) and (max-width: $screen-md-max) {
+  .visible-md {
+    display: inherit !important;
+    visibility: visible !important;
+  }
+}
+
+@media screen and (min-width: $screen-lg) {
+  .visible-md {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+@media screen and (max-width: $screen-sm-max) {
+  .visible-md {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+// Large devices: Desktops (≥1200px)
+@media screen and (min-width: $screen-lg) {
+  .hidden-lg {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .visible-lg {
+    display: inherit !important;
+    visibility: visible !important;
+  }
+}
+
+@media screen and (max-width: $screen-md-max) {
+  .hidden-lg {
+    display: inherit;
+    visibility: visible;
+  }
+}
+
+@media screen and (max-width: $screen-md-max) {
+  .visible-lg {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+@media screen and (max-width: $screen-sm) {
+  .no-padding-xs {
+    padding: inherit;
+  }
+}
+
+@media screen and (max-width: $screen-xs-max) {
+  .no-margin-xs {
+    margin: 0px !important;
+  }
+}
+
+// --------------------------------------------------
+// Global style responsive
+// --------------------------------------------------
+@media screen and (max-width: $screen-sm-max) {
+  body {
+    cursor: url('http://ionicframework.com/img/finger.png'), auto;
+  }
+}
+
+@media (min-width: $screen-sm) {
+  .bar-button-menutoggle-md {
+    display: none !important
+  }
+}
+
+@media screen and (min-width: $screen-md) {
+  body {
+    cursor: inherit;
+  }
+}
+
+@media screen and (min-width: $screen-md) {
+
+  html,
+  body,
+  .scroll,
+  .disable-user-behavior {
+    -webkit-user-selectuser-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    user-select: auto !important;
+  }
+}
+
+// --------------------------------------------------
+// Forms
+// --------------------------------------------------
+@media screen and (min-width: $screen-md) {
+  form ion-col[align-self-end]>ion-label {
+    text-align: end;
+    line-height: 37px;
+  }
+
+  form ion-col[align-self-center]>ion-label {
+    text-align: center;
+    line-height: 37px;
+  }
+}
+
+// --------------------------------------------------
+// Custom usefull CSS style
+// --------------------------------------------------
+[hidden] {
+  display: none !important;
+}
+
+[padding] {
+  padding: 16px;
+}
+
+[padding-left] {
+  padding-left: 16px;
+}
+
+[padding-right] {
+  padding-right: 16px;
+}
