@@ -2,6 +2,8 @@
   "APP_NAME": "Cesium",
   "COMMON": {
     "BTN_CANCEL": "Cancel",
+    "BTN_ABORT_CHANGES": "Abort the changes",
+    "BTN_RESET": "Reset",
     "BTN_ADD": "Add",
     "BTN_APPLY": "Apply",
     "BTN_EDIT": "Edit",
@@ -18,52 +20,67 @@
     "BTN_NEXT": "Next",
     "BTN_BACK": "Back",
     "BTN_SEND": "Send",
-    "BTN_UNDO": "Unod changes",
+    "BTN_UNDO": "Undo changes",
     "BTN_TABLE_EDIT": "Edit in the table",
     "BTN_TABLE_OPEN": "Edit in a form",
+    "BTN_SHOW_HELP": "Show help",
+    "BTN_HIDE_MENU": "Hide menu",
+    "BTN_SHOW_MENU": "Show menu",
+    "BTN_LOGOUT": "Log out",
     "CREATED_ON": "Created on",
+    "COMMENTS": "Comments",
+    "EMPTY_OPTION": "(Empty)",
 
-    "DATE_PATTERN": "MM/DD/YYYY",
-    "DATE_TIME_PATTERN": "MM/DD/YYYY HH:mm",
+    "DATE_PATTERN": "DD/MM/YYYY",
+    "DATE_TIME_PATTERN": "DD/MM/YYYY HH:mm",
     "DATE_FILE_PATTERN": "YYYY-MM-DD",
     "DATE_SHORT_PATTERN": "DD/MM/YY",
     "DATE_MONTH_YEAR_PATTERN": "MM/YYYY",
-    "DATE_PLACEHOLDER": "mm/dd/yyyy",
+    "DATE_PLACEHOLDER": "dd/mm/yyyy",
 
-    "DDMMSS_PLACEHOLDER": "DD° MM' SS\" N|S",
-    "DDMM_PLACEHOLDER": "DD° MM.MMM' N|S",
-    "DD_PLACEHOLDER": "+DD.DDD°",
-    "DDDMMSS_PLACEHOLDER": "DDD° MM' SS\" E|W",
-    "DDDMM_PLACEHOLDER": "DDD° MM.MMM' E|W",
-    "DDD_PLACEHOLDER": "+DDD.DDD°",
-
-    "METADATA": "Metadata:",
-
+    "DAY_UNIT": "j",
     "DATE": "Date",
+    "TIME": "Time",
     "HOUR": "Hour",
     "MINUTE": "Minute",
-    "HOUR_PLACEHOLDER": "hh",
-    "MINUTE_PLACEHOLDER": "mm",
+    "TIME_PLACEHOLDER": "hh:mm",
+    "DURATION_DOTS": "Duration:",
 
     "YES": "yes",
     "NO": "No",
 
     "UPDATED_ON": "Last modification on",
     "RECORDER": "Recorder",
+    "RESULT_COUNT": "{{count}} results",
+    "NO_RESULT": "No result",
 
-    "DISPLAYED_COLUMNS": "Displayed columns"
+    "DISPLAYED_COLUMNS": "Displayed columns",
+    "DISPLAYED_COLUMNS_DOTS": "Columns...",
+
+    "FORM": {
+      "HAS_ERROR": "Please fix error in form"
+    },
+    "PAGINATOR": {
+      "ITEMS_PER_PAGE":"Items per page",
+      "NEXT_PAGE":"Next page",
+      "PREVIOUS_PAGE":"Previous page",
+      "OF": "sur"
+    }
   },
   "MENU": {
     "HOME": "Home",
     "WOT": "Registry",
     "ADMINISTRATION_DIVIDER": "Administration",
     "FOOTER_VERSION_ABOUT": "v{{version}} | About",
-    "BTN_ACCOUNT": "Account",
-    "BTN_LOGOUT": "Log out"
+    "LOCAL_SETTINGS": "Settings",
+    "SERVER_SETTINGS": "Server settings",
+    "LOGOUT": "Logout",
+    "ABOUT": "About"
   },
   "ABOUT": {
     "TITLE": "About",
     "VERSION": "<b>v{{version}}</b>",
+    "LICENSE": "<b>Free/libre software</b> (License GNU AGPLv3).",
     "REPORT_ISSUE": "Please report any issue to us!",
     "BTN_REPORT_ISSUE": "Report an issue",
     "SOURCE_CODE": "Source core:",
@@ -72,23 +89,31 @@
   "HOME": {
     "WELCOME": "Welcome Cesium 2 (beta)!",
     "DESCRIPTION": "Wallet for libre currency.",
-    "BTN_TRIPS": "Search trips",
+    "BTN_WOT_SEARCH": "Search in registry",
     "NOT_THIS_ACCOUNT_QUESTION": "You are not <b>{{displayName}}</b>?",
     "BTN_DISCONNECT": "Disconnect this account",
-    "BTN_MY_ACCOUNT": "My account"
+    "BTN_MY_ACCOUNT": "My account",
+    "BTN_REGISTER": "Register"
   },
   "AUTH": {
     "TITLE": "Authentication",
     "BTN_LOGIN": "Log In",
     "BTN_REGISTER": "Sign up",
-    "NO_ACCOUNT_QUESTION": "Don't have a account?"
+    "NO_ACCOUNT_QUESTION": "Don't have an account?",
+    "LOGOUT": {
+      "CONFIRM_TITLE": "Confirmation",
+      "CONFIRM_MESSAGE": "Are you sure you want to logout ?",
+      "BTN_CONFIRM": "Yes, continue"
+    }
   },
   "REGISTER": {
     "TITLE": "Registration",
-    "STEP_EMAIL": "Email",
+    "STEP_UID": "User identifier",
+    "STEP_SALT": "Salt",
     "STEP_PASSWORD": "Password",
     "STEP_USER_DETAILS": "user details",
-    "CONFIRM_EMAIL": "Email (confirmation)",
+    "CONFIRM_UID": "User identifier (confirmation)",
+    "CONFIRM_SALT": "Salt (confirmation)",
     "CONFIRM_PASSWORD": "Password (confirmation)",
     "CONFIRMED": {
       "TITLE": "Finalization of registration",
@@ -122,11 +147,34 @@
       "LAT_LONG_FORMAT": "Latitude/longitude format"
     }
   },
-  "IDENTITY": {
-    "UID": "Uid",
-    "PUBKEY": "Public key"
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "DESCRIPTION": "Here are the options for configuring the application:",
+    "INHERIT_FROM_ACCOUNT": "Use the preferences of the logged in user",
+    "LOCALE": "Language",
+    "NETWORK_DIVIDER": "Network",
+    "PEER_URL": "Network peer address",
+    "BTN_CHANGE_PEER": "Change node",
+    "DATA_ENTRY_DIVIDER": "Other preferences",
+    "USAGE_MODE": "Usage mode",
+    "USAGE_MODES":  {
+      "FIELD": "On field",
+      "DESK": "In office"
+    },
+    "BTN_CHANGE_PEER": "Change peer",
+    "OPTIONS": {
+      "COLORS": {
+        "PRIMARY": "Theme > Primary color",
+        "SECONDARY": "Theme > Secondary color",
+        "TERTIARY": "Theme > Tertiary color"
+      }
+    },
+    "ERROR": {
+      "PEER_NOT_REACHABLE": "Unreachable peer"
+    }
   },
   "USER": {
+    "TITLE": "User",
     "AVATAR": "Avatar",
     "EMAIL": "Email",
     "PASSWORD": "Password",
@@ -147,6 +195,15 @@
       }
     }
   },
+  "NETWORK": {
+    "PEER": {
+      "OFFLINE": "Noeud injoignable",
+      "SELECT_MODAL": {
+        "TITLE": "Noeud réseau",
+        "HELP": "Veuillez choisir un noeud réseau auquel vous connecter :"
+      }
+    }
+  },
   "ERROR": {
     "FIELD_REQUIRED": "This field is required.",
     "FIELD_TOO_SHORT": "This field value is too short.",
@@ -156,37 +213,47 @@
     "FIELD_MIN": "Minimal value: {{min}}",
     "FIELD_MIN_COMPACT": "Min value={{min}}",
     "FIELD_MAX": "Maximum value: {{max}}",
+    "FIELD_MAX_LENGTH": "Maximal length: {{requiredLength}}",
     "FIELD_MAX_COMPACT": "Max value={{max}}",
     "FIELD_MAXIMUM_DECIMALS": "Invalid number of decimals ({{max}} max)",
     "FIELD_MAXIMUM_DECIMALS_COMPACT": "Nb decimals max={{max}}",
     "FIELD_INVALID": "Invalid value",
     "FIELD_NOT_VALID_INTEGER": "Expected integer value",
-    "FIELD_NOT_VALID_UID": "Invalid uid address",
+    "FIELD_NOT_VALID_EMAIL": "Invalid email address",
+    "FIELD_NOT_VALID_UID": "Invalid uid",
     "FIELD_NOT_VALID_DATE": "Invalid date",
+    "FIELD_NOT_VALID_DATE_AFTER": "Inconsistent dates",
+    "FIELD_NOT_VALID_DATE_MAX_DURATION": "Duration too long",
+    "FIELD_NOT_VALID_DATE_MIN_DURATION": "Duration too short",
     "FIELD_NOT_VALID_HOUR_MINUTE": "Invalid hour/minute",
     "FIELD_NOT_VALID_DATE_TIME": "Invalid date/hour",
     "FIELD_NOT_VALID_LATITUDE": "Invalid latitude",
     "FIELD_NOT_VALID_LONGITUDE": "Invalid longitude",
     "FIELD_NOT_VALID_PUBKEY": "Invalid public key",
+    "FIELD_NOT_UNIQUE": "Value must be unique",
     "SPACE_NOT_ALLOW": "Spaces or special characters not allowed",
     "SCRYPT_ERROR": "Unable to create account keys",
+    "UNKNOWN_ACCOUNT_EMAIL": "No account matches this email.",
     "UNKNOWN_ACCOUNT_UID": "No account matches this uid.",
     "BAD_PASSWORD": "Incorrect password.",
+    "EMAIL_ALREADY_REGISTERED": "Email already registered",
     "UID_ALREADY_REGISTERED": "Uid already registered",
     "UNKNOWN_NETWORK_ERROR": "Error communicating with the server.<small><br/>If the problem persists, please contact your administrator.</small>",
     "BAD_UPDATE_DATE": "Unable to save.<small><br/>Concurrent change detected. Please reload this page and retry.</small>",
     "DATA_LOCKED": "Unable to save.<small><br/>Data locked on server. Please retry later</small>",
-    "LOAD_ACCOUNT_ERROR": "Erreur de chargement du compte utilisateur.<small><br/>If the problem persists, please contact your administrator.</small>",
+    "LOAD_ACCOUNT_ERROR": "Error loading user account.<small><br/>If the problem persists, please contact your administrator.</small>",
     "SAVE_ACCOUNT_ERROR": "Error saving your account.<small><br/>If the problem persists, please contact your administrator.</small>",
     "ACCOUNT_NOT_EXISTS": "Your account does not appear to exist and can not be backed up.<small><br/>If the problem persists, please contact your administrator.</small>",
-    "UNAUTHORIZED": "Failed authentication on the server",
+    "UNAUTHORIZED": "Access denied by server",
+    "FORBIDDEN": "Forbidden access",
     "AUTH_SERVER_ERROR": "Error during authentication on the server",
     "AUTH_CHALLENGE_ERROR": "Error during authentication on the server (loading challenge failed)",
     "TABLE_INVALID_ROW_ERROR": "A row is invalid"
   },
   "CONFIRM": {
     "ALERT_HEADER": "Confirmation",
-    "SAVE": "Do you want to save your changes?",
+    "SAVE": "Some changes have not been saved.<br/><br/>Do you want <b>save your changes</b>?",
+    "SAVE_BEFORE_CLOSE": "Some changes have not been saved.<br/><br/>Do you want to <b>save your changes</b> before closing?",
     "CANCEL_CHANGES": "Your last changes will be canceled.<br/><br/><b>Are you sure</b> you want to continue?",
     "DELETE": "This operation is irreversible.<br/><br/><b>Are you sure</b> you want to continue?"
   }

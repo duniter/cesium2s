@@ -1,12 +1,13 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import gql from "graphql-tag";
-import { Apollo } from "apollo-angular";
-import { Observable } from 'rxjs';
-import { Person } from './model';
-import { BaseDataService, DataService } from "../../core/services/data-service.class";
-import { ErrorCodes } from "./errors";
-import { map } from "rxjs/operators";
-import { Entity } from "src/app/core/services/model";
+import {Observable} from 'rxjs';
+import {Person} from './model';
+import {BaseDataService} from "../../core/services/base.data-service.class";
+import {ErrorCodes} from "./errors";
+import {map} from "rxjs/operators";
+import {Entity} from "src/app/core/services/model";
+import {LoadResult, TableDataService} from "../../shared/services/data-service.class";
+import {GraphqlService} from "../../core/services/graphql.service";
 
 
 // Load persons query
@@ -50,12 +51,12 @@ export class Identity extends Entity<Identity> {
 } 
 
 @Injectable()
-export class WotService extends BaseDataService implements DataService<Identity, WotSearchFilter> {
+export class WotService extends BaseDataService implements TableDataService<Identity, WotSearchFilter> {
 
   constructor(
-    protected apollo: Apollo
+    protected graphql: GraphqlService
   ) {
-    super(apollo);
+    super(graphql);
   }
 
   /**
@@ -67,24 +68,24 @@ export class WotService extends BaseDataService implements DataService<Identity,
    * @param filter 
    * @param options 
    */
-  public search(
+  public watchAll(
     offset: number,
     size: number,
     sortBy?: string,
     sortDirection?: string,
     filter?: WotSearchFilter,
     options?: any
-  ): Observable<Identity[]> {
+  ): Observable<LoadResult<Identity>> {
 
     const variables = {
       search: filter && filter.search
     };
 
-    this._lastVariables.search = variables
+    this._lastVariables.search = variables;
 
     const now = Date.now();
     console.debug("[wot-service] Loading persons... using filter: ", variables);
-    return this.watchQuery<{ pendingIdentities: Identity[] }>({
+    return this.graphql.watchQuery<{ pendingIdentities: Identity[] }>({
       query: WotSearchQuery,
       variables: variables,
       error: { code: ErrorCodes.WOT_SEARCH_ERROR, message: "ERROR.WOT_SEARCH_ERROR" },
@@ -93,8 +94,11 @@ export class WotService extends BaseDataService implements DataService<Identity,
       .pipe(
         map(data => {
           const res = (data && data.pendingIdentities || []).map(Identity.fromObject);
-          console.debug(`[wot-service] Loaded identities in ${Date.now()-now}:`, res);
-          return res;
+          console.debug(`[wot-service] Loaded identities in ${Date.now() - now}:`, res);
+          return {
+            data: res,
+            total: res.length
+          };
         }
       ));
   }
@@ -116,6 +120,5 @@ export class WotService extends BaseDataService implements DataService<Identity,
     target.id = source.id || target.id;
     target.updateDate = source.updateDate || target.updateDate;
     target.creationDate = source.creationDate || target.creationDate;
-    target.dirty = false;
   }
 }

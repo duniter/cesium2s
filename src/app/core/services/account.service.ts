@@ -1,17 +1,27 @@
-import { Injectable } from "@angular/core";
-import { KeyPair, CryptoService, base58 } from "./crypto.service";
-import { Account, UserSettings, toDateISOString, getMainProfile, UserProfileLabel, hasUpperOrEqualsProfile, ReferentialRef, StatusIds } from "./model";
-import { Subject, Subscription } from "rxjs-compat";
+import {Injectable} from "@angular/core";
+import {base58, CryptoService, KeyPair} from "./crypto.service";
+import {
+  Account,
+  getMainProfile,
+  hasUpperOrEqualsProfile,
+  StatusIds,
+  UsageMode,
+  UserProfileLabel,
+  UserSettings
+} from "./model";
+import {Subject, Subscription} from "rxjs";
 import gql from "graphql-tag";
-import { TranslateService } from "@ngx-translate/core";
-import { Apollo } from "apollo-angular";
-import { Storage } from '@ionic/storage';
-import { FetchPolicy } from "apollo-client";
-import { BaseDataService, DataService } from "./data-service.class";
-import { ErrorCodes, ServerErrorCodes } from "./errors";
-import { Referential } from "./model";
+import {Storage} from '@ionic/storage';
+import {FetchPolicy} from "apollo-client";
 
-import { environment } from "../../../environments/environment";
+import {toDateISOString} from "../../shared/shared.module";
+import {BaseDataService} from "./base.data-service.class";
+import {ErrorCodes, ServerErrorCodes} from "./errors";
+import {environment} from "../../../environments/environment";
+import {SuggestionDataService} from "../../shared/services/data-service.class";
+import {GraphqlService} from "./graphql.service";
+import {LocalSettingsService} from "./local-settings.service";
+
 
 export declare interface AccountHolder {
   loaded: boolean;
@@ -19,9 +29,6 @@ export declare interface AccountHolder {
   authToken: string;
   pubkey: string;
   account: Account;
-  localSettings: {
-    pages?: any
-  };
   // TODO : use this ?
   mainProfile: String;
 };
@@ -33,30 +40,28 @@ export interface RegisterData extends AuthData {
   account: Account;
 }
 
-export interface AccountFieldDef<T = any, F = { searchText?: string; }> {
+export interface AccountFieldDef<T = any> {
   name: string;
   label: string;
   required: boolean;
-  dataService?: DataService<T, F>,
-  dataFilter?: any,
-  dataServiceOptions?: any,
+  dataService?: SuggestionDataService<T>;
+  dataFilter?: any;
   updatable: {
     registration: boolean;
     account: boolean;
   };
 }
 
-const TOKEN_STORAGE_KEY = "token"
-const PUBKEY_STORAGE_KEY = "pubkey"
-const SECKEY_STORAGE_KEY = "seckey"
-const ACCOUNT_STORAGE_KEY = "account"
-const SETTINGS_STORAGE_KEY = "settings"
+const TOKEN_STORAGE_KEY = "token";
+const PUBKEY_STORAGE_KEY = "pubkey";
+const SECKEY_STORAGE_KEY = "seckey";
+const ACCOUNT_STORAGE_KEY = "account";
 
 /* ------------------------------------
  * GraphQL queries
  * ------------------------------------*/
 // Get account query
-const AccountQuery: any = gql`
+const LoadQuery: any = gql`
   query Account($pubkey: String){
     account(pubkey: $pubkey){
       id
@@ -76,21 +81,18 @@ const AccountQuery: any = gql`
         content
         nonce
         updateDate
+        __typename
       }
       department {
         id
         label
         name
+        __typename
       }
+      __typename
     }
   }
 `;
-export declare type AccountVariables = {
-  pubkey: string;
-}
-export declare type AccountResult = {
-  account: Account;
-}
 
 // Check uid query
 const IsUidExistsQuery: any = gql`
@@ -178,7 +180,7 @@ const UpdateSubscription: any = gql`
   }
 `;
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class AccountService extends BaseDataService {
 
   private data: AccountHolder = {
@@ -187,12 +189,11 @@ export class AccountService extends BaseDataService {
     authToken: null,
     pubkey: null,
     mainProfile: null,
-    account: null,
-    localSettings: null
+    account: null
   };
 
   private _startPromise: Promise<any>;
-  private _started: boolean = false;
+  private _started = false;
   private _additionalAccountFields: AccountFieldDef[] = [];
 
   public onLogin = new Subject<Account>();
@@ -204,12 +205,12 @@ export class AccountService extends BaseDataService {
   }
 
   constructor(
-    protected apollo: Apollo,
-    private translate: TranslateService,
+    protected graphql: GraphqlService,
+    private settings: LocalSettingsService,
     private cryptoService: CryptoService,
     private storage: Storage
   ) {
-    super(apollo);
+    super(graphql);
 
     this.resetData();
 
@@ -230,16 +231,29 @@ export class AccountService extends BaseDataService {
     this.data.pubkey = null;
     this.data.mainProfile = null;
     this.data.account = new Account();
-    this.data.localSettings = null;
+  }
+
+  async start() {
+    if (this._startPromise) return this._startPromise;
+    if (this._started) return;
+
+    // Restoring local settings
+    this._startPromise = this.settings.ready()
+      .then(() => this.restoreLocally())
+      .then(() => {
+        this._started = true;
+        this._startPromise = undefined;
+      });
+    return this._startPromise;
   }
 
   public isStarted(): boolean {
     return this._started;
   }
 
-  public waitStart(): Promise<void> {
+  public ready(): Promise<void> {
     if (this._started) return Promise.resolve();
-    return this._startPromise;
+    return this.start();
   }
 
   public isLogin(): boolean {
@@ -250,13 +264,23 @@ export class AccountService extends BaseDataService {
     return !!(this.data.pubkey && this.data.keypair && this.data.keypair.secretKey);
   }
 
-  public hasProfile(label: UserProfileLabel): boolean {
+  public hasMinProfile(label: UserProfileLabel): boolean {
+    // should be login, and status ENABLE or TEMPORARY
+    if (!this.data.account || !this.data.account.pubkey ||
+      (this.data.account.statusId != StatusIds.ENABLE && this.data.account.statusId != StatusIds.TEMPORARY)) {
+      return false;
+    }
+    return hasUpperOrEqualsProfile(this.data.account.profiles, label as UserProfileLabel);
+  }
+
+  public hasExactProfile(label: UserProfileLabel): boolean {
     // should be login, and status ENABLE or TEMPORARY
     if (!this.data.account || !this.data.account.pubkey ||
       (this.data.account.statusId != StatusIds.ENABLE && this.data.account.statusId != StatusIds.TEMPORARY))
       return false;
-    return hasUpperOrEqualsProfile(this.data.account.profiles, label as UserProfileLabel);
+    return !!this.data.account.profiles.find(profile => profile === label);
   }
+
 
   public hasProfileAndIsEnable(label: UserProfileLabel): boolean {
     // should be login, and status ENABLE
@@ -272,10 +296,18 @@ export class AccountService extends BaseDataService {
     return this.hasProfileAndIsEnable('USER');
   }
 
+  /**
+   * @deprecated
+   * @param mode
+   */
+  public isUsageMode(mode: UsageMode): boolean {
+    return this.settings.isUsageMode(mode);
+  }
+
   public isOnlyGuest(): boolean {
     // Should be login, and status ENABLE or TEMPORARY
     if (!this.data.account || !this.data.account.pubkey ||
-      (this.data.account.statusId != StatusIds.ENABLE && this.data.account.statusId != StatusIds.TEMPORARY))
+      (this.data.account.statusId !== StatusIds.ENABLE && this.data.account.statusId !== StatusIds.TEMPORARY))
       return false;
     // Profile less then user
     return !hasUpperOrEqualsProfile(this.data.account.profiles, 'USER');
@@ -289,18 +321,14 @@ export class AccountService extends BaseDataService {
 
     if (this._debug) console.debug('[account] Register new user account...', data.account);
     this.data.loaded = false;
-    let now = new Date();
+    let now = Date.now();
 
     try {
       const keypair = await this.cryptoService.scryptKeypair(data.username, data.password);
       data.account.pubkey = base58.encode(keypair.publicKey);
 
       // Default values
-      data.account.settings.locale = data.account.settings.locale || this.translate.currentLang || this.translate.defaultLang;
-      data.account.settings.latLongFormat = environment.defaultLatLongFormat || 'DDMM';
-
-      // TODO: add department to register form
-      data.account.department.id = data.account.department.id;
+      data.account.settings.locale = this.settings.locale;
 
       this.data.keypair = keypair;
       const account = await this.saveAccount(data.account, keypair);
@@ -311,23 +339,28 @@ export class AccountService extends BaseDataService {
 
       this.data.account = account;
       this.data.pubkey = account.pubkey;
+
+      // Try to auth on node
+      // TODO: need auth API in GVA
+      //this.data.authToken = await this.authenticateAndGetToken();
+
       this.data.loaded = true;
 
       await this.saveLocally();
 
-      console.debug("[account] Account sucessfully registered in " + (new Date().getTime() - now.getTime()) + "ms");
+      console.debug("[account] Account successfully registered in " + (Date.now() - now) + "ms");
       this.onLogin.next(this.data.account);
       return this.data.account;
     }
     catch (error) {
-      console.error(error);
+      console.error(error && error.message || error);
       this.resetData();
       throw error;
     };
   }
 
   async login(data: AuthData): Promise<Account> {
-    if (!data.username || !data.username) throw "Missing required username por password";
+    if (!data.username || !data.password) throw "Missing required username or password";
 
     console.debug("[account] Trying to login...");
 
@@ -343,6 +376,17 @@ export class AccountService extends BaseDataService {
     // Store pubkey+keypair
     this.data.pubkey = base58.encode(keypair.publicKey);
     this.data.keypair = keypair;
+
+    // Try to auth on remote server
+    try {
+      // TODO: need auth API in GVA
+      //this.data.authToken = await this.authenticateAndGetToken();
+    }
+    catch (error) {
+      console.error(error);
+      this.resetData();
+      throw error;
+    }
 
     // Load account data
     try {
@@ -363,7 +407,7 @@ export class AccountService extends BaseDataService {
         if (!isEmailExists) {
           throw { code: ErrorCodes.UNKNOWN_ACCOUNT_UID, message: "ERROR.UNKNOWN_ACCOUNT_EMAIL" };
         }
-        // Email exists, so error = 'bad password' 
+        // Email exists, so error = 'bad password'
         throw { code: ErrorCodes.BAD_PASSWORD, message: "ERROR.BAD_PASSWORD" };
       }
 
@@ -371,9 +415,6 @@ export class AccountService extends BaseDataService {
     }
 
     try {
-      // Try to auth on remote server
-      this.data.authToken = await this.authenticateAndGetToken();
-
       // Store to local storage
       await this.saveLocally();
     }
@@ -383,8 +424,7 @@ export class AccountService extends BaseDataService {
       throw error;
     }
 
-
-    console.debug("[account] Sucessfully authenticated {" + this.data.pubkey.substr(0, 6) + "}");
+    console.debug("[account] Successfully authenticated {" + this.data.pubkey.substr(0, 6) + "}");
 
     // Emit event to observers
     this.onLogin.next(this.data.account);
@@ -395,13 +435,10 @@ export class AccountService extends BaseDataService {
   public async refresh(): Promise<Account> {
     if (!this.data.pubkey) throw new Error("User not logged");
 
-    const locale = this.translate.currentLang;
-
     await this.loadData({ fetchPolicy: 'network-only' });
-
     await this.saveLocally();
 
-    console.debug("[account] Sucessfully reload account");
+    console.debug("[account] Successfully reload account");
 
     // Emit login event to subscribers
     this.onLogin.next(this.data.account);
@@ -420,8 +457,7 @@ export class AccountService extends BaseDataService {
       // Fill default values
       account.avatar = account.avatar || "../assets/img/person.png";
       account.settings = account.settings || new UserSettings();
-      account.settings.locale = account.settings.locale || this.translate.currentLang;
-      account.settings.latLongFormat = account.settings.latLongFormat || 'DDMM';
+      account.settings.locale = account.settings.locale || this.settings.locale;
 
       // Read main profile
       this.data.mainProfile = getMainProfile(account.profiles);
@@ -454,17 +490,12 @@ export class AccountService extends BaseDataService {
       this.storage.get(PUBKEY_STORAGE_KEY),
       this.storage.get(TOKEN_STORAGE_KEY),
       this.storage.get(ACCOUNT_STORAGE_KEY),
-      this.storage.get(SETTINGS_STORAGE_KEY),
       this.storage.get(SECKEY_STORAGE_KEY)
-    ])
-    const pubkey = values[0] as string;
+    ]);
+    const pubkey = values[0];
     const token = values[1];
     const accountStr = values[2];
-    const settingsStr = values[3];
-    const seckey = values[4];
-
-    // Restore local settings
-    this.data.localSettings = settingsStr && JSON.parse(settingsStr) || {};
+    const seckey = values[3];
 
     // Quit if no pubkey
     if (!pubkey) return;
@@ -489,26 +520,29 @@ export class AccountService extends BaseDataService {
       console.error(error);
       // TODO: do not logout, but allow navigation on local data ?
       this.logout();
-      return
+      return;
     }
 
     // No account: stop here (= data not loaded)
     if (!accountStr) return;
 
-    let accountObj: any = JSON.parse(accountStr);
+    const accountObj: any = JSON.parse(accountStr);
     if (!accountObj) return;
 
-    let account = Account.fromObject(accountObj);
-    if (account.pubkey != pubkey) return;
+    const account = Account.fromObject(accountObj);
+    if (account.pubkey !== pubkey) return;
 
     this.data.account = account;
     this.data.mainProfile = getMainProfile(account.profiles);
     this.data.loaded = true;
 
+    // Emit event
+    this.onLogin.next(this.data.account);
+
     return account;
   }
 
-  /** 
+  /**
   * Save account into the local storage
   */
   async saveLocally(): Promise<void> {
@@ -531,8 +565,8 @@ export class AccountService extends BaseDataService {
 
   /**
    * Create or update an user account, to the remote storage
-   * @param account 
-   * @param keyPair 
+   * @param account
+   * @param keyPair
    */
   public async saveRemotely(account: Account): Promise<Account> {
     if (!this.data.pubkey) return Promise.reject("User not logged");
@@ -572,9 +606,6 @@ export class AccountService extends BaseDataService {
       this.storage.remove(SECKEY_STORAGE_KEY)
     ]);
 
-    // Clear cache
-    await this.apollo.getClient().cache.reset();
-
     // Notify observers
     this.onLogout.next();
     if (tokenRemoved) {
@@ -585,15 +616,15 @@ export class AccountService extends BaseDataService {
 
   /**
    * Load a account by pubkey
-   * @param pubkey 
+   * @param pubkey
    */
   public async loadAccount(pubkey: string, opts?: { fetchPolicy?: FetchPolicy }): Promise<Account | undefined> {
 
     if (this._debug) console.debug("[account-service] Loading account {" + pubkey.substring(0, 6) + "}...");
     var now = new Date();
 
-    const res = await this.query<{ account: any }>({
-      query: AccountQuery,
+    const res = await this.graphql.query<{ account: any }>({
+      query: LoadQuery,
       variables: {
         pubkey: pubkey
       },
@@ -615,8 +646,8 @@ export class AccountService extends BaseDataService {
 
   /**
    * Create or update an user account
-   * @param account 
-   * @param keyPair 
+   * @param account
+   * @param keyPair
    */
   public async saveAccount(account: Account, keyPair: KeyPair): Promise<Account> {
     account.pubkey = account.pubkey || base58.encode(keyPair.publicKey);
@@ -642,7 +673,7 @@ export class AccountService extends BaseDataService {
     delete json.mainProfile; // Not known on server
 
     // Execute mutation
-    const res = await this.mutate<{ saveAccount: any }>({
+    const res = await this.graphql.mutate<{ saveAccount: any }>({
       mutation: SaveAccountMutation,
       variables: {
         account: json
@@ -684,7 +715,7 @@ export class AccountService extends BaseDataService {
 
     if (this._debug) console.debug("[account] Checking if {" + uid + "} exists...");
 
-    const data = await this.query<{ member: any }, IsUidExistsVariables>({
+    const data = await this.graphql.query<{ member: any }, IsUidExistsVariables>({
       query: IsUidExistsQuery,
       variables: {
         uid: uid
@@ -699,10 +730,10 @@ export class AccountService extends BaseDataService {
 
   async sendConfirmationEmail(email: String, locale?: string): Promise<boolean> {
 
-    locale = locale || this.translate.currentLang;
+    locale = locale || this.settings.locale;
     console.debug("[account] Sending confirmation email to {" + email + "} with locale {" + locale + "}...");
 
-    return await this.mutate<boolean>({
+    return await this.graphql.mutate<boolean>({
       mutation: SendConfirmEmailMutation,
       variables: {
         email: email,
@@ -719,7 +750,7 @@ export class AccountService extends BaseDataService {
 
     console.debug("[account] Sendng confirm request for email {" + email + "} with code {" + code + "}...");
 
-    const res = await this.mutate<{ confirmAccountEmail: boolean }>({
+    const res = await this.graphql.mutate<{ confirmAccountEmail: boolean }>({
       mutation: ConfirmEmailMutation,
       variables: {
         email: email,
@@ -729,7 +760,7 @@ export class AccountService extends BaseDataService {
         code: -1, //ErrorCodes.CONFIRM_EMAIL_FAILED,
         message: "ERROR.CONFIRM_ACCOUNT_EMAIL_FAILED"
       }
-    })
+    });
     return res && res.confirmAccountEmail;
   }
 
@@ -740,7 +771,7 @@ export class AccountService extends BaseDataService {
 
     console.debug('[account] [WS] Listening changes on {/subscriptions/websocket}...');
 
-    const subscription = this.apollo.subscribe({
+    const subscription = this.graphql.subscribe({
       query: UpdateSubscription,
       variables: {
         pubkey: this.data.pubkey,
@@ -776,27 +807,18 @@ export class AccountService extends BaseDataService {
     return subscription;
   }
 
+  /**
+   * @deprecated
+   */
   public getPageSettings(pageId: string, propertyName?: string): string[] {
-    const key = pageId.replace(/[/]/g, '__');
-    return this.data.localSettings && this.data.localSettings.pages
-      && this.data.localSettings.pages[key] && (propertyName && this.data.localSettings.pages[key][propertyName] || this.data.localSettings.pages[key]);
+    return this.settings.getPageSettings(pageId, propertyName);
   }
 
+  /**
+   * @deprecated
+   */
   public async savePageSetting(pageId: string, value: any, propertyName?: string) {
-    const key = pageId.replace(/[/]/g, '__');
-
-    this.data.localSettings = this.data.localSettings || {};
-    this.data.localSettings.pages = this.data.localSettings.pages || {}
-    if (propertyName) {
-      this.data.localSettings.pages[key] = this.data.localSettings.pages[key] || {};
-      this.data.localSettings.pages[key][propertyName] = value;
-    }
-    else {
-      this.data.localSettings.pages[key] = value;
-    }
-
-    // Update local settings
-    await this.storeLocalSettings();
+    await this.settings.savePageSetting(pageId, value, propertyName);
   }
 
   get additionalAccountFields(): AccountFieldDef[] {
@@ -821,13 +843,13 @@ export class AccountService extends BaseDataService {
     if (this._debug && !counter) console.debug("[account] Authenticating on server...");
 
     if (counter > 4) {
-      if (this._debug) console.debug(`[account] Authentification failed (after ${counter} attempts)`);
+      if (this._debug) console.debug(`[account] Authentication failed (after ${counter} attempts)`);
       throw { code: ErrorCodes.AUTH_SERVER_ERROR, message: "ERROR.AUTH_SERVER_ERROR" };
     }
 
     // Check if valid
     if (token) {
-      const data = await this.query<{ authenticate: boolean }, { token: string }>({
+      const data = await this.graphql.query<{ authenticate: boolean }, { token: string }>({
         query: AuthQuery,
         variables: {
           token: token
@@ -853,7 +875,7 @@ export class AccountService extends BaseDataService {
       code: ErrorCodes.AUTH_CHALLENGE_ERROR,
       message: "ERROR.AUTH_CHALLENGE_ERROR"
     };
-    const data = await this.query<{
+    const data = await this.graphql.query<{
       authChallenge: {
         pubkey: string,
         challenge: string,
@@ -889,18 +911,5 @@ export class AccountService extends BaseDataService {
   }
 
   /* -- Protected methods -- */
-
-
-  private storeLocalSettings(): Promise<any> {
-    console.debug("[account] Store local settings", this.data.localSettings);
-    if (!this.data.localSettings) {
-      return this.storage.remove(SETTINGS_STORAGE_KEY);
-    }
-    else {
-      const settingsStr = JSON.stringify(this.data.localSettings);
-      return this.storage.set(SETTINGS_STORAGE_KEY, settingsStr);
-    }
-  }
-
 
 }

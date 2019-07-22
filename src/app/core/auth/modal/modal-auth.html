@@ -36,11 +36,15 @@
 
       <!-- buttons -->
       <ion-col size="auto">
-        <ion-button fill="clear" (click)="cancel()">
+        <ion-button fill="clear" color="dark" (click)="cancel()">
           <ion-label translate>COMMON.BTN_CANCEL</ion-label>
         </ion-button>
 
-        <ion-button [fill]="form.invalid ? 'clear' : 'solid'" [disabled]="loading || form.invalid" (click)="doSubmit()">
+        <ion-button [fill]="form.invalid ? 'clear' : 'solid'"
+                    [disabled]="loading || form.invalid"
+                    (click)="doSubmit()"
+                    (keypress.enter)="doSubmit()"
+                    color="tertiary">
           <ion-label translate>AUTH.BTN_LOGIN</ion-label>
         </ion-button>
       </ion-col>

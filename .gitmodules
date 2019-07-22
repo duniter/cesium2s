@@ -1,0 +1,3 @@
+[submodule "other/cesium"]
+	path = other/cesium
+	url = git@git.duniter.org:clients/cesium-grp/cesium.git

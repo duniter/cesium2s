@@ -96,7 +96,7 @@
               <!-- Additional fields -->
               <ng-container *ngFor="let field of additionalFields">
                 <mat-autocomplete-field [placeholder]="field.label|translate" [formControlName]="field.name" [service]="field.dataService"
-                  [filter]="field.dataFilter" [serviceOptions]="field.dataServiceOptions" [required]="field.required"
+                  [filter]="field.dataFilter" [required]="field.required"
                   [displayWith]="referentialToString">
                 </mat-autocomplete-field>
               </ng-container>

@@ -15,45 +15,6 @@ body {
   @include font-roboto();
 }
 
-// Ionic Font Family
-// --------------------------------------------------
-html.ios {
-  --ion-default-font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif;
-}
-
-html.md {
-  --ion-default-font: "Roboto", "Helvetica Neue", sans-serif;
-}
-
-html {
-  --ion-font-family: var(--ion-default-font);
-}
-
-// Ionic Colors
-// --------------------------------------------------
-// Generates the color classes and variables based on the
-// colors map
-@mixin generate-color($color-name) {
-  $value: map-get($colors, $color-name);
-  $base: map-get($value, base);
-  $contrast: map-get($value, contrast);
-  $shade: map-get($value, shade);
-  $tint: map-get($value, tint);
-  --ion-color-base: var(--ion-color-#{$color-name}, #{$base}) !important;
-  --ion-color-base-rgb: var(--ion-color-#{$color-name}-rgb, #{color-to-rgb-list($base)}) !important;
-  --ion-color-contrast: var(--ion-color-#{$color-name}-contrast, #{$contrast}) !important;
-  --ion-color-contrast-rgb: var(--ion-color-#{$color-name}-contrast-rgb, #{color-to-rgb-list($contrast)}) !important;
-  --ion-color-shade: var(--ion-color-#{$color-name}-shade, #{$shade}) !important;
-  --ion-color-tint: var(--ion-color-#{$color-name}-tint, #{$tint}) !important;
-}
-
-@each $color-name,
-$value in $colors {
-  .ion-color-#{$color-name} {
-    @include generate-color($color-name);
-  }
-}
-
 *::selection {
   background: var(--ion-color-shade, rgba(0, 0, 0, 0.3));
 }
@@ -94,6 +55,7 @@ ion-toast-controller,
   opacity: 0;
 }
 
+
 // Ionic Safe Margins
 // --------------------------------------------------
 html.plt-ios.plt-hybrid,
@@ -124,14 +86,21 @@ html {
   }
 }
 
+// --------------------------------------------------
+// Back button in app toolbar
+// --------------------------------------------------
+
 .ion-page.can-go-back {
   app-toolbar {
-    ion-back-button {
-      display: inline-block !important;
-    }
 
     ion-menu-toggle {
       display: none !important;
+    }
+
+    // Back button
+    ion-back-button,
+    ion-button.back-button {
+      display: inline-block !important;
     }
   }
 }
@@ -176,8 +145,29 @@ form.form-container {
     padding-right: 5px;
   }
 
-  ion-col>ion-label {
-    color: $primary100;
+  ion-col > ion-label {
+    color: var(--ion-color-primary100);
+    display: block;
+    line-height: 37px;
+    margin: 11px 8px 11px 0;
+  }
+
+  ion-col > ion-label[text-wrap] {
+    word-wrap: break-word;
+    white-space: normal;
+  }
+
+}
+
+// Small devices:
+@media screen and (max-width: $screen-sm-max) {
+  form.form-container {
+    ion-col > ion-label {
+      width: 100%;
+      border-top: 0.15em dashed var(--ion-color-light100);
+      margin-bottom: 0px;
+      margin-right: 0px;
+    }
   }
 }
 
@@ -190,6 +180,15 @@ mat-form-field {
     font-size: 14px !important;
   }
 }
+
+mat-date-time {
+  // Need for errors injected using the <ng-content> tag
+  mat-error {
+    text-align: end;
+  }
+}
+
+// --- mat-autocomplete and mat-select panel
 
 mat-option {
   .mat-option-text:not(:has(ion-row)) {
@@ -206,29 +205,33 @@ mat-option:not(:last-child) {
   border-bottom: 1px solid $lightBorder;
 }
 
-mat-option ion-row {
-  // padding: 0 !important;
-  // ion-col {
-  //   // white-space: nowrap;
-  //   // text-overflow: ellipsis;
-  //   // overflow: hidden;
-  // }
-  // ion-col:not(:first-child) {
-  //   padding-left: 8px !important;
-  // }
+.mat-select-panel {
+  width: 250px !important;
 }
-
+.mat-autocomplete-panel {
+  min-width: 200px !important;
+}
+.mat-autocomplete-panel.min-width-medium {
+  min-width: 250px !important;
+}
+.mat-autocomplete-panel.min-width-large {
+  min-width: 350px !important;
+}
+.mat-select-panel,
 .mat-autocomplete-panel {
 
-  //--ion-grid-column-padding: 0;
+  ion-row.mat-select-header,
   ion-row.mat-autocomplete-header {
-    --ion-grid-column-padding: 0;
     font-size: 12px;
     color: rgba(0, 0, 0, .54);
     font-weight: 500;
     height: 20px;
     line-height: 20px;
     border-bottom: 1px solid $lightBorder;
+  }
+
+  ion-row {
+    --ion-grid-column-padding: 0;
 
     ion-col {
       padding: 0 !important;
@@ -238,17 +241,42 @@ mat-option ion-row {
     }
   }
 
-  .mat-option {
-    --ion-grid-column-padding: 0;
+  .mat-option[no-padding],
+  mat-option[no-padding] {
     padding: 0 !important;
+  }
+}
 
-    ion-row {
-      ion-col {
-        padding: 0 !important;
-        padding-left: 8px !important;
-        text-overflow: clip;
-        overflow: hidden;
-      }
+mat-expansion-panel {
+  --expansion-panel-padding: 0 24px 16px;
+  --expansion-panel-header-padding: 0 24px;
+
+  mat-expansion-panel-header {
+    padding: var(--expansion-panel-header-padding, var(--expansion-panel-padding));
+  }
+  .mat-expansion-panel-body {
+    padding: var(--expansion-panel-padding);
+  }
+}
+
+// --------------------------------------------------
+// Ion-select
+// --------------------------------------------------
+
+ion-popover.select-popover {
+  .popover-content {
+    min-width: calc(min(80%, 200px));
+  }
+}
+
+@media screen and (min-width: $screen-sm) {
+  ion-popover.select-popover {
+    .popover-content {
+      min-width: 300px;
+    }
+
+    ion-radio .radio-icon {
+      border: 0 !important;
     }
   }
 }
@@ -257,23 +285,31 @@ mat-option ion-row {
 // Material Table
 // --------------------------------------------------
 mat-table {
-  .mat-header-cell>ion-label {
-    white-space: normal;
-    word-wrap: break-word;
+
+  .mat-header-cell > ion-label,
+  .mat-header-cell button > ion-label {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
-  .mat-header-cell[align-self-center]>ion-label,
+  .mat-header-cell > ion-label[text-wrap],
+  .mat-header-cell button > ion-label[text-wrap] {
+    word-wrap: break-word;
+    white-space: normal;
+  }
+
+  .mat-header-cell[align-self-center] > ion-label,
+  .mat-header-cell[align-self-center] button > ion-label,
   .mat-row[align-self-center] {
     text-align: center;
-
   }
 
   .mat-header-row,
   .mat-row {
     border-left: 1px solid transparent;
     max-height: 52px;
-    padding: 0 !important;
     z-index: 999;
+    padding: 0 !important;
 
     mat-cell:last-child,
     mat-footer-cell:last-child,
@@ -281,6 +317,44 @@ mat-table {
       padding-right: 8px;
     }
 
+    .mat-column-select {
+      overflow: initial;
+      max-width: 50px;
+      padding-left: 14px;
+    }
+
+    .mat-column-id {
+      max-width: 50px;
+      padding-left: 0px;
+    }
+
+    .mat-column-comments {
+      max-width: 30px;
+      padding-left: 0px;
+    }
+
+    .mat-column-actions {
+      max-width: 40px;
+      padding-left: 0px;
+    }
+
+    .mat-cell-date-time {
+      min-width: 145px;
+      max-width: 180px;
+
+      input {
+        max-width: 120px;
+        overflow: visible !important;
+      }
+    }
+
+    .mat-cell-computed {
+      color: var(--ion-color-primary-tint);
+      font-style: italic;
+    }
+  }
+
+  .mat-row {
     .mat-form-field-disabled,
     .mat-input-element:disabled,
     .mat-form-field-disabled * {
@@ -307,74 +381,73 @@ mat-table {
       bottom: 9px !important;
     }
 
-    .mat-column-select {
-      overflow: initial;
-      max-width: 50px;
-      padding-left: 14px;
-    }
-
-    .mat-column-id {
-      max-width: 50px;
-      padding-left: 0px;
-    }
-
-    .mat-column-comments {
-      max-width: 30px;
-      padding-left: 0px;
-    }
-
-    .mat-column-actions {
-      max-width: 40px;
-      padding-left: 0px;
-    }
-
-    .mat-cell-date-time {
-      min-width: 140px;
-      max-width: 180px;
-
-      input {
-        max-width: 120px;
-      }
-    }
-
-    mat-form-field {
+    .mat-form-field {
       width: 100%;
+
+      .mat-form-field-label {
+        width: 100%;
+      }
 
       .mat-form-field-wrapper {
         padding-bottom: 10px;
       }
 
       .mat-form-field-infix {
-        width: auto !important;
-        white-space: nowrap; //padding-left: 8px;
-        overflow: hidden;
-      }
-
-      .mat-form-field-infix input {
-        overflow: hidden;
-        text-overflow: ellipsis;
+        width: 100%;
         white-space: nowrap;
-      }
+        overflow: inherit;
 
-      .mat-form-field-subscript-wrapper {
-        margin-top: 0.05rem !important;
+        .mat-input-element,
+        input {
+          //margin-left: 5px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type=number] {
+          //text-align: right;
+          -moz-appearance: textfield;
+        }
       }
     }
 
-    mat-cell .avatar {
-      color: #d9d9d9;
-      background-color: #f8f8f8;
-      border: solid 1px #d9d9d9;
-      overflow: hidden !important;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: inline-block;
+    .mat-form-field-subscript-wrapper {
+      margin-top: -0.1rem !important;
     }
   }
 
+  /* Special case if cell need left padding */
+  .mat-row.left-padding {
+    .mat-form-field-label {
+      width: 100%;
+      padding-left: 5px;
+    }
+
+    .mat-form-field-infix {
+      padding-left: 5px;
+    }
+  }
+
+  mat-cell .avatar {
+    color: #d9d9d9;
+    background-color: #f8f8f8;
+    border: solid 1px #d9d9d9;
+    overflow: hidden !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
   .mat-row.mat-row-disabled {
-    cursor: pointer !important;
+    cursor: pointer;
 
     * {
       pointer-events: inherit;
@@ -382,18 +455,47 @@ mat-table {
   }
 
   .mat-row.mat-row-disabled:hover {
-    background-color: ion-color(light100, base);
+    background-color: var(--ion-color-secondary100);
   }
 
   .mat-row.mat-row-dirty {
-    border-left: 2px solid ion-color(primary100, base);
+    border-left: 2px solid var(--ion-color-primary100);
   }
 
   .mat-row.mat-row-error {
     margin-top: -1px;
-    border: 2px dashed ion-color(danger, base);
+    border: 2px dashed var(--ion-color-danger);
   }
 }
+
+@media screen and (max-width: $screen-sm-max) {
+  mat-table {
+
+    mat-cell:first-child,
+    mat-footer-cell:first-child,
+    mat-header-cell:first-child {
+      padding-right: 8px !important;
+    }
+
+    // Reuse the first column, to inject a left padding
+    .mat-column-select {
+      max-width: 8px !important;
+      overflow: hidden;
+
+      * {
+        display: none !important;
+        visibility: hidden !important;
+      }
+    }
+
+    .mat-column-comments {
+      display: none !important;
+      visibility: hidden !important;
+    }
+  }
+}
+
+// Other material component
 
 .toolbar-spacer {
   flex: 1 1 auto;
@@ -414,6 +516,7 @@ mat-horizontal-stepper {
   }
 }
 
+
 // Extra small device: Phones (<767px)
 @media screen and (max-width: $screen-xs-max) {
   mat-horizontal-stepper {
@@ -433,30 +536,57 @@ mat-horizontal-stepper {
   }
 }
 
-@media screen and (min-width: $screen-md) and (max-width: $screen-md-max) {
-  ion-modal .modal-wrapper {
-    left: calc(50% - (768px/2));
-    top: calc(50% - (600px/2));
-    position: absolute;
-    width: 768px;
-    height: 600px;
-  }
-}
-
-@media screen and (min-width: $screen-lg) {
-  ion-modal .modal-wrapper {
-    left: calc(50% - (1000px/2));
-    top: calc(50% - (600px/2));
-    position: absolute;
-    width: 1000px;
-    height: 600px;
-  }
-}
-
 mat-button-toggle.mat-button-toggle-checked,
 mat-button-toggle.mat-button-toggle-checked.mat-button-toggle-disabled {
-  background-color: color($colors, light);
+  background-color: var(--ion-color-light);
   color: white;
+}
+
+// --------------------------------------------------
+// Alert
+// --------------------------------------------------
+
+ion-alert button.alert-button {
+  cursor: pointer;
+}
+
+// --------------------------------------------------
+// Date and time picker
+// --------------------------------------------------
+
+mat-calendar {
+  .mat-calendar-header {
+    background-color: var(--ion-color-primary) !important;
+    color: var(--ion-color-primary-contrast) !important;
+
+    button {
+      color: var(--ion-color-primary-contrast) !important;
+    }
+  }
+
+  .mat-calendar-body-selected {
+    background-color: var(--ion-color-accent) !important;
+    color: var(--ion-color-accent-contrast) !important;
+  }
+
+  .mat-calendar-arrow {
+    border-top-color: var(--ion-color-primary-contrast) !important;
+  }
+}
+
+ngx-material-timepicker {
+  --clock-hand-color: var(--ion-color-accent) !important;
+
+  .timepicker {
+
+
+    header {
+      --dial-background-color: var(--ion-color-primary) !important;
+      color: var(--ion-color-primary-contrast) !important;
+    }
+
+  }
+
 }
 
 // --------------------------------------------------
@@ -472,6 +602,9 @@ ion-item {
 }
 
 // --------------------------------------------------
-// Theme colors override // Not need, as ionic theme are already override
+// Inject theme colors (as CSS variables)
 // --------------------------------------------------
-@include css-variables-to-root();
+:root {
+
+  @include css-variables-to-root();
+}

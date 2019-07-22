@@ -1,57 +1,119 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
 
-import { AccountService, AccountFieldDef } from './services/account.service';
-import { AccountValidatorService } from './services/account.validator';
-import { UserSettingsValidatorService } from './services/user-settings.validator';
-import { AuthGuardService } from './services/auth-guard.service';
-import { CryptoService } from './services/crypto.service';
-import { DataService } from './services/data-service.class';
-import { AuthForm } from './auth/form/form-auth';
-import { AuthModal } from './auth/modal/modal-auth';
-import { AboutModal } from './about/modal-about';
+import {AccountFieldDef, AccountService} from './services/account.service';
+import {AccountValidatorService} from './services/account.validator';
+import {UserSettingsValidatorService} from './services/user-settings.validator';
+import {AuthGuardService} from './services/auth-guard.service';
+import {CryptoService} from './services/crypto.service';
+import {BaseDataService} from './services/base.data-service.class';
+import {AuthForm} from './auth/form/form-auth';
+import {AuthModal} from './auth/modal/modal-auth';
+import {AboutModal} from './about/modal-about';
 
-import { RegisterConfirmPage } from "./register/confirm/confirm";
-import { AccountPage } from "./account/account";
-import { SharedModule } from '../shared/shared.module';
-import { AppForm } from './form/form.class';
-import { AppTabPage } from './form/page.class';
-import { FormMetadataComponent } from './form/form-metadata.component';
-import { FormButtonsBarComponent } from './form/form-buttons-bar.component';
-import { AppTable, RESERVED_START_COLUMNS, RESERVED_END_COLUMNS } from './table/table.class';
-import { AppTableDataSource } from './table/table-datasource.class';
-import { TableSelectColumnsComponent } from './table/table-select-columns.component';
-import { MenuComponent } from './menu/menu.component';
-import { ReactiveFormsModule } from "@angular/forms";
-import { IonicStorageModule } from '@ionic/storage';
-import { HomePage } from './home/home';
-import { RegisterForm } from './register/form/form-register';
-import { RegisterModal } from './register/modal/modal-register';
-import { AppGraphQLModule } from './graphql/graphql.module';
-import { DateAdapter } from "@angular/material";
+import {RegisterConfirmPage} from "./register/confirm/confirm";
+import {AccountPage} from "./account/account";
+import {AppForm} from './form/form.class';
+import {AppTabPage} from './form/page.class';
+import {FormButtonsBarComponent} from './form/form-buttons-bar.component';
+import {AppTable, RESERVED_END_COLUMNS, RESERVED_START_COLUMNS} from './table/table.class';
+import {AppTableDataSource} from './table/table-datasource.class';
+import {TableSelectColumnsComponent} from './table/table-select-columns.component';
+import {MenuComponent} from './menu/menu.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {IonicStorageModule} from '@ionic/storage';
+import {HomePage} from './home/home';
+import {RegisterForm} from './register/form/form-register';
+import {RegisterModal} from './register/modal/modal-register';
+import {AppGraphQLModule} from './graphql/graphql.module';
+import {DateAdapter} from "@angular/material";
 import * as moment from "moment/moment";
-import { AppFormUtils } from './form/form.utils';
+import {AppFormUtils, FormArrayHelper} from './form/form.utils';
 
-import { ProgressBarService } from './services/progress-bar.service';
-import { ProgressInterceptor } from '../shared/interceptors/progess.interceptor';
-
-import { environment } from '../../environments/environment';
-
+import {environment} from '../../environments/environment';
+import {
+    Cloneable,
+    Entity,
+    entityToString,
+    EntityUtils,
+    joinProperties,
+    Person,
+    personsToString,
+    personToString,
+    Referential,
+    ReferentialRef,
+    referentialToString,
+    StatusIds
+} from './services/model';
 // import ngx-translate and the http loader
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {SelectPeerModal} from "./peer/select-peer.modal";
+import {SettingsPage} from "./settings/settings.page";
+import {LocalSettingsValidatorService} from "./services/local-settings.validator";
+import {GraphqlService} from "./services/graphql.service";
+import {PlatformService} from "./services/platform.service";
+import {NetworkService} from "./services/network.service";
+import {LocalSettingsService} from "./services/local-settings.service";
+import {MatOptionFormField} from "./config/option-field.component";
+import {
+    fromDateISOString,
+    isNil,
+    isNotNil,
+    LoadResult,
+    nullIfUndefined,
+    SharedModule,
+    TableDataService,
+    toDateISOString
+} from '../shared/shared.module';
 
 export {
-    environment, AppForm, AppFormUtils, AppTable, AppTabPage, AppTableDataSource, TableSelectColumnsComponent,
-    AccountService, AccountFieldDef, DataService, AccountValidatorService, UserSettingsValidatorService,
-    AuthGuardService, FormMetadataComponent, FormButtonsBarComponent,
-    RESERVED_START_COLUMNS, RESERVED_END_COLUMNS
-}
+    environment,
+    AppForm,
+    AppFormUtils,
+    AppTable,
+    AppTabPage,
+    AppTableDataSource,
+    TableSelectColumnsComponent,
+    PlatformService,
+    AccountService,
+    NetworkService,
+    AccountFieldDef,
+    BaseDataService,
+    AccountValidatorService,
+    UserSettingsValidatorService,
+    AuthGuardService,
+    FormButtonsBarComponent,
+    RESERVED_START_COLUMNS,
+    RESERVED_END_COLUMNS,
+    Entity,
+    Cloneable,
+    EntityUtils,
+    StatusIds,
+    GraphqlService,
+    Referential,
+    ReferentialRef,
+    Person,
+    TableDataService,
+    LoadResult,
+    LocalSettingsService,
+    toDateISOString,
+    fromDateISOString,
+    joinProperties,
+    isNil,
+    isNotNil,
+    nullIfUndefined,
+    entityToString,
+    referentialToString,
+    personToString,
+    personsToString,
+    FormArrayHelper
+};
 
 export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -73,8 +135,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     ],
 
     declarations: [
-        MenuComponent,
         HomePage,
+        AboutModal,
+
         // Auth & Register
         AuthForm,
         AuthModal,
@@ -82,12 +145,16 @@ export function HttpLoaderFactory(http: HttpClient) {
         RegisterModal,
         RegisterConfirmPage,
         AccountPage,
+        SettingsPage,
+
+        // Network
+        SelectPeerModal,
 
         // Components
+        MenuComponent,
         TableSelectColumnsComponent,
-        AboutModal,
-        FormMetadataComponent,
-        FormButtonsBarComponent
+        FormButtonsBarComponent,
+        MatOptionFormField
     ],
     exports: [
         CommonModule,
@@ -98,35 +165,45 @@ export function HttpLoaderFactory(http: HttpClient) {
         AuthForm,
         AuthModal,
         TableSelectColumnsComponent,
-        FormMetadataComponent,
         FormButtonsBarComponent,
         MenuComponent,
         ReactiveFormsModule,
         TranslateModule,
-        AboutModal
+        AboutModal,
+        MatOptionFormField
     ],
     entryComponents: [
+        AboutModal,
+
+        // Auth & Register
         RegisterModal,
         AuthModal,
+
+        // Network
+        SelectPeerModal,
+
+        // Components
         TableSelectColumnsComponent,
-        FormMetadataComponent,
-        FormButtonsBarComponent,
-        AboutModal
+        FormButtonsBarComponent
     ],
     providers: [
+        LocalSettingsService,
+        NetworkService,
+        PlatformService,
+        GraphqlService,
         AccountService,
         AuthGuardService,
         CryptoService,
-        ProgressBarService,
         AccountValidatorService,
         UserSettingsValidatorService,
-        { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true, deps: [ProgressBarService] }
+        LocalSettingsValidatorService
     ]
 })
 export class CoreModule {
 
     constructor(
         translate: TranslateService,
+        settings: LocalSettingsService,
         accountService: AccountService,
         dateAdapter: DateAdapter<any>) {
 
@@ -158,11 +235,19 @@ export class CoreModule {
             }
         });
 
-        accountService.onLogin.subscribe(account => {
-            if (account.settings && account.settings.locale && account.settings.locale != translate.currentLang) {
-                translate.use(account.settings.locale);
+        settings.onChange.subscribe(settings => {
+            if (settings && settings.locale && settings.locale !== translate.currentLang) {
+                translate.use(settings.locale);
             }
         });
-    }
+
+    accountService.onLogin.subscribe(account => {
+      if (settings.settings.accountInheritance) {
+        if (account.settings && account.settings.locale && account.settings.locale !== translate.currentLang) {
+          translate.use(account.settings.locale);
+        }
+      }
+    });
+  }
 
 }

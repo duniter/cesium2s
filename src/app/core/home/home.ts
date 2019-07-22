@@ -1,52 +1,62 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
-import { RegisterModal } from '../register/modal/modal-register';
-import { Subscription } from 'rxjs';
-import { AccountService } from '../services/account.service';
-import { Account } from '../services/model';
-import { TranslateService } from '@ngx-translate/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {ModalController} from '@ionic/angular';
+import {RegisterModal} from '../register/modal/modal-register';
+import {Subscription} from 'rxjs';
+import {AccountService} from '../services/account.service';
+import {Account} from '../services/model';
+import {TranslateService} from '@ngx-translate/core';
+import {LocalSettingsService} from "../services/local-settings.service";
+import {fadeInAnimation} from "../../shared/material/material.module";
+import {PlatformService} from "../services/platform.service";
 
 
 @Component({
   moduleId: module.id.toString(),
-  selector: 'page-home',
+  selector: 'app-home',
   templateUrl: 'home.html',
-  styleUrls: ['./home.scss']
+  styleUrls: ['./home.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [fadeInAnimation]
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage implements OnDestroy {
 
+  loading = true;
+  showSpinner = true;
   displayName: String = '';
   isLogin: boolean;
   subscriptions: Subscription[] = [];
+  contentStyle = {};
+
+  get currentLocaleCode(): string {
+    return (this.translate.currentLang || this.translate.defaultLang).substr(0,2);
+  }
 
   constructor(
-    public accountService: AccountService,
-    public activatedRoute: ActivatedRoute,
-    public modalCtrl: ModalController,
-    public translate: TranslateService
+    private accountService: AccountService,
+    private modalCtrl: ModalController,
+    private translate: TranslateService,
+    private settings: LocalSettingsService,
+    private platform: PlatformService,
+    private cd: ChangeDetectorRef
   ) {
-    this.isLogin = accountService.isLogin();
-    if (this.isLogin) {
-      this.onLogin(this.accountService.account);
-    }
 
-    // Subscriptions
-    this.subscriptions.push(this.accountService.onLogin.subscribe(account => this.onLogin(account)));
-    this.subscriptions.push(this.accountService.onLogout.subscribe(() => this.onLogout()));
-  };
+    this.showSpinner = !this.platform.started;
 
-  ngOnInit(): void {
-    // Workaround need on Firefox Browser
-    const pageElements = document.getElementsByTagName('page-home');
-    if (pageElements && pageElements.length == 1) {
-      const pageElement: Element = pageElements[0];
-      if (pageElement.classList.contains('ion-page-invisible')) {
-        console.warn("[home] FIXME Applying workaround on page visibility (see issue #1)");
-        pageElement.classList.remove('ion-page-invisible');
+    this.platform.ready().then(() => {
+      this.isLogin = accountService.isLogin();
+      if (this.isLogin) {
+        this.onLogin(this.accountService.account);
       }
-    }
-  }
+      // Subscriptions
+      this.subscriptions.push(this.accountService.onLogin.subscribe(account => this.onLogin(account)));
+      this.subscriptions.push(this.accountService.onLogout.subscribe(() => this.onLogout()));
+
+      setTimeout(() => {
+        this.loading = false;
+        this.markForCheck();
+      }, 500);
+    });
+  };
 
   ngOnDestroy() {
     this.subscriptions.forEach(s => s.unsubscribe());
@@ -59,16 +69,18 @@ export class HomePage implements OnInit, OnDestroy {
     this.displayName = account &&
       ((account.firstName && (account.firstName + " ") || "") +
         (account.lastName || "")) || "";
+    this.markForCheck();
   }
 
   onLogout() {
     //console.log('[home] Logout');
     this.isLogin = false;
     this.displayName = "";
+    this.markForCheck();
   }
 
   async register() {
-    const modal = await this.modalCtrl.create({ component: RegisterModal });
+    const modal = await this.modalCtrl.create({component: RegisterModal});
     return modal.present();
   }
 
@@ -77,6 +89,14 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   changeLanguage(locale: string) {
-    this.translate.use(locale);
+
+    this.settings.saveLocalSettings({locale: locale})
+      .then(() => {
+        this.markForCheck();
+      });
+  }
+
+  protected markForCheck() {
+    this.cd.markForCheck();
   }
 }

@@ -19,4 +19,8 @@ export class DateFormatPipe implements PipeTransform {
         let date = this.dateAdapter.parse(value, DATE_ISO_PATTERN);
         return date ? date.format(args.pattern) : '';
     }
+
+    format(date: Moment, displayFormat: any): string {
+      return this.dateAdapter.format(date, displayFormat);
+    }
 }

@@ -1,5 +1,13 @@
+// Ionicons Icon Font CSS
+// --------------------------
+// Ionicons CSS for Ionic's <ion-icon> element
+// ionicons-icons.scss has the icons and their unicode characters
+
 $ionicons-font-path: $font-path !default;
-@import '~@ionic/angular/dist/components/app/fonts/ionicons';
+
+@import '~ionicons/dist/scss/ionicons';
+
+
 // --------------------------------------------------
 // Import material icons
 // --------------------------------------------------

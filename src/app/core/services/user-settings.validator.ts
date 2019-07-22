@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { ValidatorService } from "angular4-material-table";
-import { FormGroup, Validators, FormBuilder } from "@angular/forms";
-import { UserSettings } from "./model";
+import {Injectable} from "@angular/core";
+import {ValidatorService} from "angular4-material-table";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {UserSettings} from "./model";
 
 @Injectable()
 export class UserSettingsValidatorService implements ValidatorService {
@@ -20,8 +20,9 @@ export class UserSettingsValidatorService implements ValidatorService {
       id: [data && data.id || null],
       updateDate: [data && data.updateDate || null],
       locale: [data && data.locale || null, Validators.required],
-      latLongFormat: [data && data.latLongFormat || null, Validators.required],
-      content: [data && data.content || null],
+      content: this.formBuilder.group({
+      //usageMode: [data && data.content && data.content.usageMode || 'DESK', Validators.required],
+      }),
       nonce: [data && data.nonce || null]
     });
   }

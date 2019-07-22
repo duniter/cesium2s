@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AppTable, AppTableDataSource } from "../../core/core.module";
+import {AppTable, AppTableDataSource, LocalSettingsService} from "../../core/core.module";
 import { Person, referentialToString, PRIORITIZED_USER_PROFILES, StatusIds } from "../../core/services/model";
 import { WotService, Identity, WotSearchFilter } from "../services/wot.service";
 import { WotValidatorService } from "../services/wot.validator";
@@ -12,7 +12,7 @@ import { RESERVED_START_COLUMNS, RESERVED_END_COLUMNS } from "../../core/table/t
 
 
 @Component({
-  selector: 'page-wot-search',
+  selector: 'app-wot-search',
   templateUrl: 'search.html',
   styleUrls: ['./search.scss']
 })
@@ -47,11 +47,12 @@ export class WotSearchPage extends AppTable<Identity, {search: string;}> impleme
     protected location: Location,
     protected modalCtrl: ModalController,
     protected accountService: AccountService,
+    protected settings: LocalSettingsService,
     protected validatorService: WotValidatorService,
     protected wotService: WotService,
     formBuilder: FormBuilder
   ) {
-    super(route, router, platform, location, modalCtrl, accountService,
+    super(route, router, platform, location, modalCtrl, settings,
       RESERVED_START_COLUMNS
         .concat([
           'uid',
@@ -61,6 +62,7 @@ export class WotSearchPage extends AppTable<Identity, {search: string;}> impleme
         .concat(RESERVED_END_COLUMNS),
       new AppTableDataSource<Identity, WotSearchFilter>(Identity, wotService, validatorService, {
         prependNewElements: false,
+        suppressErrors: false,
         serviceOptions: {
           saveOnlyDirtyRows: true
         }
@@ -80,7 +82,7 @@ export class WotSearchPage extends AppTable<Identity, {search: string;}> impleme
     this.statusList.forEach((status) => this.statusById[status.id] = status);
 
     this.additionalFields = this.accountService.additionalAccountFields;
-  };
+  }
 
   ngOnInit() {
     super.ngOnInit();

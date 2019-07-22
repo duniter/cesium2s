@@ -23,7 +23,7 @@
   <ion-list>
     <!-- See doc: https://beta.ionicframework.com/docs/api/reorder/ -->
 
-    <ion-reorder-group disabled="false" (ionItemReorder)="reorderItems($event)">
+    <ion-reorder-group disabled="false" (ionItemReorder)="onRenderItems($event)">
       <ion-item *ngFor="let column of columns">
         <ion-label>{{column.label|translate}}</ion-label>
         <ion-reorder slot="end"></ion-reorder>

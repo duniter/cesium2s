@@ -15,27 +15,18 @@ body {
   width: 100%;
   position: absolute;
   background: #144391;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #fff;
 }
 
 .spinner {
   position: absolute;
   left: 48%;
   top: 40%;
-  width: 55px;
-  height: 65px;
-  text-align: center;
-}
-
-.spinner {
-  position: absolute;
-  left: 48%;
-  top: 40%;
-  text-align: center;
-  margin: 20px auto;
   width: 40px;
   height: 40px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #fff;
+  margin: 20px auto;
   -webkit-transform: rotateZ(45deg);
   transform: rotateZ(45deg);
 }

@@ -1,35 +1,41 @@
-import { Component, OnInit } from "@angular/core";
-import { NavParams } from '@ionic/angular';
-import { ModalController } from "@ionic/angular";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from "@angular/core";
+import {ModalController, NavParams} from '@ionic/angular';
+import {BehaviorSubject} from "rxjs";
+
+export declare interface ColumnItem {
+  name?: string;
+  label: string;
+  visible: boolean;
+}
 
 @Component({
-    selector: 'table-select-columns',
-    templateUrl: './table-select-columns.component.html'
+  selector: 'table-select-columns',
+  templateUrl: './table-select-columns.component.html'
 })
 export class TableSelectColumnsComponent implements OnInit {
 
-    columns: [{ name?: string, label: string, visible: boolean }];
+  @Input() columns: ColumnItem[];
 
-    constructor(
-        private navParams: NavParams,
-        private viewCtrl: ModalController) {
-    }
+  constructor(
+    private navParams: NavParams,
+    private viewCtrl: ModalController) {
+  }
 
-    ngOnInit() {
-        this.columns = this.navParams.data && this.navParams.data.columns || [];
-    }
+  ngOnInit() {
+    this.columns = this.columns || this.navParams.data && this.navParams.data.columns || [];
+  }
 
-    reorderItems(event: CustomEvent<{ from: number; to: number; }>) {
-        let element = this.columns[event.detail.from];
-        this.columns.splice(event.detail.from, 1);
-        this.columns.splice(event.detail.to, 0, element);
-    }
+  onRenderItems(event: CustomEvent<{ from: number; to: number; complete: () => {} }>) {
+    const element = this.columns.splice(event.detail.from, 1)[0];
+    this.columns.splice(event.detail.to, 0, element);
+    event.detail.complete();
+  }
 
-    close() {
-        this.viewCtrl.dismiss(this.columns);
-    }
+  close() {
+    this.viewCtrl.dismiss(this.columns);
+  }
 
-    cancel() {
-        this.viewCtrl.dismiss();
-    }
+  cancel() {
+    this.viewCtrl.dismiss();
+  }
 }

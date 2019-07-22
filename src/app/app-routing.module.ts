@@ -5,6 +5,7 @@ import { RegisterConfirmPage } from './core/register/confirm/confirm';
 import { AccountPage } from './core/account/account';
 import { AuthGuardService } from './core/core.module';
 import { WotSearchPage } from './wot/pages/search';
+import {SettingsPage} from "./core/settings/settings.page";
 
 const routeOptions: ExtraOptions = {
   enableTracing: false,
@@ -29,9 +30,16 @@ const routes: Routes = [
   },
   {
     path: 'account',
+    pathMatch: 'full',
     component: AccountPage,
     canActivate: [AuthGuardService]
   },
+  {
+    path: 'settings',
+    pathMatch: 'full',
+    component: SettingsPage
+  },
+
 
   // Wot
   {

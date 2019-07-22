@@ -1,0 +1,156 @@
+<ng-container [ngSwitch]="type">
+
+  <!-- integer -->
+  <mat-form-field *ngSwitchCase="'integer'" [floatLabel]="floatLabel">
+    <input matInput #matInput
+           autocomplete="off" type="number"
+           [min]="option.minValue"
+           [max]="option.maxValue"
+           pattern="[0-9]*"
+           step="1"
+           [placeholder]="placeholder"
+           (keypress)="filterNumberInput($event, false)"
+           [formControl]="formControl"
+           [required]="required"
+           [tabIndex]="tabindex"
+           (click)="selectInputContent($event)">
+    <mat-error *ngIf="formControl.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
+    <mat-error *ngIf="formControl.hasError('min')">
+      {{'ERROR.FIELD_MIN' | translate:formControl.errors['min'] }}</mat-error>
+    <mat-error *ngIf="formControl.hasError('max')">
+      {{'ERROR.FIELD_MAX' | translate:formControl.errors['max'] }}</mat-error>
+    <mat-error *ngIf="formControl.hasError('pattern')">
+      {{'ERROR.FIELD_NOT_VALID_INTEGER'| translate }}</mat-error>
+    <mat-error *ngIf="formControl.hasError('integer')">
+      {{'ERROR.FIELD_NOT_VALID_INTEGER'| translate }}</mat-error>
+
+    <div matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </div>
+  </mat-form-field>
+
+  <!-- double -->
+  <mat-form-field *ngSwitchCase="'double'" [floatLabel]="floatLabel">
+
+    <input matInput #matInput
+           type="number"
+           autocomplete="off" [min]="option.minValue" [max]="option.maxValue"
+           decimal="true"
+           [placeholder]="placeholder"
+           (keypress)="filterNumberInput($event, true)"
+           [formControl]="formControl"
+           [required]="required"
+           [tabIndex]="tabindex"
+           (click)="selectInputContent($event)">
+    <mat-error *ngIf="formControl.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
+    <mat-error *ngIf="formControl.hasError('min')">
+      {{ 'ERROR.FIELD_MIN' | translate:formControl.errors['min'] }}</mat-error>
+    <mat-error *ngIf="formControl.hasError('max')">
+      {{ 'ERROR.FIELD_MAX' | translate:formControl.errors['max'] }}</mat-error>
+    <div matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </div>
+  </mat-form-field>
+
+  <!-- boolean -->
+  <mat-boolean-field *ngSwitchCase="'boolean'"
+                     [formControl]="formControl"
+                     [placeholder]="placeholder"
+                     [floatLabel]="floatLabel"
+                     [required]="required"
+                     [tabindex]="tabindex">
+    <div matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </div>
+  </mat-boolean-field>
+
+  <!-- date -->
+  <mat-date-time *ngSwitchCase="'date'"
+                 [formControl]="formControl"
+                 [placeholder]="placeholder"
+                 [floatLabel]="floatLabel"
+                 [required]="required"
+                 [readonly]="readonly"
+                 [displayTime]="false"
+                 [tabindex]="tabindex">
+    <div matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </div>
+  </mat-date-time>
+
+  <!-- date time -->
+  <mat-date-time *ngSwitchCase="'dateTime'"
+                 [formControl]="formControl"
+                 [placeholder]="placeholder"
+                 [floatLabel]="floatLabel"
+                 [required]="required"
+                 [readonly]="readonly"
+                 [displayTime]="true"
+                 [tabindex]="tabindex">
+    <div matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </div>
+  </mat-date-time>
+
+  <!-- enum -->
+  <mat-form-field *ngSwitchCase="'enum'" [floatLabel]="floatLabel">
+    <mat-select [formControl]="formControl"
+                [placeholder]="placeholder"
+                [required]="required"
+                [tabindex]="tabindex"
+                (keypress.enter)="onKeypressEnter.emit($event)">
+      <mat-option *ngFor="let item of option.values" [value]="item.key">{{ item.value | translate }}</mat-option>
+    </mat-select>
+
+    <mat-error *ngIf="formControl.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
+
+    <div matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </div>
+  </mat-form-field>
+
+  <mat-form-field *ngSwitchCase="'color'" [floatLabel]="floatLabel">
+
+    <ion-icon margin-right name="color-fill" matPrefix></ion-icon>
+
+    <input matInput autocomplete="off"
+           [formControl]="formControl"
+           [style.color]="'transparent'"
+           [style.background]="formControl.value"
+           [colorPicker]="formControl.value"
+           [cpPosition]="'top'"
+           [cpSaveClickOutside]="true"
+           (colorPickerChange)="formControl.setValue($event)"
+           [cpOutputFormat]="'hex'"
+           [cpOKButton]="true"
+           [cpOKButtonText]="'COMMON.BTN_VALIDATE'|translate"
+           [required]="required"/>
+    <mat-error *ngIf="formControl.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
+  </mat-form-field>
+
+  <!-- string -->
+  <mat-form-field *ngSwitchCase="'string'" [floatLabel]="floatLabel">
+    <input matInput #matInput
+           autocomplete="off"
+           [formControl]="formControl"
+           [placeholder]="placeholder"
+           [required]="required"
+           [tabIndex]="tabindex"
+           (click)="selectInputContent($event)"
+           (keypress.enter)="onKeypressEnter.emit($event)">
+    <mat-error *ngIf="formControl.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
+    <div matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </div>
+  </mat-form-field>
+
+  <!-- other -->
+  <div *ngSwitchDefault>
+    <mat-error *ngIf="type">Unknown type {{type}} for option {{option.key}}. Please report this error.</mat-error>
+    <mat-error *ngIf="!type">Error on option field. Please check console log for details.</mat-error>
+    <div matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </div>
+  </div>
+
+</ng-container>

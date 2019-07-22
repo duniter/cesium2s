@@ -1,4 +1,5 @@
-@import '~@ionic/angular/dist/themes/ionic.mixins';
+@import '~@ionic/core/dist/collection/themes/ionic.mixins';
+@import '~@ionic/core/dist/collection/themes/ionic.functions.color';
 
 @mixin font-size($size) {
   font-size: $size;
@@ -25,14 +26,10 @@
   }
 }
 
+
 /**
 * Define CSS theme colors
 */
-/*:root {
-  --ion-primary-color: $primary;
-  --ion-text-color: #000;
-  --ion-toolbar-text-color: #000;
-}*/
 @mixin generate-color($color-name) {
   $value: map-get($colors, $color-name);
   $base: map-get($value, base);
@@ -40,17 +37,31 @@
   $shade: map-get($value, shade);
   $tint: map-get($value, tint);
   --ion-color-base: var(--ion-color-#{$color-name},
-  #{$base}) !important;
+    #{$base}) !important;
   --ion-color-base-rgb: var(--ion-color-#{$color-name}-rgb,
-  #{color-to-rgb-list($base)}) !important;
+    #{color-to-rgb-list($base)}) !important;
   --ion-color-contrast: var(--ion-color-#{$color-name}-contrast,
-  #{$contrast}) !important;
+    #{$contrast}) !important;
   --ion-color-contrast-rgb: var(--ion-color-#{$color-name}-contrast-rgb,
-  #{color-to-rgb-list($contrast)}) !important;
+    #{color-to-rgb-list($contrast)}) !important;
   --ion-color-shade: var(--ion-color-#{$color-name}-shade,
-  #{$shade}) !important;
+    #{$shade}) !important;
   --ion-color-tint: var(--ion-color-#{$color-name}-tint,
-  #{$tint}) !important;
+    #{$tint}) !important;
+}
+
+@mixin generate-color-list($color-name) {
+  $value: map-get($colors, $color-name);
+  $base: map-get($value, base);
+  $contrast: map-get($value, contrast);
+  $shade: map-get($value, shade);
+  $tint: map-get($value, tint);
+  --ion-color-#{$color-name} : #{$base};
+  --ion-color-#{$color-name}-rgb: #{color-to-rgb-list($base)};
+  --ion-color-#{$color-name}-contrast: #{$contrast};
+  --ion-color-#{$color-name}-contrast-rgb: #{color-to-rgb-list($contrast)};
+  --ion-color-#{$color-name}-shade: #{$shade};
+  --ion-color-#{$color-name}-tint: #{$tint};
 }
 
 @mixin css-variables-to-root() {
@@ -61,4 +72,10 @@
       @include generate-color($color-name);
     }
   }
+
+  @each $color-name,
+  $value in $colors {
+    @include generate-color-list($color-name);
+  }
+
 }

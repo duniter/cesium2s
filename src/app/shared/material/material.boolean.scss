@@ -1,3 +1,13 @@
+:host {
+  //min-height: 49px;
+  display: inline-block;
+  width: 100%;
+}
+
 input.hidden {
   display: none;
+}
+
+.mat-form-field .mat-form-field-wrapper {
+  padding-bottom: 1px !important;
 }

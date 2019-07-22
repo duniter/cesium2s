@@ -1,159 +1,203 @@
-import { Component, Optional, Input, Output, EventEmitter, OnInit, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { Platform } from '@ionic/angular';
-import { MatRadioButton, MatRadioChange, MatCheckbox, MatCheckboxChange, FloatLabelType } from '@angular/material';
-import { FormControl, FormBuilder, FormGroupDirective, NG_VALUE_ACCESSOR, ControlValueAccessor } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
-import { isNotNil } from '../../core/services/model';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component, ElementRef,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnInit,
+  Optional,
+  Output,
+  ViewChild
+} from '@angular/core';
+import {FloatLabelType, MatCheckbox, MatCheckboxChange, MatRadioButton, MatRadioChange} from '@angular/material';
+import {ControlValueAccessor, FormBuilder, FormControl, FormGroupDirective, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {TranslateService} from "@ngx-translate/core";
+import {isNil, isNotNil} from '../functions';
+import {InputElement} from "./focusable";
 
 const noop = () => {
 };
+
 @Component({
-    selector: 'mat-boolean-field',
-    templateUrl: 'material.boolean.html',
-    styleUrls: ['./material.boolean.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: forwardRef(() => MatBooleanField),
-        }
-    ]
+  selector: 'mat-boolean-field',
+  templateUrl: 'material.boolean.html',
+  styleUrls: ['./material.boolean.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: forwardRef(() => MatBooleanField),
+    }
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MatBooleanField implements OnInit, ControlValueAccessor {
-    private _onChange: (_: any) => void = noop;
-    private _onTouched: () => void = noop;
-    protected disabling: boolean = false;
-    protected writing: boolean = false;
-    protected touchUi: boolean = false;
+export class MatBooleanField implements OnInit, ControlValueAccessor, InputElement {
+  private _onChangeCallback: (_: any) => void = noop;
+  private _onTouchedCallback: () => void = noop;
+  private _value: boolean;
+  protected disabling = false;
+  protected writing = false;
 
-    mobile: boolean;
-    _value: boolean;
-    showInput: boolean = true;
-    showRadio: boolean = false;
+  showRadio = false;
 
-    @Input() disabled: boolean = false
+  @Input() disabled = false;
 
-    @Input() formControl: FormControl;
+  @Input() formControl: FormControl;
 
-    @Input() formControlName: string;
+  @Input() formControlName: string;
 
-    @Input() placeholder: string;
+  @Input() placeholder: string;
 
-    @Input() floatLabel: FloatLabelType = "auto";
+  @Input() floatLabel: FloatLabelType = "auto";
 
-    @Input() readonly: boolean = false;
+  @Input() readonly = false;
 
-    @Input() required: boolean = false;
+  @Input() required = false;
 
-    @Input() compact: boolean = false;
+  @Input() compact = false;
 
-    @Output()
-    onBlur: EventEmitter<FocusEvent> = new EventEmitter<FocusEvent>();
+  @Input() tabindex: number;
 
-    @ViewChild('yesButton') yesButton: MatRadioButton;
+  @Output()
+  onBlur: EventEmitter<FocusEvent> = new EventEmitter<FocusEvent>();
 
-    @ViewChild('checkboxButton') checkboxButton: MatCheckbox;
+  get value(): any {
+    return this._value;
+  }
 
-    //get accessor
-    get value(): any {
-        return this._value;
-    };
-
-    //set accessor including call the onchange callback
-    set value(v: any) {
-        if (v !== this._value) {
-            this._value = v;
-            this._onChange(v);
-        }
+  @Input()
+  set value(v: any) {
+    if (v !== this._value) {
+      this._value = v;
+      this._onChangeCallback(v);
     }
+  }
 
-    constructor(
-        platform: Platform,
-        private translate: TranslateService,
-        private formBuilder: FormBuilder,
-        private cd: ChangeDetectorRef,
-        @Optional() private formGroupDir: FormGroupDirective
-    ) {
-        this.mobile = this.touchUi && platform.is('mobile');
-        this.touchUi = !platform.is('desktop');
+  @ViewChild('yesButton') yesButton: MatRadioButton;
+
+  @ViewChild('checkboxButton') checkboxButton: MatCheckbox;
+
+  @ViewChild('fakeInput') fakeInput: ElementRef;
+
+  constructor(
+    private translate: TranslateService,
+    private formBuilder: FormBuilder,
+    private cd: ChangeDetectorRef,
+    @Optional() private formGroupDir: FormGroupDirective
+  ) { }
+
+  ngOnInit() {
+    this.formControl = this.formControl || this.formControlName && this.formGroupDir && this.formGroupDir.form.get(this.formControlName) as FormControl;
+    if (!this.formControl) throw new Error("Missing mandatory attribute 'formControl' or 'formControlName' in <mat-boolean-field>.");
+  }
+
+  writeValue(value: any): void {
+    if (this.writing) return;
+
+    this.writing = true;
+    if (value !== this._value) {
+      this._value = value;
+      console.log("TODO: update showRadio")
+      this.showRadio = isNotNil(this._value);
+      setTimeout(() => this.updateTabIndex());
     }
+    this.writing = false;
 
-    ngOnInit() {
-        this.formControl = this.formControl || this.formControlName && this.formGroupDir && this.formGroupDir.form.get(this.formControlName) as FormControl;
-        if (!this.formControl) throw new Error("Missing mandatory attribute 'formControl' or 'formControlName' in <mat-boolean-field>.");
+    this.markForCheck();
+  }
+
+  registerOnChange(fn: any): void {
+    this._onChangeCallback = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this._onTouchedCallback = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  checkIfTouched() {
+    if (this.formControl.touched) {
+      this.markForCheck();
+      this._onTouchedCallback();
     }
+  }
 
-    writeValue(value: any): void {
-        if (this.writing) return;
+  _onBlur(event: FocusEvent) {
+    this.checkIfTouched();
+    this.onBlur.emit(event);
+  }
 
-        this.writing = true;
-        if (value !== this._value) {
-            this._value = value;
-            this.showRadio = isNotNil(this._value);
-        }
-        this.writing = false;
+  _onFocusFakeInput(event: FocusEvent) {
+    event.preventDefault();
+
+    // Hide the fake input
+    this.fakeInput.nativeElement.classList.add('hidden');
+    this.fakeInput.nativeElement.tabIndex = -1;
+
+    // Focus on first button
+    this.focus();
+  }
+
+  focus() {
+    this.showRadio = true;
+    setTimeout(() => {
+      if (this.yesButton) {
+        this.yesButton.focus();
+      }
+      else if (this.checkboxButton) {
+        this.checkboxButton.focus();
+      }
+      this.updateTabIndex();
+    });
+  }
+  /* -- protected method -- */
+
+
+  private updateTabIndex() {
+    if (isNil(this.tabindex) || this.tabindex === -1) return;
+
+    if (this.fakeInput) {
+      if (this.showRadio) {
+        this.fakeInput.nativeElement.classList.add('hidden');
+        this.fakeInput.nativeElement.tabIndex = -1;
+      } else {
+        this.fakeInput.nativeElement.classList.remove('hidden');
+        this.fakeInput.nativeElement.tabIndex = this.tabindex;
+      }
     }
-
-    registerOnChange(fn: any): void {
-        this._onChange = fn;
+    if (this.yesButton) {
+      this.yesButton._inputElement.nativeElement.tabIndex = this.showRadio ? this.tabindex : -1;
+    } else if (this.checkboxButton) {
+      this.checkboxButton._inputElement.nativeElement.tabIndex = this.showRadio ? this.tabindex : -1;
     }
-    registerOnTouched(fn: any): void {
-        this._onTouched = fn;
-    }
+    this.markForCheck();
 
-    setDisabledState(isDisabled: boolean): void {
-        if (this.disabling) return;
+  }
 
-        this.disabling = true;
-        this.disabled = isDisabled;
-        if (isDisabled) {
-            //this.formControl.disable({ onlySelf: true, emitEvent: false });
-        }
-        else {
-            //this.formControl.enable({ onlySelf: true, emitEvent: false });
-        }
-        this.disabling = false;
-    }
+  private onRadioValueChanged(event: MatRadioChange): void {
+    if (this.writing) return; // Skip if call by self
+    this.writing = true;
+    this._value = event.value;
+    this.checkIfTouched();
+    this._onChangeCallback(event.value);
+    this.writing = false;
+  }
 
-    private onRadioValueChanged(event: MatRadioChange): void {
-        if (this.writing) return; // Skip if call by self
-        this.writing = true;
-        this._value = event.value;
-        this.markAsTouched();
-        this._onChange(event.value);
-        this.writing = false;
-    }
+  private onCheckboxValueChanged(event: MatCheckboxChange): void {
+    if (this.writing) return; // Skip if call by self
+    this.writing = true;
+    this._value = event.checked;
+    this.checkIfTouched();
+    this._onChangeCallback(event.checked);
+    this.writing = false;
+  }
 
-    private onCheckboxValueChanged(event: MatCheckboxChange): void {
-        if (this.writing) return; // Skip if call by self
-        this.writing = true;
-        this._value = event.checked;
-        this.markAsTouched();
-        this._onChange(event.checked);
-        this.writing = false;
-    }
-
-
-    public markAsTouched() {
-        if (this.formControl.touched) {
-            this._onTouched();
-        }
-    }
-
-    public _onBlur(event: FocusEvent) {
-        this.markAsTouched();
-        this.onBlur.emit(event);
-    }
-
-
-    public _onFocus(event) {
-        event.preventDefault();
-        event.target.classList.add('hidden');
-        this.showRadio = true;
-        setTimeout(() => {
-            this.yesButton && this.yesButton.focus();
-            this.checkboxButton && this.checkboxButton.focus();
-        });
-    }
+  private markForCheck() {
+    this.cd.markForCheck();
+  }
 }
 

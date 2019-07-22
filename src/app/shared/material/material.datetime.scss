@@ -1,64 +1,78 @@
-  :host {
-    [no-padding] {
-      --ion-grid-column-padding: 0;
-    }
-
-    [nowrap] {
-      flex-wrap: nowrap;
-    }
+:host {
+  [no-padding] {
+    --ion-grid-column-padding: 0;
   }
 
-  input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  [nowrap] {
+    flex-wrap: nowrap;
   }
 
-  mat-form-field {
-    .datetime-md {
-      padding: 0 !important;
-    }
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+mat-form-field {
+  .datetime-md {
+    padding: 0 !important;
   }
 
-  ion-col.day {
-    min-width: 100px;
-    //max-width: 125px;
-
-    .mat-form-field-subscript-wrapper {
-      overflow: visible;
-      right: -45px; // right offset to align hour
-    }
+  ion-datetime {
+    padding: 0 !important;
   }
+}
 
-  ion-col.hour {
-    min-width: 35px;
-    max-width: 45px;
+ion-col.day {
+  min-width: 100px;
 
-    mat-form-field {
-      width: 100%;
+  .mat-form-field-subscript-wrapper {
+    overflow: visible;
+    right: -45px; // right offset to align hour
+    width: calc(100% + 45px); // get the full component width (overflow on the time part)
 
-      span,
-      input[type=number] {
-        text-align: end;
+    .mat-form-field-hint-wrapper {
+      display: flex;
+
+      .mat-form-field-hint-spacer {
+        flex: 1 0 1em;
       }
     }
   }
+}
 
-  mat-form-field.mat-form-field-disabled {
-    ion-col.day {
-      min-width: 100px;
+ion-col.hour {
+  min-width: 55px;
+  max-width: 65px;
+
+  mat-form-field {
+    width: 100%;
+
+    mat-label,
+    input[type=text] {
+      text-align: left;
     }
   }
+}
 
-  .hour .mat-form-field-label {
-    max-width: 40px;
+mat-form-field.mat-form-field-disabled {
+  ion-col.day {
+    min-width: 100px;
   }
+}
 
-  .hour mat-form-field.mat-form-field-should-float .mat-form-field-placeholder {
-    max-width: inherit;
-  }
+.hour .mat-form-field-label {
+  max-width: 40px;
+}
 
-  mat-error {
-    text-align: right;
-    width: 100%
-  }
+.hour mat-form-field.mat-form-field-should-float .mat-form-field-placeholder {
+  max-width: inherit;
+}
+
+mat-error {
+  text-align: right;
+  width: 100%
+}
+

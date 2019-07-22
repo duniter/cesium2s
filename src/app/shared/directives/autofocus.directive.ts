@@ -1,18 +1,16 @@
 // Import the core angular services.
-import { AfterContentInit } from "@angular/core";
-import { Directive } from "@angular/core";
-import { ElementRef } from "@angular/core";
-import { OnChanges } from "@angular/core";
-import { OnDestroy } from "@angular/core";
-import { SimpleChanges } from "@angular/core";
+import {AfterContentInit, Directive, ElementRef, OnChanges, OnDestroy, SimpleChanges} from "@angular/core";
+import {Platform} from "@ionic/angular";
+import {Keyboard} from "@ionic-native/keyboard/ngx";
+import Timeout = NodeJS.Timeout;
 
 // ----------------------------------------------------------------------------------- //
 // ----------------------------------------------------------------------------------- //
 
-var BASE_TIMER_DELAY = 10;
+const BASE_TIMER_DELAY = 100;
 
 @Directive({
-  selector: "[autofocus], [appAutofocus]",
+  selector: "[autofocus], input[appAutofocus]",
   inputs: [
     "shouldFocusElement: appAutofocus",
     "timerDelay: autofocusDelay"
@@ -21,13 +19,14 @@ var BASE_TIMER_DELAY = 10;
 export class AutofocusDirective implements AfterContentInit, OnChanges, OnDestroy {
 
   public shouldFocusElement: any;
-  public timerDelay: number | string;
+  public timerDelay: number;
 
   private elementRef: ElementRef;
-  private timer: number;
+  private timer: Timeout = null;
+  private touchUi: boolean;
 
   // I initialize the autofocus directive.
-  constructor( elementRef: ElementRef ) {
+  constructor( elementRef: ElementRef, platform: Platform, protected keyboard: Keyboard ) {
 
     this.elementRef = elementRef;
 
@@ -35,6 +34,7 @@ export class AutofocusDirective implements AfterContentInit, OnChanges, OnDestro
     this.timer = null;
     this.timerDelay = BASE_TIMER_DELAY;
 
+    this.touchUi = platform.is('mobile') || platform.is('tablet');
   }
 
   // ---
@@ -42,7 +42,7 @@ export class AutofocusDirective implements AfterContentInit, OnChanges, OnDestro
   // ---
 
   // I get called once after the contents have been fully initialized.
-  public ngAfterContentInit() : void {
+  public ngAfterContentInit() {
 
     // Because this directive can act on the stand-only "autofocus" attribute or
     // the more specialized "appAutofocus" property, we need to check to see if the
@@ -58,7 +58,7 @@ export class AutofocusDirective implements AfterContentInit, OnChanges, OnDestro
 
 
   // I get called every time the input bindings are updated.
-  public ngOnChanges( changes: SimpleChanges ) : void {
+  public ngOnChanges( changes: SimpleChanges ) {
 
     // If the timer delay is being passed-in as a string (ie, someone is using
     // attribute-input syntax, not property-input syntax), let's coalesce the
@@ -90,7 +90,7 @@ export class AutofocusDirective implements AfterContentInit, OnChanges, OnDestro
 
 
   // I get called once when the directive is being unmounted.
-  public ngOnDestroy() : void {
+  public ngOnDestroy() {
 
     this.stopFocusWorkflow();
 
@@ -101,7 +101,10 @@ export class AutofocusDirective implements AfterContentInit, OnChanges, OnDestro
   // ---
 
   // I start the timer-based workflow that will focus the current element.
-  private startFocusWorkflow() : void {
+  private startFocusWorkflow() {
+
+    // if touch UI: do NOT focus when keyboard hide
+    if (this.touchUi && this.keyboard.isVisible === false) return;
 
     // If there is already a timer running for this element, just let it play out -
     // resetting it at this point will only push-out the time at which the focus is
@@ -113,11 +116,9 @@ export class AutofocusDirective implements AfterContentInit, OnChanges, OnDestro
     }
 
     this.timer = setTimeout(
-      () : void => {
-
+      () => {
         this.timer = null;
         this.elementRef.nativeElement.focus();
-
       },
       this.timerDelay
     );
@@ -126,7 +127,7 @@ export class AutofocusDirective implements AfterContentInit, OnChanges, OnDestro
 
 
   // I stop the timer-based workflow, preventing focus from taking place.
-  private stopFocusWorkflow() : void {
+  private stopFocusWorkflow() {
 
     clearTimeout( this.timer );
     this.timer = null;

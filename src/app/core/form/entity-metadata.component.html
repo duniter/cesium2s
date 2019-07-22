@@ -1,0 +1,41 @@
+<ng-container *ngIf="value && value.id">
+  <ion-card [@fadeInAnimation] >
+    <ion-item color="light">
+      <ion-avatar slot="start">
+        <img src="{{ (value.recorderPerson?.avatar || value.recorderDepartment?.logo ) || './assets/img/person.png' }}">
+      </ion-avatar>
+      <ion-label>
+        <ion-card-subtitle translate>COMMON.RECORDER</ion-card-subtitle>
+        <ion-card-title>{{value.recorderPerson?.firstName}} {{value.recorderPerson?.lastName}}</ion-card-title>
+        <ion-card-subtitle>{{value.recorderDepartment?.label}}</ion-card-subtitle>
+      </ion-label>
+    </ion-item>
+
+    <ion-card-content>
+      <ion-label text-wrap>
+        <!-- creation date -->
+        <ion-text *ngIf="value.creationDate">
+          <ion-icon name="calendar"></ion-icon>&nbsp;
+          <span translate>COMMON.CREATED_ON</span>
+          <span>
+            <b>{{ value.creationDate | dateFormat: {pattern: 'L LT'} }}</b>
+          </span>
+        </ion-text>
+
+        <!-- update date -->
+        <ion-text *ngIf="value.updateDate && value.updateDate != value.creationDate">
+          <br *ngIf="value.creationDate"/>
+          <ion-label>
+            <ion-icon name="time"></ion-icon>&nbsp;
+            <span translate>COMMON.UPDATED_ON</span>
+            <span>&nbsp;{{ value.updateDate | dateFormat: {pattern: 'L LTS'} }}</span>
+          </ion-label>
+        </ion-text>
+
+      </ion-label>
+
+      <ng-content></ng-content>
+
+    </ion-card-content>
+  </ion-card>
+</ng-container>

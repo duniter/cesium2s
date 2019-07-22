@@ -2,17 +2,23 @@
   <ion-toolbar [color]="color">
 
     <ion-buttons slot="start">
-      <ion-back-button icon="arrow-back">
-      </ion-back-button>
+      <ion-button class="back-button" [class.can-go-back]="defaultBackHref" (click)="doBackClick($event)" routerDirection="back" *ngIf="canGoBack">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+
+      <!-- <ion-back-button icon="arrow-back" [defaultHref]="defaultBackHref" (onClick)="onBackClick($event)" #backButton>
+      </ion-back-button> -->
 
       <ion-menu-toggle>
         <ion-button>
           <ion-icon slot="icon-only" name="menu"></ion-icon>
         </ion-button>
       </ion-menu-toggle>
+
+      <ng-content select="[slot=start]"></ng-content>
     </ion-buttons>
 
-    <ion-title>{{ title }}</ion-title>
+    <ion-title [innerHTML]="title"></ion-title>
 
     <ion-buttons slot="end">
 
@@ -21,11 +27,11 @@
       <ion-button (click)="enableSearchBar()" *ngIf="hasSearch">
         <ion-icon slot="icon-only" name="search"></ion-icon>
       </ion-button>
-      <ion-button (click)="onValidate.emit($event)" class="visible-xs visible-sm" *ngIf="hasValidate">
+      <ion-button (click)="onValidate.emit($event)" *ngIf="mobile && hasValidate">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <mat-progress-bar [color]="'primary'" [mode]="progressBarMode | async">
+  <mat-progress-bar [color]="color" [mode]="progressBarMode">
   </mat-progress-bar>
 </ion-header>

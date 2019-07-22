@@ -1,35 +1,49 @@
-import { OnInit, EventEmitter, Output, Input } from '@angular/core';
-import { FormGroup } from "@angular/forms";
-import { Platform } from '@ionic/angular';
-import { Moment } from 'moment/moment';
-import { DATE_ISO_PATTERN } from '../constants';
-import { DateAdapter } from "@angular/material";
+import {EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {AbstractControl, FormGroup} from "@angular/forms";
+import {Moment} from 'moment/moment';
+import {DateAdapter} from "@angular/material";
+import {Subscription} from 'rxjs';
+import {DateFormatPipe} from "../../shared/pipes/date-format.pipe";
+import {AppFormUtils} from "./form.utils";
+import {SuggestionDataService} from "../../shared/services/data-service.class";
+import {MatAutocompleteFieldConfig} from "../../shared/material/material.autocomplete";
+import {LocalSettingsService} from "../services/local-settings.service";
 
+export abstract class AppForm<T> implements OnInit, OnDestroy {
 
-export abstract class AppForm<T> implements OnInit {
+  private _subscriptions: Subscription[];
+  protected _enable = false;
+  protected _implicitValues: { [key: string]: any } = {};
 
-  protected _enable: boolean = false;
-
-  touchUi: boolean = false;
-  mobile: boolean = false;
+  autocompleteFields: {
+    [key: string]: MatAutocompleteFieldConfig
+  } = {};
   error: string = null;
 
-  @Input()
-  debug: boolean = false;
+  @Input() debug = false;
+
+  @Input() tabindex: number;
 
   get value(): any {
     return this.form.value;
   }
+
   set value(data: any) {
     this.setValue(data);
   }
 
   get dirty(): boolean {
-    return this.form.dirty;
+    return this.form && this.form.dirty;
   }
+
   get invalid(): boolean {
     return this.form.invalid;
   }
+
+  get pending(): boolean {
+    return this.form.pending;
+  }
+
   get valid(): boolean {
     return this.form.valid;
   }
@@ -42,12 +56,23 @@ export abstract class AppForm<T> implements OnInit {
     return this.form.untouched;
   }
 
+  get enabled(): boolean {
+    return this._enable;
+  }
+
+  get disabled(): boolean {
+    return !this._enable;
+  }
+
   disable(opts?: {
     onlySelf?: boolean;
     emitEvent?: boolean;
   }): void {
     this.form && this.form.disable(opts);
-    this._enable = false;
+    if (this._enable || (opts && opts.emitEvent)) {
+      this._enable = false;
+      this.markForCheck();
+    }
   }
 
   enable(opts?: {
@@ -55,8 +80,14 @@ export abstract class AppForm<T> implements OnInit {
     emitEvent?: boolean;
   }): void {
     this.form && this.form.enable(opts);
-    this._enable = true;
+    if (!this._enable || (opts && opts.emitEvent)) {
+      this._enable = true;
+      this.markForCheck();
+    }
   }
+
+  @Input()
+  form?: FormGroup;
 
   @Output()
   onCancel: EventEmitter<any> = new EventEmitter<any>();
@@ -64,74 +95,132 @@ export abstract class AppForm<T> implements OnInit {
   @Output()
   onSubmit: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(
-    protected dateAdapter: DateAdapter<Moment>,
-    protected platform: Platform,
-    public form: FormGroup
+  protected constructor(
+    protected dateAdapter: DateAdapter<Moment> | DateFormatPipe,
+    form?: FormGroup,
+    protected settings?: LocalSettingsService
   ) {
-
-    this.touchUi = !platform.is('desktop');
-    this.mobile = this.touchUi && platform.is('mobile');
-    //this.touchUi && console.debug("[form] Enabling touch UI");
+    this.form = form || this.form;
   }
 
   ngOnInit() {
     this._enable ? this.enable() : this.disable();
+
+    if (this.form) {
+      this.form.statusChanges.subscribe(status => {
+        this.markForCheck();
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this._subscriptions) {
+      if (this.debug) console.debug(`[form] Deleting ${this._subscriptions.length} subscriptions ${this.constructor.name}#`);
+      this._subscriptions.forEach(s => s.unsubscribe());
+      this._subscriptions = undefined;
+    }
+    this._implicitValues = {};
   }
 
   public cancel() {
     this.onCancel.emit();
   }
 
-  public doSubmit(event: any, data?: any) {
+  public doSubmit(event: any) {
     if (!this.form && this.form.invalid) return;
     this.onSubmit.emit(event);
+  }
+
+  public setForm(form: FormGroup) {
+    this.form = form;
   }
 
   public setValue(data: T) {
     if (!data) return;
 
     // Convert object to json
-    let json = this.toJsonFormValue(this.form, data);
-    if (this.debug) console.debug("[form] Updating form... ", json);
+    if (this.debug) console.debug("[form] Updating form (using entity)", data);
 
-    // Appply to form
-    this.form.setValue(json, { emitEvent: false });
+    // Apply to form
+    AppFormUtils.copyEntity2Form(data, this.form, {emitEvent: false});
+
+    this.markForCheck();
   }
 
-  /**
-   * Transform an object (e.g. an entity) into a json compatible with the given form
-   * @param form 
-   * @param data 
-   */
-  protected toJsonFormValue(form: FormGroup, data: any): Object {
-    let value = {};
-    form = form || this.form;
-    for (let key in form.controls) {
-      if (form.controls[key] instanceof FormGroup) {
-        value[key] = this.toJsonFormValue(form.controls[key] as FormGroup, data[key]);
-      }
-      else {
-        if (data[key] && typeof data[key] == "object" && data[key]._isAMomentObject) {
-          value[key] = this.dateAdapter.format(data[key], DATE_ISO_PATTERN);
-        }
-        else {
-          value[key] = data[key] || (data[key] === 0 ? 0 : null); // Do NOT replace 0 by null
-        }
-      }
-    }
-    return value;
+  protected registerSubscription(sub: Subscription) {
+    this._subscriptions = this._subscriptions || [];
+    this._subscriptions.push(sub);
+    if (this.debug) console.debug(`[form] Registering a new subscription ${this.constructor.name}#${this._subscriptions.length}`);
   }
 
   public markAsPristine() {
     this.form.markAsPristine();
+    this.markForCheck();
   }
 
   public markAsUntouched() {
     this.form.markAsUntouched();
+    this.markForCheck();
   }
 
   public markAsTouched() {
     this.form.markAsTouched();
+    //this.form.updateValueAndValidity();
+    Object.getOwnPropertyNames(this.form.controls)
+      .forEach(key => {
+        this.form.get(key).markAsTouched({onlySelf: true});
+        this.form.get(key).updateValueAndValidity({onlySelf: true});
+      });
+    this.markForCheck();
+  }
+
+  public markAsDirty() {
+    this.form.markAsDirty();
+    this.markForCheck();
+  }
+
+  public updateImplicitValue(name: string, res: any[]) {
+    this._implicitValues[name] = res && res.length === 1 ? res[0] : undefined;
+  }
+
+  public applyImplicitValue(name: string, control?: AbstractControl) {
+    control = control || this.form.get(name);
+    const value = control && this._implicitValues[name];
+    if (control && value !== undefined && value !== null) {
+      control.patchValue(value, {emitEvent: true});
+      control.markAsDirty();
+      this._implicitValues[name] = null;
+    }
+  }
+
+  protected registerAutocompleteField(fieldName: string, options?: {
+    defaultAttributes?: string[];
+    service?: SuggestionDataService<any>
+    suggestFn?: (value: any, options?: any) => Promise<any[]>
+  }) {
+    options = options || {};
+    const service: SuggestionDataService<any> = options.service || (options.suggestFn && {
+      suggest: (value: any, filter?: any) => options.suggestFn(value, filter)
+    }) || undefined;
+    const attributes = this.settings.getFieldAttributes(fieldName, options.defaultAttributes);
+
+    const config = {
+      attributes,
+      service,
+      filter: {
+        searchAttribute: attributes.length === 1 ? attributes[0] : undefined
+      }
+    };
+    this.autocompleteFields[fieldName] = config;
+
+    return config;
+  }
+
+  public getAutocompleteField(fieldName: string): MatAutocompleteFieldConfig {
+    return this.autocompleteFields[fieldName] || this.registerAutocompleteField(fieldName);
+  }
+
+  protected markForCheck() {
+    // Should be override by subclasses
   }
 }

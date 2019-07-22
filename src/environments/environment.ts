@@ -8,11 +8,18 @@ const pkg = require('../../package.json')
 export const environment: Environment = {
     production: false,
     baseUrl: '/',
-    remoteBaseUrl: 'http://g1.cgeek.fr:15000',
     defaultLocale: 'en',
-    defaultLatLongFormat: 'DDMM',
-    version: pkg.version as string,
-    apolloFetchPolicy: 'cache-first'
+    version: (pkg.version as string),
+    apolloFetchPolicy: 'network-only',
+    persistCache: false,
+
+    defaultPeers: [
+        {
+            host: "localhost",
+            port: 15000,
+            useSsl: false
+        }
+    ]
 };
 
 /*

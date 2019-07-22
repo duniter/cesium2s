@@ -1,14 +1,9 @@
-import { Component } from '@angular/core';
-import { Platform } from "@ionic/angular";
+import {Component, Inject} from '@angular/core';
 import { MenuItem } from './core/menu/menu.component';
-import { HomePage } from './core/home/home';
-import { AccountService } from './core/core.module';
-// import { StatusBar } from "@ionic-native/status-bar";
-// import { SplashScreen } from "@ionic-native/splash-screen";
-// import { Keyboard } from "@ionic-native/keyboard";
-// import { AccountFieldDef, AccountService } from './core/core.module';
-// import { Referential } from './core/services/model';
-// import { DataService } from './core/services/data-service.class';
+import {AccountService, isNotNil, LocalSettingsService} from './core/core.module';
+import {PlatformService} from "./core/services/platform.service";
+import {DOCUMENT} from "@angular/common";
+import {LocalSettings} from "./core/services/model";
 
 
 @Component({
@@ -18,45 +13,39 @@ import { AccountService } from './core/core.module';
 })
 export class AppComponent {
 
-  root: any = HomePage;
   menuItems: Array<MenuItem> = [
     { title: 'MENU.HOME', path: '/', icon: 'home' },
-    { title: 'MENU.WOT', path: '/wot/search', icon: 'people'
-    //, profile: 'GUEST' 
-  }
+    { title: 'MENU.WOT', path: '/wot/search', icon: 'people' },
+
+    // Settings
+    { title: '' /*empty divider*/},
+    { title: 'MENU.LOCAL_SETTINGS', path: '/settings', icon: 'settings' },
+    { title: 'MENU.ABOUT', action: 'about', matIcon: 'help_outline', cssClass: 'visible xs visible-sm' },
+    { title: 'MENU.LOGOUT', action: 'logout', icon: 'log-out', profile: 'GUEST', cssClass: 'ion-color-danger' }
   ];
 
   constructor(
-    private platform: Platform,
-    private accountService: AccountService
-    // TODO: waiting ionic-native release
-    // private statusBar: StatusBar, 
-    // private splashScreen: SplashScreen,
-    // private keyboard: Keyboard
+    @Inject(DOCUMENT) private _document: HTMLDocument,
+    private platform: PlatformService,
+    private accountService: AccountService,
+    private settings: LocalSettingsService
   ) {
 
-    platform.ready().then(() => {
-      console.info("[app] Setting cordova plugins...");
+    this.platform.ready().then(() => {
 
-      /*
-      statusBar.styleDefault();
-      splashScreen.hide();
+      // Listen for config changed
+      this.settings.onChange.subscribe(data => this.onSettingsChanged(data));
 
-      statusBar.overlaysWebView(false);
-
-      // Control Keyboard
-      keyboard.disableScroll(true);
-      */
-
+      // Add additional account fields
       this.addAccountFields();
-    });
 
+    });
   }
 
   public onActivate(event) {
     // Make sure to scroll on top before changing state
     // See https://stackoverflow.com/questions/48048299/angular-5-scroll-to-top-on-every-route-click
-    let scrollToTop = window.setInterval(() => {
+    const scrollToTop = window.setInterval(() => {
       let pos = window.pageYOffset;
       if (pos > 0) {
         window.scrollTo(0, pos - 20); // how far to scroll on each step
@@ -64,6 +53,43 @@ export class AppComponent {
         window.clearInterval(scrollToTop);
       }
     }, 16);
+  }
+
+  protected onSettingsChanged(settings: LocalSettings) {
+
+    if (settings.properties) {
+      this.updateTheme({
+        colors: {
+          primary: settings.properties["theme.color.primary"],
+          secondary: settings.properties["theme.color.secondary"],
+          tertiary: settings.properties["theme.color.tertiary"]
+        }
+      });
+    }
+
+  }
+
+
+  protected updateTheme(options: { colors?: { primary?: string; secondary?: string; tertiary?: string; } }) {
+    if (!options) return;
+
+    console.info("[app] Changing theme colors ", options);
+
+    // Settings colors
+    if (options.colors) {
+      Object.getOwnPropertyNames(options.colors).forEach(colorName => {
+
+        // Remove existing value
+        document.documentElement.style.removeProperty(`--ion-color-${colorName}`);
+
+        // Set new value, if any
+        const color = options.colors[colorName];
+        if (isNotNil(color)) {
+          document.documentElement.style.setProperty(`--ion-color-${colorName}`, color);
+          // TODO compute shade, hint, ...
+        }
+      });
+    }
   }
 
   protected addAccountFields() {

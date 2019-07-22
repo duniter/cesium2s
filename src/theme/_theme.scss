@@ -1,4 +1,4 @@
-@import '~@ionic/angular/dist/themes/ionic.theme.default';
+@import '~@ionic/core/dist/collection/themes/ionic.theme.default';
 // --------------------------------------------------
 // Import material theme
 // --------------------------------------------------
@@ -11,8 +11,57 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue.
-$candy-app-primary: mat-palette($mat-indigo);
-$candy-app-accent: mat-palette($mat-pink, A200, A100, A400);
+// Angular material palette
+// Custom
+$accent: #ff4081;
+
+$mat-indigo-app: (
+  100: mix(#fff, $primary, 10%),
+  500: $primary,
+  900: mix(#000, $primary, 12%),
+  A100: mix(#fff, $accent, 10%),
+  A200: $accent,
+  A400: mix(#000, $accent, 12%),
+  A700: mix(#000, $accent, 24%),
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text
+  )
+);
+$mat-light-theme-background: (
+  status-bar: map_get($mat-grey, 300),
+  app-bar:    map_get($mat-grey, 100),
+  background: var(--background, map_get($mat-grey, 50)),
+  hover:      rgba(black, 0.04), // TODO(kara): check style with Material Design UX
+  card:       white,
+  dialog:     white,
+  disabled-button: rgba(black, 0.12),
+  raised-button: white,
+  focused-button: $dark-focused,
+  selected-button: map_get($mat-grey, 300),
+  selected-disabled-button: map_get($mat-grey, 400),
+  disabled-button-toggle: map_get($mat-grey, 200),
+  unselected-chip: map_get($mat-grey, 300),
+  disabled-list-option: map_get($mat-grey, 200),
+);
+
+// FIXME: Why loader toolbar is so dark ?
+$candy-app-primary: mat-palette($mat-indigo-app, 500, 100, 900);
+//$candy-app-primary: mat-palette($mat-indigo, 500, 100, 900);
+
+$candy-app-accent: mat-palette($mat-indigo-app, A200, A100, A400);
 // The warn palette is optional (defaults to red).
 $candy-app-warn: mat-palette($mat-red);
 // Create the theme object (a Sass map containing all of the palettes).
@@ -22,11 +71,7 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
 // that you are using.
 @include angular-material-theme($candy-app-theme);
 
-.mat-autocomplete-panel {
-  min-width: 300px !important;
-}
 
-//@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 // --------------------------------------------------
 // Import material icons
 // --------------------------------------------------

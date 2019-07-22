@@ -11,6 +11,7 @@ import { Moment } from 'moment/moment';
 import { DateAdapter } from "@angular/material";
 import { Platform } from '@ionic/angular';
 import { AppFormUtils } from '../form/form.utils';
+import {LocalSettingsService} from "../services/local-settings.service";
 
 @Component({
   selector: 'page-account',
@@ -41,14 +42,13 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
 
   constructor(
     protected dateAdapter: DateAdapter<Moment>,
-    protected platform: Platform,
     public formBuilder: FormBuilder,
     public accountService: AccountService,
-    public activatedRoute: ActivatedRoute,
+    protected settings: LocalSettingsService,
     protected validatorService: AccountValidatorService,
     protected settingsValidatorService: UserSettingsValidatorService
   ) {
-    super(dateAdapter, platform, validatorService.getFormGroup(accountService.account));
+    super(dateAdapter, validatorService.getFormGroup(accountService.account), settings);
 
     // Add settings fo form 
     this.settingsForm = settingsValidatorService.getFormGroup(accountService.account && accountService.account.settings);
@@ -75,7 +75,7 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
     if (accountService.isLogin()) {
       this.onLogin(this.accountService.account);
     }
-  };
+  }
 
   ngOnDestroy() {
     this.subscriptions.forEach(s => s.unsubscribe());

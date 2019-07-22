@@ -1,22 +1,38 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from '@angular/common';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ReactiveFormsModule } from "@angular/forms";
+import {NgModule} from "@angular/core";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {
-  MatPaginatorModule, MatTableModule, MatSortModule, MatFormFieldModule, MatInputModule,
-  MatAutocompleteModule, MatCheckboxModule, MatExpansionModule, MatToolbarModule, MatDialogModule, MatIconModule,
-  MatButtonModule, MatMenuModule, MatSelectModule, MatCardModule, MatTabsModule, MatListModule, MatStepperModule,
-  MatButtonToggleModule, MatProgressSpinnerModule, MatProgressBarModule, MatRadioModule
+  MatAutocompleteModule, MatBadgeModule,
+  MatButtonModule,
+  MatButtonToggleModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatDialogModule,
+  MatExpansionModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatPaginatorModule,
+  MatProgressBarModule,
+  MatProgressSpinnerModule,
+  MatRadioModule,
+  MatSelectModule,
+  MatSortModule,
+  MatStepperModule,
+  MatTableModule,
+  MatTabsModule,
+  MatToolbarModule,
+  MatSlideToggleModule
 } from "@angular/material";
-import { CdkTableModule } from "@angular/cdk/table";
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import {CdkTableModule} from "@angular/cdk/table";
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
-import { fadeInAnimation, slideInOutAnimation } from './material.animations';
+import {fadeInAnimation, slideInOutAnimation} from './material.animations';
+import {InputElement} from './focusable';
 
-import { MatDateTime } from './material.datetime';
-import { MatLatLong } from './material.latlong';
-import { MatBooleanField } from './material.boolean';
+export { fadeInAnimation, slideInOutAnimation, InputElement };
 
 const modules: any[] = [
   MatTableModule,
@@ -44,7 +60,9 @@ const modules: any[] = [
   MatButtonToggleModule,
   MatProgressSpinnerModule,
   MatProgressBarModule,
-  MatRadioModule
+  MatRadioModule,
+  MatBadgeModule,
+  MatSlideToggleModule
 ];
 
 @NgModule({
@@ -54,4 +72,3 @@ const modules: any[] = [
 export class MaterialModule {
 }
 
-export { fadeInAnimation, slideInOutAnimation }

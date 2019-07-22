@@ -3,25 +3,37 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Cesium 2 (beta)</title>
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width, minimal-ui">
+  <meta name="format-detection" content="telephone=no">
+
+  <title id="appTitle">Loading...</title>
+  <link id="appFavicon" rel="icon" type="image/x-icon" href="./favicon.ico">
+
   <base href="/">
 
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="msapplication-tap-highlight" content="no">
-
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#4e8ef7">
 
-  <!-- add to homescreen for ios -->
+  <meta name="msapplication-tap-highlight" content="no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
   <link href="./assets/css/loading.css" rel="stylesheet">
 
-  <!-- cordova.js required for cordova apps (remove if not needed) 
-  <script src="cordova.js"></script>-->
+  <meta property="og:title" content="Cesium v2" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="A simple wallet for G1 libre currency." />
+  <meta property="og:image" content="./assets/img/logo-menu2.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:height" content="211" />
+  <meta property="og:image:width" content="283" />
+  <meta property="og:site_name" content="Cesium v2" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:locale:alternate" content="fr_FR" />
+
+  <!-- cordova.js required for cordova apps (remove if not needed) -->
+  <script src="cordova.js"></script>
 
   <!-- un-comment this code to enable service worker
   <script>

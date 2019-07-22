@@ -5,16 +5,24 @@
     </ion-col>
 
     <ion-col size="auto">
-      <ion-button fill="clear" color="dark" (click)="onCancel.emit()" [disabled]="disabledCancel">
-        <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+
+      <ion-button fill="clear" color="dark" (click)="onBack.emit($event)" (keypress.enter)="onBack.emit($event)" *ngIf="onBack.observers.length">
+        <ion-label translate>COMMON.BTN_CLOSE</ion-label>
       </ion-button>
 
-      <ion-button fill="solid" (click)="onCancel.emit()" *ngIf="onNext.observers.length">
+      <ion-button fill="clear" color="dark" (click)="onCancel.emit($event)" (keypress.enter)="onCancel.emit($event)" [disabled]="disabledCancel">
+        <ion-icon slot="start" name="refresh"></ion-icon>
+        <ion-label translate>COMMON.BTN_RESET</ion-label>
+      </ion-button>
+
+
+      <ion-button fill="solid" (click)="onNext.emit($event)" (keypress.enter)="onNext.emit($event)" *ngIf="onNext.observers.length">
         <ion-label translate>COMMON.BTN_NEXT</ion-label>
         <ion-icon slot="end" name="arrow-forward"></ion-icon>
       </ion-button>
 
-      <ion-button [fill]="disabled? 'clear' : 'solid'" (click)="onSave.emit($event)" color="danger" [disabled]="disabled">
+      <ion-button [fill]="disabled? 'clear' : 'solid'" (click)="onSave.emit($event)" (keypress.enter)="onSave.emit($event)" color="danger" [disabled]="disabled">
+        <ion-icon slot="start" name="checkmark"></ion-icon>
         <ion-label translate>COMMON.BTN_SAVE</ion-label>
       </ion-button>
     </ion-col>

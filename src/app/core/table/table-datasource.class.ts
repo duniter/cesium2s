@@ -1,81 +1,108 @@
-import { TableDataSource, ValidatorService } from "angular4-material-table";
-import { Observable } from "rxjs";
-import { DataService } from "../services/data-service.class";
-import { EventEmitter } from "@angular/core";
-import { Entity } from "../services/model";
-import { TableElement } from "angular4-material-table";
-import { ErrorCodes } from "../services/errors";
-import { AppFormUtils } from "../form/form.utils";
+import {TableDataSource, TableElement, ValidatorService} from 'angular4-material-table';
+import {Observable, Subject} from "rxjs";
+import {isNotNil, LoadResult, TableDataService, toBoolean} from '../../shared/shared.module';
+import {EventEmitter} from '@angular/core';
+import {Entity} from "../services/model";
+import {ErrorCodes} from '../services/errors';
+import {catchError, first, map, takeUntil} from "rxjs/operators";
+
+export interface AppTableDataSourceOptions<T extends Entity<T>> {
+  prependNewElements: boolean;
+  suppressErrors: boolean;
+  onRowCreated?: (row: TableElement<T>) => Promise<void> | void;
+  serviceOptions?: {
+    saveOnlyDirtyRows?: boolean;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
 
 export class AppTableDataSource<T extends Entity<T>, F> extends TableDataSource<T> {
 
   protected _debug = false;
-  protected _config: {
-    prependNewElements: boolean;
-    onNewRow?: (row: TableElement<T>) => Promise<void> | void;
-    [key: string]: any;
-  };
+  protected _config: AppTableDataSourceOptions<T>;
   protected _creating = false;
+  protected _saving = false;
+  protected _useValidator = false;
+  protected _onWatchAll = new Subject();
 
   public serviceOptions: any;
   public onLoading = new EventEmitter<boolean>();
 
+  set dataService(value: TableDataService<T, F>) {
+    this._dataService = value;
+  }
+
+  get dataService() {
+    return this._dataService;
+  }
+
+  get options(): AppTableDataSourceOptions<T> {
+    return this._config;
+  }
+
   /**
    * Creates a new TableDataSource instance, that can be used as datasource of `@angular/cdk` data-table.
    * @param data Array containing the initial values for the TableDataSource. If not specified, then `dataType` must be specified.
-   * @param dataService A service to load and save data
+   * @param _dataService A service to load and save data
    * @param dataType Type of data contained by the Table. If not specified, then `data` with at least one element must be specified.
    * @param validatorService Service that create instances of the FormGroup used to validate row fields.
    * @param config Additional configuration for table.
    */
-  constructor(dataType: new () => T,
-    private dataService: DataService<T, F>,
-    validatorService?: ValidatorService,
-    config?: {
-      prependNewElements: boolean;
-      onNewRow?: (row: TableElement<T>) => Promise<void> | void;
-      serviceOptions?: {
-        saveOnlyDirtyRows?: boolean;
-      }
-    }) {
+  constructor(dataType: new() => T,
+              private _dataService: TableDataService<T, F>,
+              validatorService?: ValidatorService,
+              config?: AppTableDataSourceOptions<T>) {
     super([], dataType, validatorService, config);
-    this.serviceOptions = config && config.serviceOptions;
-    this._config = config;
+    this.serviceOptions = config && config.serviceOptions || {};
+    this._config = config || {prependNewElements: false, suppressErrors: true};
+    this._useValidator = isNotNil(validatorService);
 
-    // Copy data to validator
-    this.connect().subscribe(rows => {
-      if (this._creating) return;
-      if (this._debug) console.debug("[table-datasource] Copying rows currentData -> validator");
-      rows.forEach(row => AppFormUtils.copyEntity2Form(row.currentData, row.validator));
-    });
+    // For DEV ONLY
+    //this._debug = !environment.production;
+  }
 
-    //this._debug = true;
-  };
+  watchAll(offset: number,
+           size: number,
+           sortBy?: string,
+           sortDirection?: string,
+           filter?: F): Observable<LoadResult<T>> {
 
-  load(offset: number,
-    size: number,
-    sortBy?: string,
-    sortDirection?: string,
-    filter?: F): Observable<T[]> {
-
-    console.log("[table-datasource] Will search...", filter || '')
+    this._onWatchAll.next();
     this.onLoading.emit(true);
-    return this.dataService.search(offset, size, sortBy, sortDirection, filter, this.serviceOptions)
-      .catch(err => this.handleError(err, 'Unable to load rows'))
-      .map(data => {
-        this.onLoading.emit(false);
-        if (this._debug) console.debug("[table-datasource] Updating datasource...", data);
-        this.updateDatasource(data);
-        return data
-      });
+    return this._dataService.watchAll(offset, size, sortBy, sortDirection, filter, this.serviceOptions)
+      //.catch(err => this.handleError(err, 'Unable to load rows'))
+      .pipe(
+        // Stop this pipe, on the next call of watchAll()
+        takeUntil(this._onWatchAll),
+        catchError(err => this.handleError(err, 'ERROR.LOAD_DATA_ERROR')),
+        map(res => {
+          if (this._saving) {
+            console.error(`[table-datasource] Service ${this._dataService.constructor.name} sent data, while will saving... should skip ?`);
+          } else {
+            this.onLoading.emit(false);
+            if (this._debug) console.debug(`[table-datasource] Service ${this._dataService.constructor.name} sent new data: updating datasource...`, res);
+            this.updateDatasource(res.data);
+          }
+          return res;
+        })
+      );
   }
 
   async save(): Promise<boolean> {
+    if (this._saving) {
+      console.error("[table-datasource] Trying to save twice. Should never occur !");
+      return false;
+    }
 
-    if (this._debug) console.debug("[table-datasource] Saving rows...");
+    this._saving = true;
     this.onLoading.emit(true);
 
+    const onlyDirtyRows = toBoolean(this.serviceOptions.saveOnlyDirtyRows, false);
+
     try {
+      if (this._debug) console.debug(`[table-datasource] Saving rows... (onlyDirty=${onlyDirtyRows})`);
+
       // Get all rows
       const rows = await this.getRows();
 
@@ -85,152 +112,175 @@ export class AppTableDataSource<T extends Entity<T>, F> extends TableDataSource<
         // log errors
         if (this._debug) invalidRows.forEach(this.logRowErrors);
         // Stop with an error
-        throw { code: ErrorCodes.TABLE_INVALID_ROW_ERROR, message: 'ERROR.TABLE_INVALID_ROW_ERROR' };
+        throw {code: ErrorCodes.TABLE_INVALID_ROW_ERROR, message: 'ERROR.TABLE_INVALID_ROW_ERROR'};
       }
 
-      // Get row data
-      let data: T[] = rows.map(row => row.currentData);
+      let data: T[];
+      let dataToSave: T[];
 
-      // Filter to keep only dirty row
-      const dataToSave = (this.serviceOptions && this.serviceOptions.saveOnlyDirtyRows) ?
-        data.filter(t => (t && (t.id === undefined || t.dirty))) : data;
+      if (this._useValidator) {
+        dataToSave = [];
+        data = rows.map(row => {
+          const currentData = new this.dataConstructor().fromObject(row.currentData) as T;
+          // Filter to keep only dirty row
+          if (onlyDirtyRows && row.validator.dirty) dataToSave.push(currentData);
+          return currentData;
+        });
+        if (!onlyDirtyRows) dataToSave = data;
+      }
+      // Or use the current data without conversion (when no validator service used)
+      else {
+        data = rows.map(row => row.currentData);
+        // save all data, as we don't have any dirty marker
+        dataToSave = data;
+      }
 
       // If no data to save: exit
-      if (!dataToSave.length) {
-        if (this._debug) console.debug("[table-datasource] No row to save");
+      if (onlyDirtyRows && !dataToSave.length) {
+        if (this._debug) console.debug('[table-datasource] No row to save');
         return false;
       }
 
-      if (this._debug) console.log("[table-datasource] Dirty data to save:", dataToSave);
+      if (this._debug) console.debug('[table-datasource] Row to save:', dataToSave);
 
-      var savedData = {}; // TODO : await this.dataService.saveAll(dataToSave, this.serviceOptions);
-      if (this._debug) console.debug("[table-datasource] Data saved. Updated data received by service:", savedData);
-      if (this._debug) console.debug("[table-datasource] Updating datasource...", data);
-      this.updateDatasource(data, { emitEvent: false });
+      const savedData = await this._dataService.saveAll(dataToSave, this.serviceOptions);
+
+      if (this._debug) console.debug('[table-datasource] Data saved. Updated data received by service:', savedData);
+      if (this._debug) console.debug('[table-datasource] Updating datasource...', data);
+      this.updateDatasource(data, {emitEvent: false});
       return true;
-    }
-    catch (error) {
-      if (this._debug) console.error("[table-datasource] Error while saving: " + error && error.message || error);
+    } catch (error) {
+      if (this._debug) console.error('[table-datasource] Error while saving: ' + error && error.message || error);
       throw error;
-    }
-    finally {
+    } finally {
+      this._saving = false;
       // Always update the loading indicator
       this.onLoading.emit(false);
     }
   }
 
+  // Overwrite default signature
   createNew(): void {
-    this._creating = true;
-    super.createNew();
-    const row = this.getRow(-1);
-
-    if (!row) { // Should never occur
-      this._creating = false;
-      return;
-    }
-    else if (!this._config || !this._config.onNewRow) {
-      AppFormUtils.copyEntity2Form(row.currentData, row.validator);
-      this._creating = false;
-    }
-    else {
-      const res = this._config.onNewRow(row);
-      // Async way
-      if (res instanceof Promise) {
-        res.then(() => {
-          AppFormUtils.copyEntity2Form(row.currentData, row.validator);
-          this._creating = false;
-        });
-      }
-
-      // Sync way
-      else {
-        AppFormUtils.copyEntity2Form(row.currentData, row.validator);
-        this._creating = false;
-      }
-    }
+    this.asyncCreateNew();
   }
 
   confirmCreate(row: TableElement<T>) {
-    if (row.validator.valid && row.validator.dirty) {
-      if (this._debug) console.debug("[table-datasource] confirmCreate(): Copying row.validator -> row.currentData...");
-      AppFormUtils.copyForm2Entity(row.validator, row.currentData);
-      row.currentData.dirty = true;
+    if (row.validator && row.validator.valid && row.validator.dirty) {
+      row.validator.patchValue({dirty: true});
     }
     return super.confirmCreate(row);
-  };
+  }
 
   confirmEdit(row: TableElement<T>) {
-    if (row.validator.valid && row.validator.dirty) {
-      if (this._debug) console.debug("[table-datasource] confirmEdit(): Copying row.validator -> row.currentData");
-      AppFormUtils.copyForm2Entity(row.validator, row.currentData);
-      row.currentData.dirty = true;
+    if (row.validator && row.validator.valid && row.validator.dirty) {
+      row.validator.patchValue({dirty: true});
     }
     return super.confirmEdit(row);
-  };
+  }
 
   startEdit(row: TableElement<T>) {
     if (this._debug) console.debug("[table-datasource] Start to edit row", row);
     row.startEdit();
-    AppFormUtils.copyEntity2Form(row.currentData, row.validator);
-  };
+  }
 
   cancelOrDelete(row: TableElement<T>) {
     if (this._debug) console.debug("[table-datasource] Cancelling or deleting row", row);
     row.cancelOrDelete();
-
-    // If cancel: apply currenData to validtor
-    if (row.id != -1) {
-      AppFormUtils.copyEntity2Form(row.currentData, row.validator);
-    }
   }
 
-  refreshValidator(row: TableElement<T>) {
-    AppFormUtils.copyEntity2Form(row.currentData, row.validator);
-  }
-
-  public handleError(error: any, message: string): Observable<T[]> {
-    console.error(error && error.message || error);
+  public handleError(error: any, message: string): Observable<LoadResult<T>> {
+    const errorMsg = error && error.message || error;
+    console.error(`${errorMsg} (dataService: ${this._dataService.constructor.name})`, error);
     this.onLoading.emit(false);
-    return Observable.throw(error && error.message && error || message || error);
+    throw new Error(message || errorMsg);
   }
 
   public handleErrorPromise(error: any, message: string) {
-    console.error(error && error.message || error);
+    const errorMsg = error && error.message || error;
+    console.error(`${errorMsg} (dataService: ${this._dataService.constructor.name})`, error);
     this.onLoading.emit(false);
-    throw error; // (error && error.code) ? error : (message || error);
+    throw new Error(message || errorMsg);
   }
 
   public delete(id: number): void {
-    var row = this.getRow(id);
+    const row = this.getRow(id);
     this.onLoading.emit(true);
 
-    /*this.dataService.deleteAll([row.currentData], this.serviceOptions)
+    this._dataService.deleteAll([row.currentData], this.serviceOptions)
+      .catch(err => this.handleErrorPromise(err, 'Unable to delete row'))
       .then(() => {
-        super.delete(id);
-        this.onLoading.emit(false);
-      })
-      .catch(err => {
-        console.error(err);
-        this.onLoading.emit(false);
-      });*/
+        setTimeout(() => {
+          // make sure row has been deleted (because GrapQHl cache remove can failed)
+          const present = this.getRow(id) === row;
+          if (present) super.delete(id);
+          this.onLoading.emit(false);
+        }, 300);
+      });
   }
 
-  /* -- private method -- */
+  public deleteAll(rows: TableElement<T>[]): Promise<any> {
+    this.onLoading.emit(true);
+
+    const data = rows.map(r => r.currentData);
+    const rowsById = rows.reduce((res, row) => {
+      res[row.id] = row;
+      return res;
+    }, {});
+    const self = this;
+    const selfDelete = super.delete;
+
+    return this._dataService.deleteAll(data, this.serviceOptions)
+      .catch(err => this.handleErrorPromise(err, 'Unable to delete row'))
+      .then(() => {
+        // make sure row has been deleted (because GrapQHl cache remove can failed)
+        const rowNotDeleted = Object.getOwnPropertyNames(rowsById).reduce((res, id) => {
+          const row = rowsById[id];
+          const present = self.getRow(+id) === row;
+          return present ? res.concat(row) : res;
+        }, []).sort((a, b) => a.id > b.id ? -1 : 1);
+        rowNotDeleted.forEach(r => selfDelete.call(self, r.id));
+        this.onLoading.emit(false);
+      });
+  }
 
   public getRows(): Promise<TableElement<T>[]> {
-    return this.connect().first().toPromise();
+    return this.connect().pipe(first()).toPromise();
   }
 
-  private logRowErrors(row: TableElement<T>): void {
+  public async asyncCreateNew(): Promise<void> {
+    if (this._creating) return; // Avoid multiple call
+    this._creating = true;
+    super.createNew();
+    const row = this.getRow(-1);
 
-    if (!row.validator.hasError) return;
+    if (row && this._config && this._config.onRowCreated) {
+      const res = this._config.onRowCreated(row);
+      // If async function, wait the end before ending
+      if (res instanceof Promise) {
+        try {
+          await res;
+        }
+        catch(err)  {
+          console.error(err && err.message | err, err);
+        }
+      }
+    }
 
-    var errorsMessage = "";
+    this._creating = false;
+  }
+
+  /* -- protected method -- */
+
+  protected logRowErrors(row: TableElement<T>): void {
+
+    if (!row.validator || !row.validator.hasError) return;
+
+    let errorsMessage = "";
     Object.getOwnPropertyNames(row.validator.controls)
       .forEach(key => {
-        var control = row.validator.controls[key];
+        let control = row.validator.controls[key];
         if (control.invalid) {
-          errorsMessage += "'" + key + "' (" + (control.errors ? Object.getOwnPropertyNames(control.errors) : 'unkown error') + "),";
+          errorsMessage += "'" + key + "' (" + (control.errors ? Object.getOwnPropertyNames(control.errors) : 'unknown error') + "),";
         }
       });
 

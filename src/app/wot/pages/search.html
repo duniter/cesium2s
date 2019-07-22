@@ -113,7 +113,7 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <mat-autocomplete-field floatLabel="never" [placeholder]="field.label|translate" [formControl]="row.validator.controls[field.name]"
-          [service]="field.dataService" [filter]="field.dataFilter" [serviceOptions]="field.dataServiceOptions"
+          [service]="field.dataService" [filter]="field.dataFilter"
           [required]="field.required" [displayWith]="referentialToString">
         </mat-autocomplete-field>
       </mat-cell>

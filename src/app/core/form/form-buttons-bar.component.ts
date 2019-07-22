@@ -9,30 +9,43 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class FormButtonsBarComponent {
 
     @Input()
-    disabled: boolean = false;
+    disabled = false;
 
     @Input()
-    disabledCancel: boolean = false;
+    disabledCancel = false;
 
     @Output()
-    onCancel: EventEmitter<any> = new EventEmitter<any>();
+    onCancel: EventEmitter<Event> = new EventEmitter<Event>();
 
     @Output()
-    onSave: EventEmitter<any> = new EventEmitter<any>();
+    onSave: EventEmitter<Event> = new EventEmitter<Event>();
 
     @Output()
-    onNext: EventEmitter<any> = new EventEmitter<any>();
+    onNext: EventEmitter<Event> = new EventEmitter<Event>();
 
-    hotkeys(event) {
-        // Ctrl+S 
-        if (event.keyCode == 83 && event.ctrlKey) {
+    @Output()
+    onBack: EventEmitter<Event> = new EventEmitter<Event>();
+
+    hotkeys(event: Event) {
+
+      if (event instanceof KeyboardEvent) {
+        if (event.repeat || event.defaultPrevented) return; // skip
+
+        // Ctrl+S
+        if (event.ctrlKey && event.key == 's') {
             if (!this.disabled) this.onSave.emit(event);
             event.preventDefault();
         }
-        // Ctrl+Z 
-        if (event.keyCode == 90 && event.ctrlKey) {
+        // Ctrl+Z
+        else if (event.ctrlKey && event.key == 'z') {
             if (!this.disabled && !this.disabledCancel) this.onCancel.emit(event);
             event.preventDefault();
         }
+        // esc
+        else if (event.key == 'Escape') {
+          this.onBack.emit(event);
+          event.preventDefault();
+        }
+      }
     }
 }

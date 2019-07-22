@@ -35,6 +35,6 @@ export class AuthModal {
       this.loading = false;
       this.form.error = err && err.message || err;
       return;
-    };
+    }
   }
 }

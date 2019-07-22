@@ -2,6 +2,8 @@
   "APP_NAME": "Cesium",
   "COMMON": {
     "BTN_CANCEL": "Annuler",
+    "BTN_ABORT_CHANGES": "Abandonner les modifications",
+    "BTN_RESET": "Réinitialiser",
     "BTN_ADD": "Ajouter",
     "BTN_APPLY": "Appliquer",
     "BTN_EDIT": "Modifier",
@@ -21,7 +23,13 @@
     "BTN_UNDO": "Annuler les modifications",
     "BTN_TABLE_EDIT": "Editer dans le tableau",
     "BTN_TABLE_OPEN": "Editer dans un formulaire",
+    "BTN_SHOW_HELP": "Voir l'aide",
+    "BTN_HIDE_MENU": "Masquer le menu",
+    "BTN_SHOW_MENU": "Afficher le menu",
+    "BTN_LOGOUT": "Quitter",
     "CREATED_ON": "Créé le ",
+    "COMMENTS": "Commentaires",
+    "EMPTY_OPTION": "(Vide)",
 
     "DATE_PATTERN": "DD/MM/YYYY",
     "DATE_TIME_PATTERN": "DD/MM/YYYY HH:mm",
@@ -30,40 +38,49 @@
     "DATE_MONTH_YEAR_PATTERN": "MM/YYYY",
     "DATE_PLACEHOLDER": "jj/mm/aaaa",
 
-    "DDMMSS_PLACEHOLDER": "DD° MM' SS\" N|S",
-    "DDMM_PLACEHOLDER": "DD° MM.MMM' N|S",
-    "DD_PLACEHOLDER": "+DD.DDD°",
-    "DDDMMSS_PLACEHOLDER": "DDD° MM' SS\" E|W",
-    "DDDMM_PLACEHOLDER": "DDD° MM.MMM' E|W",
-    "DDD_PLACEHOLDER": "+DDD.DDD°",
-
-    "METADATA": "Métadonnées :",
-
+    "DAY_UNIT": "j",
     "DATE": "Date",
+    "TIME": "Heure",
     "HOUR": "Heure",
     "MINUTE": "Minute",
-    "HOUR_PLACEHOLDER": "hh:mm",
-    "MINUTE_PLACEHOLDER": "mm",
+    "TIME_PLACEHOLDER": "hh:mm",
+    "DURATION_DOTS": "Durée :",
 
     "YES": "Oui",
     "NO": "Non",
 
     "UPDATED_ON": "Mise à jour le",
     "RECORDER": "Saisisseur",
+    "RESULT_COUNT": "{{count}} résultats",
+    "NO_RESULT": "Aucun résultat",
 
-    "DISPLAYED_COLUMNS": "Colonnes visibles"
+    "DISPLAYED_COLUMNS": "Paramétrage des colonnes",
+    "DISPLAYED_COLUMNS_DOTS": "Colonnes...",
+
+    "FORM": {
+      "HAS_ERROR": "Veuillez corriger des erreurs dans le formulaire"
+    },
+    "PAGINATOR": {
+      "ITEMS_PER_PAGE":"Nombre de lignes",
+      "NEXT_PAGE":"Page suivante",
+      "PREVIOUS_PAGE":"Page précédente",
+      "OF": "sur"
+    }
   },
   "MENU": {
     "HOME": "Accueil",
     "WOT": "Annuaire",
     "ADMINISTRATION_DIVIDER": "Administration",
     "FOOTER_VERSION_ABOUT": "v{{version}} | à propos",
-    "BTN_ACCOUNT": "Compte",
-    "BTN_LOGOUT": "Quitter"
+    "LOCAL_SETTINGS": "Paramètres",
+    "SERVER_SETTINGS": "Configuration serveur",
+    "LOGOUT": "Se déconnecter",
+    "ABOUT": "À propos"
   },
   "ABOUT": {
     "TITLE": "À propos",
     "VERSION": "<b>v{{version}}</b>",
+    "LICENSE": "Application <b>libre</b> (Licence GNU AGPLv3).",
     "REPORT_ISSUE": "N'hésitez pas à nous remonter les anomalies rencontrés !",
     "BTN_REPORT_ISSUE": "Remonter un problème",
     "SOURCE_CODE": "Code source :",
@@ -75,13 +92,19 @@
     "BTN_WOT_SEARCH": "Rechercher dans l'annuaire",
     "NOT_THIS_ACCOUNT_QUESTION": "Vous n'êtes pas <b>{{displayName}}</b> ?",
     "BTN_DISCONNECT": "Déconnecter ce compte",
-    "BTN_MY_ACCOUNT": "Mon compte"
+    "BTN_MY_ACCOUNT": "Mon compte",
+    "BTN_REGISTER": "S'inscrire"
   },
   "AUTH": {
     "TITLE": "Authentification",
     "BTN_LOGIN": "Se connecter",
     "BTN_REGISTER": "Créer un compte",
-    "NO_ACCOUNT_QUESTION": "Vous n'avez pas encore de compte ?"
+    "NO_ACCOUNT_QUESTION": "Vous n'avez pas encore de compte ?",
+    "LOGOUT": {
+      "CONFIRM_TITLE": "Confirmation",
+      "CONFIRM_MESSAGE": "Êtes-vous sûr de vouloir vous déconnecter ?",
+      "BTN_CONFIRM": "Oui, continuer"
+    }
   },
   "REGISTER": {
     "TITLE": "Inscription",
@@ -124,6 +147,45 @@
       "LAT_LONG_FORMAT": "Format latitude/longitude"
     }
   },
+  "SETTINGS": {
+    "TITLE": "Paramètres",
+    "DESCRIPTION": "Voici les paramètres de l'application :",
+    "INHERIT_FROM_ACCOUNT": "Utiliser les préférences de l'utilisateur connecté",
+    "LOCALE": "Langue",
+    "LAT_LONG_FORMAT": "Format latitude/longitude",
+    "NETWORK_DIVIDER": "Paramètres réseau",
+    "PEER_URL": "Addresse du noeud réseau",
+    "BTN_CHANGE_PEER": "Changer de noeud",
+    "DATA_ENTRY_DIVIDER": "Préférence diverses",
+    "USAGE_MODE": "Mode de saisie",
+    "USAGE_MODES":  {
+      "FIELD": "Saisie terrain",
+      "DESK": "Saisie bureau"
+    },
+    "FIELD_NAME": "Champ de saisie",
+    "FIELD_DISPLAY": "Affichage",
+    "BTN_ADD_FIELD": "Ajouter un champ",
+    "FIELDS": {
+      "QUALITATIVE_VALUE": "Paramètre avec liste de valeurs",
+      "TAXON_GROUP": "Espèce commerciale",
+      "TAXON_NAME": "Espèce scientifique",
+      "GEAR": "Engin de pêche",
+      "ATTRIBUTES": {
+        "LABEL": "Code",
+        "NAME": "Libellé"
+      }
+    },
+    "OPTIONS": {
+      "COLORS": {
+        "PRIMARY": "Thème > Couleur principale",
+        "SECONDARY": "Thème > Couleur secondaire",
+        "TERTIARY": "Thème > Couleur tertiaire"
+      }
+    },
+    "ERROR": {
+      "PEER_NOT_REACHABLE": "Noeud injoignable"
+    }
+  },
   "IDENTITY": {
     "UID": "Uid",
     "EMAIL": "Email",
@@ -138,6 +200,15 @@
       }
     }
   },
+  "NETWORK": {
+    "PEER": {
+      "OFFLINE": "Noeud injoignable",
+      "SELECT_MODAL": {
+        "TITLE": "Noeud réseau",
+        "HELP": "Veuillez choisir un noeud réseau auquel vous connecter :"
+      }
+    }
+  },
   "ERROR": {
     "FIELD_REQUIRED": "Champ obligatoire.",
     "FIELD_TOO_SHORT": "Valeur trop courte.",
@@ -147,22 +218,30 @@
     "FIELD_MIN": "La valeur minimale autorisée est {{min}}",
     "FIELD_MIN_COMPACT": "Min autorisée={{min}}",
     "FIELD_MAX": "La valeur maximale autorisée est {{max}}",
+    "FIELD_MAX_LENGTH": "Longueur maximale: {{requiredLength}}",
     "FIELD_MAX_COMPACT": "Max autorisé={{max}}",
     "FIELD_MAXIMUM_DECIMALS": "Nombre de décimale incorrect ({{max}} max)",
     "FIELD_MAXIMUM_DECIMALS_COMPACT": "Nb décimale max={{max}}",
     "FIELD_INVALID": "Valeur non valide",
     "FIELD_NOT_VALID_INTEGER": "Valeur entière attendue",
+    "FIELD_NOT_VALID_EMAIL": "Addresse email invalide",
     "FIELD_NOT_VALID_UID": "Pseudonyme invalide",
     "FIELD_NOT_VALID_DATE": "Date invalide",
+    "FIELD_NOT_VALID_DATE_AFTER": "Dates incohérentes",
+    "FIELD_NOT_VALID_DATE_MAX_DURATION": "Durée trop longue",
+    "FIELD_NOT_VALID_DATE_MIN_DURATION": "Durée trop courte",
     "FIELD_NOT_VALID_HOUR_MINUTE": "Heure/minute invalide",
     "FIELD_NOT_VALID_DATE_TIME": "Date/heure invalide",
     "FIELD_NOT_VALID_LATITUDE": "Latitude invalide",
     "FIELD_NOT_VALID_LONGITUDE": "Longitude invalide",
     "FIELD_NOT_VALID_PUBKEY": "Clé publique invalide",
+    "FIELD_NOT_UNIQUE": "Valeur déjà utilisée",
     "SPACE_NOT_ALLOW": "Espaces ou caractères spéciaux non autorisés",
     "SCRYPT_ERROR": "Erreur de generation des clefs d'ouverture du compte",
+    "UNKNOWN_ACCOUNT_EMAIL": "Aucun compte ne correspond à cet email.",
     "UNKNOWN_ACCOUNT_UID": "Aucun compte ne correspond à ce pseudonyme.",
     "BAD_PASSWORD": "Mot de passe incorrect.",
+    "EMAIL_ALREADY_REGISTERED": "Email déjà enregistrée",
     "UID_ALREADY_REGISTERED": "Pseudonyme déjà enregistrée",
     "UNKNOWN_NETWORK_ERROR": "Erreur de communication avec le serveur.<small><br/>Si le problème persiste, veuillez contacter votre administrateur.</small>",
     "BAD_UPDATE_DATE": "Sauvegarde impossible (modification concurrente détectée).",
@@ -170,14 +249,16 @@
     "LOAD_ACCOUNT_ERROR": "Erreur de chargement du compte utilisateur.<small><br/>Si le problème persiste, veuillez contacter votre administrateur.</small>",
     "SAVE_ACCOUNT_ERROR": "Erreur lors de la sauvegarde de votre compte.<small><br/>Si le problème persiste, veuillez contacter votre administrateur.</small>",
     "ACCOUNT_NOT_EXISTS": "Votre compte semble inexistant, et ne peut donc être sauvegardé.<small><br/>Si le problème persiste, veuillez contacter votre administrateur.</small>",
-    "UNAUTHORIZED": "Echec de l'authentification sur le serveur",
+    "UNAUTHORIZED": "Accès au serveur non autorisé",
+    "FORBIDDEN": "Accès non autorisé",
     "AUTH_SERVER_ERROR": "Erreur lors de l'authentification sur le serveur",
     "AUTH_CHALLENGE_ERROR": "Erreur lors de l'authentification sur le serveur (récupration du challenge)",
     "TABLE_INVALID_ROW_ERROR": "Il existe une ligne en erreur"
   },
   "CONFIRM": {
     "ALERT_HEADER": "Confirmation",
-    "SAVE": "Des mofifications n'ont pas été enregistrées.<br/><br/>Voulez-vous <b>sauvegarder</b> avant de continuer ?",
+    "SAVE": "Des mofifications n'ont pas été enregistrées.<br/><br/>Voulez-vous les <b>sauvegarder</b> avant de continuer ?",
+    "SAVE_BEFORE_CLOSE": "Des mofifications n'ont pas été enregistrées.<br/><br/>Voulez-vous les <b>sauvegarder</b> avant de fermer ?",
     "CANCEL_CHANGES": "Vos dernières modifications seront annulées.<br/><br/><b>Êtes-vous sûr</b> de vouloir continuer ?",
     "DELETE": "Cette opération est irreversible.<br/><br/><b>Êtes-vous sûr</b> de vouloir continuer ?"
   }

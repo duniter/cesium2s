@@ -3,12 +3,14 @@
 // --------------------------------------------------
 $screen-xxs-max: 400px;
 $screen-xs: 401px;
-$screen-xs-max: 767px;
-$screen-sm: 768px;
-$screen-sm-max: 991px;
-$screen-md: 992px;
-$screen-md-max: 1199px;
-$screen-lg: 1200px;
+$screen-xs-max: 575px;
+$screen-sm: 576px;
+$screen-sm-max: 767px;
+$screen-md: 768px;
+$screen-md-max: 991px;
+$screen-lg: 992px;
+$screen-lg-max: 1199px;
+$screen-xl: 1200px;
 
 // --------------------------------------------------
 // Hidden/Visible responsive
@@ -17,9 +19,14 @@ $screen-lg: 1200px;
   @-ms-viewport {
     width: 320px;
   }
+  [hidden-xxs],
+  .hidden-xxs {
+    display: none !important;
+    visibility: hidden !important;
+  }
 }
 
-// Extra small device: Phones (<767px)
+// Extra small device
 @media screen and (max-width: $screen-xs-max) {
 
   [hidden-xs],
@@ -113,13 +120,20 @@ $screen-lg: 1200px;
   }
 }
 
-// Small devices: Tablets (≥768px)
-@media screen and (max-width: $screen-sm-max) and (min-width: $screen-sm) {
+// Small devices:
+@media screen and (min-width: $screen-sm) and (max-width: $screen-sm-max) {
 
   [hidden-sm],
   .hidden-sm {
     display: none !important;
     visibility: hidden !important;
+  }
+
+  [no-padding-sm].scroll-content,
+  [no-padding-sm],
+  .no-padding-sm .scroll-content,
+  .no-padding-sm {
+    padding: 0px !important;
   }
 }
 
@@ -180,7 +194,7 @@ $screen-lg: 1200px;
   }
 }
 
-// Medium devices: Desktops (≥992px)
+// Medium devices:
 @media screen and (min-width: $screen-md) and (max-width: $screen-md-max) {
   .hidden-md {
     display: none !important;
@@ -223,7 +237,7 @@ $screen-lg: 1200px;
   }
 }
 
-// Large devices: Desktops (≥1200px)
+// Large devices
 @media screen and (min-width: $screen-lg) {
   .hidden-lg {
     display: none !important;
@@ -265,23 +279,23 @@ $screen-lg: 1200px;
 // --------------------------------------------------
 // Global style responsive
 // --------------------------------------------------
-@media screen and (max-width: $screen-sm-max) {
-  body {
-    cursor: url('http://ionicframework.com/img/finger.png'), auto;
-  }
-}
+//@media screen and (max-width: $screen-sm-max) {
+//  body {
+//    cursor: url('http://ionicframework.com/img/finger.png'), auto;
+//  }
+//}
 
-@media (min-width: $screen-sm) {
-  .bar-button-menutoggle-md {
-    display: none !important
-  }
-}
+//@media (min-width: $screen-sm) {
+//  .bar-button-menutoggle-md {
+//    display: none !important
+//  }
+//}
 
-@media screen and (min-width: $screen-md) {
-  body {
-    cursor: inherit;
-  }
-}
+//@media screen and (min-width: $screen-md) {
+//  body {
+//    cursor: inherit;
+//  }
+//}
 
 @media screen and (min-width: $screen-md) {
 
@@ -299,20 +313,25 @@ $screen-lg: 1200px;
 // --------------------------------------------------
 // Forms
 // --------------------------------------------------
-@media screen and (min-width: $screen-md) {
-  form ion-col[align-self-end]>ion-label {
-    text-align: end;
-    line-height: 37px;
-  }
-
-  form ion-col[align-self-center]>ion-label {
-    text-align: center;
+// On small screen, align label on left
+@media screen and (max-width: $screen-sm-max) {
+  form ion-col>ion-label[float-center],
+  form ion-col>ion-label[float-end] {
+    text-align: start !important;
     line-height: 37px;
   }
 }
 
+// On large screen, align label on right
+@media screen and (min-width: $screen-md) {
+  form ion-col > ion-label[float-center],
+  form ion-col > ion-label[float-end] {
+    text-align: end !important;
+  }
+}
+
 // --------------------------------------------------
-// Custom usefull CSS style
+// Custom useful CSS style
 // --------------------------------------------------
 [hidden] {
   display: none !important;
@@ -329,3 +348,4 @@ $screen-lg: 1200px;
 [padding-right] {
   padding-right: 16px;
 }
+
