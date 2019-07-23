@@ -1,22 +1,13 @@
 import {Injectable} from "@angular/core";
 import {base58, CryptoService, KeyPair} from "./crypto.service";
-import {
-  Account,
-  getMainProfile,
-  hasUpperOrEqualsProfile,
-  StatusIds,
-  UsageMode,
-  UserProfileLabel,
-  UserSettings
-} from "./model";
+import {Account, getMainProfile, hasUpperOrEqualsProfile, StatusIds, UserProfileLabel, UserSettings} from "./model";
 import {Subject} from "rxjs";
 import {Storage} from '@ionic/storage';
 import {FetchPolicy} from "apollo-client";
 import {ErrorCodes} from "./errors";
-import {SuggestionDataService} from "../../shared/services/data-service.class";
+import {SuggestionDataService, WatchFetchOptions} from "../../shared/services/data-service.class";
 import {LocalSettingsService} from "./local-settings.service";
-import {DuniterService, FetchOptions, WatchFetchOptions} from "./duniter/duniter.service";
-import {zip, zipAll} from "rxjs/operators";
+import {DuniterService} from "./duniter/duniter.service";
 
 
 export declare interface AccountHolder {
@@ -26,7 +17,8 @@ export declare interface AccountHolder {
   pubkey: string;
   account: Account;
   mainProfile: String;
-};
+}
+
 export interface AuthData {
   salt: string;
   password: string;
@@ -140,43 +132,37 @@ export class AccountService {
   }
 
   public hasMinProfile(label: UserProfileLabel): boolean {
-    // should be login, and status ENABLE or TEMPORARY
-    if (!this.data.account || !this.data.account.pubkey ||
-      (this.data.account.statusId != StatusIds.MEMBER && this.data.account.statusId != StatusIds.WALLET)) {
+    // should be login
+    if (!this.data.account || !this.data.account.pubkey) {
       return false;
     }
     return hasUpperOrEqualsProfile(this.data.account.profiles, label as UserProfileLabel);
   }
 
   public hasExactProfile(label: UserProfileLabel): boolean {
-    // should be login, and status ENABLE or TEMPORARY
-    if (!this.data.account || !this.data.account.pubkey ||
-      (this.data.account.statusId != StatusIds.MEMBER && this.data.account.statusId != StatusIds.WALLET))
+    // should be login
+    if (!this.data.account || !this.data.account.pubkey)
       return false;
     return !!this.data.account.profiles.find(profile => profile === label);
   }
 
 
-  public hasProfileAndIsEnable(label: UserProfileLabel): boolean {
-    // should be login, and status ENABLE
-    if (!this.data.account || !this.data.account.pubkey || this.data.account.statusId != StatusIds.MEMBER) return false;
+  public hasProfile(label: UserProfileLabel): boolean {
+    // should be login
+    if (!this.data.account || !this.data.account.pubkey) return false;
     return hasUpperOrEqualsProfile(this.data.account.profiles, label as UserProfileLabel);
   }
 
   public isAdmin(): boolean {
-    return this.hasProfileAndIsEnable('ADMIN');
+    return this.hasProfile('ADMIN');
+  }
+
+  public isMember(): boolean {
+    return this.hasProfile('MEMBER');
   }
 
   public isUser(): boolean {
-    return this.hasProfileAndIsEnable('USER');
-  }
-
-  /**
-   * @deprecated
-   * @param mode
-   */
-  public isUsageMode(mode: UsageMode): boolean {
-    return this.settings.isUsageMode(mode);
+    return this.hasProfile('USER');
   }
 
   public isOnlyGuest(): boolean {
@@ -196,7 +182,7 @@ export class AccountService {
 
     if (this._debug) console.debug('[account] Register new user account...', data.account);
     this.data.loaded = false;
-    let now = Date.now();
+    const now = Date.now();
 
     try {
       const keypair = await this.cryptoService.scryptKeypair(data.salt, data.password);

@@ -1,12 +1,13 @@
 import {Injectable} from "@angular/core";
 import gql from "graphql-tag";
 import {GraphqlService} from "../../network/graphql.service";
-import {FetchOptions, IPeerApiService, WatchFetchOptions} from "../duniter.service";
+import {IPeerApiService} from "../duniter.service";
 import {GvaPendingIdentity, GvaSource} from "./gva.model";
 import {GvaErrorCodes} from "./gva.errors";
 import {Observable} from "rxjs";
-import {Identity, PendingIdentity, Source} from "../duniter.model";
+import {PendingIdentity} from "../duniter.model";
 import {map} from "rxjs/operators";
+import {WatchFetchOptions} from "../../../../shared/shared.module";
 
 
 /* ------------------------------------

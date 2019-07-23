@@ -28,7 +28,9 @@ import {
   LoadResult,
   TableDataService,
   EditorDataService,
-  EditorDataServiceLoadOptions
+  EditorDataServiceLoadOptions,
+  FetchOptions,
+  WatchFetchOptions
 } from "./services/data-service.class";
 import {
   fromDateISOString,
@@ -56,7 +58,8 @@ import {ColorPickerModule} from 'ngx-color-picker';
 
 export {
   DataService, SuggestionDataService, TableDataService, LoadResult,
-  EditorDataService, EditorDataServiceLoadOptions,
+  EditorDataService, EditorDataServiceLoadOptions, FetchOptions,
+  WatchFetchOptions,
   isNil, isNilOrBlank, isNotNil, isNotNilOrBlank, isNotEmptyArray, nullIfUndefined,
   toBoolean, toFloat, toInt,
   toDateISOString, fromDateISOString,

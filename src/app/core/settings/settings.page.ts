@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {AccountService} from '../services/account.service';
-import {LocalSettings, PropertyValue, UsageMode} from '../services/model';
+import {LocalSettings, PropertyValue} from '../services/model';
 import {FormArray, FormBuilder, FormControl} from '@angular/forms';
 import {AppForm} from '../form/form.class';
 import {Moment} from 'moment/moment';
@@ -30,7 +30,6 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
   mobile: boolean;
   loading = true;
   saving = false;
-  usageModes: UsageMode[] = ['FIELD', 'DESK'];
   fields = [
     {
       key: 'qualitativeValue',
@@ -138,7 +137,6 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
     // Set defaults
     data.accountInheritance = toBoolean(data.accountInheritance, true);
     data.locale = data.locale || this.translate.currentLang || this.translate.defaultLang;
-    data.usageMode = data.usageMode || 'DESK';
 
     // Set peer
     if (isNilOrBlank(data.peerUrl)) {

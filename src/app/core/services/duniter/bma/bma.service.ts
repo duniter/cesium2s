@@ -2,10 +2,10 @@ import {Injectable} from "@angular/core";
 import {NetworkService} from "../../network/network.service";
 import {HttpClient} from "@angular/common/http";
 import {Peer} from "../../network/network.model";
-import {WatchFetchOptions} from "../duniter.service";
 import {Observable} from "rxjs";
 import {Source} from "../duniter.model";
 import {map} from "rxjs/operators";
+import {WatchFetchOptions} from "../../../../shared/services/data-service.class";
 
 
 @Injectable({providedIn: 'root'})

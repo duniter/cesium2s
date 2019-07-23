@@ -1,20 +1,13 @@
 import {Injectable} from "@angular/core";
 import {DuniterErrorCodes} from "./duniter.errors";
-import {LocalSettingsService} from "../local-settings.service";
 import {GvaService} from "./gva/gva.service";
 import {NetworkService} from "../network/network.service";
 import {BmaService} from "./bma/bma.service";
 import {PendingIdentity, Source} from "./duniter.model";
 import {Observable} from "rxjs";
-import {FetchPolicy, WatchQueryFetchPolicy} from "apollo-client";
+import {WatchFetchOptions} from "../../../shared/services/data-service.class";
 
 
-export declare interface FetchOptions {
-  fetchPolicy?: 'cache-first' | 'network-only' | 'cache-only' | 'no-cache' | 'standby';
-}
-export declare interface WatchFetchOptions {
-  fetchPolicy?: 'cache-first' | 'network-only' | 'cache-only' | 'no-cache' | 'standby' | 'cache-and-network';
-}
 export interface IPeerApiService {
   /**
    * Check is an UID exists or not

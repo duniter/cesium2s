@@ -5,6 +5,19 @@ export declare interface LoadResult<T> {
   data: T[];
   total?: number;
 }
+export declare interface Page {
+  offset?: number;
+  size?: number;
+  sortAttribute?: string;
+  sortDirection?: 'ASC' | 'DESC';
+}
+export declare interface FetchOptions {
+  fetchPolicy?: 'cache-first' | 'network-only' | 'cache-only' | 'no-cache' | 'standby';
+}
+export declare interface WatchFetchOptions {
+  fetchPolicy?: 'cache-first' | 'network-only' | 'cache-only' | 'no-cache' | 'standby' | 'cache-and-network';
+  page?: Page;
+}
 export declare interface SuggestionDataService<T, F = any> {
   suggest(value: any, options?: F): Promise<T[]>;
 }

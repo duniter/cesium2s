@@ -35,7 +35,6 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
     'en': 'English'
   };
   locales: String[] = [];
-  latLongFormats = ['DDMMSS', 'DDMM', 'DD'];
   saving: boolean = false;
 
   constructor(

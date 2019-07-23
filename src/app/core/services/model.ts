@@ -64,11 +64,9 @@ export const ConfigOptions = {
   }
 };
 
-export type UsageMode = 'DESK' | 'FIELD';
+export type UserProfileLabel = 'ADMIN' | 'MEMBER' | 'USER' | 'GUEST';
 
-export type UserProfileLabel = 'ADMIN' | 'USER' | 'SUPERVISOR' | 'GUEST';
-
-export const PRIORITIZED_USER_PROFILES: UserProfileLabel[] = ['ADMIN', 'SUPERVISOR', 'USER', 'GUEST'];
+export const PRIORITIZED_USER_PROFILES: UserProfileLabel[] = ['ADMIN', 'MEMBER', 'USER', 'GUEST'];
 
 export function getMainProfile(profiles?: string[]): UserProfileLabel {
   return profiles && profiles.length && PRIORITIZED_USER_PROFILES.find(pp => profiles.indexOf(pp) > -1) || 'GUEST';
@@ -365,7 +363,6 @@ export declare interface LocalSettings {
   pages?: any;
   peerUrl?: string;
   locale?: string;
-  usageMode?: UsageMode;
   mobile?: boolean;
   accountInheritance?: boolean;
   touchUi?: boolean;

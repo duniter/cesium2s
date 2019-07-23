@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {PropertyValue, LocalSettings, UsageMode} from "./model";
+import {PropertyValue, LocalSettings} from "./model";
 import {TranslateService} from "@ngx-translate/core";
 import {Storage} from '@ionic/storage';
 
@@ -28,10 +28,6 @@ export class LocalSettingsService {
 
   get locale(): string {
     return this.data && this.data.locale || this.translate.currentLang || this.translate.defaultLang;
-  }
-
-  get usageMode(): UsageMode {
-    return (this.data && this.data.usageMode || (this.mobile ? "FIELD" : "DESK"));
   }
 
   get mobile(): boolean {
@@ -67,7 +63,6 @@ export class LocalSettingsService {
     this.data.locale = this.translate.currentLang || this.translate.defaultLang;
     this.data.accountInheritance = true;
     this.data.mobile = undefined;
-    this.data.usageMode = undefined;
 
     const defaultPeer = environment.defaultPeer && Peer.fromObject(environment.defaultPeer);
     this.data.peerUrl = defaultPeer && defaultPeer.url || undefined;
@@ -84,7 +79,6 @@ export class LocalSettingsService {
       .then(() => {
         this.data.mobile = this.platform.is('mobile');
         this.data.mobile = this.data.mobile || this.platform.is('phablet') || this.platform.is('tablet');
-        this.data.usageMode = this.data.mobile ? "FIELD" : "DESK"; // FIELD by default, if mobile detected
       })
       .then(() => this.restoreLocally())
       .then(async (settings) => {
@@ -102,11 +96,6 @@ export class LocalSettingsService {
   public ready(): Promise<void> {
     if (this._started) return Promise.resolve();
     return this.start();
-  }
-
-
-  public isUsageMode(mode: UsageMode): boolean {
-    return this.usageMode === mode;
   }
 
   public async restoreLocally(): Promise<LocalSettings | undefined> {

@@ -22,7 +22,6 @@ export class LocalSettingsValidatorService implements ValidatorService {
     return this.formBuilder.group({
       accountInheritance: [data && data.accountInheritance || true, Validators.required],
       locale: [data && data.locale || null, Validators.required],
-      usageMode: [data && data.usageMode || 'DESK', Validators.required],
       peerUrl: [data && data.peerUrl, Validators.required],
       fields: this.getFieldsArray(data && data.fields)
     }, {
