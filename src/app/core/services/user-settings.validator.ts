@@ -18,7 +18,6 @@ export class UserSettingsValidatorService implements ValidatorService {
   getFormGroup(data?: UserSettings): FormGroup {
     return this.formBuilder.group({
       id: [data && data.id || null],
-      updateDate: [data && data.updateDate || null],
       locale: [data && data.locale || null, Validators.required],
       content: this.formBuilder.group({
       //usageMode: [data && data.content && data.content.usageMode || 'DESK', Validators.required],

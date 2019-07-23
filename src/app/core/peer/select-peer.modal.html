@@ -23,23 +23,17 @@
       </ion-label>
     </ion-list-header>
 
-    <!-- loader -->
-    <ion-item *ngIf="loading" lines="none">
-      <ion-label text-center>
-        <ion-spinner></ion-spinner>
-      </ion-label>
-    </ion-item>
-
     <ion-item tappable ripple
               *ngFor="let peer of $peers | async"
               (click)="selectPeer(peer)"
               detail>
 
       <!-- icon -->
-      <ion-avatar slot="start" *ngIf="peer.reachable" >
-        <ion-img [src]="peer.favicon || (peer.url + '/api/favicon')"></ion-img>
+      <ion-avatar slot="start" *ngIf="peer.reachable && peer.avatar" >
+        <ion-img [src]="peer.avatar"></ion-img>
       </ion-avatar>
-      <ion-icon slot="start"  *ngIf="!peer.reachable" name="desktop" color="medium" text-center></ion-icon>
+      <ion-icon slot="start" *ngIf="peer.reachable && !peer.avatar" name="desktop" color="success" text-center></ion-icon>
+      <ion-icon slot="start" *ngIf="!peer.reachable" name="desktop" color="medium" text-center></ion-icon>
 
       <!-- Peer is UP -->
       <ion-grid *ngIf="peer.reachable">
@@ -74,6 +68,13 @@
             <span translate>NETWORK.PEER.OFFLINE</span>
           </h4>
         </ion-text>
+      </ion-label>
+    </ion-item>
+
+    <!-- loader -->
+    <ion-item *ngIf="loading" lines="none">
+      <ion-label text-center>
+        <ion-spinner></ion-spinner>
       </ion-label>
     </ion-item>
   </ion-list>

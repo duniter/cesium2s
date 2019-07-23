@@ -7,12 +7,10 @@ import {AccountValidatorService} from './services/account.validator';
 import {UserSettingsValidatorService} from './services/user-settings.validator';
 import {AuthGuardService} from './services/auth-guard.service';
 import {CryptoService} from './services/crypto.service';
-import {BaseDataService} from './services/base.data-service.class';
 import {AuthForm} from './auth/form/form-auth';
 import {AuthModal} from './auth/modal/modal-auth';
 import {AboutModal} from './about/modal-about';
 
-import {RegisterConfirmPage} from "./register/confirm/confirm";
 import {AccountPage} from "./account/account";
 import {AppForm} from './form/form.class';
 import {AppTabPage} from './form/page.class';
@@ -26,7 +24,6 @@ import {IonicStorageModule} from '@ionic/storage';
 import {HomePage} from './home/home';
 import {RegisterForm} from './register/form/form-register';
 import {RegisterModal} from './register/modal/modal-register';
-import {AppGraphQLModule} from './graphql/graphql.module';
 import {DateAdapter} from "@angular/material";
 import * as moment from "moment/moment";
 import {AppFormUtils, FormArrayHelper} from './form/form.utils';
@@ -41,9 +38,6 @@ import {
     Person,
     personsToString,
     personToString,
-    Referential,
-    ReferentialRef,
-    referentialToString,
     StatusIds
 } from './services/model';
 // import ngx-translate and the http loader
@@ -53,9 +47,9 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {SelectPeerModal} from "./peer/select-peer.modal";
 import {SettingsPage} from "./settings/settings.page";
 import {LocalSettingsValidatorService} from "./services/local-settings.validator";
-import {GraphqlService} from "./services/graphql.service";
+import {GraphqlService} from "./services/network/graphql.service";
 import {PlatformService} from "./services/platform.service";
-import {NetworkService} from "./services/network.service";
+import {NetworkService} from "./services/network/network.service";
 import {LocalSettingsService} from "./services/local-settings.service";
 import {MatOptionFormField} from "./config/option-field.component";
 import {
@@ -66,8 +60,17 @@ import {
     nullIfUndefined,
     SharedModule,
     TableDataService,
+    toBoolean,
     toDateISOString
 } from '../shared/shared.module';
+import {ModalController} from "@ionic/angular";
+import {ApolloModule} from "apollo-angular";
+import {HttpLinkModule} from "apollo-angular-link-http";
+import {DuniterService} from "./services/duniter/duniter.service";
+import {GvaService} from "./services/duniter/gva/gva.service";
+import {BmaService} from "./services/duniter/bma/bma.service";
+import {Ws2pService} from "./services/duniter/ws2p/ws2p.service";
+import {Peer} from "./services/network/network.model";
 
 export {
     environment,
@@ -81,7 +84,6 @@ export {
     AccountService,
     NetworkService,
     AccountFieldDef,
-    BaseDataService,
     AccountValidatorService,
     UserSettingsValidatorService,
     AuthGuardService,
@@ -89,12 +91,11 @@ export {
     RESERVED_START_COLUMNS,
     RESERVED_END_COLUMNS,
     Entity,
+    Peer,
     Cloneable,
     EntityUtils,
     StatusIds,
     GraphqlService,
-    Referential,
-    ReferentialRef,
     Person,
     TableDataService,
     LoadResult,
@@ -106,7 +107,6 @@ export {
     isNotNil,
     nullIfUndefined,
     entityToString,
-    referentialToString,
     personToString,
     personsToString,
     FormArrayHelper
@@ -121,7 +121,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         CommonModule,
         RouterModule,
         HttpClientModule,
-        AppGraphQLModule,
+        HttpClientModule,
+        ApolloModule,
+        HttpLinkModule,
         SharedModule,
         ReactiveFormsModule,
         IonicStorageModule.forRoot(),
@@ -143,7 +145,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         AuthModal,
         RegisterForm,
         RegisterModal,
-        RegisterConfirmPage,
         AccountPage,
         SettingsPage,
 
@@ -160,7 +161,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         CommonModule,
         SharedModule,
         RouterModule,
-        AppGraphQLModule,
+        ApolloModule,
+        HttpLinkModule,
         HomePage,
         AuthForm,
         AuthModal,
@@ -196,58 +198,87 @@ export function HttpLoaderFactory(http: HttpClient) {
         CryptoService,
         AccountValidatorService,
         UserSettingsValidatorService,
-        LocalSettingsValidatorService
+        LocalSettingsValidatorService,
+        GvaService,
+        BmaService,
+        Ws2pService,
+        DuniterService
     ]
 })
 export class CoreModule {
 
-    constructor(
-        translate: TranslateService,
-        settings: LocalSettingsService,
-        accountService: AccountService,
-        dateAdapter: DateAdapter<any>) {
+  constructor(
+    translate: TranslateService,
+    settingsService: LocalSettingsService,
+    accountService: AccountService,
+    private modalCtrl: ModalController,
+    networkService: NetworkService,
+    dateAdapter: DateAdapter<any>) {
 
-        console.info("[core] Starting module...");
+    console.info("[core] Starting module...");
 
-        // this language will be used as a fallback when a translation isn't found in the current language
-        translate.setDefaultLang(environment.defaultLocale);
+    // this language will be used as a fallback when a translation isn't found in the current language
+    translate.setDefaultLang(environment.defaultLocale);
 
-        // When locale changes, apply to date adapter
-        translate.onLangChange.subscribe(event => {
-            if (event && event.lang) {
+    // When locale changes, apply to date adapter
+    translate.onLangChange.subscribe(event => {
+        if (event && event.lang) {
 
-                // Config date adapter
-                dateAdapter.setLocale(event.lang);
+            // Config date adapter
+            dateAdapter.setLocale(event.lang);
 
-                // config moment lib
-                try {
-                    const momentLocale: string = event.lang.substr(0, 2);
-                    moment.locale(momentLocale);
-                    console.debug('[app] Use locale {' + event.lang + '}');
-                }
-                // If error, fallback to en
-                catch (err) {
-                    dateAdapter.setLocale('en');
-                    moment.locale('en');
-                    console.warn('[app] Unknown local for moment lib. Using default [en]');
-                }
-
+            // config moment lib
+            try {
+                const momentLocale: string = event.lang.substr(0, 2);
+                moment.locale(momentLocale);
+                console.debug('[app] Use locale {' + event.lang + '}');
             }
-        });
-
-        settings.onChange.subscribe(settings => {
-            if (settings && settings.locale && settings.locale !== translate.currentLang) {
-                translate.use(settings.locale);
+            // If error, fallback to en
+            catch (err) {
+                dateAdapter.setLocale('en');
+                moment.locale('en');
+                console.warn('[app] Unknown local for moment lib. Using default [en]');
             }
-        });
+        }
+    });
+
+    settingsService.onChange.subscribe(settings => {
+        if (settings && settings.locale && settings.locale !== translate.currentLang) {
+            translate.use(settings.locale);
+        }
+    });
 
     accountService.onLogin.subscribe(account => {
-      if (settings.settings.accountInheritance) {
+      if (settingsService.settings.accountInheritance) {
         if (account.settings && account.settings.locale && account.settings.locale !== translate.currentLang) {
           translate.use(account.settings.locale);
         }
       }
     });
+
+    networkService.setSelectPeerCallback((peers, opts) => this.showSelectPeerModal(peers, opts));
   }
+
+    public async showSelectPeerModal(peers: Peer[], opts?: { allowSelectDownPeer?: boolean; }): Promise<Peer | undefined> {
+
+        opts = opts || {};
+
+        const modal = await this.modalCtrl.create({
+            component: SelectPeerModal,
+            componentProps: {
+                peers: peers,
+                canCancel: false,
+                allowSelectDownPeer: toBoolean(opts.allowSelectDownPeer, true)
+            },
+            keyboardClose: true,
+            showBackdrop: true
+        });
+        await modal.present();
+
+        return modal.onDidDismiss()
+            .then((res) => {
+                return res && res.data && (res.data as Peer) || undefined;
+            });
+    }
 
 }

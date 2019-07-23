@@ -2,21 +2,39 @@ import {Observable, Subject} from "rxjs";
 import {Apollo} from "apollo-angular";
 import {ApolloClient, ApolloQueryResult, FetchPolicy, WatchQueryFetchPolicy} from "apollo-client";
 import {R} from "apollo-angular/types";
-import {ErrorCodes, ServerErrorCodes, ServiceError} from "./errors";
-import {map} from "rxjs/operators";
+import {ErrorCodes, ServerErrorCodes, ServiceError} from "../errors";
+import {catchError, map} from "rxjs/operators";
 
-import {environment} from '../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 import {delay} from "q";
 import {Injectable} from "@angular/core";
 import {HttpLink, Options} from "apollo-angular-link-http";
 import {NetworkService} from "./network.service";
 import {WebSocketLink} from "apollo-link-ws";
 import {ApolloLink} from "apollo-link";
-import {InMemoryCache} from "apollo-cache-inmemory";
-import {AppWebSocket, dataIdFromObject} from "../graphql/graphql.utils";
+import {defaultDataIdFromObject, InMemoryCache} from "apollo-cache-inmemory";
 import {getMainDefinition} from 'apollo-utilities';
 import {persistCache} from "apollo-cache-persist";
 import {Storage} from "@ionic/storage";
+import {AppWebSocket} from "./network.utils";
+
+
+/**
+ * Custom ID generation, for the GraphQL cache
+ * @param object
+ */
+export const dataIdFromObject = function (object: Object): string {
+  switch (object['__typename']) {
+
+      // Define specific entity ID
+      //case 'SpecificEntity':
+      // return object['entityName'] + ':' + object['id'];
+
+      // Fallback to default cache key
+    default:
+      return defaultDataIdFromObject(object);
+  }
+};
 
 
 @Injectable({providedIn: 'root'})
@@ -83,7 +101,7 @@ export class GraphqlService {
       if (error && error.code && error.message) {
         throw error;
       }
-      console.error("[data-service] " + error.message);
+      console.error("[graphql] " + error.message);
       throw opts.error ? opts.error : error.message;
     }
     return res.data;
@@ -102,15 +120,15 @@ export class GraphqlService {
       notifyOnNetworkStatusChange: true
     })
       .valueChanges
-      .catch(error => this.onApolloError<T>(error))
       .pipe(
+        catchError(error => this.onApolloError<T>(error)),
         map(({data, errors}) => {
           if (errors) {
             const error = errors[0] as any;
             if (error && error.code && error.message) {
               throw error;
             }
-            console.error("[data-service] " + error.message);
+            console.error("[graphql] " + error.message);
             throw opts.error ? opts.error : error.message;
           }
           return data;
@@ -134,15 +152,9 @@ export class GraphqlService {
           if (errors) {
             const error = errors[0] as any;
             if (error && error.code && error.message) {
-              if (error && error.code == ServerErrorCodes.BAD_UPDATE_DATE) {
-                reject({code: ServerErrorCodes.BAD_UPDATE_DATE, message: "ERROR.BAD_UPDATE_DATE"});
-              } else if (error && error.code == ServerErrorCodes.DATA_LOCKED) {
-                reject({code: ServerErrorCodes.DATA_LOCKED, message: "ERROR.DATA_LOCKED"});
-              } else {
-                reject(error);
-              }
+              reject(error);
             } else {
-              console.error("[data-service] " + error.message);
+              console.error("[graphql] " + error.message);
               reject(opts.error ? opts.error : error.message);
             }
           } else {
@@ -172,7 +184,7 @@ export class GraphqlService {
             if (error && error.code && error.message) {
               throw error;
             }
-            console.error("[data-service] " + error.message);
+            console.error("[graphql] " + error.message);
             throw opts.error ? opts.error : error.message;
           }
           return data;
@@ -202,7 +214,7 @@ export class GraphqlService {
       // continue
       // read in cache is not guaranteed to return a result. see https://github.com/apollographql/react-apollo/issues/1776#issuecomment-372237940
     }
-    if (this._debug) console.debug("[data-service] Unable to add entity to cache. Please check query has been cached, and {" + propertyName + "} exists in the result:", opts.query);
+    if (this._debug) console.debug("[graphql] Unable to add entity to cache. Please check query has been cached, and {" + propertyName + "} exists in the result:", opts.query);
   }
 
   public addManyToQueryCache<V = R>(opts: {
@@ -235,7 +247,7 @@ export class GraphqlService {
       // read in cache is not guaranteed to return a result. see https://github.com/apollographql/react-apollo/issues/1776#issuecomment-372237940
     }
 
-    if (this._debug) console.debug("[data-service] Unable to add entities to cache. Please check query has been cached, and {" + propertyName + "} exists in the result:", opts.query);
+    if (this._debug) console.debug("[graphql] Unable to add entities to cache. Please check query has been cached, and {" + propertyName + "} exists in the result:", opts.query);
   }
 
   public removeToQueryCacheById<V = R>(opts: {
@@ -261,7 +273,7 @@ export class GraphqlService {
       // continue
       // read in cache is not guaranteed to return a result. see https://github.com/apollographql/react-apollo/issues/1776#issuecomment-372237940
     }
-    console.warn("[data-service] Unable to remove id from cache. Please check {" + propertyName + "} exists in the result:", opts.query);
+    console.warn("[graphql] Unable to remove id from cache. Please check {" + propertyName + "} exists in the result:", opts.query);
   }
 
   public removeToQueryCacheByIds<V = R>(opts: {
@@ -289,7 +301,7 @@ export class GraphqlService {
       // continue
       // read in cache is not guaranteed to return a result. see https://github.com/apollographql/react-apollo/issues/1776#issuecomment-372237940
     }
-    console.warn("[data-service] Unable to remove id from cache. Please check {" + propertyName + "} exists in the result:", opts.query);
+    console.warn("[graphql] Unable to remove id from cache. Please check {" + propertyName + "} exists in the result:", opts.query);
   }
 
   /* -- protected methods -- */
@@ -304,13 +316,12 @@ export class GraphqlService {
     if (!peer) throw Error("[graphql] Missing peer. Unable to start graphql service");
 
     const uri = peer.url + '/graphql';
-    const wsUri = String.prototype.replace.call(uri, "http", "ws") + '/websocket';
     console.info("[graphql] Base uri: " + uri);
-    console.info("[graphql] Subscription uri: " + wsUri);
-
     this.httpParams = this.httpParams || {};
     this.httpParams.uri = uri;
 
+    const wsUri = String.prototype.replace.call(uri, "http", "ws") + '/subscriptions';
+    console.info("[graphql] Subscription uri: " + wsUri);
     this.wsParams = this.wsParams || {
       options: {
         lazy: true,
@@ -370,10 +381,11 @@ export class GraphqlService {
         link: ApolloLink.split(
           ({query}) => {
             const def = getMainDefinition(query);
-            return def.kind === 'OperationDefinition' && def.operation === 'subscription';
+            // If true, will link to http, else to WS
+            return def.kind !== 'OperationDefinition' || def.operation !== 'subscription';
           },
-          ws,
-          authLink.concat(http)
+          authLink.concat(http),
+          ws
         ),
         cache,
         connectToDevTools: !environment.production

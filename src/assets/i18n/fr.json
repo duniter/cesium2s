@@ -87,16 +87,18 @@
     "DEVELOPED_BY": "Développé par :"
   },
   "HOME": {
-    "WELCOME": "Bienvenue dans Cesium 2 (beta) !",
-    "DESCRIPTION": "Gérer votre portefeuille n'a jamais été rapide !",
+    "WELCOME": "Bienvenue dans l'application Cesium 2 !",
+    "DESCRIPTION": "Recevez et envoyez de la monnaie libre Ğ1",
     "BTN_WOT_SEARCH": "Rechercher dans l'annuaire",
     "NOT_THIS_ACCOUNT_QUESTION": "Vous n'êtes pas <b>{{displayName}}</b> ?",
     "BTN_DISCONNECT": "Déconnecter ce compte",
     "BTN_MY_ACCOUNT": "Mon compte",
-    "BTN_REGISTER": "S'inscrire"
+    "BTN_REGISTER": "Créer un compte gratuitement"
   },
   "AUTH": {
     "TITLE": "Authentification",
+    "SALT": "Identifiant secret",
+    "PASSWORD": "Mot de passe",
     "BTN_LOGIN": "Se connecter",
     "BTN_REGISTER": "Créer un compte",
     "NO_ACCOUNT_QUESTION": "Vous n'avez pas encore de compte ?",
@@ -124,8 +126,7 @@
     },
     "ERROR": {
       "NOT_SAME_EMAIL": "Les emails ne correspondent pas",
-      "NOT_SAME_PASSWORD": "Les mots de passe ne correspondent pas",
-      "EMAIL_ALREADY_REGISTERED": "Email déjà enregistrée"
+      "NOT_SAME_PASSWORD": "Les mots de passe ne correspondent pas"
     }
   },
   "ACCOUNT": {

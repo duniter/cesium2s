@@ -187,6 +187,12 @@
     "PROFILE_USER": "Observer",
     "PROFILE_GUEST": "Invité"
   },
+  "IDENTITY": {
+    "UID": "Uid",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "PUBKEY": "Public key"
+  },
   "WOT": {
     "SEARCH": {
       "TITLE": "Annuaire",

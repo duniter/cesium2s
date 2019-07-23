@@ -5,7 +5,7 @@
   "author": "contact@e-is.pro",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "serve.aot": "ng serve --aot",
     "build": "ng build",
     "build.aot": "ng build --aot",
@@ -103,6 +103,7 @@
     "@types/jasminewd2": "2.0.3",
     "@types/leaflet": "^1.4.4",
     "@types/node": "10.14.6",
+    "@types/ws": "^6.0.1",
     "acorn": "^6.1.1",
     "codelyzer": "~4.5.0",
     "cordova-plugin-device": "^2.0.2",

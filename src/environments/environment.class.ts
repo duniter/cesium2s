@@ -16,4 +16,6 @@ export class Environment {
 
     // Enable cache persistence ?
     persistCache?: boolean;
+
+    timeout?: number;
 }

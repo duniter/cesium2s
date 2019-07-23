@@ -17,11 +17,10 @@ export {
   sort
 };
 
-export const DATE_ISO_PATTERN = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const StatusIds = {
-  DISABLE: 0,
-  ENABLE: 1,
-  TEMPORARY: 2
+  WALLET: 0,
+  MEMBER: 1,
+  PENDING: 2
 }
 
 export const REGEXP = {
@@ -95,10 +94,6 @@ export function entityToString(obj: Entity<any> | any, properties?: String[]): s
   return obj && obj.id && joinProperties(obj, properties || ['name']) || undefined;
 }
 
-export function referentialToString(obj: Referential | any | any, properties?: String[]): string | undefined {
-  return obj && obj.id && joinProperties(obj, properties || ['label', 'name']) || undefined;
-}
-
 export function personToString(obj: Person): string {
   return obj && obj.id && (obj.lastName + ' ' + obj.firstName) || undefined;
 }
@@ -111,28 +106,26 @@ export function personsToString(data: Person[], separator?: string): string {
   }, '');
 }
 
-export abstract class Entity<T> implements Cloneable<T> {
-  id: number;
-  updateDate: Date | Moment;
-  __typename: string;
+export interface IEntity<ID> {
+  id: ID;
+}
 
+export abstract class Entity<T, ID = any> implements IEntity<ID>, Cloneable<T> {
+
+  abstract get id(): ID;
   abstract clone(): T;
 
   asObject(minify?: boolean): any {
     const target: any = Object.assign({}, this);
-    delete target.__typename;
-    target.updateDate = toDateISOString(this.updateDate);
     return target;
   }
 
-  fromObject(source: any): Entity<T> {
-    this.id = (source.id || source.id === 0) ? source.id : undefined;
-    this.updateDate = fromDateISOString(source.updateDate);
-    this.__typename = source.__typename;
+  fromObject(source: any): Entity<T, ID> {
+    Object.assign(this, source|| {});
     return this;
   }
 
-  equals(other: Entity<T>): boolean {
+  equals(other: Entity<T, ID>): boolean {
     return other && this.id === other.id;
   }
 }
@@ -197,19 +190,6 @@ export class EntityUtils {
     return (!!o1 === !!o2) || (o1 && o2 && o1.id === o2.id);
   }
 
-  static copyIdAndUpdateDate(source: Entity<any> | undefined, target: Entity<any>, opts?: { creationDate?: boolean; }) {
-    if (!source) return;
-
-    // Update (id and updateDate)
-    target.id = isNotNil(source.id) ? source.id : target.id;
-    target.updateDate = fromDateISOString(source.updateDate) || target.updateDate;
-
-    // Update creation Date, if exists
-    if (source['creationDate']) {
-      target['creationDate'] = fromDateISOString(source['creationDate']);
-    }
-  }
-
   static sort<T extends Entity<T> | any>(data: T[], sortBy?: string, sortDirection?: string): T[] {
     const after = (!sortDirection || sortDirection === 'asc') ? 1 : -1;
     return data.sort((a, b) => {
@@ -220,141 +200,9 @@ export class EntityUtils {
   }
 }
 
-/* -- Referential -- */
-
-export class Referential extends Entity<Referential> {
-
-  static fromObject(source: any): Referential {
-    const res = new Referential();
-    res.fromObject(source);
-    return res;
-  }
-
-  label: string;
-  name: string;
-  description: string;
-  comments: string;
-  creationDate: Date | Moment;
-  statusId: number;
-  levelId: number;
-  parentId: number;
-  entityName: string;
-
-  constructor(data?: {
-    id?: number,
-    label?: string,
-    name?: string,
-    parentId?: number,
-    levelId?: number,
-    entityName?: string
-  }) {
-    super();
-    this.id = data && data.id;
-    this.label = data && data.label;
-    this.name = data && data.name;
-    this.parentId = data && data.parentId;
-    this.levelId = data && data.levelId;
-    this.entityName = data && data.entityName;
-  }
-
-  clone(): Referential {
-    return this.copy(new Referential());
-  }
-
-  copy(target: Referential): Referential {
-    target.fromObject(this);
-    return target;
-  }
-
-  asObject(minify?: boolean): any {
-    const target: any = super.asObject(minify);
-    target.creationDate = toDateISOString(this.creationDate);
-    return target;
-  }
-
-  fromObject(source: any): Entity<Referential> {
-    super.fromObject(source);
-    this.label = source.label;
-    this.name = source.name;
-    this.description = source.description;
-    this.comments = source.comments;
-    this.statusId = source.statusId;
-    this.levelId = source.levelId && source.levelId !== 0 ? source.levelId : undefined; // Do not set as null (need for account.department, when regsiter)
-    this.parentId = source.parentId;
-    this.creationDate = fromDateISOString(source.creationDate);
-    this.entityName = source.entityName;
-    return this;
-  }
-
-  equals(other: Referential): boolean {
-    return super.equals(other) && this.entityName === other.entityName;
-  }
-}
-
-export declare interface IReferentialRef {
-  label: string;
-  name: string;
-  statusId: number;
-  entityName: string;
-}
-
-export class ReferentialRef<T=any> extends Entity<T> implements IReferentialRef {
-
-  static fromObject(source: any): ReferentialRef<any> {
-    if (!source || source instanceof ReferentialRef) return source;
-    const res = new ReferentialRef();
-    res.fromObject(source);
-    return res;
-  }
-
-  label: string;
-  name: string;
-  statusId: number;
-  entityName: string;
-
-  constructor(data?: {
-    id?: number,
-    label?: string,
-    name?: string
-  }) {
-    super();
-    this.id = data && data.id;
-    this.label = data && data.label;
-    this.name = data && data.name;
-  }
-
-  clone(): any {
-    const target = new ReferentialRef();
-    this.copy(target);
-    return target;
-  }
-
-  copy(target: ReferentialRef<T>): ReferentialRef<T> {
-    target.fromObject(this);
-    return target;
-  }
-
-  asObject(minify?: boolean): any {
-    if (minify) return {id: this.id}; // minify=keep id only
-    const target: any = super.asObject();
-    delete target.entityName;
-    return target;
-  }
-
-  fromObject(source: any): Entity<T> {
-    super.fromObject(source);
-    this.label = source.label;
-    this.name = source.name;
-    this.statusId = source.statusId;
-    this.entityName = source.entityName;
-    return this;
-  }
-}
-
-
 /* -- Person -- */
 
-export class Person extends Entity<Person> implements Cloneable<Person> {
+export class Person extends Entity<Person, string> implements Cloneable<Person> {
 
   static fromObject(source: any): Person {
     if (!source || source instanceof Person) return source;
@@ -363,10 +211,12 @@ export class Person extends Entity<Person> implements Cloneable<Person> {
     return result;
   }
 
+  uid: string;
+  pubkey: string;
+
   firstName: string;
   lastName: string;
   email: string;
-  pubkey: string;
   avatar: string;
   creationDate: Date | Moment;
   statusId: number;
@@ -375,6 +225,10 @@ export class Person extends Entity<Person> implements Cloneable<Person> {
 
   constructor() {
     super();
+  }
+
+  get id(): any {
+    return this.pubkey
   }
 
   clone(): Person {
@@ -402,11 +256,12 @@ export class Person extends Entity<Person> implements Cloneable<Person> {
 
   fromObject(source: any): Person {
     super.fromObject(source);
+    this.uid = source.uid;
+    this.pubkey = source.pubkey;
     this.firstName = source.firstName;
     this.lastName = source.lastName;
     this.email = source.email;
     this.creationDate = fromDateISOString(source.creationDate);
-    this.pubkey = source.pubkey;
     this.avatar = source.avatar;
     this.statusId = source.statusId;
     this.profiles = source.profiles && source.profiles.slice(0) || [];
@@ -419,14 +274,24 @@ export class Person extends Entity<Person> implements Cloneable<Person> {
   }
 }
 
-export class UserSettings extends Entity<UserSettings> implements Cloneable<UserSettings> {
+export class UserSettings extends Entity<UserSettings, string>  {
+  static fromObject(source: any): UserSettings {
+    if (!source) return undefined;
+    const target = new UserSettings();
+    target.fromObject(source);
+    return target;
+  }
+
   locale: string;
   content: {};
   nonce: string;
 
+  get id(): string {
+    return "SETTINGS"; // TODO
+  }
+
   clone(): UserSettings {
-    const res = Object.assign(new UserSettings(), this);
-    return res;
+    return UserSettings.fromObject(this.asObject());
   }
 
   asObject(minify?: boolean): any {
@@ -494,84 +359,6 @@ export class Account extends Person {
 
 /* -- Network -- */
 
-export class Peer extends Entity<Peer> implements Cloneable<Peer> {
-
-  static fromObject(source: any): Peer {
-    if (!source || source instanceof Peer) return source;
-    const res = new Peer();
-    res.fromObject(source);
-    return res;
-  }
-
-  static parseUrl(peerUrl: string) {
-    const url = new URL(peerUrl);
-    return Peer.fromObject({
-      dns: url.hostname,
-      port: isNilOrBlank(url.port) ? undefined : url.port,
-      useSsl: url.protocol && (url.protocol.startsWith('https') || url.protocol.startsWith('wss'))
-    });
-  }
-
-  dns: string;
-  ipv4: string;
-  ipv6: string;
-  port: number;
-  useSsl: boolean;
-  pubkey: string;
-
-  favicon: string;
-  status: 'UP' | 'DOWN';
-  softwareName: string;
-  softwareVersion: string;
-  label: string;
-  name: string;
-
-  constructor() {
-    super();
-  }
-
-  clone(): Peer {
-    return this.copy(new Peer());
-  }
-
-  copy(target: Peer): Peer {
-    target.fromObject(this);
-    return target;
-  }
-
-  asObject(minify?: boolean): any {
-    const target: any = super.asObject(minify);
-    return target;
-  }
-
-  fromObject(source: any): Entity<Peer> {
-    super.fromObject(source);
-    this.dns = source.dns;
-    this.ipv4 = source.ipv4;
-    this.ipv6 = source.ipv6;
-    this.port = isNotNil(source.port) ? +source.port : undefined;
-    this.pubkey = source.pubkey;
-    this.useSsl = source.useSsl || (this.port === 443);
-    return this;
-  }
-
-  equals(other: Peer): boolean {
-    return super.equals(other) && this.pubkey === other.pubkey && this.url === other.url;
-  }
-
-  get url(): string {
-    return (this.useSsl ? 'https://' : 'http://') + this.hostAndPort;
-  }
-
-  get hostAndPort(): string {
-    return (this.dns || this.ipv4 || this.ipv6) +
-      ((this.port && this.port !== 80 && this.port !== 443) ? ':' + this.port : '');
-  }
-
-  get reachable(): boolean {
-    return this.status && this.status === 'UP';
-  }
-}
 
 /* -- Local settings -- */
 export declare interface LocalSettings {

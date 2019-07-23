@@ -1,16 +1,14 @@
-import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { AccountService, AccountFieldDef } from '../services/account.service';
-import { Account, referentialToString } from '../services/model';
-import { UserSettingsValidatorService } from '../services/user-settings.validator';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { AccountValidatorService } from '../services/account.validator';
-import { AppForm } from '../form/form.class';
-import { Moment } from 'moment/moment';
-import { DateAdapter } from "@angular/material";
-import { Platform } from '@ionic/angular';
-import { AppFormUtils } from '../form/form.utils';
+import {Component, OnDestroy} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {AccountFieldDef, AccountService} from '../services/account.service';
+import {Account, StatusIds} from '../services/model';
+import {UserSettingsValidatorService} from '../services/user-settings.validator';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {AccountValidatorService} from '../services/account.validator';
+import {AppForm} from '../form/form.class';
+import {Moment} from 'moment/moment';
+import {DateAdapter} from "@angular/material";
+import {AppFormUtils} from '../form/form.utils';
 import {LocalSettingsService} from "../services/local-settings.service";
 
 @Component({
@@ -24,12 +22,12 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
   subscriptions: Subscription[] = [];
   changesSubscription: Subscription;
   account: Account;
-  email: any = {
+  uid: any = {
     confirmed: false,
     notConfirmed: false,
     sending: false,
     error: undefined
-  }
+  };
   additionalFields: AccountFieldDef[];
   settingsForm: FormGroup;
   localeMap = {
@@ -89,8 +87,8 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
 
     this.setValue(account);
 
-    this.email.confirmed = account && account.email && (account.statusId != 2);
-    this.email.notConfirmed = account && account.email && (!account.statusId || account.statusId == 2);
+    this.uid.confirmed = account && account.uid && (account.statusId === StatusIds.MEMBER);
+    this.uid.notConfirmed = account && account.uid && (!account.statusId || account.statusId === StatusIds.PENDING);
 
     this.enable();
     this.markAsPristine();
@@ -100,10 +98,10 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
 
   onLogout() {
     this.isLogin = false;
-    this.email.confirmed = false;
-    this.email.notConfirmed = false;
-    this.email.sending = false;
-    this.email.error = undefined;
+    this.uid.confirmed = false;
+    this.uid.notConfirmed = false;
+    this.uid.sending = false;
+    this.uid.error = undefined;
     this.form.reset();
     this.disable();
 
@@ -112,7 +110,7 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
 
   startListenChanges() {
     if (this.changesSubscription) return; // already started
-    this.changesSubscription = this.accountService.listenChanges();
+    //this.changesSubscription = this.accountService.listenChanges();
   }
 
   stopListenChanges() {
@@ -120,29 +118,6 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
     this.changesSubscription.unsubscribe();
     this.changesSubscription = undefined;
   }
-
-  sendConfirmationEmail(event: MouseEvent) {
-    if (!this.account.email || !this.email.notConfirmed) {
-      event.preventDefault();
-      return false;
-    }
-
-    this.email.sending = true;
-    console.debug("[account] Sending confirmation email...");
-    this.accountService.sendConfirmationEmail(
-      this.account.email,
-      this.account.settings.locale
-    )
-      .then((res) => {
-        console.debug("[account] Confirmation email sent.");
-        this.email.sending = false;
-      })
-      .catch(err => {
-        this.email.sending = false;
-        this.email.error = err && err.message || err;
-      });
-  }
-
   async save(event: MouseEvent) {
     if (this.form.invalid) {
       AppFormUtils.logFormErrors(this.form);
@@ -177,7 +152,7 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
     super.enable();
 
     // Some fields are always disable
-    this.form.controls.email.disable();
+    this.form.controls.uid.disable();
     this.form.controls.mainProfile.disable();
     this.form.controls.pubkey.disable();
 

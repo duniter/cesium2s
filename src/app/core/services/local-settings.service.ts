@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {PropertyValue, LocalSettings, Peer, UsageMode} from "./model";
+import {PropertyValue, LocalSettings, UsageMode} from "./model";
 import {TranslateService} from "@ngx-translate/core";
 import {Storage} from '@ionic/storage';
 
@@ -8,6 +8,7 @@ import {environment} from "../../../environments/environment";
 import {Subject} from "rxjs";
 import {isNotNilOrBlank} from "../../shared/functions";
 import {Platform} from "@ionic/angular";
+import {Peer} from "./network/network.model";
 
 export const SETTINGS_STORAGE_KEY = "settings";
 export const SETTINGS_TRANSIENT_PROPERTIES = ["mobile", "touchUi"];

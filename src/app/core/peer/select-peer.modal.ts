@@ -1,10 +1,11 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {Peer} from "../services/model";
-import {Observable, of, Subject, Subscription} from "rxjs";
+import {Peer} from "../services/network/network.model";
+import {Observable, Subject, Subscription} from "rxjs";
 import {fadeInAnimation} from "../../shared/material/material.animations";
 import {HttpClient} from "@angular/common/http";
-import {catchError, timeout} from "rxjs/operators";
+import {GraphqlService} from "../services/network/graphql.service";
+import {NetworkService} from "../services/network/network.service";
 
 @Component({
   selector: 'select-peer-modal',
@@ -14,7 +15,7 @@ import {catchError, timeout} from "rxjs/operators";
 })
 export class SelectPeerModal implements OnDestroy{
 
-  private _subscriptions: Subscription[];
+  private _subscriptions: Subscription[] = [];
 
   loading = true;
   $peers = new Subject<Peer[]>();
@@ -23,7 +24,11 @@ export class SelectPeerModal implements OnDestroy{
   @Input() allowSelectDownPeer = true;
 
 
-  set peers(peers: Observable<Peer[]>) {
+  set peers(peers: Observable<Peer[]> | Peer[]) {
+    if (peers instanceof Array) {
+      this.refreshPeers(peers);
+      return;
+    }
     if (this._subscriptions) this._subscriptions.forEach(s => s.unsubscribe());
     this._subscriptions = [peers.subscribe(res => this.refreshPeers(res))];
   }
@@ -32,6 +37,8 @@ export class SelectPeerModal implements OnDestroy{
   constructor(
     private http: HttpClient,
     private viewCtrl: ModalController,
+    private graphql: GraphqlService,
+    private network: NetworkService,
     private cd: ChangeDetectorRef
   ) {
   }
@@ -60,7 +67,7 @@ export class SelectPeerModal implements OnDestroy{
     const data: Peer[] = [];
     const jobs = Promise.all(
       peers.map(async (peer) => {
-        await this.refreshPeer(peer);
+        await this.network.refreshPeerStatus(peer);
         data.push(peer);
 
         // Sort (by reachable, then host)
@@ -92,22 +99,5 @@ export class SelectPeerModal implements OnDestroy{
     }
     this.loading = false;
     this.cd.markForCheck();
-  }
-
-  protected async refreshPeer(peer: Peer): Promise<Peer> {
-    const uri = peer.url + '/api/node/info';
-    try {
-      const summary: any = await this.http.get(uri)
-          .pipe(timeout(2000)).toPromise();
-      peer.status = 'UP';
-      peer.softwareName = summary.softwareName;
-      peer.softwareVersion = summary.softwareVersion;
-      peer.label = summary.nodeLabel;
-      peer.name = summary.nodeName;
-    } catch (err) {
-      console.error(`[select-peer] Could not access to {${uri}}: ${err && err.statusText}`);
-      peer.status = 'DOWN';
-    }
-    return peer;
   }
 }

@@ -1,14 +1,16 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {AppTable, AppTableDataSource, LocalSettingsService} from "../../core/core.module";
-import { Person, referentialToString, PRIORITIZED_USER_PROFILES, StatusIds } from "../../core/services/model";
-import { WotService, Identity, WotSearchFilter } from "../services/wot.service";
-import { WotValidatorService } from "../services/wot.validator";
-import { ModalController, Platform } from "@ionic/angular";
-import { Router, ActivatedRoute } from "@angular/router";
-import { AccountService, AccountFieldDef } from "../../core/services/account.service";
-import { Location } from '@angular/common';
-import { FormGroup, FormBuilder } from "@angular/forms";
-import { RESERVED_START_COLUMNS, RESERVED_END_COLUMNS } from "../../core/table/table.class";
+import {PRIORITIZED_USER_PROFILES, StatusIds} from "../../core/services/model";
+import {WotSearchFilter, WotService} from "../services/wot.service";
+import {WotValidatorService} from "../services/wot.validator";
+import {ModalController, Platform} from "@ionic/angular";
+import {ActivatedRoute, Router} from "@angular/router";
+import {AccountFieldDef, AccountService} from "../../core/services/account.service";
+import {Location} from '@angular/common';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {RESERVED_END_COLUMNS, RESERVED_START_COLUMNS} from "../../core/table/table.class";
+import {Identity} from "../../core/services/duniter/duniter.model";
+import {GvaPendingIdentity} from "../../core/services/duniter/gva/gva.model";
 
 
 @Component({
@@ -16,24 +18,24 @@ import { RESERVED_START_COLUMNS, RESERVED_END_COLUMNS } from "../../core/table/t
   templateUrl: 'search.html',
   styleUrls: ['./search.scss']
 })
-export class WotSearchPage extends AppTable<Identity, {search: string;}> implements OnInit {
+export class WotSearchPage extends AppTable<Identity, WotSearchFilter> implements OnInit {
 
   filterForm: FormGroup;
   profiles: string[] = PRIORITIZED_USER_PROFILES;
   additionalFields: AccountFieldDef[];
   statusList: any[] = [
     {
-      id: StatusIds.ENABLE,
+      id: StatusIds.PENDING,
       icon: 'checkmark',
       label: 'REFERENTIAL.STATUS_ENABLE'
     },
     {
-      id: StatusIds.DISABLE,
+      id: StatusIds.PENDING,
       icon: 'close',
       label: 'REFERENTIAL.STATUS_DISABLE'
     },
     {
-      id: StatusIds.TEMPORARY,
+      id: StatusIds.WALLET,
       icon: 'warning',
       label: 'REFERENTIAL.STATUS_TEMPORARY'
     }
@@ -60,7 +62,7 @@ export class WotSearchPage extends AppTable<Identity, {search: string;}> impleme
         ])
         .concat(accountService.additionalAccountFields.map(field => field.name))
         .concat(RESERVED_END_COLUMNS),
-      new AppTableDataSource<Identity, WotSearchFilter>(Identity, wotService, validatorService, {
+      new AppTableDataSource<Identity, WotSearchFilter>(GvaPendingIdentity, wotService, validatorService, {
         prependNewElements: false,
         suppressErrors: false,
         serviceOptions: {
@@ -97,7 +99,5 @@ export class WotSearchPage extends AppTable<Identity, {search: string;}> impleme
       this.filterForm.markAsPristine();
     });
   }
-
-  referentialToString = referentialToString;
 }
 

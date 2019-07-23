@@ -4,17 +4,17 @@
   <mat-step [stepControl]="forms[0]" *ngIf="forms[0].controls; let controls">
 
     <form [formGroup]="forms[0]" class="form-container" padding (keyup.enter)="slideNext()">
-      <ng-template matStepLabel>{{'REGISTER.STEP_EMAIL'|translate}}</ng-template>
+      <ng-template matStepLabel>{{'REGISTER.STEP_UID'|translate}}</ng-template>
 
       <!-- Uid -->
       <mat-form-field>
-        <input matInput [appAutofocus]="true" [autofocusDelay]="500" [placeholder]="'IDENTITY.UID'|translate"
-          formControlName="email" autocomplete="section-blue username" required>
-        <mat-error *ngIf="controls.uid.hasError('required') && controls.uid.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
-        <mat-error *ngIf="controls.uid.hasError('uid') && !controls.uid.hasError('required') && controls.uid.touched">
-          <span>{{'ERROR.FIELD_NOT_VALID_UID' | translate }}</span>
-        </mat-error>
-        <mat-error *ngIf="controls.uid.hasError('availability') && controls.uid.touched" translate>REGISTER.ERROR.UID_ALREADY_REGISTERED</mat-error>
+        <input matInput
+               autocomplete="off"
+               [appAutofocus]="true" [autofocusDelay]="500" [placeholder]="'IDENTITY.UID'|translate"
+          formControlName="uid" autocomplete="section-blue username" required>
+        <mat-error *ngIf="controls.uid.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
+        <mat-error *ngIf="controls.uid.hasError('pattern')" translate>ERROR.FIELD_NOT_VALID_UID</mat-error>
+        <mat-error *ngIf="controls.uid.hasError('availability')" translate>ERROR.UID_ALREADY_REGISTERED</mat-error>
 
       </mat-form-field>
 
@@ -117,9 +117,12 @@
 
       <!-- Additional fields -->
       <ng-container *ngFor="let field of additionalFields">
-        <mat-autocomplete-field [placeholder]="field.label|translate" [formControlName]="field.name" [service]="field.dataService"
-          [filter]="field.dataFilter" [required]="field.required"
-          [displayWith]="referentialToString">
+        <mat-autocomplete-field [placeholder]="field.label|translate"
+                                [formControlName]="field.name"
+                                [service]="field.dataService"
+                                [filter]="field.dataFilter"
+                                [required]="field.required"
+                                [displayWith]="referentialToString">
         </mat-autocomplete-field>
       </ng-container>
 

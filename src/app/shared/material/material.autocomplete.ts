@@ -1,36 +1,31 @@
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef,
-  Component, ElementRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
   EventEmitter,
   forwardRef,
-  Input, OnDestroy,
+  Input,
+  OnDestroy,
   OnInit,
   Optional,
-  Output, ViewChild
+  Output,
+  ViewChild
 } from "@angular/core";
 import {ControlValueAccessor, FormControl, FormGroupDirective, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {merge, Observable} from "rxjs";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  startWith,
-  switchMap,
-  takeUntil, takeWhile,
-  tap,
-  throttleTime
-} from "rxjs/operators";
+import {debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil, tap, throttleTime} from "rxjs/operators";
 import {SuggestionDataService} from "../services/data-service.class";
 import {
-  joinProperties,
-  suggestFromArray,
-  selectInputContent,
-  isNotEmptyArray,
+  focusInput,
   getPropertyByPath,
-  isNil, setTabIndex, focusInput
+  isNil,
+  isNotEmptyArray,
+  joinProperties,
+  selectInputContent,
+  setTabIndex,
+  suggestFromArray
 } from "../functions";
-import {ReferentialRef} from "../../core/services/model";
 import {InputElement} from "./focusable";
 import {MatAutocomplete} from "@angular/material";
 

@@ -1,57 +1,50 @@
-# Cesium 2
+# Cesium²
+
+Cesium² is a simple wallet for libre Currency like G1, compatible with the [Duniter protocol](https://git.duniter.org/nodes/typescript/duniter/blob/dev/doc/Protocol.md).
+
+## Installation
+
+### On Android
+
+ - Download then install the latest APK file
+
+or 
+
+- Install the app from the [Play Store](https://play.google.com/store/apps/details?id=fr.duniter.cesium2) 
 
 
-## Compile from source
+### As a web site
 
-1. Install Node.js v8+
-```
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-nvm use 8
-```
+#### First installation
 
-2. Install global dependencies:
-```
-npm install -g ionic@^4.0.0-beta.11 cordova@^8.0.0 @angular/cli@^6.1.2
-```
-3. Clone the repo: `git clone ...`
-4. Install project dependencies
-```
-cd cesium2
-npm install
-```
+Cesium can be easily installed on most web server :
 
-5. Start a Duniter node with GraphQL API (GVA). See https://git.duniter.org/nodes/typescript/modules/gva-api/
+ - Download the latest release (file cesium2-vx.y.z-web.zip);
+ - Unpack into an empty directory;
+ - Configure the web server engine (e.g. Apache, Nginx):
+   - Add a new virtual host, that use the directory as `web root`.
+   - Make sure the file `index.html` exists on this directory.
 
-A GraphQL editor should be accessible at [localhost:8080](http://localhost:8080/graphql)
+#### Update to last version
 
-6. Start app
-```
-cd cesium2
-npm start
-```
-ou
-```
-ng serve --port [port]
-```
+On Linux, an update script can be used to update your Cesium² web site:
+ - Using cURL:
+    ```bash
+    cd <CESIUM2_WEB_ROOT>
+    curl -o- https://git.duniter.org/clients/cesium-grp/cesium2/raw/master/install.sh | bash
+    ```
 
-The application should be accessible at [localhost:4200](http://localhost:4200)
+ - or using Wget:
 
-7. Check environment configuration
+    ```
+    cd <CESIUM2_WEB_ROOT>
+    wget -qO- https://git.duniter.org/clients/cesium-grp/cesium2/raw/master/install.sh | bash
+    ```
 
-Edit the file `src/environment/environment.ts`
+## Contribute
 
-8. Build a release
-```
-npm run build --prod --release
-```
+See the [developer guide](./doc/Building_from_sources.md)
 
+## License
 
-## Developer guide :
-
-- Ionic 4 colors: https://www.joshmorony.com/a-primer-on-css-4-variables-for-ionic-4/
-- Migration to Ionic 4 tips: https://www.joshmorony.com/my-method-for-upgrading-from-ionic-3-to-ionic-4/
-
-## Useful additional tools
-```
-sudo apt-get install chromium-browser docker.io
-```
+Free software, distributed under a [AGPL v3 license](./LICENSE).

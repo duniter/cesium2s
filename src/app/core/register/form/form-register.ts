@@ -1,17 +1,38 @@
-import { Component, EventEmitter, Output, ViewChild, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, FormControl, AbstractControl, ValidationErrors, ValidatorFn, AsyncValidatorFn } from "@angular/forms";
-import { RegisterData, AccountService, AccountFieldDef } from "../../services/account.service";
-import { Account, referentialToString, REGEXP } from "../../services/model";
-import { MatHorizontalStepper } from "@angular/material";
-import { Observable, Subscription } from "rxjs";
-import { AccountValidatorService } from "../../services/account.validator";
-import { environment } from "../../../../environments/environment";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild
+} from "@angular/core";
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from "@angular/forms";
+import {AccountFieldDef, AccountService, RegisterData} from "../../services/account.service";
+import {Account, REGEXP} from "../../services/model";
+import {MatHorizontalStepper} from "@angular/material";
+import {Subscription} from "rxjs";
+import {AccountValidatorService} from "../../services/account.validator";
+import {environment} from "../../../../environments/environment";
+import {isNotNilOrBlank} from "../../../shared/functions";
+import {SharedValidators} from "../../../shared/validator/validators";
+import {DuniterService} from "../../services/duniter/duniter.service";
 
 
 @Component({
   selector: 'form-register',
   templateUrl: 'form-register.html',
-  styleUrls: ['./form-register.scss']
+  styleUrls: ['./form-register.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterForm implements OnInit {
 
@@ -33,9 +54,11 @@ export class RegisterForm implements OnInit {
   onSubmit: EventEmitter<RegisterData> = new EventEmitter<RegisterData>();
 
   constructor(
-    private accountService: AccountService,
+      private accountService: AccountService,
+      private duniter: DuniterService,
     private accountValidatorService: AccountValidatorService,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    private cd: ChangeDetectorRef
   ) {
 
 
@@ -43,28 +66,28 @@ export class RegisterForm implements OnInit {
 
     // Uid
     this.forms.push(formBuilder.group({
-      uid: new FormControl(null, Validators.compose([Validators.required, Validators.pattern(REGEXP.UID), this.uidAvailability(this.accountService)]))
+      uid: [null, Validators.compose([Validators.required, Validators.pattern(REGEXP.UID), this.uidAvailability(this.duniter)])]
     }));
 
     // Salt
     this.forms.push(formBuilder.group({
-      salt: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(8)])),
-      confirmSalt: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('salt')]))
+      salt: [null, Validators.compose([Validators.required, Validators.minLength(8)])],
+      confirmSalt: [null, Validators.compose([Validators.required, this.equalsValidator('salt')])]
     }));
 
     // Password form
     this.forms.push(formBuilder.group({
-      password: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(8)])),
-      confirmPassword: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('password')]))
+      password: [null, Validators.compose([Validators.required, Validators.minLength(8)])],
+      confirmPassword: [null, Validators.compose([Validators.required, this.equalsValidator('password')])]
     }));
 
     // Detail form
     const formDetailDef = {
-      lastName: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(2)])),
-      firstName: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(2)]))
+      lastName: [null, Validators.compose([Validators.required, Validators.minLength(2)])],
+      firstName: [null, Validators.compose([Validators.required, Validators.minLength(2)])]
     };
 
-    // Add additionnal fields to details form
+    // Add additional fields to details form
     this.additionalFields = this.accountService.additionalAccountFields.filter(field => field.updatable.registration);
     this.additionalFields.forEach(field => {
       //if (this.debug) console.debug("[register-form] Add additional field {" + field.name + "} to form", field);
@@ -83,13 +106,12 @@ export class RegisterForm implements OnInit {
 
   ngOnInit() {
     // For DEV only ------------------------
-    if (environment.production === false) {
+    if (!environment.production) {
       this.form.setValue({
         uidStep: {
-          uid: 'abc',
-          confirmUid: 'abc'
+          uid: 'abc'
         },
-        passwordSalt: {
+        saltStep: {
           salt: 'abc',
           confirmSalt: 'abc'
         },
@@ -99,21 +121,23 @@ export class RegisterForm implements OnInit {
         },
         detailsStep: {
           lastName: 'Test',
-          firstName: 'User',
-          department: null
+          firstName: 'User'
+          //email: 'contact@e-is.pro'
         }
       });
     }
   }
 
   public get value(): RegisterData {
-    let result: RegisterData = {
-      username: this.form.value.emailStep.email,
-      password: this.form.value.passwordStep.password,
+    const value = this.form.value;
+    const result: RegisterData = {
+      uid: value.uidStep.uid,
+      salt: value.saltStep.salt,
+      password: value.passwordStep.password,
       account: new Account()
     };
     result.account.fromObject(this.form.value.detailsStep);
-    result.account.email = result.username;
+    //result.account.email = result.email;
 
     return result;
   }
@@ -149,18 +173,22 @@ export class RegisterForm implements OnInit {
     }
   }
 
-  uidAvailability(accountService: AccountService): AsyncValidatorFn {
-    return function (control: AbstractControl): Observable<ValidationErrors | null> {
-
-      return Observable.timer(500).mergeMap(() => {
-        return accountService.checkUidAvailable(control.value)
-          .then(res => null)
-          .catch(err => {
-            console.error(err);
-            return { availability: true };
-          });
-      });
-    }
+  uidAvailability(duniter: DuniterService): AsyncValidatorFn {
+    return async(control) => {
+      const uid = control.value;
+      if (isNotNilOrBlank(uid)) {
+        try {
+            await duniter.checkUidAvailable(control.value);
+        } catch (err) {
+          console.error(err);
+          SharedValidators.addError(control, 'availability');
+          return {availability: true};
+        }
+      }
+      SharedValidators.clearError(control, 'availability');
+      control.updateValueAndValidity();
+      this.markForCheck();
+    };
   }
 
   cancel() {
@@ -173,8 +201,6 @@ export class RegisterForm implements OnInit {
     this.onSubmit.emit(this.value);
   }
 
-  referentialToString = referentialToString;
-
   markAsTouched() {
     this.form.markAsTouched();
   }
@@ -185,5 +211,9 @@ export class RegisterForm implements OnInit {
 
   enable() {
     this.form.enable();
+  }
+
+  markForCheck() {
+    this.cd.markForCheck();
   }
 }

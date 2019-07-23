@@ -7,19 +7,19 @@
     <ion-label color="danger" class="error" [innerHTML]="error|translate"></ion-label>
   </ion-item>
 
-  <!-- Username -->
+  <!-- Salt -->
   <mat-form-field>
-    <input matInput [appAutofocus]="true" [autofocusDelay]="500" [placeholder]="'USER.EMAIL'|translate" formControlName="username"
-      autocomplete="section-red username">
-    <mat-error *ngIf="form.controls.username.hasError('required') && form.controls.username.dirty" translate>ERROR.FIELD_REQUIRED</mat-error>
-    <mat-error *ngIf="form.controls.username.hasError('email') && form.controls.username.dirty">
+    <input matInput [appAutofocus]="true" [autofocusDelay]="500" [placeholder]="'AUTH.SALT'|translate" formControlName="salt"
+      autocomplete="section-red salt">
+    <mat-error *ngIf="form.controls.salt.hasError('required') && form.controls.salt.dirty" translate>ERROR.FIELD_REQUIRED</mat-error>
+    <mat-error *ngIf="form.controls.salt.hasError('email') && form.controls.salt.dirty">
       <span>{{'ERROR.FIELD_NOT_VALID_EMAIL' | translate }}</span>
     </mat-error>
   </mat-form-field>
 
   <!-- Password -->
   <mat-form-field>
-    <input matInput [placeholder]="'USER.PASSWORD'|translate" formControlName="password" autocomplete="section-red current-password"
+    <input matInput [placeholder]="'AUTH.PASSWORD'|translate" formControlName="password" autocomplete="section-red current-password"
       type="password">
     <mat-error *ngIf="form.controls.password.hasError('required') && form.controls.password.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
   </mat-form-field>

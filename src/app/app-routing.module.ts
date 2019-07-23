@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule, ExtraOptions } from '@angular/router';
-import { HomePage } from './core/home/home';
-import { RegisterConfirmPage } from './core/register/confirm/confirm';
-import { AccountPage } from './core/account/account';
-import { AuthGuardService } from './core/core.module';
-import { WotSearchPage } from './wot/pages/search';
+import {NgModule} from '@angular/core';
+import {ExtraOptions, RouterModule, Routes} from '@angular/router';
+import {HomePage} from './core/home/home';
+import {AccountPage} from './core/account/account';
+import {AuthGuardService} from './core/core.module';
+import {WotSearchPage} from './wot/pages/search';
 import {SettingsPage} from "./core/settings/settings.page";
 
 const routeOptions: ExtraOptions = {
@@ -23,10 +22,6 @@ const routes: Routes = [
   {
     path: 'home/:action',
     component: HomePage
-  },
-  {
-    path: 'confirm/:email/:code',
-    component: RegisterConfirmPage
   },
   {
     path: 'account',

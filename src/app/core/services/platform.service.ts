@@ -1,6 +1,6 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Platform} from "@ionic/angular";
-import {NetworkService} from "./network.service";
+import {NetworkService} from "./network/network.service";
 import {Platforms} from "@ionic/core";
 import {SplashScreen} from "@ionic-native/splash-screen/ngx";
 import {StatusBar} from "@ionic-native/status-bar/ngx";

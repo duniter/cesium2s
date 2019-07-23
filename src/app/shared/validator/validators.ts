@@ -200,6 +200,15 @@ export class SharedValidators {
     }
   }
 
+  static addError(control: AbstractControl, errorCode: string, errorParam?: any) {
+    if (!control.hasError(errorCode)) {
+      const errors: ValidationErrors = control.errors || {};
+      errors[errorCode] = isNotNil(errorParam) ? errorParam : true;
+      control.setErrors(errors);
+      control.markAsTouched({onlySelf: true});
+    }
+  }
+
   static requiredArrayMinLength(minLength?: number): ValidatorFn {
     minLength = minLength || 1;
     return (group: FormArray): ValidationErrors | null => {

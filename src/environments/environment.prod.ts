@@ -13,6 +13,11 @@ export const environment: Environment = {
         {
             host: "g1.cgeek.fr",
             port: 15000,
+            useSsl: false
+        },
+        {
+            host: "g1.duniter.fr",
+            port: 15000,
             useSsl: true
         }
     ]

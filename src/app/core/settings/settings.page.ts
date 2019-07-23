@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {AccountService} from '../services/account.service';
-import {LocalSettings, Peer, PropertyValue, referentialToString, UsageMode} from '../services/model';
+import {LocalSettings, PropertyValue, UsageMode} from '../services/model';
 import {FormArray, FormBuilder, FormControl} from '@angular/forms';
 import {AppForm} from '../form/form.class';
 import {Moment} from 'moment/moment';
@@ -10,9 +10,10 @@ import {TranslateService} from "@ngx-translate/core";
 import {ValidatorService} from "angular4-material-table";
 import {LocalSettingsValidatorService} from "../services/local-settings.validator";
 import {PlatformService} from "../services/platform.service";
-import {NetworkService} from "../services/network.service";
+import {NetworkService} from "../services/network/network.service";
 import {isNilOrBlank, toBoolean} from "../../shared/functions";
 import {LocalSettingsService} from "../services/local-settings.service";
+import {Peer} from "../services/network/network.model";
 
 @Component({
   selector: 'app-settings',
@@ -152,7 +153,7 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
     // Remember data
     this._data = data;
 
-    this.fieldsFormHelper.resize(Math.max(data.fields.length, 1));
+    this.fieldsFormHelper.resize(data.fields.length);
     this.form.patchValue(data, {emitEvent: false});
     this.markAsPristine();
 
@@ -227,11 +228,9 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
         }
         // Disable fields
         this.form.get('locale').disable(opts);
-        this.form.get('latLongFormat').disable(opts);
       } else {
         // Enable fields
         this.form.get('locale').enable(opts);
-        this.form.get('latLongFormat').enable(opts);
       }
     } else {
       // Restore previous values
@@ -239,7 +238,6 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
 
       // Enable fields
       this.form.get('locale').enable(opts);
-      this.form.get('latLongFormat').enable(opts);
     }
 
     // Mark for check, if need
@@ -248,8 +246,8 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
     }
   }
 
-  async showSelectPeerModal() {
-    const peer = await this.networkService.showSelectPeerModal();
+  async selectPeer() {
+    const peer = await this.networkService.selectPeer({allowSelectDownPeer: false});
     if (peer && peer.url) {
       const control = this.form.get('peerUrl') as FormControl;
       control.setValue(peer.url, {emitEvent: true, onlySelf: false});
@@ -262,8 +260,6 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
   async cancel() {
     await this.load();
   }
-
-  referentialToString = referentialToString;
 
   /* -- protected functions -- */
 

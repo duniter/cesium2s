@@ -15,6 +15,7 @@ export const ErrorCodes = {
   UNREACHABLE_NETWORK_ERROR: 4,
   UNKNOWN_NETWORK_ERROR: 5,
   ACCOUNT_NOT_EXISTS: 6,
+  IDENTITY_UID_NOT_FOUND: 7,
 
   // DATA errors (load error)
   LOAD_PERSONS_ERROR: 100,
@@ -31,8 +32,5 @@ export const ServerErrorCodes = {
   UNAUTHORIZED: 401, // not authentifcated
   FORBIDDEN: 403, // authentifcated but no access right
   NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500,
-  DATA_LOCKED: 520,
-  BAD_UPDATE_DATE: 521,
-  DENY_DELETION: 522
+  INTERNAL_SERVER_ERROR: 500
 }

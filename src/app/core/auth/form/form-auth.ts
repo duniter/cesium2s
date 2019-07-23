@@ -39,7 +39,7 @@ export class AuthForm implements OnInit {
   constructor(public formBuilder: FormBuilder,
     public modalCtrl: ModalController) {
     this.form = formBuilder.group({
-      username: ['', Validators.compose([Validators.required])],
+      salt: ['', Validators.compose([Validators.required])],
       password: ['', Validators.required]
     });
 
@@ -50,8 +50,8 @@ export class AuthForm implements OnInit {
     // For DEV only
     if (environment.production === false) {
       this.form.patchValue({
-        username: 'benoit.lavenier@e-is.pro',
-        password: 'priezPourMoi!'
+        salt: 'abc',
+        password: 'def'
       });
     }
   }
@@ -74,7 +74,7 @@ export class AuthForm implements OnInit {
       });
 
     setTimeout(() => this.onSubmit.emit({
-      username: data.username,
+      salt: data.salt,
       password: data.password
     }));
   }

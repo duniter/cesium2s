@@ -27,14 +27,11 @@ export class AccountValidatorService implements ValidatorService {
 
   public getFormGroupDefinition(data?: Account): any {
     const formDef = {
-      id: [''],
-      updateDate: [''],
+      time: [''],
       uid: [/*data && data.uid ||*/ null, Validators.minLength(2)],
       lastName: [data && data.lastName || null, Validators.compose([Validators.required, Validators.minLength(2)])],
       firstName: [data && data.firstName || null, Validators.compose([Validators.required, Validators.minLength(2)])],
       email: [data && data.email || null, Validators.compose([Validators.required, Validators.email])],
-      mainProfile: [data && (data.mainProfile || getMainProfile(data.profiles)) || 'GUEST', Validators.required],
-      statusId: [data && data.statusId || StatusIds.TEMPORARY, Validators.required],
       pubkey: [data && data.pubkey || null, Validators.compose([Validators.required, SharedValidators.pubkey])]
     };
 

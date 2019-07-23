@@ -97,15 +97,15 @@ export class AppComponent {
     console.debug("[app] Add additional account fields...");
 
     // Add account field: department
-    this.accountService.addAdditionalAccountField({
-      name: 'department',
-      label: 'USER.PSEUDONYM',
-      required: true,
-      updatable: {
-        registration: true,
-        account: false
-      }
-    });
+    // this.accountService.addAdditionalAccountField({
+    //   name: 'email',
+    //   label: 'USER.EMAIL',
+    //   required: true,
+    //   updatable: {
+    //     registration: true,
+    //     account: false
+    //   }
+    // });
   }
 }
 

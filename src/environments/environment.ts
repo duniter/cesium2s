@@ -13,13 +13,15 @@ export const environment: Environment = {
     apolloFetchPolicy: 'network-only',
     persistCache: false,
 
-    defaultPeers: [
-        {
-            host: "localhost",
-            port: 15000,
-            useSsl: false
-        }
-    ]
+    defaultPeer: {
+        host: "localhost",
+        port: 4200,
+        useSsl: false
+    },
+
+    defaultPeers: [],
+
+    timeout: 50000
 };
 
 /*

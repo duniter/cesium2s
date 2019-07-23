@@ -1,7 +1,7 @@
 import {EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {MatColumnDef, MatPaginator, MatSort, MatTable} from "@angular/material";
 import {merge} from "rxjs/observable/merge";
-import {Observable, Subject} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {catchError, filter, mergeMap, startWith, switchMap, takeUntil} from "rxjs/operators";
 import {TableElement} from "angular4-material-table";
 import {AppTableDataSource} from "./table-datasource.class";
@@ -233,7 +233,7 @@ export abstract class AppTable<T extends Entity<T>, F = any> implements OnInit, 
         takeUntil(this._onDestroy),
         catchError(err => {
           this.error = err && err.message || err;
-          return Observable.empty();
+          return of(undefined);
         })
       )
       .subscribe(res => {

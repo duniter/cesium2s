@@ -3,7 +3,7 @@ import {ValidatorService} from "angular4-material-table";
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 import {PropertyValue, LocalSettings} from "./model";
 import {SharedValidators} from "../../shared/validator/validators";
-import {NetworkService} from "./network.service";
+import {NetworkService} from "./network/network.service";
 
 @Injectable()
 export class LocalSettingsValidatorService implements ValidatorService {

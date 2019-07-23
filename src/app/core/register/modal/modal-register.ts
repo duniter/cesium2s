@@ -29,7 +29,7 @@ export class RegisterModal {
     }
 
     this.sending = true;
-    let data = this.form.value;
+    const data = this.form.value;
 
     this.form.disable();
 
