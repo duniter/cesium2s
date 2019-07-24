@@ -26,7 +26,7 @@ import {
   setTabIndex,
   suggestFromArray
 } from "../functions";
-import {InputElement} from "./focusable";
+import {InputElement} from "../form/field.model";
 import {MatAutocomplete} from "@angular/material";
 
 export const DEFAULT_VALUE_ACCESSOR: any = {
@@ -37,10 +37,10 @@ export const DEFAULT_VALUE_ACCESSOR: any = {
 
 export declare type DisplayFn = (obj:any) => string;
 
-export declare interface  MatAutocompleteFieldConfig<T=any> {
+export declare interface  MatAutocompleteFieldConfig<T = any> {
   service?: SuggestionDataService<T>;
   filter?: any;
-  items?: Observable<T[]> | T[];
+  values?: Observable<T[]> | T[];
   attributes: string[];
   columnSizes?: number[];
   displayWith?: DisplayFn;
@@ -83,7 +83,7 @@ export class MatAutocompleteField implements OnInit, InputElement, OnDestroy, Co
 
   @Input() clearable = false;
 
-  @Input() items: Observable<any[]> | any[];
+  @Input() values: Observable<any[]> | any[];
 
   @Input() debounceTime = 250;
 
@@ -165,7 +165,7 @@ export class MatAutocompleteField implements OnInit, InputElement, OnDestroy, Co
     ;
 
     if (this.service) {
-      this.items = updateEvents$
+      this.values = updateEvents$
         .pipe(
           throttleTime(100),
           switchMap((value) => this.service.suggest(value, this.filter)),
@@ -173,10 +173,10 @@ export class MatAutocompleteField implements OnInit, InputElement, OnDestroy, Co
           tap(res =>  this.updateImplicitValue(res))
         );
     }
-    else if (this.items instanceof Array){
-      const values = this.items;
+    else if (this.values instanceof Array){
+      const values = this.values;
       const searchOptions = Object.assign({searchAttributes: this.displayAttributes}, this.filter);
-      this.items = updateEvents$
+      this.values = updateEvents$
         .pipe(
           map(value => suggestFromArray(values, value, searchOptions)),
           // Store implicit value (will use it onBlur if not other value selected)
@@ -184,8 +184,8 @@ export class MatAutocompleteField implements OnInit, InputElement, OnDestroy, Co
         );
     }
 
-    if (!this.items) {
-      console.warn("Missing attribute 'service', 'items' or 'config' in <mat-autocomplete-field>", this);
+    if (!this.values) {
+      console.warn("Missing attribute 'service', 'values' or 'config' in <mat-autocomplete-field>", this);
     }
 
     this.onBlur.subscribe( (event: FocusEvent) => {

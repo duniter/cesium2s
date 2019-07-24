@@ -89,6 +89,7 @@
   "HOME": {
     "WELCOME": "Bienvenue dans l'application Cesium 2 !",
     "DESCRIPTION": "Recevez et envoyez de la monnaie libre Ğ1",
+    "REGISTER_HELP":  "L'inscription est rapide. Rejoignez-nous dès aujourd'hui !",
     "BTN_WOT_SEARCH": "Rechercher dans l'annuaire",
     "NOT_THIS_ACCOUNT_QUESTION": "Vous n'êtes pas <b>{{displayName}}</b> ?",
     "BTN_DISCONNECT": "Déconnecter ce compte",
@@ -131,6 +132,7 @@
   },
   "ACCOUNT": {
     "TITLE": "Mon compte",
+    "UID": "Pseudonyme",
     "EMAIL_NOT_CONFIRMED_LABEL": "L'email de ce compte n'a pas encore validé : <b>consultez votre boite mail</b> et cliquez sur le lien fourni.",
     "EMAIL_NOT_RECEIVED_QUESTION": "Si vous n'avez pas reçu l'email de validation,<br/>vous pouvez <b>demander un nouvel envoi</b> :",
     "BTN_RESEND": "Renvoyer",
@@ -155,14 +157,11 @@
     "LOCALE": "Langue",
     "LAT_LONG_FORMAT": "Format latitude/longitude",
     "NETWORK_DIVIDER": "Paramètres réseau",
-    "PEER_URL": "Addresse du noeud réseau",
+    "PEER_URL": "Addresse du noeud Duniter",
     "BTN_CHANGE_PEER": "Changer de noeud",
-    "DATA_ENTRY_DIVIDER": "Préférence diverses",
-    "USAGE_MODE": "Mode de saisie",
-    "USAGE_MODES":  {
-      "FIELD": "Saisie terrain",
-      "DESK": "Saisie bureau"
-    },
+    "OTHER_DIVIDER": "Autres paramètres",
+    "PROPERTY_KEY": "Option",
+    "PROPERTY_VALUE": "Valeur",
     "FIELD_NAME": "Champ de saisie",
     "FIELD_DISPLAY": "Affichage",
     "BTN_ADD_FIELD": "Ajouter un champ",
@@ -188,16 +187,21 @@
     }
   },
   "IDENTITY": {
-    "UID": "Uid",
+    "UID": "Pseudonyme",
     "EMAIL": "Email",
     "PASSWORD": "Mot de passe",
     "PUBKEY": "Clé publique"
   },
-  "WOT": {    
+  "WOT": {
+    "UID": "Pseudonyme",
+    "PUBKEY": "Clé publique",
     "SEARCH": {
       "TITLE": "Annuaire",
       "FILTER": {
-        "SEARCH": "Recherche : pseudo, clé publique..."
+        "SEARCH": "Recherche : pseudo, clé publique...",
+        "PENDING": "Inscriptions en attente",
+        "WALLET": "Portefeuilles",
+        "MEMBER": "Membres"
       }
     }
   },
@@ -262,5 +266,58 @@
     "SAVE_BEFORE_CLOSE": "Des mofifications n'ont pas été enregistrées.<br/><br/>Voulez-vous les <b>sauvegarder</b> avant de fermer ?",
     "CANCEL_CHANGES": "Vos dernières modifications seront annulées.<br/><br/><b>Êtes-vous sûr</b> de vouloir continuer ?",
     "DELETE": "Cette opération est irreversible.<br/><br/><b>Êtes-vous sûr</b> de vouloir continuer ?"
+  },
+  "PLUGINS": {
+    "ES": {
+      "SETTINGS": {
+        "PEER_URL": "Addresse du noeud Cesium+"
+      },
+      "PROFILE": {
+        "PROFILE_DIVIDER": "Profil Cesium+",
+        "PROFILE_DIVIDER_HELP": "Il s'agit de données annexes, stockées en dehors du réseau de la monnaie.",
+        "NO_PROFILE_DEFINED": "Aucun profil saisi",
+        "BTN_ADD": "Saisir mon profil",
+        "BTN_EDIT": "Editer mon profil",
+        "BTN_DELETE": "Supprimer mon profil",
+        "BTN_REORDER": "Réordonner",
+        "UID": "Pseudonyme",
+        "TITLE": "Nom, Prénom",
+        "TITLE_HELP": "Nom, Prénom",
+        "DESCRIPTION": "A propos de moi",
+        "DESCRIPTION_HELP": "A propos de moi...",
+        "ADDRESS": "Rue",
+        "ADDRESS_HELP": "Rue, bâtiment...",
+        "CITY": "Ville",
+        "CITY_HELP": "Ville",
+        "SOCIAL_HELP": "http://...",
+        "GENERAL_DIVIDER": "Informations générales",
+        "SOCIAL_NETWORKS_DIVIDER": "Réseaux sociaux, sites web",
+        "TECHNICAL_DIVIDER": "Informations techniques",
+        "MODAL_AVATAR": {
+          "TITLE": "Photo de profil",
+          "SELECT_FILE_HELP": "Veuillez <b>choisir un fichier image</b>, en cliquant sur le bouton ci-dessous :",
+          "BTN_SELECT_FILE": "Choisir une photo",
+          "RESIZE_HELP": "<b>Recadrez l'image</b>, si besoin. Un clic maintenu sur l'image permet de la déplacer. Cliquez sur la zone en bas à gauche pour zoomer.",
+          "RESULT_HELP": "<b>Voici le résultat</b> tel que visible sur votre profil :"
+        },
+        "CONFIRM": {
+          "DELETE": "Êtes-vous sûr de vouloir <b>supprimer votre profil Cesium+ ?</b><br/><br/>Cette opération est irréversible."
+        },
+        "ERROR": {
+          "REMOVE_PROFILE_FAILED": "Erreur de suppression du profil",
+          "LOAD_PROFILE_FAILED": "Erreur de chargement du profil utilisateur",
+          "SAVE_PROFILE_FAILED": "Erreur lors de la sauvegarde",
+          "INVALID_SOCIAL_NETWORK_FORMAT": "Format non pris en compte : veuillez indiquer une adresse valide.<br/><br/>Exemples :<ul><li>- Une page Facebook (https://www.facebook.com/user)</li><li>- Une page web (http://www.monsite.fr)</li><li>- Une adresse email (joe@dalton.com)</li></ul>",
+          "IMAGE_RESIZE_FAILED": "Erreur lors du redimensionnement de l'image"
+        },
+        "INFO": {
+          "PROFILE_REMOVED": "Profil supprimé",
+          "PROFILE_SAVED": "Profil sauvegardé"
+        },
+        "HELP": {
+          "WARNING_PUBLIC_DATA": "Les informations renseignées dans votre profil <b>sont publiques</b> : visibles y compris par des personnes <b>non connectées</b>.<br/>{{'PROFILE.PROFILE_DIVIDER_HELP'|translate}}"
+        }
+      }
+    }
   }
 }

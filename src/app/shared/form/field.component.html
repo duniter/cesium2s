@@ -4,8 +4,8 @@
   <mat-form-field *ngSwitchCase="'integer'" [floatLabel]="floatLabel">
     <input matInput #matInput
            autocomplete="off" type="number"
-           [min]="option.minValue"
-           [max]="option.maxValue"
+           [min]="definition.minValue"
+           [max]="definition.maxValue"
            pattern="[0-9]*"
            step="1"
            [placeholder]="placeholder"
@@ -34,7 +34,7 @@
 
     <input matInput #matInput
            type="number"
-           autocomplete="off" [min]="option.minValue" [max]="option.maxValue"
+           autocomplete="off" [min]="definition.minValue" [max]="definition.maxValue"
            decimal="true"
            [placeholder]="placeholder"
            (keypress)="filterNumberInput($event, true)"
@@ -99,7 +99,7 @@
                 [required]="required"
                 [tabindex]="tabindex"
                 (keypress.enter)="onKeypressEnter.emit($event)">
-      <mat-option *ngFor="let item of option.values" [value]="item.key">{{ item.value | translate }}</mat-option>
+      <mat-option *ngFor="let item of definition.values" [value]="item.key">{{ item.value | translate }}</mat-option>
     </mat-select>
 
     <mat-error *ngIf="formControl.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
@@ -146,7 +146,7 @@
 
   <!-- other -->
   <div *ngSwitchDefault>
-    <mat-error *ngIf="type">Unknown type {{type}} for option {{option.key}}. Please report this error.</mat-error>
+    <mat-error *ngIf="type">Unknown type {{type}} for option {{definition.key}}. Please report this error.</mat-error>
     <mat-error *ngIf="!type">Error on option field. Please check console log for details.</mat-error>
     <div matSuffix>
       <ng-content select="[matSuffix]"></ng-content>

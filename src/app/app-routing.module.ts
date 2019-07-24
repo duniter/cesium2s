@@ -3,7 +3,7 @@ import {ExtraOptions, RouterModule, Routes} from '@angular/router';
 import {HomePage} from './core/home/home';
 import {AccountPage} from './core/account/account';
 import {AuthGuardService} from './core/core.module';
-import {WotSearchPage} from './wot/pages/search';
+import {WotSearchPage} from './wot/pages/wot-search';
 import {SettingsPage} from "./core/settings/settings.page";
 
 const routeOptions: ExtraOptions = {

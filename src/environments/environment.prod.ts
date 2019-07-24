@@ -19,6 +19,11 @@ export const environment: Environment = {
             host: "g1.duniter.fr",
             port: 15000,
             useSsl: true
+        },
+        {
+            host: "server.e-is.pro",
+            port: 15000,
+            useSsl: false
         }
     ]
 };

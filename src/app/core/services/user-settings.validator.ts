@@ -20,7 +20,7 @@ export class UserSettingsValidatorService implements ValidatorService {
       id: [data && data.id || null],
       locale: [data && data.locale || null, Validators.required],
       content: this.formBuilder.group({
-
+        test: [null]
       }),
       nonce: [data && data.nonce || null]
     });

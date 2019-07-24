@@ -10,6 +10,9 @@ import {environment} from '../../../environments/environment';
 import {HomePage} from '../home/home';
 import {fadeInAnimation} from '../../shared/material/material.animations';
 import {TranslateService} from "@ngx-translate/core";
+import {switchMap} from "rxjs/operators";
+import {DuniterService} from "../services/duniter/duniter.service";
+import {from} from "rxjs";
 
 export interface MenuItem {
   title: string;
@@ -34,10 +37,12 @@ const SPLIT_PANE_SHOW_WHEN = 'lg';
 })
 export class MenuComponent implements OnInit {
 
-  public loading = true;
-  public isLogin = false;
-  public account: Account;
-  public splitPaneOpened: boolean;
+  loading = true;
+  isLogin = false;
+  account: Account;
+  splitPaneOpened: boolean;
+
+  currencySymbol$: Observable<string>;
 
   filteredItems: MenuItem[];
 
@@ -61,6 +66,7 @@ export class MenuComponent implements OnInit {
     protected menu: MenuController,
     protected modalCtrl: ModalController,
     protected alertController: AlertController,
+    protected duniterService: DuniterService,
     protected translate: TranslateService,
     protected cd: ChangeDetectorRef
   ) {
@@ -80,6 +86,13 @@ export class MenuComponent implements OnInit {
     } else {
       await this.onLogout(true);
     }
+
+    this.currencySymbol$ = from(this.duniterService.ready())
+        .pipe(switchMap(() =>  this.duniterService.currencySymbol()));
+
+    this.currencySymbol$.subscribe((c) => {
+      console.log("Detectcurrency: " + c);
+    })
   }
 
   onLogin(account: Account) {

@@ -49,8 +49,8 @@
           <!-- locale -->
           <mat-form-field>
             <mat-select [placeholder]="'SETTINGS.LOCALE'|translate" formControlName="locale" required>
-              <mat-option *ngFor="let locale of locales" [value]="locale">
-                {{localeMap[locale]}}
+              <mat-option *ngFor="let locale of locales" [value]="locale.id">
+                {{locale.name}}
               </mat-option>
             </mat-select>
             <mat-error *ngIf="form.controls.locale.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>
@@ -81,48 +81,50 @@
 
           <!-- Data entry -->
           <h3>
-            <ion-text translate>SETTINGS.DATA_ENTRY_DIVIDER</ion-text>
+            <ion-text translate>SETTINGS.OTHER_DIVIDER</ion-text>
           </h3>
 
-          <!-- Fields options -->
-          <ion-grid formArrayName="fields" no-padding>
-            <ng-container *ngFor="let fieldForm of fieldsForm?.controls; let i=index">
+          <!-- Properties -->
+          <ion-grid formArrayName="properties" no-padding>
+            <ng-container *ngFor="let propertyForm of propertiesForm?.controls; let i=index">
               <ion-row no-padding [formGroupName]="i">
-                <ion-col no-padding>
-                  <!-- key -->
-                  <mat-form-field>
-                    <mat-select formControlName="key" [placeholder]=" 'SETTINGS.FIELD_NAME'|translate">
-                      <mat-option *ngFor="let item of fields" [value]="item.key">{{ item.label | translate }}
-                      </mat-option>
-                    </mat-select>
 
-                  </mat-form-field>
-                </ion-col>
-                <ion-col no-padding padding-left>
-                  <!-- value  -->
-                  <mat-form-field *ngIf="fieldForm.get('key').value">
-                    <mat-select formControlName="value"
-                                [placeholder]="'SETTINGS.FIELD_DISPLAY'|translate"
-                                required>
-                      <mat-option *ngFor="let item of fieldsMap[fieldForm.get('key').value].values"
-                                  [value]="item">
-                        <ng-container *ngFor="let attribute of item.split(','); let j=index">
-                          <span *ngIf="j !== 0"> - </span>
-                          {{ ('SETTINGS.FIELDS.ATTRIBUTES.' + attribute.toUpperCase()) | translate }}
-                        </ng-container>
-                      </mat-option>
+                <!-- property key -->
+                <ion-col no-padding>
+                  <mat-form-field floatLabel="never">
+                    <mat-select formControlName="key"
+                                [placeholder]="'SETTINGS.PROPERTY_KEY'|translate"
+                                (selectionChange)="updatePropertyDefinition(i)">
+                      <mat-option *ngFor="let item of propertyDefinitions" [value]="item.key">{{ item.label | translate }}</mat-option>
                     </mat-select>
                   </mat-form-field>
                 </ion-col>
-                <ion-col size="2">
-                  <button type="button" mat-icon-button color="light" [disabled]="loading"
+
+                <!-- property value -->
+                <ion-col no-padding padding-left>
+                  <app-form-field *ngIf="getPropertyDefinition(i); let definition"
+                                   floatLabel="never"
+                                   [definition]="definition"
+                                   [formControl]="propertyForm.controls.value"
+                                   [placeholder]="'SETTINGS.PROPERTY_VALUE' | translate"
+                                   [required]="true">
+                  </app-form-field>
+                </ion-col>
+
+                <ion-col size="2" no-padding>
+                  <button type="button" mat-icon-button color="light"
+                          [disabled]="loading"
                           [title]="'COMMON.BTN_DELETE'|translate"
-                          (click)="fieldsFormHelper.removeAt(i)">
+                          (click)="propertiesFormHelper.removeAt(i)">
                     <mat-icon>close</mat-icon>
                   </button>
-                  <button type="button" mat-icon-button color="light" [disabled]="loading"
-                          *ngIf="fieldsFormHelper.isLast(i)" [title]="'SETTINGS.BTN_ADD_FIELD'|translate"
-                          (click)="fieldsFormHelper.add()">
+                  <button *ngIf="propertiesFormHelper.isLast(i)"
+                          type="button"
+                          mat-icon-button
+                          color="light"
+                          [disabled]="loading"
+                          [title]="'CONFIGURATION.BTN_ADD_PROPERTY'|translate"
+                          (click)="propertiesFormHelper.add()">
                     <mat-icon>add</mat-icon>
                   </button>
                 </ion-col>

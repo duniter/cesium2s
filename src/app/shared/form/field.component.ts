@@ -13,45 +13,44 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormControl, FormGroupDirective, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {FloatLabelType} from "@angular/material";
-import {fromDateISOString} from "../../shared/functions";
-import {LocalSettingsService} from "../services/local-settings.service";
-import {ConfigOption} from "../services/model";
-import {AppFormUtils} from "../form/form.utils";
+import {filterNumberInput, fromDateISOString, selectInputContent} from "../../shared/functions";
+import {FormFieldDefinition} from "./field.model";
 
 const noop = () => {
 };
 
 @Component({
-  selector: 'mat-option-form-field',
-  styleUrls: ['./option-field.component.scss'],
-  templateUrl: './option-field.component.html',
+  selector: 'app-form-field',
+  styleUrls: ['./field.component.scss'],
+  templateUrl: './field.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => MatOptionFormField),
+      useExisting: forwardRef(() => AppFormField),
       multi: true
     }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MatOptionFormField implements OnInit, ControlValueAccessor {
+export class AppFormField implements OnInit, ControlValueAccessor {
 
   private _onChangeCallback: (_: any) => void = noop;
   private _onTouchedCallback: () => void = noop;
   protected disabling = false;
-  private _option: ConfigOption;
+  private _definition: FormFieldDefinition;
 
   type: string;
 
-  @Input() set option(value: ConfigOption) {
-    if (this._option === value) return;
-    this._option = value;
+  @Input()
+  set definition(value: FormFieldDefinition) {
+    if (this._definition === value) return;
+    this._definition = value;
     this.type = value && value.type;
     this.cd.markForCheck();
   }
 
-  get option(): ConfigOption {
-    return this._option;
+  get definition(): FormFieldDefinition {
+    return this._definition;
   }
 
   @Input() required: boolean;
@@ -78,7 +77,6 @@ export class MatOptionFormField implements OnInit, ControlValueAccessor {
   @ViewChild('matInput') matInput: ElementRef;
 
   constructor(
-    protected settings: LocalSettingsService,
     protected cd: ChangeDetectorRef,
     @Optional() private formGroupDir: FormGroupDirective
   ) {
@@ -87,13 +85,13 @@ export class MatOptionFormField implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
 
-    if (!this._option) throw new Error("Missing mandatory attribute 'option' in <mat-config-option-form-field>.");
-    if (typeof this._option !== 'object') throw new Error("Invalid attribute 'option' in <mat-config-option-form-field>. Should be an object.");
+    if (!this._definition) throw new Error("Missing mandatory attribute 'option' in <mat-config-option-form-field>.");
+    if (typeof this._definition !== 'object') throw new Error("Invalid attribute 'option' in <mat-config-option-form-field>. Should be an object.");
     if (!this.type) throw new Error("Invalid attribute 'option' in <mat-config-option-form-field>. Missing type !");
 
     this.checkAndResolveFormControl();
 
-    this.placeholder = this.placeholder || this._option.label;
+    this.placeholder = this.placeholder || this._definition.label;
 
     this.updateTabIndex();
 
@@ -156,14 +154,14 @@ export class MatOptionFormField implements OnInit, ControlValueAccessor {
       this.onKeypressEnter.emit(event);
       return;
     }
-    AppFormUtils.filterNumberInput(event, allowDecimals);
+    filterNumberInput(event, allowDecimals);
   }
 
   focus() {
     if (this.matInput) this.matInput.nativeElement.focus();
   }
 
-  selectInputContent = AppFormUtils.selectInputContent;
+  selectInputContent = selectInputContent;
 
   /* -- protected method -- */
 

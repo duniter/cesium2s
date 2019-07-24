@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import {ProgressBarService} from '../services/progress-bar.service';
 import {Router} from "@angular/router";
-import {IonBackButton, IonRouterOutlet, Platform} from "@ionic/angular";
+import {IonBackButton, IonRouterOutlet, IonSearchbar, Platform} from "@ionic/angular";
 import {isNil, isNotNil, toBoolean} from "../functions";
 import {distinctUntilChanged} from "rxjs/operators";
 import {Subscription} from "rxjs";
@@ -34,31 +34,38 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   @Input()
   class = '';
 
-  @Input()
-  hasValidate = false;
 
   @Input()
-  mobile= false;
+  mobile = false;
 
   @Input()
   defaultBackHref: string;
 
   @Input()
-  hasSearch = false;
+  hasValidate: boolean;
 
   @Input()
-  canGoBack = false;
+  hasSearch: boolean;
+
+  @Input()
+  canGoBack: boolean;
 
   @Output()
-  onValidate: EventEmitter<Event> = new EventEmitter<Event>();
+  onValidate = new EventEmitter<Event>();
 
   @Output()
-  onBackClick: EventEmitter<Event> = new EventEmitter<Event>();
+  onBackClick = new EventEmitter<Event>();
+
+  @Output()
+  onSearch = new EventEmitter<CustomEvent>();
 
   progressBarMode = 'none';
 
+  showSearchBar: boolean;
 
   @ViewChild("backButton") backButton: IonBackButton;
+
+  @ViewChild('searchbar') searchbar: IonSearchbar;
 
   constructor(
     private progressBarService: ProgressBarService,
@@ -72,6 +79,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.mobile = toBoolean(this.mobile, this.platform.is('mobile'));
     this.hasValidate = toBoolean(this.hasValidate, this.onValidate.observers.length > 0) && this.mobile;
+    this.hasSearch = toBoolean(this.hasSearch, this.onSearch.observers.length > 0);
+    this.showSearchBar = false;
     this._subscription = this.progressBarService.onProgressChanged
       .pipe(
         //debounceTime(100),
@@ -92,8 +101,13 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
 
-  enableSearchBar() {
-    console.warn('[app-toolbar] TODO: implement enableSearchBar()');
+  async toggleSearchBar() {
+    this.showSearchBar = !this.showSearchBar;
+    if (this.showSearchBar && this.searchbar) {
+      setTimeout(async () => {
+        await this.searchbar.setFocus();
+      }, 300);
+    }
   }
 
   doBackClick(event: Event) {

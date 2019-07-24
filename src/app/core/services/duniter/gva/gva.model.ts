@@ -6,8 +6,7 @@ export class GvaSource extends Entity<GvaSource, string> implements Source {
     static fromObject(json: any): GvaSource {
         if (!json) return undefined;
         const target = new GvaSource();
-        target.fromObject(json);
-        return target;
+        return target.fromObject(json) as GvaSource;
     }
 
     type: String;

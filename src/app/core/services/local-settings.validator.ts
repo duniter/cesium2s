@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {ValidatorService} from "angular4-material-table";
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from "@angular/forms";
-import {PropertyValue, LocalSettings} from "./model";
+import {LocalSettings, EntityUtils} from "./model";
 import {SharedValidators} from "../../shared/validator/validators";
 import {NetworkService} from "./network/network.service";
 
@@ -23,22 +23,23 @@ export class LocalSettingsValidatorService implements ValidatorService {
       accountInheritance: [data && data.accountInheritance || true, Validators.required],
       locale: [data && data.locale || null, Validators.required],
       peerUrl: [data && data.peerUrl, Validators.required],
-      fields: this.getFieldsArray(data && data.fields)
+      properties: this.getPropertiesArray(data && data.properties)
     }, {
       asyncValidators: (group: FormGroup) => this.peerAlive(group.get('peerUrl'))
     });
   }
 
-  getFieldsArray(array?: PropertyValue[]) {
+  getPropertiesArray(array?: any) {
+    const properties = (array && array instanceof Array) ? array : EntityUtils.getObjectAsArray(array || {});
     return this.formBuilder.array(
-      (array || []).map(item => this.getFieldControl(item))
+        properties.map(item => this.getPropertyFormGroup(item))
     );
   }
 
-  getFieldControl(data?: PropertyValue): FormGroup {
+  getPropertyFormGroup(data?: {key: string; value?: string;}): FormGroup {
     return this.formBuilder.group({
-      key: [data && data.key || '', Validators.required],
-      value: [data && data.value || '', Validators.required]
+      key: [data && data.key || null, Validators.compose([Validators.required, Validators.max(50)])],
+      value: [data && data.value || null, Validators.compose([Validators.required, Validators.max(100)])]
     });
   }
 

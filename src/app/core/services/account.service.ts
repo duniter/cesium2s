@@ -5,9 +5,11 @@ import {Subject} from "rxjs";
 import {Storage} from '@ionic/storage';
 import {FetchPolicy} from "apollo-client";
 import {ErrorCodes} from "./errors";
-import {SuggestionDataService, WatchFetchOptions} from "../../shared/services/data-service.class";
+import {WatchFetchOptions} from "../../shared/services/data-service.class";
 import {LocalSettingsService} from "./local-settings.service";
 import {DuniterService} from "./duniter/duniter.service";
+import {first} from "rxjs/operators";
+import {FormFieldDefinition} from "../../shared/shared.module";
 
 
 export declare interface AccountHolder {
@@ -28,24 +30,10 @@ export interface RegisterData extends AuthData {
   account: Account;
 }
 
-export interface AccountFieldDef<T = any> {
-  name: string;
-  label: string;
-  required: boolean;
-  dataService?: SuggestionDataService<T>;
-  dataFilter?: any;
-  updatable: {
-    registration: boolean;
-    account: boolean;
-  };
-}
-
 const TOKEN_STORAGE_KEY = "token";
 const PUBKEY_STORAGE_KEY = "pubkey";
 const SECKEY_STORAGE_KEY = "seckey";
 const ACCOUNT_STORAGE_KEY = "account";
-
-
 
 
 @Injectable({providedIn: 'root'})
@@ -62,7 +50,7 @@ export class AccountService {
   private readonly _debug: boolean;
   private _startPromise: Promise<any>;
   private _started = false;
-  private _additionalAccountFields: AccountFieldDef[] = [];
+  private _additionalFields: FormFieldDefinition[] = [];
 
   public onLogin = new Subject<Account>();
   public onLogout = new Subject<any>();
@@ -484,9 +472,16 @@ export class AccountService {
     if (this._debug) console.debug("[account-service] Loading account {" + pubkey.substring(0, 6) + "}...");
     const account = new Account();
 
+    account.pubkey = pubkey;
+
     // Get sources
-    const sources = await this.duniter.sourcesOfPubkey(pubkey, options).toPromise();
-    console.log("Source account=", sources);
+    const obse = this.duniter.sourcesOfPubkey(pubkey, options).pipe(first());
+    obse.subscribe((res) => console.log("OK result:", res));
+
+    const sources = await obse.toPromise();
+
+    // TODO
+    //account.balance =
 
     return account;
   }
@@ -545,20 +540,20 @@ export class AccountService {
     return this.duniter.authenticateAndGetToken(token);
   }
 
-  get additionalAccountFields(): AccountFieldDef[] {
-    return this._additionalAccountFields;
+  get additionalFields(): FormFieldDefinition[] {
+    return this._additionalFields;
   }
 
-  getAdditionalAccountField(name: string): AccountFieldDef | undefined {
-    return this._additionalAccountFields.find(f => f.name === name);
+  getAdditionalField(key: string): FormFieldDefinition | undefined {
+    return this._additionalFields.find(f => f.key === key);
   }
 
-  addAdditionalAccountField(field: AccountFieldDef) {
-    if (!!this._additionalAccountFields.find(f => f.name === field.name)) {
-      throw new Error("Additional account field {" + field.name + "} already define.");
+  addAdditionalField(field: FormFieldDefinition) {
+    if (!!this._additionalFields.find(f => f.key === field.key)) {
+      throw new Error("Additional account field {" + field.key + "} already define.");
     }
-    if (this._debug) console.debug("[account] Adding additional account field {" + field.name + "}", field);
-    this._additionalAccountFields.push(field);
+    if (this._debug) console.debug("[account] Adding additional account field {" + field.key + "}", field);
+    this._additionalFields.push(field);
   }
 
 

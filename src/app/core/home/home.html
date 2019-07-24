@@ -52,8 +52,8 @@
         <ion-text color="primary">
           <img src="./assets/img/logo_200px.png" [title]="'APP_NAME'|translate" />
           <br/>
-          <h1 [innerHTML]="'HOME.WELCOME'|translate"></h1>
-          <span [innerHTML]="'HOME.DESCRIPTION'|translate"></span>
+          <span [innerHTML]="'HOME.WELCOME'|translate"></span>
+          <h1 [innerHTML]="'HOME.DESCRIPTION'|translate"></h1>
         </ion-text>
       </ion-card-content>
 
@@ -63,7 +63,7 @@
           <span translate>HOME.REGISTER_HELP</span>
         </ion-label>
 
-        <ion-button expand="block" color="primary" *ngIf="!isLogin" (click)="register()">
+        <ion-button expand="block" color="tertiary" *ngIf="!isLogin" (click)="register()">
           <span translate>HOME.BTN_REGISTER</span>
         </ion-button>
 

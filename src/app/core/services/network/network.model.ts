@@ -3,6 +3,7 @@ import {Entity} from "../model";
 
 export declare type PeerEndpointApi = 'BMA' | 'GVA' | 'WS2P';
 
+
 export class Peer extends Entity<Peer, string> {
 
     static fromObject(source: any): Peer {
@@ -34,8 +35,8 @@ export class Peer extends Entity<Peer, string> {
     softwareVersion: string;
     label: string;
     name: string;
-    // TODO
-    endpointApis: PeerEndpointApi[] = [];
+
+    endpoints: string[] = [];
 
     constructor() {
         super();
@@ -73,7 +74,7 @@ export class Peer extends Entity<Peer, string> {
         return this.status && this.status === 'UP';
     }
 
-    hasEndpoint(api: PeerEndpointApi) {
-        return this.endpointApis && this.endpointApis.findIndex(apApi => apApi === api) !== -1;
+    hasEndpoint(api: string) {
+        return this.endpoints && this.endpoints.findIndex(epApi => epApi.startsWith(api)) !== -1;
     }
 }

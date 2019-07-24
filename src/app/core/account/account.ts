@@ -1,6 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {AccountFieldDef, AccountService} from '../services/account.service';
+import {AccountService} from '../services/account.service';
 import {Account, StatusIds} from '../services/model';
 import {UserSettingsValidatorService} from '../services/user-settings.validator';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -9,7 +9,8 @@ import {AppForm} from '../form/form.class';
 import {Moment} from 'moment/moment';
 import {DateAdapter} from "@angular/material";
 import {AppFormUtils} from '../form/form.utils';
-import {LocalSettingsService} from "../services/local-settings.service";
+import {LOCALES, LocalSettingsService} from "../services/local-settings.service";
+import {FormFieldDefinition} from "../../shared/form/field.model";
 
 @Component({
   selector: 'page-account',
@@ -28,14 +29,10 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
     sending: false,
     error: undefined
   };
-  additionalFields: AccountFieldDef[];
+  additionalFields: FormFieldDefinition[];
   settingsForm: FormGroup;
-  localeMap = {
-    'fr': 'Français',
-    'en': 'English'
-  };
-  locales: String[] = [];
-  saving: boolean = false;
+  locales = LOCALES;
+  saving = false;
 
   constructor(
     protected dateAdapter: DateAdapter<Moment>,
@@ -52,12 +49,7 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
     this.form.addControl('settings', this.settingsForm);
 
     // Store additional fields
-    this.additionalFields = accountService.additionalAccountFields;
-
-    // Fill locales
-    for (let locale in this.localeMap) {
-      this.locales.push(locale);
-    }
+    this.additionalFields = accountService.additionalFields;
 
     // By default, disable the form
     this.disable();
@@ -152,16 +144,14 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
 
     // Some fields are always disable
     this.form.controls.uid.disable();
-    this.form.controls.mainProfile.disable();
     this.form.controls.pubkey.disable();
 
     // Always disable some additional fields
     this.additionalFields
-      .filter(field => !field.updatable.account)
+      .filter(field => field.extra.account && field.extra.account.disable)
       .forEach(field => {
-        this.form.controls[field.name].disable();
+        this.form.controls[field.key].disable();
       });
   }
 
-  referentialToString = referentialToString;
 }

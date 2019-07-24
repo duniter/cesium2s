@@ -23,6 +23,7 @@ import {Camera} from "@ionic-native/camera/ngx";
 import {CacheModule} from "ionic-cache";
 import {Network} from "@ionic-native/network/ngx";
 import {WotModule} from "./wot/wot.module";
+import {PluginsModule} from "./plugins/plugins.module";
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {WotModule} from "./wot/wot.module";
     LeafletModule.forRoot(),
     // functional modules
     CoreModule,
-    WotModule
+    WotModule,
+    PluginsModule
   ],
   bootstrap: [AppComponent],
   providers: [

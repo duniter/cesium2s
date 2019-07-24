@@ -3,15 +3,20 @@
   <ion-menu menuId="left">
     <ion-header>
 
-      <mat-toolbar padding @fadeInAnimation *ngIf="!isLogin" style="height: unset; height: unset; display: block; margin: auto; text-align: center;">
-        <img src="./assets/img/logo_200px.png" [title]="'APP_NAME'|translate" width="150px;"/>
+      <mat-toolbar padding @fadeInAnimation *ngIf="!isLogin"
+                   style="display: block; margin: auto; text-align: center;">
+        <ion-label>
+          <ion-text translate>APP_NAME</ion-text>
+          <ion-text> {{currencySymbol$|async}}</ion-text>
+        </ion-label>
       </mat-toolbar>
 
       <ion-toolbar @fadeInAnimation *ngIf="isLogin" class="ion-toolbar-top">
         <ion-grid>
           <ion-row>
             <ion-col size="4">
-              <div class="user-avatar" [class.primary]="!account?.avatar" [ngStyle]="{'background-image':'url('+(account?.avatar||'./assets/img/person.png')+')'}"
+              <div class="user-avatar"
+                   [class.primary]="!account?.avatar" [ngStyle]="{'background-image':'url('+(account?.avatar||'./assets/img/person.png')+')'}"
                    menuClose
                    [routerLink]="['/account']"
                    routerDirection="root"
@@ -20,6 +25,7 @@
               </div>
             </ion-col>
             <ion-col size="8" class="user-logo">
+              <!-- TODO: replace with a QRCode -->
               <img src="./assets/img/logo_128px.png" [title]="'APP_NAME'|translate" width="108px;"/>
             </ion-col>
           </ion-row>
@@ -30,11 +36,14 @@
                         routerDirection="root"
                         routerLinkActive="ion-color-primary"
                         (click)="menu.close()">
-              <ion-label color="primary" text-wrap>
-                <h3 full class="no-margin username">
+              <ion-label color="primary" text-wrap *ngIf="account?.lastName">
+                <h3 full class="no-margin username" >
                   <b>{{account?.firstName}} {{account?.lastName}}</b>
                 </h3>
                 <h4>{{account?.email}}</h4>
+              </ion-label>
+              <ion-label color="medium" text-wrap *ngIf="!account || !account.lastName">
+                <h4 padding >{{account?.pubkey}}</h4>
               </ion-label>
             </button>
 

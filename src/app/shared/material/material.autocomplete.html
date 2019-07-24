@@ -42,7 +42,7 @@
       </ion-col>
     </ion-row>
 
-    <mat-option *ngFor="let item of items | async" [value]="item" no-padding>
+    <mat-option *ngFor="let item of values | async" [value]="item" no-padding>
       <ion-row>
         <ion-col *ngFor="let attr of displayAttributes; index as i;"
                  [size]="displayColumnSizes[i]">

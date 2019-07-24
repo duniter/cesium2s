@@ -3,7 +3,7 @@ import { MenuItem } from './core/menu/menu.component';
 import {AccountService, isNotNil, LocalSettingsService} from './core/core.module';
 import {PlatformService} from "./core/services/platform.service";
 import {DOCUMENT} from "@angular/common";
-import {LocalSettings} from "./core/services/model";
+import {CoreOptions, LocalSettings} from "./core/services/model";
 
 
 @Component({
@@ -58,13 +58,25 @@ export class AppComponent {
   protected onSettingsChanged(settings: LocalSettings) {
 
     if (settings.properties) {
-      this.updateTheme({
-        colors: {
-          primary: settings.properties["theme.color.primary"],
-          secondary: settings.properties["theme.color.secondary"],
-          tertiary: settings.properties["theme.color.tertiary"]
-        }
-      });
+      if (settings.properties instanceof Map) {
+        this.updateTheme({
+          colors: {
+            primary: settings.properties.get(CoreOptions.COLOR_PRIMARY.key),
+            secondary: settings.properties.get(CoreOptions.COLOR_SECONDARY.key),
+            tertiary: settings.properties.get(CoreOptions.COLOR_TERTIARY.key)
+          }
+        });
+      }
+      else {
+        this.updateTheme({
+          colors: {
+            primary: settings.properties[CoreOptions.COLOR_PRIMARY.key],
+            secondary: settings.properties[CoreOptions.COLOR_SECONDARY.key],
+            tertiary: settings.properties[CoreOptions.COLOR_TERTIARY.key]
+          }
+        });
+
+      }
     }
 
   }

@@ -48,10 +48,13 @@ import {
   attributeComparator,
   joinProperties,
   selectInputContent,
-  sort
+  filterNumberInput,
+  sort,
+  exact,
+  match
 } from "./functions";
 import {fadeInAnimation, fadeInOutAnimation} from "./material/material.animations";
-import {InputElement} from "./material/focusable";
+import {InputElement, FormFieldDefinition, FieldEnumValue} from "./form/field.model";
 import {NgxMaterialTimepickerModule} from "ngx-material-timepicker";
 import {Color, ColorScale} from "./graph/graph-colors";
 import {ColorPickerModule} from 'ngx-color-picker';
@@ -64,10 +67,13 @@ export {
   toBoolean, toFloat, toInt,
   toDateISOString, fromDateISOString,
   startsWithUpperCase,
-  attributeComparator, joinProperties, sort, selectInputContent,
+  attributeComparator, joinProperties, sort,
+  selectInputContent, filterNumberInput,
+  exact, match,
   fadeInAnimation, fadeInOutAnimation,
   DateFormatPipe, ToolbarComponent,
-  Color, ColorScale, InputElement
+  Color, ColorScale, InputElement,
+  FormFieldDefinition, FieldEnumValue
 };
 
 @NgModule({

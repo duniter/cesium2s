@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
-import {PropertyValue, LocalSettings} from "./model";
+import {CoreOptions, LocalSettings} from "./model";
 import {TranslateService} from "@ngx-translate/core";
 import {Storage} from '@ionic/storage';
 
-import {isNotNil, toBoolean} from "../../shared/shared.module";
+import {FormFieldDefinition, isNotNil, toBoolean} from "../../shared/shared.module";
 import {environment} from "../../../environments/environment";
 import {Subject} from "rxjs";
 import {isNotNilOrBlank} from "../../shared/functions";
@@ -13,12 +13,33 @@ import {Peer} from "./network/network.model";
 export const SETTINGS_STORAGE_KEY = "settings";
 export const SETTINGS_TRANSIENT_PROPERTIES = ["mobile", "touchUi"];
 
+export declare interface LocaleConfig {
+  id: string;
+  name: string;
+  country?: string;
+}
+export const LOCALES: LocaleConfig[] = [
+  {
+    id: 'fr',
+    name: 'Français',
+    country: 'fr'
+  },
+  {
+    id: 'en',
+    name: 'English',
+    country: 'gb'
+  }
+];
+
 @Injectable()
 export class LocalSettingsService {
 
+  private _debug = false;
   private _startPromise: Promise<any>;
   private _started = false;
+  private _propertyDefinitions: FormFieldDefinition[] = [];
   private data: LocalSettings;
+
 
   public onChange = new Subject<LocalSettings>();
 
@@ -51,6 +72,9 @@ export class LocalSettingsService {
     private platform: Platform,
     private storage: Storage
   ) {
+
+    // Register default options
+    this.registerFields(Object.getOwnPropertyNames(CoreOptions).map(key => CoreOptions[key]));
 
     this.resetData();
 
@@ -144,6 +168,22 @@ export class LocalSettingsService {
     await this.saveLocalSettings(data);
   }
 
+  getProperty(propertyName: string): any {
+    return this.data && this.data.properties && this.data.properties[propertyName];
+  }
+
+  getPropertyAsBoolean(option: FormFieldDefinition): any {
+    return toBoolean(this.getProperty(option.key), option.defaultValue);
+  }
+
+  async setProperty(key: string, value: any)  {
+    if (!this.data || !this.data.properties || this.data.properties[key] !== value) {
+      const changes = {properties: {}};
+      changes.properties[key] = value;
+      await this.saveLocalSettings(changes);
+    }
+  }
+
   public getPageSettings(pageId: string, propertyName?: string): string[] {
     const key = pageId.replace(/[/]/g, '__');
     return this.data && this.data.pages
@@ -154,7 +194,7 @@ export class LocalSettingsService {
     const key = pageId.replace(/[/]/g, '__');
 
     this.data = this.data || {};
-    this.data.pages = this.data.pages || {}
+    this.data.pages = this.data.pages || {};
     if (propertyName) {
       this.data.pages[key] = this.data.pages[key] || {};
       this.data.pages[key][propertyName] = value;
@@ -167,14 +207,30 @@ export class LocalSettingsService {
     await this.saveLocally();
   }
 
-  public getFieldAttributes(fieldName: string, defaultAttributes?: string[]): string[] {
-    const options = this.data && this.data.fields &&  this.data.fields.find(fo => fo.key === fieldName) as PropertyValue;
-    if (!options) {
+  public getFieldAttributes(fieldName: string, defaultAttributes: string[]): string[] {
+    const value = this.getProperty('field.' + fieldName);
+    if (!value) {
       // Default
       console.debug(`[settings] No settings found for field {${fieldName}}: applying defaults`);
-      return defaultAttributes || ['label', 'name'];
+      return defaultAttributes;
     }
-    return options.value.split(',');
+    return value.value.split(',');
+  }
+
+  get propertyDefinitions(): FormFieldDefinition[] {
+    return this._propertyDefinitions;
+  }
+
+  registerField(def: FormFieldDefinition) {
+    if (this._propertyDefinitions.findIndex(f => f.key === def.key) !== -1) {
+      throw new Error(`Additional additional property {${def.key}} already define.`);
+    }
+    if (this._debug) console.debug(`[settings] Adding additional property {${def.key}}`, def);
+    this._propertyDefinitions.push(def);
+  }
+
+  registerFields(defs: FormFieldDefinition[]) {
+    (defs || []).forEach(propDef => this.registerField(propDef));
   }
 
   /* -- Protected methods -- */

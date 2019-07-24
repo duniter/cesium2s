@@ -2,18 +2,23 @@ import {Injectable} from "@angular/core";
 import {NetworkService} from "../../network/network.service";
 import {HttpClient} from "@angular/common/http";
 import {Peer} from "../../network/network.model";
-import {Observable} from "rxjs";
-import {Source} from "../duniter.model";
-import {map} from "rxjs/operators";
-import {WatchFetchOptions} from "../../../../shared/services/data-service.class";
+import {Observable, of} from "rxjs";
+import {BlockchainParameters, NodeSummary, PendingIdentity, Source} from "../duniter.model";
+import {catchError, map} from "rxjs/operators";
+import {LoadResult, sliceResult, WatchFetchOptions} from "../../../../shared/services/data-service.class";
+import {IDuniterService} from "../duniter.service";
+import {isNilOrBlank} from "../../../../shared/functions";
+import {BmaLookupkupResult, BmaMembership} from "./bma.model";
+import {BmaErrorCodes} from "./bma.errors";
 
 
 @Injectable({providedIn: 'root'})
-export class BmaService {
+export class BmaService implements IDuniterService {
 
   private readonly _debug: boolean;
 
   private _peer: Peer;
+  private _peerUrl: string;
 
   constructor(
       protected network: NetworkService,
@@ -23,7 +28,22 @@ export class BmaService {
 
     this.network.onStart.subscribe(() => {
       this._peer = this.network.peer;
+      this._peerUrl = this._peer.url;
     });
+  }
+
+  currency(): Observable<string> {
+    return this.blockchainParameters()
+        .pipe(map(p => p.currency));
+  }
+
+  blockchainParameters(): Observable<BlockchainParameters> {
+    return this.network.watch(this._peerUrl + '/blockchain/parameters');
+  }
+
+  nodeSummary(peer?: Peer): Promise<NodeSummary> {
+    const peerUrl = peer && peer.url || this._peerUrl;
+    return this.network.get(peerUrl + '/node/summary');
   }
 
   /**
@@ -34,7 +54,7 @@ export class BmaService {
 
     if (this._debug) console.debug(`[bma] Checking if ${uid} exists...`);
 
-    const res = await this.network.get<{results: any[];}>(this._peer.url + '/wot/lookup/' + uid);
+    const res = await this.network.get<{results: any[];}>(this._peerUrl + '/wot/lookup/' + uid);
     console.log("TODO: check res: ", res);
 
     return res && res.results && res.results.length > 0 || false;
@@ -44,20 +64,48 @@ export class BmaService {
    * Load sources
    * @param pubkey
    */
-  loadSources(pubkey: string, options?: WatchFetchOptions): Observable<Source[]> {
+  sourcesOfPubkey(pubkey: string, options?: WatchFetchOptions): Observable<LoadResult<Source>> {
 
     if (this._debug) console.debug(`[bma] Loading sources of ${pubkey.substring(0, 8)}...`);
 
-    return this.network.watch<{sources: Source[];}>(this._peer.url + '/tx/sources/' + pubkey)
+    return this.network.watch<{sources: Source[];}>(this._peerUrl + '/tx/sources/' + pubkey)
         .pipe(
-          map(res => {
-            console.log("TODO: check sources res: ", res);
-            return res && res.sources || [];
-          })
+          map(res => sliceResult(res && res.sources || [], options))
         );
   }
 
+  pendingIdentities(search: string, options?: WatchFetchOptions): Observable<LoadResult<PendingIdentity>> {
+    if (this._debug) console.debug(`[bma] Loading pending identities (search=${search})...`);
 
+    if (isNilOrBlank(search)) {
+      return this.network.watch<{memberships: BmaMembership[];}>(this._peerUrl + '/wot/pending')
+          .pipe(
+              map(res => sliceResult(res && res.memberships || [], options))
+          );
+    }
+    else {
+      return this.network.watch<{results: BmaLookupkupResult[]; }>(this._peerUrl + '/wot/lookup/' + search)
+          .pipe(
+              catchError(err => {
+                  if (err && err.ucode === BmaErrorCodes.NO_MATCHING_IDENTITY) {
+                      return of({results: []});
+                  }
+                 throw err;
+              }),
+              map(res => {
+                return res && (res.results || []).reduce((res, item) => {
+                  return res.concat((item.uids || []).map(itemUid => {
+                    return {
+                      pubkey: item.pubkey,
+                      uid: itemUid.uid
+                    };
+                  }));
+                }, []);
+              }),
+              map(res => sliceResult(res, options))
+          );
+    }
+  }
 
   /* -- Protected methods -- */
 

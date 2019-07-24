@@ -1,6 +1,6 @@
 import {Moment} from "moment/moment";
 import {
-  attributeComparator,
+  attributeComparator, FormFieldDefinition,
   fromDateISOString,
   isNil,
   isNilOrBlank,
@@ -10,6 +10,10 @@ import {
   toDateISOString
 } from "../../shared/shared.module";
 import {Observable} from "rxjs";
+import {Identity} from "./duniter/duniter.model";
+import {environment} from "../../../environments/environment";
+import {PUBKEY_REGEXP} from "../../shared/constants";
+import {FormFieldType} from "../../shared/form/field.model";
 
 export {
   joinProperties,
@@ -21,46 +25,33 @@ export const StatusIds = {
   WALLET: 0,
   MEMBER: 1,
   PENDING: 2
-}
+};
 
-export const REGEXP = {
-  UID: /^[0-9a-zA-Z-_]+$/
-}
 
-export declare interface PropertyValue {
-  key: string;
-  value: string;
-}
+
 export declare interface PropertiesMap {
   [key: string]: string;
 }
 
-export declare type ConfigOptionType = 'integer' | 'double' | 'boolean' | 'string' | 'enum' | 'color';
+export declare interface ConfigOption extends FormFieldDefinition {
 
-export declare interface ConfigOption {
-  key: string;
-  label: string;
-  defaultValue?: any;
-  isTransient?: boolean; // Useful only for remote configuration
-  values?: PropertyValue[];
-  type: ConfigOptionType;
 }
 
-export const ConfigOptions = {
+export const CoreOptions = {
   COLOR_PRIMARY: {
     key: 'theme.color.primary',
     label: 'SETTINGS.OPTIONS.COLORS.PRIMARY',
-    type: 'color'
+    type: 'color' as FormFieldType
   },
   COLOR_SECONDARY: {
     key: 'theme.color.secondary',
     label: 'SETTINGS.OPTIONS.COLORS.SECONDARY',
-    type: 'color'
+    type: 'color' as FormFieldType
   },
   COLOR_TERTIARY: {
     key: 'theme.color.tertiary',
     label: 'SETTINGS.OPTIONS.COLORS.TERTIARY',
-    type: 'color'
+    type: 'color' as FormFieldType
   }
 };
 
@@ -73,7 +64,7 @@ export function getMainProfile(profiles?: string[]): UserProfileLabel {
 }
 
 export function getMainProfileIndex(profiles?: string[]): number {
-  if (!profiles && !profiles.length) return PRIORITIZED_USER_PROFILES.length - 1; // return last profile
+  if (!profiles || !profiles.length) return PRIORITIZED_USER_PROFILES.length - 1; // return last profile
   const index = PRIORITIZED_USER_PROFILES.findIndex(pp => profiles.indexOf(pp) > -1);
   return (index !== -1) ? index : (PRIORITIZED_USER_PROFILES.length - 1);
 }
@@ -104,13 +95,13 @@ export function personsToString(data: Person[], separator?: string): string {
   }, '');
 }
 
-export interface IEntity<ID> {
-  id: ID;
+export interface IEntity<ID = any> {
+  id?: ID;
 }
 
-export abstract class Entity<T, ID = any> implements IEntity<ID>, Cloneable<T> {
+export abstract class Entity<T, ID = any> implements IEntity, Cloneable<T> {
 
-  abstract get id(): ID;
+  id: ID;
   abstract clone(): T;
 
   asObject(minify?: boolean): any {
@@ -119,7 +110,7 @@ export abstract class Entity<T, ID = any> implements IEntity<ID>, Cloneable<T> {
   }
 
   fromObject(source: any): Entity<T, ID> {
-    Object.assign(this, source|| {});
+    Object.assign(this, source || {});
     return this;
   }
 
@@ -200,7 +191,7 @@ export class EntityUtils {
 
 /* -- Person -- */
 
-export class Person extends Entity<Person, string> implements Cloneable<Person> {
+export class Person extends Entity<Person, string> implements Cloneable<Person>, Identity {
 
   static fromObject(source: any): Person {
     if (!source || source instanceof Person) return source;
@@ -226,7 +217,7 @@ export class Person extends Entity<Person, string> implements Cloneable<Person> 
   }
 
   get id(): any {
-    return this.pubkey
+    return `${this.pubkey}-${this.uid}`;
   }
 
   clone(): Person {
@@ -260,7 +251,7 @@ export class Person extends Entity<Person, string> implements Cloneable<Person> 
     this.lastName = source.lastName;
     this.email = source.email;
     this.creationDate = fromDateISOString(source.creationDate);
-    this.avatar = source.avatar;
+    this.avatar = source.avatar || (environment.baseUrl + "assets/img/person.png");
     this.statusId = source.statusId;
     this.profiles = source.profiles && source.profiles.slice(0) || [];
     // Add main profile to the list, if need
@@ -276,8 +267,7 @@ export class UserSettings extends Entity<UserSettings, string>  {
   static fromObject(source: any): UserSettings {
     if (!source) return undefined;
     const target = new UserSettings();
-    target.fromObject(source);
-    return target;
+    return target.fromObject(source);
   }
 
   locale: string;
@@ -299,6 +289,7 @@ export class UserSettings extends Entity<UserSettings, string>  {
   }
 
   fromObject(source: any): UserSettings {
+    delete source['id'];
     super.fromObject(source);
     this.locale = source.locale;
     if (isNil(source.content) || typeof source.content === 'object') {
@@ -350,7 +341,7 @@ export class Account extends Person {
 
   fromObject(source: any): Account {
     super.fromObject(source);
-    source.settings && this.settings.fromObject(source.settings);
+    this.settings = source.settings && UserSettings.fromObject(source.settings);
     return this;
   }
 }
@@ -366,6 +357,5 @@ export declare interface LocalSettings {
   mobile?: boolean;
   accountInheritance?: boolean;
   touchUi?: boolean;
-  fields?: PropertyValue[];
   properties?: PropertiesMap;
 }

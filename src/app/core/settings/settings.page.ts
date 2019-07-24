@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {AccountService} from '../services/account.service';
-import {LocalSettings, PropertyValue} from '../services/model';
-import {FormArray, FormBuilder, FormControl} from '@angular/forms';
+import {ConfigOption, EntityUtils, LocalSettings} from '../services/model';
+import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {AppForm} from '../form/form.class';
 import {Moment} from 'moment/moment';
 import {DateAdapter} from "@angular/material";
@@ -11,9 +11,10 @@ import {ValidatorService} from "angular4-material-table";
 import {LocalSettingsValidatorService} from "../services/local-settings.validator";
 import {PlatformService} from "../services/platform.service";
 import {NetworkService} from "../services/network/network.service";
-import {isNilOrBlank, toBoolean} from "../../shared/functions";
-import {LocalSettingsService} from "../services/local-settings.service";
+import {isNil, isNilOrBlank, toBoolean} from "../../shared/functions";
+import {LOCALES, LocalSettingsService} from "../services/local-settings.service";
 import {Peer} from "../services/network/network.model";
+import {FormFieldDefinition} from "../../shared/form/field.model";
 
 @Component({
   selector: 'app-settings',
@@ -25,45 +26,17 @@ import {Peer} from "../services/network/network.model";
 })
 export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDestroy {
 
-  private _data: LocalSettings;
+  private _propertyDefinitionCache: { [index: number]: FormFieldDefinition } = {};
+  private data: LocalSettings;
 
   mobile: boolean;
   loading = true;
   saving = false;
-  fields = [
-    {
-      key: 'qualitativeValue',
-      label: 'SETTINGS.FIELDS.QUALITATIVE_VALUE',
-      type: 'combo',
-      values: ['label,name', 'name', 'name,label', 'label']
-    },
-    {
-      key: 'taxonGroup',
-      label: 'SETTINGS.FIELDS.TAXON_GROUP',
-      type: 'combo',
-      values: ['label,name', 'name', 'name,label', 'label']
-    },
-    {
-      key: 'taxonName',
-      label: 'SETTINGS.FIELDS.TAXON_NAME',
-      type: 'combo',
-      values: ['label,name', 'name', 'name,label', 'label']
-    },
-    {
-      key: 'gear',
-      label: 'SETTINGS.FIELDS.GEAR',
-      type: 'combo',
-      values: ['label,name', 'name', 'name,label', 'label']
-    }
+  locales = LOCALES;
 
-  ];
-  fieldsMap: any;
-  localeMap = {
-    'fr': 'Français',
-    'en': 'English'
-  };
-  locales: String[] = [];
-  fieldsFormHelper: FormArrayHelper<PropertyValue>;
+  propertyDefinitions: ConfigOption[];
+  propertyDefinitionsMap: { [key: string]: ConfigOption } = {};
+  propertiesFormHelper: FormArrayHelper<{key: string; value: string}>;
 
   get accountInheritance(): boolean {
     return this.form.controls['accountInheritance'].value;
@@ -73,14 +46,14 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
     return this.accountService.isLogin();
   }
 
-  get fieldsForm(): FormArray {
-    return this.form.get('fields') as FormArray;
+  get propertiesForm(): FormArray {
+    return this.form.get('properties') as FormArray;
   }
 
   constructor(
     protected dateAdapter: DateAdapter<Moment>,
     protected platform: PlatformService,
-    protected validatorService: LocalSettingsValidatorService,
+    protected validator: LocalSettingsValidatorService,
     protected translate: TranslateService,
     protected networkService: NetworkService,
     protected formBuilder: FormBuilder,
@@ -88,17 +61,19 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
     protected settings: LocalSettingsService,
     protected cd: ChangeDetectorRef
   ) {
-    super(dateAdapter, validatorService.getFormGroup(), settings);
+    super(dateAdapter, validator.getFormGroup(), settings);
 
-    // Fill locales
-    for (let locale in this.localeMap) {
-      this.locales.push(locale);
-    }
+    this.propertyDefinitions = settings.propertyDefinitions.slice(); // copy options
+    this.propertyDefinitions.forEach(o => this.propertyDefinitionsMap[o.key] = o); // fill map
 
-    this.fieldsMap = this.fields.reduce((res, field) => {
-      res[field.key] = field;
-      return res;
-    }, {});
+    this.propertiesFormHelper = new FormArrayHelper<{key: string; value: string}>(
+        this.formBuilder,
+        this.form,
+        'properties',
+        (value) => this.validator.getPropertyFormGroup(value),
+        (v1, v2) => (!v1 && !v2) || v1.key === v2.key,
+        (value) => isNil(value) || (isNil(value.key) && isNil(value.value))
+    );
 
     this.mobile = this.platform.mobile;
 
@@ -108,14 +83,6 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
 
   async ngOnInit() {
     super.ngOnInit();
-
-    this.fieldsFormHelper = new FormArrayHelper<PropertyValue>(this.formBuilder,
-      this.form,
-      'fields',
-      (value) => this.validatorService.getFieldControl(value),
-      (o1, o2) => (!o1 && !o2) || (o1.key === o2.key),
-      (o) => !o || (!o.key && !o.value)
-    );
 
     // Make sure platform is ready
     await this.platform.ready();
@@ -132,42 +99,48 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
     this.loading = true;
     console.debug("[settings] Loading settings...");
 
-    const data = this.settings.settings || {};
+    const data = this.settings.settings;
 
     // Set defaults
     data.accountInheritance = toBoolean(data.accountInheritance, true);
     data.locale = data.locale || this.translate.currentLang || this.translate.defaultLang;
 
-    // Set peer
+    // Set default peer
     if (isNilOrBlank(data.peerUrl)) {
       await this.networkService.ready();
       const peer = this.networkService.peer;
       data.peerUrl = peer && peer.url;
     }
 
-    // Set combo attributes
-    data.fields = data.fields || [];
-
     // Remember data
-    this._data = data;
+    this.updateView(data);
+  }
 
-    this.fieldsFormHelper.resize(data.fields.length);
-    this.form.patchValue(data, {emitEvent: false});
+  updateView(data: LocalSettings) {
+    if (!data) return; //skip
+    this.data = data;
+
+    const json: any = Object.assign({}, this.settings.settings || {});
+
+    // Transform properties map into array
+    json.properties = EntityUtils.getObjectAsArray(data.properties || {});
+    this.propertiesFormHelper.resize(Math.max(json.properties.length, 1));
+
+    this.form.patchValue(json, {emitEvent: false});
     this.markAsPristine();
 
     this.enable({emitEvent: false});
 
     // Apply inheritance
-    this.setAccountInheritance(data.accountInheritance, {emitEvent: false});
+    this.setAccountInheritance(json.accountInheritance, {emitEvent: false});
 
     this.loading = false;
     this.error = null;
     this.markForCheck();
-
-
   }
 
   async save(event: MouseEvent) {
+    if (this.saving) return; // skip
     if (this.form.invalid) {
       AppFormUtils.logFormErrors(this.form);
       return;
@@ -178,6 +151,7 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
     this.saving = true;
     this.error = undefined;
     const data = this.form.value;
+    data.properties = data.properties && EntityUtils.getArrayAsObject(data.properties);
 
     // Check peer alive, before saving
     const peerChanged = this.form.get('peerUrl').dirty;
@@ -186,8 +160,8 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
       this.disable();
 
       await this.settings.saveLocalSettings(data);
-      this._data = data;
-      this.markAsPristine();
+
+      this.updateView(data);
 
       // Update the network peer
       if (peerChanged) {
@@ -198,20 +172,15 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
       console.error(err);
       this.error = err && err.message || err;
     } finally {
-      this.enable({emitEvent: false});
-
-      // Apply inheritance
-      this.setAccountInheritance(data.accountInheritance, {emitEvent: false});
-
+      this.enable();
       this.saving = false;
-      this.markForCheck();
     }
   }
 
   public setAccountInheritance(enable: boolean, opts?: { emitEvent?: boolean; }) {
     // Make sure to update the value in control
     this.form.controls['accountInheritance'].setValue(enable, opts);
-    if (this._data.accountInheritance !== enable) {
+    if (this.data.accountInheritance !== enable) {
       this.form.controls['accountInheritance'].markAsDirty({onlySelf: false});
     }
 
@@ -232,7 +201,7 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
       }
     } else {
       // Restore previous values
-      this.form.get('locale').setValue(this._data.locale, opts);
+      this.form.get('locale').setValue(this.data.locale, opts);
 
       // Enable fields
       this.form.get('locale').enable(opts);
@@ -257,6 +226,22 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
 
   async cancel() {
     await this.load();
+  }
+
+  getPropertyDefinition(index: number): ConfigOption {
+    let option = this._propertyDefinitionCache[index];
+    if (!option) {
+      option = this.updatePropertyDefinition(index);
+      this._propertyDefinitionCache[index] = option;
+    }
+    return option;
+  }
+
+  updatePropertyDefinition(index: number): ConfigOption {
+    const optionKey = (this.propertiesForm.at(index) as FormGroup).controls.key.value;
+    const option = optionKey && this.propertyDefinitionsMap[optionKey] || null;
+    this.markForCheck();
+    return option;
   }
 
   /* -- protected functions -- */

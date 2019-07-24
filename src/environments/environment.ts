@@ -19,7 +19,13 @@ export const environment: Environment = {
         useSsl: false
     },
 
-    defaultPeers: [],
+    defaultPeers: [
+        {
+            host: "g1.duniter.fr",
+            port: 443,
+            useSsl: true
+        }
+    ],
 
     timeout: 50000
 };

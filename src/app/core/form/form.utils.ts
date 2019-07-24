@@ -1,10 +1,10 @@
 import {AbstractControl, FormArray, FormBuilder, FormGroup} from "@angular/forms";
-import {isNil, nullIfUndefined, selectInputContent} from "../../shared/shared.module";
+import {isNil, nullIfUndefined, selectInputContent, filterNumberInput} from "../../shared/shared.module";
 import {DATE_ISO_PATTERN} from "../../shared/constants";
 import {isMoment} from "moment";
 import {Entity} from "../services/model";
 
-export {selectInputContent};
+export {selectInputContent, filterNumberInput};
 
 export class AppFormUtils {
   static copyForm2Entity = copyForm2Entity;
@@ -21,6 +21,9 @@ export class AppFormUtils {
   static removeValueInArray = removeValueInArray;
   static resizeArray = resizeArray;
   static clearValueInArray = clearValueInArray;
+
+  static readonly DEFAULT_DEBOUNCE_TIME = 250;
+  static readonly DEFAULT_THROTTLE_TIME = 10;
 }
 
 /**
@@ -124,29 +127,7 @@ export function getControlFromPath(form: FormGroup, path: string): AbstractContr
   throw new Error(`Invalid form path: '${key}' should be a form group.`);
 }
 
-export function filterNumberInput(event: KeyboardEvent, allowDecimals: boolean) {
-  //input number entered or one of the 4 direction up, down, left and right
-  if ((event.which >= 48 && event.which <= 57) || (event.which >= 37 && event.which <= 40)) {
-    //console.debug('input number entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode);
-    // OK
-  }
-  // Decimal separator
-  else if (allowDecimals && (event.key === '.' || event.key === ',')) {
-    //console.debug('input decimal separator entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode);
-    // OK
-  } else {
-    //input command entered of delete, backspace or one of the 4 direction up, down, left and right
-    if ((event.keyCode >= 37 && event.keyCode <= 40) || event.keyCode == 46 || event.which == 8 || event.keyCode == 9) {
-      //console.debug('input command entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode);
-      // OK
-    }
-    // Cancel other keyboard events
-    else {
-      //console.debug('input not number entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode + ' ' + event.code );
-      event.preventDefault();
-    }
-  }
-}
+
 
 export function disableControls(form: FormGroup, paths: string[]) {
   (paths || []).forEach(path => {

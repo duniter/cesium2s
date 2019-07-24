@@ -3,7 +3,7 @@ import {Apollo} from "apollo-angular";
 import {ApolloClient, ApolloQueryResult, FetchPolicy, WatchQueryFetchPolicy} from "apollo-client";
 import {R} from "apollo-angular/types";
 import {ErrorCodes, ServerErrorCodes, ServiceError} from "../errors";
-import {catchError, map} from "rxjs/operators";
+import {catchError, map, timeout} from "rxjs/operators";
 
 import {environment} from '../../../../environments/environment';
 import {delay} from "q";
@@ -17,6 +17,9 @@ import {getMainDefinition} from 'apollo-utilities';
 import {persistCache} from "apollo-cache-persist";
 import {Storage} from "@ionic/storage";
 import {AppWebSocket} from "./network.utils";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Peer} from "./network.model";
+import {AppFormUtils} from "../../core.module";
 
 
 /**
@@ -54,6 +57,7 @@ export class GraphqlService {
   };
 
   public constructor(
+    private http: HttpClient,
     private apollo: Apollo,
     private httpLink: HttpLink,
     private networkService: NetworkService,
@@ -66,6 +70,8 @@ export class GraphqlService {
     }
 
     this.networkService.onStart.subscribe(() => this.restart());
+
+    this._debug = !environment.production;
   }
 
   setAuthToken(authToken: string) {
@@ -80,7 +86,52 @@ export class GraphqlService {
     }
   }
 
-  public async query<T, V = R>(opts: {
+  async peerQuery<T, V = R>(peer: Peer,
+                     opts: {
+                       query: any,
+                       variables?: V,
+                       error?: ServiceError,
+                       timeout?: number,
+                       fetchPolicy?: FetchPolicy,
+                       httpParams?: HttpParams | {
+                         [param: string]: string | string[];
+                       };
+                     }): Promise<T> {
+    const uri = (peer || this.networkService.peer).url + '/graphql';
+    const query = (opts.query.loc.source.body).trim().replace(/^query [a-zA-Z0-9 \t]+/, "");
+    //if (this._debug) console.debug(`[graphql] Executing query on peer {${uri}}:`, query);
+    const requestBody = JSON.stringify({
+      query: query,
+      variables: opts.variables});
+    const requestOptions = {
+      params: opts.httpParams/* || this.httpParams*/,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    };
+    let res;
+    try {
+      res = await this.http.post(uri, requestBody, requestOptions)
+          // Add timeout
+          .pipe(timeout(opts.timeout || environment.timeout || 500))
+          .toPromise();
+
+    } catch (err) {
+      res = this.toApolloError<T>(err);
+    }
+    if (res.errors) {
+      const error = res.errors[0] as any;
+      if (error && error.code && error.message) {
+        throw error;
+      }
+      console.error("[graphql] " + error.message);
+      throw opts.error ? opts.error : error.message;
+    }
+    return res && res.data as T;
+  }
+
+  async query<T, V = R>(opts: {
     query: any,
     variables: V,
     error?: ServiceError,
@@ -109,7 +160,7 @@ export class GraphqlService {
 
   public watchQuery<T, V = R>(opts: {
     query: any,
-    variables: V,
+    variables?: V,
     error?: ServiceError,
     fetchPolicy?: WatchQueryFetchPolicy
   }): Observable<T> {
@@ -308,13 +359,20 @@ export class GraphqlService {
 
 
   protected async start() {
-    console.info("[graphql] Starting graphql...");
 
     // Waiting for network service
     await this.networkService.ready();
     const peer = this.networkService.peer;
     if (!peer) throw Error("[graphql] Missing peer. Unable to start graphql service");
 
+    // Skip, if GVA api is missing
+    if (!peer.hasEndpoint('GVA')) {
+      console.info("[graphql] Peer has NO GVA endpoint. Skipping init");
+      this._started = false;
+      return;
+    }
+
+    console.info("[graphql] Starting graphql...");
     const uri = peer.url + '/graphql';
     console.info("[graphql] Base uri: " + uri);
     this.httpParams = this.httpParams || {};

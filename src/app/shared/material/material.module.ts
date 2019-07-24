@@ -1,7 +1,8 @@
 import {NgModule} from "@angular/core";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {
-  MatAutocompleteModule, MatBadgeModule,
+  MatAutocompleteModule,
+  MatBadgeModule,
   MatButtonModule,
   MatButtonToggleModule,
   MatCardModule,
@@ -18,21 +19,19 @@ import {
   MatProgressSpinnerModule,
   MatRadioModule,
   MatSelectModule,
+  MatSlideToggleModule,
   MatSortModule,
   MatStepperModule,
   MatTableModule,
   MatTabsModule,
-  MatToolbarModule,
-  MatSlideToggleModule
+  MatToolbarModule
 } from "@angular/material";
 import {CdkTableModule} from "@angular/cdk/table";
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
-
 import {fadeInAnimation, slideInOutAnimation} from './material.animations';
-import {InputElement} from './focusable';
 
-export { fadeInAnimation, slideInOutAnimation, InputElement };
+export { fadeInAnimation, slideInOutAnimation };
 
 const modules: any[] = [
   MatTableModule,

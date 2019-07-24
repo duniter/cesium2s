@@ -24,7 +24,17 @@
 
       <ng-content></ng-content>
 
-      <ion-button (click)="enableSearchBar()" *ngIf="hasSearch">
+      <!-- search bar -->
+      <ion-searchbar #searchbar animated
+                     type="search"
+                     [hidden]="!showSearchBar"
+                     show-cancel-button="always"
+                     (ionChange)="onSearch.emit($event)"
+                     (ionCancel)="toggleSearchBar()">
+      </ion-searchbar>
+
+      <ion-button (click)="toggleSearchBar()"
+                  *ngIf="hasSearch && !showSearchBar">
         <ion-icon slot="icon-only" name="search"></ion-icon>
       </ion-button>
       <ion-button (click)="onValidate.emit($event)" *ngIf="mobile && hasValidate">

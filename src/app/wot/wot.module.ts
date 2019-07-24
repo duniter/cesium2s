@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from '../core/core.module';
 import { WotService } from './services/wot.service';
 import { WotValidatorService } from './services/wot.validator';
-import { WotSearchPage } from './pages/search';
+import { WotSearchPage } from './pages/wot-search';
 
 
 export {

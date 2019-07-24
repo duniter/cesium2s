@@ -14,7 +14,7 @@ import {FloatLabelType, MatCheckbox, MatCheckboxChange, MatRadioButton, MatRadio
 import {ControlValueAccessor, FormBuilder, FormControl, FormGroupDirective, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {TranslateService} from "@ngx-translate/core";
 import {isNil, isNotNil} from '../functions';
-import {InputElement} from "./focusable";
+import {InputElement} from "../form/field.model";
 
 const noop = () => {
 };

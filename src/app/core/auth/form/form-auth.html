@@ -10,7 +10,7 @@
   <!-- Salt -->
   <mat-form-field>
     <input matInput [appAutofocus]="true" [autofocusDelay]="500" [placeholder]="'AUTH.SALT'|translate" formControlName="salt"
-      autocomplete="section-red salt">
+           type="password" autocomplete="section-red salt">
     <mat-error *ngIf="form.controls.salt.hasError('required') && form.controls.salt.dirty" translate>ERROR.FIELD_REQUIRED</mat-error>
     <mat-error *ngIf="form.controls.salt.hasError('email') && form.controls.salt.dirty">
       <span>{{'ERROR.FIELD_NOT_VALID_EMAIL' | translate }}</span>

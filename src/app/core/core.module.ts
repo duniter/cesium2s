@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
 
-import {AccountFieldDef, AccountService} from './services/account.service';
+import {AccountService} from './services/account.service';
 import {AccountValidatorService} from './services/account.validator';
 import {UserSettingsValidatorService} from './services/user-settings.validator';
 import {AuthGuardService} from './services/auth-guard.service';
@@ -51,7 +51,7 @@ import {GraphqlService} from "./services/network/graphql.service";
 import {PlatformService} from "./services/platform.service";
 import {NetworkService} from "./services/network/network.service";
 import {LocalSettingsService} from "./services/local-settings.service";
-import {MatOptionFormField} from "./config/option-field.component";
+
 import {
     fromDateISOString,
     isNil,
@@ -71,6 +71,7 @@ import {GvaService} from "./services/duniter/gva/gva.service";
 import {BmaService} from "./services/duniter/bma/bma.service";
 import {Ws2pService} from "./services/duniter/ws2p/ws2p.service";
 import {Peer} from "./services/network/network.model";
+import {AppFormField} from "../shared/form/field.component";
 
 export {
     environment,
@@ -83,7 +84,6 @@ export {
     PlatformService,
     AccountService,
     NetworkService,
-    AccountFieldDef,
     AccountValidatorService,
     UserSettingsValidatorService,
     AuthGuardService,
@@ -100,6 +100,7 @@ export {
     TableDataService,
     LoadResult,
     LocalSettingsService,
+    CryptoService,
     toDateISOString,
     fromDateISOString,
     joinProperties,
@@ -155,7 +156,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         MenuComponent,
         TableSelectColumnsComponent,
         FormButtonsBarComponent,
-        MatOptionFormField
+        AppFormField
     ],
     exports: [
         CommonModule,
@@ -172,7 +173,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         ReactiveFormsModule,
         TranslateModule,
         AboutModal,
-        MatOptionFormField
+        AppFormField
     ],
     entryComponents: [
         AboutModal,

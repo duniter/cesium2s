@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import {Moment} from "moment";
-import {asInputElement, isInputElement} from "./material/focusable";
+import {asInputElement, isInputElement} from "./form/field.model";
 import {ElementRef} from "@angular/core";
 
 export const DATE_ISO_PATTERN = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
@@ -68,6 +68,31 @@ export function matchUpperCase(input: string, regexp: string): boolean {
   return input && !!input.toUpperCase().match(regexp);
 }
 
+export function exact(regexpContent): RegExp {
+  return new RegExp("^" + regexpContent + "$");
+}
+
+export function match(regexpContent): RegExp {
+  return new RegExp(regexpContent);
+}
+
+/**
+ * Usage example:
+ * <code>
+ *     var a = ['a', 1, 'a', 2, '1'];
+ *     var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']
+ * </code>
+ * @param value
+ * @param index
+ * @param self
+ */
+export function onlyUniqueFilter(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
+export function uniqueArray<T>(array: T[]): T[] {
+  return (array || []).filter(onlyUniqueFilter);
+}
 
 export function suggestFromArray(items: any[], value: any, options?: {
   searchAttribute?: string
@@ -129,6 +154,30 @@ export function selectInputContent(event: UIEvent) {
     }
   }
   return true;
+}
+
+export function filterNumberInput(event: KeyboardEvent, allowDecimals: boolean) {
+  //input number entered or one of the 4 direction up, down, left and right
+  if ((event.which >= 48 && event.which <= 57) || (event.which >= 37 && event.which <= 40)) {
+    //console.debug('input number entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode);
+    // OK
+  }
+  // Decimal separator
+  else if (allowDecimals && (event.key === '.' || event.key === ',')) {
+    //console.debug('input decimal separator entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode);
+    // OK
+  } else {
+    //input command entered of delete, backspace or one of the 4 direction up, down, left and right
+    if ((event.keyCode >= 37 && event.keyCode <= 40) || event.keyCode == 46 || event.which == 8 || event.keyCode == 9) {
+      //console.debug('input command entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode);
+      // OK
+    }
+    // Cancel other keyboard events
+    else {
+      //console.debug('input not number entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode + ' ' + event.code );
+      event.preventDefault();
+    }
+  }
 }
 
 export function getPropertyByPath(obj: any, path: string): any {

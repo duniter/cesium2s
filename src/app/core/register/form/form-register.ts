@@ -17,8 +17,8 @@ import {
   ValidatorFn,
   Validators
 } from "@angular/forms";
-import {AccountFieldDef, AccountService, RegisterData} from "../../services/account.service";
-import {Account, REGEXP} from "../../services/model";
+import {AccountService, RegisterData} from "../../services/account.service";
+import {Account} from "../../services/model";
 import {MatHorizontalStepper} from "@angular/material";
 import {Subscription} from "rxjs";
 import {AccountValidatorService} from "../../services/account.validator";
@@ -26,6 +26,8 @@ import {environment} from "../../../../environments/environment";
 import {isNotNilOrBlank} from "../../../shared/functions";
 import {SharedValidators} from "../../../shared/validator/validators";
 import {DuniterService} from "../../services/duniter/duniter.service";
+import {DuniterRegexps} from "../../services/duniter/duniter.constants";
+import {FormFieldDefinition} from "../../../shared/form/field.model";
 
 
 @Component({
@@ -38,12 +40,12 @@ export class RegisterForm implements OnInit {
 
   protected debug = false;
 
-  additionalFields: AccountFieldDef[];
+  additionalFields: FormFieldDefinition[];
   form: FormGroup;
   forms: FormGroup[];
   subscriptions: Subscription[] = [];
   error: string;
-  sending: boolean = false;
+  sending = false;
 
   @ViewChild('stepper') private stepper: MatHorizontalStepper;
 
@@ -66,7 +68,7 @@ export class RegisterForm implements OnInit {
 
     // Uid
     this.forms.push(formBuilder.group({
-      uid: [null, Validators.compose([Validators.required, Validators.pattern(REGEXP.UID), this.uidAvailability(this.duniter)])]
+      uid: [null, Validators.compose([Validators.required, Validators.pattern(DuniterRegexps.USER_ID), this.uidAvailability(this.duniter)])]
     }));
 
     // Salt
@@ -88,10 +90,11 @@ export class RegisterForm implements OnInit {
     };
 
     // Add additional fields to details form
-    this.additionalFields = this.accountService.additionalAccountFields.filter(field => field.updatable.registration);
+    this.additionalFields = this.accountService.additionalFields
+        .filter(field => field.extra && field.extra.registration && !field.extra.registration.disable);
     this.additionalFields.forEach(field => {
       //if (this.debug) console.debug("[register-form] Add additional field {" + field.name + "} to form", field);
-      formDetailDef[field.name] = new FormControl(null, this.accountValidatorService.getValidators(field));
+      formDetailDef[field.key] = new FormControl(null, this.accountValidatorService.getValidators(field, 'registration'));
     });
 
     this.forms.push(formBuilder.group(formDetailDef));

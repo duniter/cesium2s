@@ -141,7 +141,7 @@ sleep 10s
 description="$4"
 if [[ "_$description" == "_" ]]; then
     description="Release v$2"
-fi 
+fi
 
 echo "**********************************"
 echo "* Uploading artifacts to Github..."

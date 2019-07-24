@@ -6,7 +6,7 @@ import {catchError, filter, mergeMap, startWith, switchMap, takeUntil} from "rxj
 import {TableElement} from "angular4-material-table";
 import {AppTableDataSource} from "./table-datasource.class";
 import {SelectionModel} from "@angular/cdk/collections";
-import {Entity} from "../services/model";
+import {Entity, IEntity} from "../services/model";
 import {Subscription} from "rxjs-compat";
 import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -14,7 +14,7 @@ import {TableSelectColumnsComponent} from './table-select-columns.component';
 import {Location} from '@angular/common';
 import {ErrorCodes} from "../services/errors";
 import {AppFormUtils} from "../form/form.utils";
-import {isNotNil} from "../../shared/shared.module";
+import {isNil, isNotNil} from "../../shared/shared.module";
 import {LocalSettingsService} from "../services/local-settings.service";
 import {TranslateService} from "@ngx-translate/core";
 import {PlatformService} from "../services/platform.service";
@@ -23,10 +23,10 @@ import {SuggestionDataService} from "../../shared/services/data-service.class";
 
 export const SETTINGS_DISPLAY_COLUMNS = "displayColumns";
 export const DEFAULT_PAGE_SIZE = 20;
-export const RESERVED_START_COLUMNS = ['select', 'id'];
+export const RESERVED_START_COLUMNS = ['select'];
 export const RESERVED_END_COLUMNS = ['actions'];
 
-export abstract class AppTable<T extends Entity<T>, F = any> implements OnInit, OnDestroy {
+export abstract class AppTable<T extends IEntity, F = any> implements OnInit, OnDestroy {
 
   private _initialized = false;
   private _subscriptions: Subscription[] = [];
@@ -211,22 +211,23 @@ export abstract class AppTable<T extends Entity<T>, F = any> implements OnInit, 
         startWith(this.autoLoad ? {} : 'skip'),
         switchMap(
           (any: any) => {
+            console.log("OK on refresh")
             this._dirty = false;
             this.selection.clear();
             this.editedRow = undefined;
             if (any === 'skip' || !this.dataSource) {
-              return Observable.of(undefined);
+              return of();
             }
             if (!this.dataSource) {
               if (this.debug) console.debug("[table] Skipping data load: no dataSource defined");
-              return Observable.of(undefined);
+              return of();
             }
             if (this.debug) console.debug("[table] Calling dataSource.watchAll()...");
             return this.dataSource.watchAll(
-              this.paginator && this.paginator.pageIndex * this.paginator.pageSize,
+              this.paginator && this.paginator.pageIndex * this.paginator.pageSize || 0,
               this.paginator && this.paginator.pageSize || this.pageSize || DEFAULT_PAGE_SIZE,
               this.sort && this.sort.active,
-              this.sort && this.sort.direction,
+              this.sort && this.sort.direction && (this.sort.direction === 'desc' ? 'desc' : 'asc') || undefined,
               this._filter
             );
           }),
@@ -490,6 +491,12 @@ export abstract class AppTable<T extends Entity<T>, F = any> implements OnInit, 
       }
 
       event.stopPropagation();
+
+      // No ID defined: unable to open details
+      if (isNil(row.currentData.id)) {
+        console.warn("[table] Opening row details, but missing currentData.id!");
+        return false;
+      }
 
       this.loading = true;
       setTimeout(async () => {

@@ -2,11 +2,12 @@ import {TableDataSource, TableElement, ValidatorService} from 'angular4-material
 import {Observable, Subject} from "rxjs";
 import {isNotNil, LoadResult, TableDataService, toBoolean} from '../../shared/shared.module';
 import {EventEmitter} from '@angular/core';
-import {Entity} from "../services/model";
+import {Entity, IEntity} from "../services/model";
 import {ErrorCodes} from '../services/errors';
 import {catchError, first, map, takeUntil} from "rxjs/operators";
+import {SortDirection} from "../../shared/services/data-service.class";
 
-export interface AppTableDataSourceOptions<T extends Entity<T>> {
+export interface AppTableDataSourceOptions<T extends IEntity> {
   prependNewElements: boolean;
   suppressErrors: boolean;
   onRowCreated?: (row: TableElement<T>) => Promise<void> | void;
@@ -17,7 +18,7 @@ export interface AppTableDataSourceOptions<T extends Entity<T>> {
   [key: string]: any;
 }
 
-export class AppTableDataSource<T extends Entity<T>, F> extends TableDataSource<T> {
+export class AppTableDataSource<T extends IEntity, F> extends TableDataSource<T> {
 
   protected _debug = false;
   protected _config: AppTableDataSourceOptions<T>;
@@ -65,7 +66,7 @@ export class AppTableDataSource<T extends Entity<T>, F> extends TableDataSource<
   watchAll(offset: number,
            size: number,
            sortBy?: string,
-           sortDirection?: string,
+           sortDirection?: SortDirection,
            filter?: F): Observable<LoadResult<T>> {
 
     this._onWatchAll.next();
@@ -121,7 +122,14 @@ export class AppTableDataSource<T extends Entity<T>, F> extends TableDataSource<
       if (this._useValidator) {
         dataToSave = [];
         data = rows.map(row => {
-          const currentData = new this.dataConstructor().fromObject(row.currentData) as T;
+          const currentData = new this.dataConstructor() as T;
+          if (currentData instanceof Entity) {
+            currentData.fromObject(row.currentData);
+          }
+          else {
+            Object.assign(currentData, row.currentData);
+          }
+
           // Filter to keep only dirty row
           if (onlyDirtyRows && row.validator.dirty) dataToSave.push(currentData);
           return currentData;

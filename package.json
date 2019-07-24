@@ -1,7 +1,7 @@
 {
   "name": "cesium-app",
-  "description": "Cesium",
-  "version": "2.0.0-beta.1",
+  "description": "Cesium Wallet for G1 libre currency",
+  "version": "2.0.0",
   "author": "contact@e-is.pro",
   "scripts": {
     "ng": "ng",
