@@ -36,4 +36,5 @@ UserInterfaceState.xcuserstate
 
 yarn.lock
 .directory
+/.local
 package-lock.json

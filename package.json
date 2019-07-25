@@ -143,7 +143,9 @@
       "cordova-plugin-decimal-keyboard": {},
       "cordova-plugin-advanced-http": {},
       "cordova-plugin-geolocation": {},
-      "cordova-plugin-camera": {},
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
       "cordova-plugin-network-information": {}
     },
     "platforms": [

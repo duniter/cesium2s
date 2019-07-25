@@ -20,7 +20,8 @@ This article will explain how to install your environment, then build the applic
 
 2. Install global dependency:
     ```bash
-    npm install -g ionic cordova
+    npm install -g ionic cordova 
+    npm install -g cordova-res native-run  # -> optional 
     ```
 
 3. Clone the repo: `git clone ...`
