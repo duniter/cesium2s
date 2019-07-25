@@ -11,26 +11,21 @@
 
   <mat-toolbar no-padding>
 
-    <button mat-icon-button *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_ADD'|translate" (click)="addRow()"
-      [class.hidden]="!inlineEdition">
-      <mat-icon>add</mat-icon>
-    </button>
-    <button mat-icon-button color="light" *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_REFRESH'|translate"
-      (click)="onRefresh.emit()">
-      <mat-icon>refresh</mat-icon>
-    </button>
-    <button mat-icon-button *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_FILTER'|translate" (click)="filterExpansionPanel.toggle()">
-      <mat-icon>search</mat-icon>
-    </button>
-    <button mat-icon-button color="light" *ngIf="selection.hasValue()" [title]="'COMMON.BTN_DELETE'|translate" (click)="deleteSelection()"
-      [class.hidden]="!inlineEdition">
-      <mat-icon>delete</mat-icon>
-    </button>
-
-    <!-- <mat-button-toggle value="edit" [title]="'COMMON.BTN_TABLE_EDIT'|translate" (change)="inlineEdition=inlineEditionBtn.checked"
-      [disabled]="true" #inlineEditionBtn>
-      <mat-icon>edit</mat-icon>
-    </mat-button-toggle> -->
+<!--    <button mat-icon-button *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_ADD'|translate" (click)="addRow()"-->
+<!--      [class.hidden]="!inlineEdition">-->
+<!--      <mat-icon>add</mat-icon>-->
+<!--    </button>-->
+<!--    <button mat-icon-button color="light" *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_REFRESH'|translate"-->
+<!--      (click)="onRefresh.emit()">-->
+<!--      <mat-icon>refresh</mat-icon>-->
+<!--    </button>-->
+<!--    <button mat-icon-button *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_FILTER'|translate" (click)="filterExpansionPanel.toggle()">-->
+<!--      <mat-icon>search</mat-icon>-->
+<!--    </button>-->
+<!--    <button mat-icon-button color="light" *ngIf="selection.hasValue()" [title]="'COMMON.BTN_DELETE'|translate" (click)="deleteSelection()"-->
+<!--      [class.hidden]="!inlineEdition">-->
+<!--      <mat-icon>delete</mat-icon>-->
+<!--    </button>-->
 
     <div class="toolbar-spacer"></div>
 
@@ -38,30 +33,6 @@
       <mat-icon>more_vert</mat-icon>
     </button>
   </mat-toolbar>
-
-  <!-- <ion-toolbar>
-
-    <ion-buttons slot="start">
-      <ion-button color="dark" *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_ADD'|translate" (click)="addRow()">
-        <ion-icon slot="icon-only" name="add" round></ion-icon>
-      </ion-button>
-
-    </ion-buttons>
-  </ion-toolbar> -->
-
-  <!-- search -->
-  <mat-expansion-panel #filterExpansionPanel color="primary">
-    <form class="form-container" [formGroup]="filterForm" (ngSubmit)="onRefresh.emit()" padding>
-      <!-- search -->
-      <mat-form-field>
-        <input matInput type="search"
-               formControlName="search"
-               [placeholder]="'WOT.SEARCH.FILTER.SEARCH'|translate">
-      </mat-form-field>
-
-      <button mat-raised-button color="primary" (click)="onRefresh.emit(true)">{{'COMMON.BTN_SEARCH'|translate}}</button>
-    </form>
-  </mat-expansion-panel>
 
   <mat-table #table [dataSource]="dataSource" matSort matSortActive="uid" matSortDirection="asc"
     matSortDisableClear [trackBy]="trackByFn">
