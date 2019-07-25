@@ -1,0 +1,204 @@
+<app-toolbar [title]="'PLUGINS.ES.MAP.TITLE'|translate" color="primary">
+
+</app-toolbar>
+
+<ion-content>
+
+  <!-- Bottom right cards -->
+  <ion-grid class="bottom-right">
+
+    <ion-row>
+      <ion-col></ion-col>
+
+      <ion-col align-self-end>
+
+        <!-- Details card -->
+        <ion-card color="light" class="details ng-hide" *ngIf="$details | async as details" [@fadeInOutAnimation]>
+
+          <ion-card-header *ngIf="details.title">
+            <ion-card-subtitle [innerHTML]="details.title"></ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            <p>
+              <ng-container *ngFor="let item of details.properties">
+                <ion-text color="primary100">{{item.name}}</ion-text>
+                <ion-text>:&nbsp;</ion-text>
+                <ion-text color="dark"><b>{{item.value}}</b></ion-text>
+                <br/>
+              </ng-container>
+            </p>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- global stats -->
+        <ion-card color="light" *ngIf="$stats | async as stats" @fadeInAnimation>
+          <ion-card-header>
+            <ion-card-subtitle><span translate>PLUGINS.ES.MAP.STATS</span></ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content no-padding>
+            <p>
+              <ng-container *ngFor="let item of stats.properties">
+                <ion-text color="primary100">{{getI18nPropertyName(item.name)}}</ion-text>
+                <ion-text>:&nbsp;</ion-text>
+                <ion-text>{{item.value}}</ion-text>
+                <br/>
+              </ng-container>
+            </p>
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
+
+      <ion-col size="auto" no-padding align-self-end >
+
+        <!-- Legend card -->
+        <ion-card color="light" class="legend" *ngIf="data.total" @fadeInAnimation>
+          <ion-card-header>
+            <ion-card-subtitle>
+              <ion-label>
+                <span translate>PLUGINS.ES.MAP.LEGEND</span>
+                <div hidden-xs hidden-sm *ngIf="!showLegendForm">
+                  <ion-icon mat-icon-button (click)="openLegendForm($event)" name="create"></ion-icon>
+                </div>
+              </ion-label>
+            </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+
+            <ion-row *ngFor="let item of $legendItems | async">
+              <ion-col no-padding style="max-width: 10px !important;"
+                       [ngStyle]="{'background-color': item.color}">
+              </ion-col>
+              <ion-col size="auto">
+                <ion-label nowrap>{{item.label}}</ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+
+    <!-- Legend edition form -->
+    <ion-row>
+      <ion-col>
+        <ion-card color="light" *ngIf="showLegendForm" @fadeInAnimation class="legend-form">
+
+          <ion-card-header>
+            <ion-card-subtitle>
+              <ion-label translate>PLUGINS.ES.MAP.LEGEND_FORM.TITLE</ion-label>
+            </ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content no-padding>
+            <form [formGroup]="legendForm" class="form-container">
+              <ion-grid>
+
+                <!-- Min -->
+                <ion-row>
+                  <ion-col size="4">
+                    <ion-label float-end translate>PLUGINS.ES.MAP.LEGEND_FORM.MIN</ion-label>
+                  </ion-col>
+                  <ion-col class="rgb">
+                    <mat-form-field>
+
+                      <ion-icon margin-right name="color-fill" matPrefix></ion-icon>
+
+                      <input matInput autocomplete="off"
+                             formControlName="startColor"
+                             [style.color]="'transparent'"
+                             [style.background]="legendStartColor"
+                             [(colorPicker)]="legendStartColor"
+                             [cpPosition]="'top'"
+                             [cpSaveClickOutside]="true"
+                             [cpOutputFormat]="'rgba'"
+                             [cpOKButton]="true"
+                             [cpOKButtonText]="'COMMON.BTN_VALIDATE'|translate"
+                             required/>
+                      <mat-error *ngIf="legendForm.get('startColor').hasError('required')" translate>
+                        ERROR.FIELD_REQUIRED
+                      </mat-error>
+                    </mat-form-field>
+                  </ion-col>
+                  <ion-col size="4">
+                    <mat-form-field>
+                      <ion-icon margin-right name="code" matPrefix></ion-icon>
+                      <input matInput type="number"
+                             autocomplete="off"
+                             min="0"
+                             placeholder="Min"
+                             step="1"
+                             formControlName="min"
+                      >
+                      <mat-error *ngIf="legendForm.get('min').hasError('required')" translate>
+                        ERROR.FIELD_REQUIRED
+                      </mat-error>
+                    </mat-form-field>
+                  </ion-col>
+                </ion-row>
+
+                <!-- max -->
+                <ion-row>
+                  <ion-col size="4">
+                    <ion-label float-end translate>PLUGINS.ES.MAP.LEGEND_FORM.MAX</ion-label>
+                  </ion-col>
+                  <ion-col class="rgb">
+                    <mat-form-field>
+                      <ion-icon margin-right name="color-fill" matPrefix></ion-icon>
+                      <input matInput autocomplete="off"
+                             formControlName="endColor"
+                             [style.color]="'transparent'"
+                             [style.background]="legendEndColor"
+                             [(colorPicker)]="legendEndColor"
+                             [cpPosition]="'top'"
+                             [cpSaveClickOutside]="true"
+                             [cpOutputFormat]="'rgba'"
+                             required/>
+                      <mat-error *ngIf="legendForm.get('endColor').hasError('required')" translate>
+                        ERROR.FIELD_REQUIRED
+                      </mat-error>
+                    </mat-form-field>
+                  </ion-col>
+                  <ion-col size="4">
+                    <mat-form-field>
+                      <ion-icon margin-right name="code" matPrefix></ion-icon>
+                      <input matInput type="number"
+                             autocomplete="off"
+                             min="0"
+                             placeholder="Max"
+                             step="1"
+                             formControlName="max">
+                      <mat-error *ngIf="legendForm.get('max').hasError('required')" translate>
+                        ERROR.FIELD_REQUIRED
+                      </mat-error>
+                    </mat-form-field>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <mat-action-row no-padding>
+                <button mat-button (click)="cancelLegendForm($event)"><span translate>COMMON.BTN_CANCEL</span></button>
+                <button mat-button (click)="applyLegendForm($event)"><span translate>COMMON.BTN_APPLY</span></button>
+              </mat-action-row>
+            </form>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+
+  <!-- Leaflet map -->
+  <div *ngIf="ready"
+       leaflet
+       (leafletMapReady)="onMapReady($event)"
+       [leafletOptions]="options"
+       [leafletLayersControl]="layersControl">
+
+    <div *ngFor="let layer of $layers | async" [leafletLayer]="layer"></div>
+  </div>
+
+
+</ion-content>
