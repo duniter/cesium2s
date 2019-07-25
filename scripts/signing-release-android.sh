@@ -7,8 +7,8 @@ if [[ "_" == "_${PROJECT_DIR}" ]]; then
 fi;
 
 # Default env (can be override in file <PROJECT>/.local/env.sh)
-KEYSTORE_FILE=${PROJECT_DIR}/.local/android/Sumaris.keystore
-KEY_ALIAS=Sumaris
+KEYSTORE_FILE=${PROJECT_DIR}/.local/android/Cesium.keystore
+KEY_ALIAS=Cesium
 KEYSTORE_PWD=
 APK_RELEASE_DIR=${PROJECT_DIR}/platforms/android/app/build/outputs/apk/release
 APK_UNSIGNED_FILE=${APK_RELEASE_DIR}/app-release-unsigned.apk
@@ -41,7 +41,7 @@ if [[ -f "${APK_SIGNED_FILE}" ]]; then
 fi
 
 echo "Executing jarsigner..."
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${KEYSTORE_FILE} ${APK_UNSIGNED_FILE} Sumaris
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${KEYSTORE_FILE} ${APK_UNSIGNED_FILE} Cesium
 if [[ $? -ne 0 ]]; then
   exit 1
 fi

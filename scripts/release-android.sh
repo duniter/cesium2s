@@ -26,8 +26,8 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # Signature
-KEYSTORE_FILE=${PROJECT_DIR}/.local/Sumaris.keystore
-KEY_ALIAS=Sumaris
+KEYSTORE_FILE=${PROJECT_DIR}/.local/Cesium.keystore
+KEY_ALIAS=Cesium
 KEY_PWD=
 APK_DIR=${PROJECT_DIR}/platforms/android/app/build/outputs/apk/release
 APK_UNSIGNED_FILE=${APK_DIR}/app-release.apk
@@ -53,7 +53,7 @@ if [[ $? -ne 0 ]]; then
   echo "Signing APK file ${APK_UNSIGNED_FILE}..."
   APK_SIGNED_FILE=${APK_DIR}/app-release-signed.apk
 
-  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${KEYSTORE_FILE} ${APK_UNSIGNED_FILE} Sumaris
+  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${KEYSTORE_FILE} ${APK_UNSIGNED_FILE} Cesium
 
   BUILD_TOOLS_DIR="${ANDROID_SDK_ROOT}/build-tools/28.*/"
   cd ${BUILD_TOOLS_DIR}
