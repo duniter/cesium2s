@@ -3,20 +3,19 @@
   <ion-menu menuId="left">
     <ion-header>
 
-      <mat-toolbar padding @fadeInAnimation *ngIf="!isLogin"
-                   style="display: block; margin: auto; text-align: center;">
-        <ion-label>
-          <ion-text translate>APP_NAME</ion-text>
-          <ion-text> {{currencySymbol$|async}}</ion-text>
-        </ion-label>
-      </mat-toolbar>
+      <ion-toolbar @fadeInAnimation *ngIf="!isLogin" >
+        <ion-title text-center>
+          <span translate>APP_NAME</span>&nbsp;
+          <span>{{currencySymbol$|async}}</span>
+        </ion-title>
+      </ion-toolbar>
 
       <ion-toolbar @fadeInAnimation *ngIf="isLogin" class="ion-toolbar-top">
         <ion-grid>
           <ion-row>
             <ion-col size="4">
               <div class="user-avatar"
-                   [class.primary]="!account?.avatar" [ngStyle]="{'background-image':'url('+(account?.avatar||'./assets/img/person.png')+')'}"
+                   [class.primary]="!account?.avatar" [ngStyle]="{'background-image':'url('+(account.avatar?.src||'./assets/img/person.png')+')'}"
                    menuClose
                    [routerLink]="['/account']"
                    routerDirection="root"

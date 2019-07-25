@@ -9,7 +9,7 @@
 
 <ion-content no-padding>
 
-  <mat-toolbar no-padding>
+  <mat-toolbar no-padding hidden-xs>
 
 <!--    <button mat-icon-button *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_ADD'|translate" (click)="addRow()"-->
 <!--      [class.hidden]="!inlineEdition">-->
@@ -28,6 +28,11 @@
 <!--    </button>-->
 
     <div class="toolbar-spacer"></div>
+
+    <button mat-icon-button color="light"
+            [title]="'PLUGINS.ES.MAP.TITLE'|translate" [routerLink]="['map']">
+      <mat-icon>location_on</mat-icon>
+    </button>
 
     <button mat-icon-button [title]="'COMMON.DISPLAYED_COLUMNS'|translate" (click)="openSelectColumnsModal($event)">
       <mat-icon>more_vert</mat-icon>
@@ -62,18 +67,33 @@
     <ng-container matColumnDef="avatar">
       <mat-header-cell *matHeaderCellDef></mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <div class="avatar" [ngStyle]="{'background-image':'url('+row.currentData.avatar+')'}"></div>
+        <div class="avatar" [ngStyle]="{'background-image':'url('+(row.currentData.avatar?.src||'./assets/img/person.png')+')'}"></div>
       </mat-cell>
     </ng-container>
 
-     <!-- uid  -->
+     <!-- uid (or name) -->
      <ng-container matColumnDef="uid">
       <mat-header-cell *matHeaderCellDef mat-sort-header>
         <span translate>WOT.UID</span>
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <ion-label [innerHTML]="row.currentData.uid | highlight: {search: searchText}">
+        <!-- name + uid -->
+        <ion-label *ngIf="row.currentData.name; let name; else noName">
+          <span [innerHTML]="row.currentData.name"></span>
+          <br/>
+          <ion-text color="primary" *ngIf="name !== row.currentData.uid">
+            <small>
+              <ion-icon name="person"></ion-icon>&nbsp;<span [innerHTML]="row.currentData.uid | highlight: {search: searchText}"></span>
+            </small>
+          </ion-text>
         </ion-label>
+
+        <!-- uid only -->
+        <ng-template #noName>
+          <ion-label>
+            <span [innerHTML]="row.currentData.uid | highlight: {search: searchText}"></span>
+          </ion-label>
+        </ng-template>
       </mat-cell>
     </ng-container>
 
@@ -82,8 +102,8 @@
       <mat-header-cell *matHeaderCellDef>
         <span [innerHTML]="field.label|translate"></span>
       </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-        <ion-label [innerHTML]="row.currentData[field.key]"></ion-label>
+      <mat-cell *matCellDef="let row" class="additional-field">
+        <ion-label [innerHTML]="row.currentData[field.key]" [title]="row.currentData[field.key]"></ion-label>
       </mat-cell>
     </ng-container>
 
@@ -126,7 +146,8 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" class="mat-row-disabled"
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+             class="mat-row-disabled"
              (click)="clickRow($event, row)"></mat-row>
   </mat-table>
 

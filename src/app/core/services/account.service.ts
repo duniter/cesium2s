@@ -183,7 +183,6 @@ export class AccountService {
       const account = await this.saveAccount(data.account, keypair);
 
       // Default values
-      account.avatar = account.avatar || "../assets/img/person.png";
       this.data.mainProfile = getMainProfile(account.profiles);
 
       this.data.account = account;
@@ -304,7 +303,6 @@ export class AccountService {
       const account = (await this.loadAccount(this.data.pubkey, opts)) || new Account();
 
       // Fill default values
-      account.avatar = account.avatar || "../assets/img/person.png";
       account.settings = account.settings || new UserSettings();
       account.settings.locale = account.settings.locale || this.settings.locale;
 
@@ -363,13 +361,14 @@ export class AccountService {
 
     try {
       this.data.authToken = await this.authenticateAndGetToken(token);
-      if (!this.data.authToken) throw "Authentication failed";
+      if (!this.data.authToken) {
+        if (this._debug) console.debug(`[account] Account {${pubkey.substr(0, 6)}} not authenticated on peer`);
+      }
     }
     catch (error) {
-      console.error(error);
-      // TODO: do not logout, but allow navigation on local data ?
-      this.logout();
-      return;
+      console.error(`[account] Error while trying to authenticate account {${pubkey.substr(0, 6)}} on peer`, error);
+      this.data.authToken = null;
+      // Continue
     }
 
     // No account: stop here (= data not loaded)
@@ -428,7 +427,6 @@ export class AccountService {
     console.debug("[account] Account remotely saved in " + (new Date().getTime() - now.getTime()) + "ms");
 
     // Set default values
-    account.avatar = account.avatar || "../assets/img/person.png";
     this.data.mainProfile = getMainProfile(account.profiles);
 
     this.data.account = account;

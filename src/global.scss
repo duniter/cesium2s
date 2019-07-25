@@ -286,6 +286,11 @@ ion-popover.select-popover {
 // --------------------------------------------------
 mat-table {
 
+  em {
+    font-style: normal;
+    font-weight: bold;
+  }
+
   .mat-header-cell > ion-label,
   .mat-header-cell button > ion-label {
     margin-top: 0;

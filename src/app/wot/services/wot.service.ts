@@ -53,20 +53,28 @@ export class WotService implements TableDataService<Person, WotSearchFilter> {
     options?: any
   ): Observable<LoadResult<Person>> {
 
-    console.log("[wot-service]] Loading wot...", filter);
+    const additionalProperties = this._additionalFields.map(f => f.key);
+    console.log("[wot-service]] Searching on wot...", filter);
 
     const page = {offset, size, sortBy, sortDirection};
     return this.duniter.pendingIdentities(filter && filter.search, { page })
       .pipe(
         switchMap(async(res) => {
-          const extendedRes = await this.extendAll(res, {
+          res = await this.extendAll(res, {
             searchText: filter && filter.search,
             pubkeyAttributeName: 'pubkey',
             skipAddUid: true
           });
+
+          const data = res.data.map((source) => {
+            const target = Person.fromObject(source);
+            additionalProperties.forEach(key => target[key] = source[key]);
+            return target as Person;
+          });
+
           return {
-            data: extendedRes.data.map(Person.fromObject),
-            total: extendedRes.total
+            data,
+            total: res.total
           };
         })
       );
@@ -93,18 +101,13 @@ export class WotService implements TableDataService<Person, WotSearchFilter> {
     options = options || {};
     options.pubkeyAttributeName = options.pubkeyAttributeName || 'pubkey';
 
-    console.log("Extend all ", data);
-
-    // Skip, when nothing todo
-    if (!this.onWotSearch.observers.length && options.skipAddUid) {
-      return data;
-    }
+    const observerCount = this.onWotSearch.observers.length;
+    if (observerCount === 0) return data; // no observers
 
     // TODO: add member uids, if not skipped
 
-    // Call plugins
+    // Emit to observers, and wait all are done
     await new Promise(resolve => {
-      const observerCount = this.onWotSearch.observers.length;
       let counter = 0;
       this.onWotSearch.emit({
         searchText: options.searchText,

@@ -5,6 +5,7 @@ import {AccountPage} from './core/account/account';
 import {AuthGuardService} from './core/core.module';
 import {WotSearchPage} from './wot/pages/wot-search';
 import {SettingsPage} from "./core/settings/settings.page";
+import {EsWotMap} from "./plugins/es/map/wot-map.component";
 
 const routeOptions: ExtraOptions = {
   enableTracing: false,
@@ -38,11 +39,21 @@ const routes: Routes = [
 
   // Wot
   {
-    path: 'wot/search',
-    component: WotSearchPage,
-    data: {
-    }
-  },  
+    path: 'wot',
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: WotSearchPage,
+        data: {}
+      },
+      {
+        path: 'map',
+        pathMatch: 'full',
+        component: EsWotMap
+      }
+    ]
+  },
 
   {
     path: "**",

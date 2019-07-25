@@ -1,11 +1,11 @@
 import { Router, ActivatedRoute, Params, NavigationEnd } from "@angular/router";
 import { MatTabChangeEvent } from "@angular/material";
 import { AppForm, AppTable } from '../../core/core.module';
-import { Entity } from '../services/model';
+import {Entity, IEntity} from '../services/model';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-export abstract class AppTabPage<T extends Entity<T>, F = any>{
+export abstract class AppTabPage<T extends IEntity<ID>, ID = any, F = any>{
 
 
     private _forms: AppForm<any>[];
@@ -53,30 +53,30 @@ export abstract class AppTabPage<T extends Entity<T>, F = any>{
         }
     }
 
-    abstract async load(id?: number, options?: F);
+    abstract async load(id?: ID, options?: F);
 
     abstract async save(event): Promise<any>;
 
-    public registerForm(form: AppForm<any>): AppTabPage<T, F> {
+    public registerForm(form: AppForm<any>): AppTabPage<T, ID, F> {
         if (!form) throw 'Trying to register an invalid form';
         this._forms = this._forms || [];
         this._forms.push(form);
         return this;
     }
 
-    public registerForms(forms: AppForm<any>[]): AppTabPage<T, F> {
+    public registerForms(forms: AppForm<any>[]): AppTabPage<T, ID, F> {
         forms.forEach(form => this.registerForm(form));
         return this;
     }
 
-    public registerTable(table: AppTable<any, any>): AppTabPage<T, F> {
+    public registerTable(table: AppTable<any, any>): AppTabPage<T, ID, F> {
         if (!table) throw 'Trying to register an invalid table';
         this._tables = this._tables || [];
         this._tables.push(table);
         return this;
     }
 
-    public registerTables(tables: AppTable<any, any>[]): AppTabPage<T, F> {
+    public registerTables(tables: AppTable<any, any>[]): AppTabPage<T, ID, F> {
         tables
             .filter(table => !!table) // Skip not found tables
             .forEach(table => this.registerTable(table));

@@ -68,7 +68,7 @@ export class HomePage implements OnDestroy {
     this.isLogin = true;
     this.displayName = account &&
       ((account.firstName && (account.firstName + " ") || "") +
-        (account.lastName || "")) || "";
+        (account.lastName || "")) || (account.pubkey && account.pubkey.substring(0, 8)) || "";
     this.markForCheck();
   }
 

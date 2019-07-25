@@ -193,7 +193,8 @@
     "PUBKEY": "Clé publique"
   },
   "WOT": {
-    "UID": "Pseudonyme",
+    "AVATAR": "Avatar",
+    "UID": "Nom / Pseudonyme",
     "PUBKEY": "Clé publique",
     "SEARCH": {
       "TITLE": "Annuaire",
@@ -281,8 +282,8 @@
         "BTN_DELETE": "Supprimer mon profil",
         "BTN_REORDER": "Réordonner",
         "UID": "Pseudonyme",
-        "TITLE": "Nom, Prénom",
-        "TITLE_HELP": "Nom, Prénom",
+        "NAME": "Nom, Prénom",
+        "NAME_HELP": "Nom, Prénom",
         "DESCRIPTION": "A propos de moi",
         "DESCRIPTION_HELP": "A propos de moi...",
         "ADDRESS": "Rue",
@@ -316,6 +317,18 @@
         },
         "HELP": {
           "WARNING_PUBLIC_DATA": "Les informations renseignées dans votre profil <b>sont publiques</b> : visibles y compris par des personnes <b>non connectées</b>.<br/>{{'PROFILE.PROFILE_DIVIDER_HELP'|translate}}"
+        }
+      },
+      "MAP": {
+        "TITLE": "Carte",
+        "DETAILS": "Détails",
+        "STATS": "Statistiques",
+        "LEGEND": "Légende",
+        "LEGEND_FORM": {
+          "TITLE": "Paramètres",
+          "OPACITY_PLACEHOLDER": "Opacité (%)",
+          "MIN": "Min :",
+          "MAX": "Max :"
         }
       }
     }

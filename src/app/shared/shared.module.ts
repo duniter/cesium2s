@@ -56,7 +56,7 @@ import {
 import {fadeInAnimation, fadeInOutAnimation} from "./material/material.animations";
 import {InputElement, FormFieldDefinition, FieldEnumValue} from "./form/field.model";
 import {NgxMaterialTimepickerModule} from "ngx-material-timepicker";
-import {Color, ColorScale} from "./graph/graph-colors";
+import {Color, ColorScale, ColorScaleLegendItem} from "./graph/graph-colors";
 import {ColorPickerModule} from 'ngx-color-picker';
 
 export {
@@ -72,7 +72,7 @@ export {
   exact, match,
   fadeInAnimation, fadeInOutAnimation,
   DateFormatPipe, ToolbarComponent,
-  Color, ColorScale, InputElement,
+  Color, ColorScale, ColorScaleLegendItem, InputElement,
   FormFieldDefinition, FieldEnumValue
 };
 

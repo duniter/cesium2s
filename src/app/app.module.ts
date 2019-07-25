@@ -35,7 +35,6 @@ import {PluginsModule} from "./plugins/plugins.module";
     HttpClientModule,
     IonicModule.forRoot(),
     CacheModule.forRoot(),
-    LeafletModule.forRoot(),
     // functional modules
     CoreModule,
     WotModule,

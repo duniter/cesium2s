@@ -73,7 +73,7 @@ export class WotSearchPage extends AppTable<Person, WotSearchFilter> implements 
           'pubkey'
           //'date'
         ])
-        .concat(wotService.additionalFields.map(field => field.key))
+        .concat(wotService.additionalFields.map(field => field.key).filter(key => key !== 'name'))
         .concat(RESERVED_END_COLUMNS),
       new AppTableDataSource<Person, WotSearchFilter>(Person, wotService)
     );
@@ -121,6 +121,11 @@ export class WotSearchPage extends AppTable<Person, WotSearchFilter> implements 
 
   onSearchChange(event: CustomEvent) {
     this.filterForm.get('search').setValue(event.detail.value);
+  }
+
+  protected getI18nColumnName(columnName: string): string {
+    const fieldDef = this.additionalFields.find(f => f.key === columnName);
+    return fieldDef && fieldDef.label || super.getI18nColumnName(columnName);
   }
 }
 

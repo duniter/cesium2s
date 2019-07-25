@@ -12,7 +12,7 @@ import {fadeInAnimation} from '../../shared/material/material.animations';
 import {TranslateService} from "@ngx-translate/core";
 import {switchMap} from "rxjs/operators";
 import {DuniterService} from "../services/duniter/duniter.service";
-import {from} from "rxjs";
+import {from, Observable} from "rxjs";
 
 export interface MenuItem {
   title: string;

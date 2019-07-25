@@ -4,7 +4,7 @@ import {
   fromDateISOString,
   isNil,
   isNilOrBlank,
-  isNotNil,
+  isNotNil, isNotNilOrBlank,
   joinProperties,
   sort,
   toDateISOString
@@ -205,12 +205,28 @@ export class Person extends Entity<Person, string> implements Cloneable<Person>,
 
   firstName: string;
   lastName: string;
+
   email: string;
-  avatar: string;
+  avatar?: {src?: string};
   creationDate: Date | Moment;
   statusId: number;
   profiles: UserProfileLabel[];
   mainProfile: UserProfileLabel;
+
+  // Allow extension
+  [key: string]: any;
+
+  get name(): string {
+    return ((this.firstName && (this.firstName + " ") || "") +
+            (this.lastName || "")) || undefined;
+  }
+
+  set name(value: string) {
+    if (isNotNilOrBlank(value)) {
+      this.lastName = value;
+      this.firstName = undefined;
+    }
+  }
 
   constructor() {
     super();
@@ -249,9 +265,10 @@ export class Person extends Entity<Person, string> implements Cloneable<Person>,
     this.pubkey = source.pubkey;
     this.firstName = source.firstName;
     this.lastName = source.lastName;
+    this.name = source.name;
     this.email = source.email;
     this.creationDate = fromDateISOString(source.creationDate);
-    this.avatar = source.avatar || (environment.baseUrl + "assets/img/person.png");
+    this.avatar = source.avatar;
     this.statusId = source.statusId;
     this.profiles = source.profiles && source.profiles.slice(0) || [];
     // Add main profile to the list, if need

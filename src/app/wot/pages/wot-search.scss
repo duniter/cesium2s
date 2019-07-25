@@ -23,4 +23,11 @@
     font-size: 12px;
     color: var(--ion-color-medium)
   }
+
+  .mat-cell.additional-field ion-label {
+    text-overflow: ellipsis;
+    max-height: 40px;
+    font-size: 12px;
+    color: var(--ion-color-medium)
+  }
 }
