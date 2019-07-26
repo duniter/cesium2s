@@ -24,6 +24,26 @@ export const environment: Environment = {
             host: "g1.duniter.fr",
             port: 443,
             useSsl: true
+        },
+        {
+            host: "g1.duniter.org",
+            port: 443,
+            useSsl: true
+        },
+        {
+            host: "g1.nordstrom.duniter.org",
+            port: 443,
+            useSsl: true
+        },
+        {
+            host: "g1.cgeek.fr",
+            port: 443,
+            useSsl: true
+        },
+        {
+            host: "server.e-is.pro",
+            port: 15000,
+            useSsl: false
         }
     ],
 

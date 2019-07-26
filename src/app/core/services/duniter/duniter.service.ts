@@ -97,23 +97,11 @@ export class DuniterService implements IDuniterService {
   async checkPeerAlive(peer: Peer): Promise<boolean> {
     let summary: NodeSummary;
     let reachable = false;
+    console.log("checkPeerAlive");
 
     peer.endpoints = peer.endpoints || [];
 
-    // Try BMA
-    try {
-      summary = await this.bmaService.nodeSummary(peer);
-      if (summary && !peer.hasEndpoint(DuniterEndpointApis.BMA)) {
-        reachable = true;
-        peer.endpoints.push(DuniterEndpointApis.BMA);
-        peer.softwareName = summary.duniter && summary.duniter.software;
-        peer.softwareVersion = summary.duniter && summary.duniter.version;
-      }
-    } catch (err) {
-      // Continue
-    }
-
-    // Try GVA
+    // Try GVA first
     if (!reachable) {
       try {
         summary = await this.gvaService.nodeSummary(peer);
@@ -121,6 +109,21 @@ export class DuniterService implements IDuniterService {
           reachable = true;
           peer.status = 'UP';
           peer.endpoints.push(DuniterEndpointApis.GVA);
+          peer.softwareName = summary.duniter && summary.duniter.software;
+          peer.softwareVersion = summary.duniter && summary.duniter.version;
+        }
+      } catch (err) {
+        // Continue
+      }
+    }
+
+    // Try BMA
+    if (!reachable) {
+      try {
+        summary = await this.bmaService.nodeSummary(peer);
+        if (summary && !peer.hasEndpoint(DuniterEndpointApis.BMA)) {
+          reachable = true;
+          peer.endpoints.push(DuniterEndpointApis.BMA);
           peer.softwareName = summary.duniter && summary.duniter.software;
           peer.softwareVersion = summary.duniter && summary.duniter.version;
         }

@@ -11,12 +11,22 @@ export const environment: Environment = {
 
     defaultPeers: [
         {
-            host: "g1.cgeek.fr",
-            port: 15000,
-            useSsl: false
+            host: "g1.duniter.fr",
+            port: 443,
+            useSsl: true
         },
         {
-            host: "g1.duniter.fr",
+            host: "g1.duniter.org",
+            port: 443,
+            useSsl: true
+        },
+        {
+            host: "g1.nordstrom.duniter.org",
+            port: 443,
+            useSsl: true
+        },
+        {
+            host: "g1.cgeek.fr",
             port: 443,
             useSsl: true
         },
