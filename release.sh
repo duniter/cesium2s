@@ -1,6 +1,7 @@
 #!/bin/bash
 
 NODEJS_VERSION=10
+PROJECT_NAME=cesium2
 
 ### Control that the script is run on `dev` branch
 branch=`git rev-parse --abbrev-ref HEAD`
@@ -103,7 +104,8 @@ echo "----------------------------------"
 echo "- Creating web artifact..."
 echo "----------------------------------"
 cd $DIRNAME/www
-zip -q -r cesium2.zip .
+test -e "${PROJECT_NAME}.zip" || rm ${PROJECT_NAME}.zip
+zip -q -r ${PROJECT_NAME}.zip .
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
