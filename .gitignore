@@ -36,5 +36,7 @@ UserInterfaceState.xcuserstate
 
 yarn.lock
 .directory
-/.local
+.local
+.local/env.sh
+.local/android
 package-lock.json
