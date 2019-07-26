@@ -6,7 +6,7 @@ is_installed() {
   type "$1" > /dev/null 2>&1
 }
 
-if [ "_$1" != "_" ]; then
+if [[ "_$1" != "_" ]]; then
   INSTALL_DIR="$1"
 fi
 if [ "_$INSTALL_DIR" == "_" ]; then
@@ -33,7 +33,7 @@ download() {
                            -e 's/-s /-q /' \
                            -e 's/-o /-O /' \
                            -e 's/-C - /-c /')
-    wget $ARGS
+    wget ${ARGS}
   fi
 }
 
@@ -42,20 +42,20 @@ install_from_github() {
   local RELEASE=`curl -XGET -i $(api_release_url)`
   local ARCHIVE_URL=`echo "$RELEASE" | grep -P "\"browser_download_url\": \"[^\"]+" | grep -oP "https://[a-zA-Z0-9/.-]+-web.zip"`
   local TMP_DIR=/tmp/cesium2-install
-  local ARCHIVE_FILE=$TMP_DIR/cesium2-$(latest_version)-web.zip
-  if [ -d "$INSTALL_DIR" ]; then
-    if [ -f "$ARCHIVE_FILE" ]; then
+  local ARCHIVE_FILE=${TMP_DIR}/cesium2-$(latest_version)-web.zip
+  if [[ -d "$INSTALL_DIR" ]]; then
+    if [[ -f "$ARCHIVE_FILE" ]]; then
       echo "WARNING: Deleting existing archive [$ARCHIVE_FILE]"
-      rm $ARCHIVE_FILE
+      rm ${ARCHIVE_FILE}
     fi
     
   else
     mkdir -p "$INSTALL_DIR"
   fi
 
-  if [ -d "$TMP_DIR" ]; then
+  if [[ -d "${TMP_DIR}" ]]; then
     echo "WARNING: Deleting existing temp directory [$TMP_DIR]"
-    rm -rf $TMP_DIR
+    rm -rf ${TMP_DIR}
   fi
   mkdir -p "$TMP_DIR"
 
@@ -65,13 +65,13 @@ install_from_github() {
       return 4
     }
   echo "Unarchive to $INSTALL_DIR"
-  unzip -o $ARCHIVE_FILE -d $TMP_DIR
-  cp -rf $TMP_DIR/cesium2/* $INSTALL_DIR
-  rm -rf $TMP_DIR
+  unzip -o ${ARCHIVE_FILE} -d ${TMP_DIR}
+  cp -rf ${TMP_DIR}/* ${INSTALL_DIR}
+  rm -rf ${TMP_DIR}
 
   echo
 
-  echo "Successfully installed at $INSTALL_DIR"
+  echo "Successfully installed at ${INSTALL_DIR}"
 }
 
 do_install() {
