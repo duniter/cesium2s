@@ -172,6 +172,10 @@ export class LocalSettingsService {
     return this.data && this.data.properties && this.data.properties[propertyName];
   }
 
+  getPropertyAsString(option: FormFieldDefinition): any {
+    return this.getProperty(option.key) || option.defaultValue;
+  }
+
   getPropertyAsBoolean(option: FormFieldDefinition): any {
     return toBoolean(this.getProperty(option.key), option.defaultValue);
   }

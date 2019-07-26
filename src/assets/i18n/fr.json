@@ -271,7 +271,9 @@
   "PLUGINS": {
     "ES": {
       "SETTINGS": {
-        "PEER_URL": "Addresse du noeud Cesium+"
+        "ENABLE": "Activer Cesium+ ?",
+        "PEER_URL": "Addresse du noeud Cesium+",
+        "ENABLE_WOT_MIXED_SEARCH": "Annuaire > Rechercher dans les pages Cesium+ ?"
       },
       "PROFILE": {
         "PROFILE_DIVIDER": "Profil Cesium+",

@@ -60,7 +60,10 @@ export class EsNetworkService {
     this.resetData();
 
     // Start the service
-    this.start();
+    //this.start();
+
+    // Start the service
+    this.network.onStart.subscribe(() => this.restart());
 
     // For DEV only
     this._debug = !environment.production;
@@ -80,7 +83,7 @@ export class EsNetworkService {
     this._startPromise = this.settings.ready()
       .then(async () => {
 
-        const peerUrl = this.settings.getProperty(EsOptions.PEER_URL.key);
+        const peerUrl = this.settings.getPropertyAsString(EsOptions.PEER_URL);
         let peer = peerUrl && Peer.parseUrl(peerUrl);
 
         // No peer: ask user to choose
@@ -127,6 +130,11 @@ export class EsNetworkService {
 
     this._subscriptions.forEach(s => s.unsubscribe());
     this._subscriptions = [];
+  }
+
+  async restart(): Promise<any> {
+    if (this.started) this.stop();
+    return this.start();
   }
 
   /**

@@ -24,6 +24,10 @@
     color: var(--ion-color-medium)
   }
 
+  .mat-column-city {
+    max-width: 150px;
+  }
+
   .mat-cell.additional-field ion-label {
     text-overflow: ellipsis;
     max-height: 40px;

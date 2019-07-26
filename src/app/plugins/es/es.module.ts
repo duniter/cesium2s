@@ -86,21 +86,21 @@ export class EsModule {
         });
 
         // profile.address
-        wotService.addAdditionalField({
-            key: 'address',
-            label: 'PLUGINS.ES.PROFILE.ADDRESS',
-            type: 'string',
-            extra: {
-                registration: {
-                    required: false,
-                    disable: true
-                },
-                account: {
-                    required: false,
-                    disable: false
-                }
-            }
-        });
+        // wotService.addAdditionalField({
+        //     key: 'address',
+        //     label: 'PLUGINS.ES.PROFILE.ADDRESS',
+        //     type: 'string',
+        //     extra: {
+        //         registration: {
+        //             required: false,
+        //             disable: true
+        //         },
+        //         account: {
+        //             required: false,
+        //             disable: false
+        //         }
+        //     }
+        // });
         // profile.city
         wotService.addAdditionalField({
             key: 'city',

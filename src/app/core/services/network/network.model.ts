@@ -14,6 +14,10 @@ export class Peer extends Entity<Peer, string> {
     }
 
     static parseUrl(peerUrl: string) {
+        if (isNilOrBlank(peerUrl)) throw Error('Unable to parse an empty url');
+        if (peerUrl && !peerUrl.startsWith('http://') && !peerUrl.startsWith('https://')) {
+            return Peer.parseUrl('http://' + peerUrl);
+        }
         const url = new URL(peerUrl);
         return Peer.fromObject({
             dns: url.hostname,
@@ -29,7 +33,7 @@ export class Peer extends Entity<Peer, string> {
     useSsl: boolean;
     pubkey: string;
 
-    avatar: string;
+    avatar?: {src?: string};
     status: 'UP' | 'DOWN';
     softwareName: string;
     softwareVersion: string;

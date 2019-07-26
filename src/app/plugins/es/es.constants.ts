@@ -3,10 +3,17 @@ import {DuniterRegexpStr} from "../../core/services/duniter/duniter.constants";
 import {FormFieldType} from "../../shared/form/field.model";
 
 export const EsOptions = {
+    ENABLE: {
+        key: 'plugin.es.enable',
+        label: 'PLUGINS.ES.SETTINGS.ENABLE',
+        type: 'boolean' as FormFieldType,
+        defaultValue: true
+    },
     PEER_URL: {
         key: 'plugin.es.peerUrl',
         label: 'PLUGINS.ES.SETTINGS.PEER_URL',
-        type: 'string' as FormFieldType
+        type: 'string' as FormFieldType,
+        defaultValue: 'g1.data.duniter.fr:443'
     },
     ENABLE_WOT_MIXED_SEARCH: {
         key: 'plugin.es.wot.mixedSearch',

@@ -9,30 +9,14 @@
 
 <ion-content no-padding>
 
-  <mat-toolbar no-padding hidden-xs>
-
-<!--    <button mat-icon-button *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_ADD'|translate" (click)="addRow()"-->
-<!--      [class.hidden]="!inlineEdition">-->
-<!--      <mat-icon>add</mat-icon>-->
-<!--    </button>-->
-<!--    <button mat-icon-button color="light" *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_REFRESH'|translate"-->
-<!--      (click)="onRefresh.emit()">-->
-<!--      <mat-icon>refresh</mat-icon>-->
-<!--    </button>-->
-<!--    <button mat-icon-button *ngIf="!selection.hasValue()" [title]="'COMMON.BTN_FILTER'|translate" (click)="filterExpansionPanel.toggle()">-->
-<!--      <mat-icon>search</mat-icon>-->
-<!--    </button>-->
-<!--    <button mat-icon-button color="light" *ngIf="selection.hasValue()" [title]="'COMMON.BTN_DELETE'|translate" (click)="deleteSelection()"-->
-<!--      [class.hidden]="!inlineEdition">-->
-<!--      <mat-icon>delete</mat-icon>-->
-<!--    </button>-->
+  <mat-toolbar no-padding>
 
     <div class="toolbar-spacer"></div>
 
-    <button mat-icon-button color="light"
-            [title]="'PLUGINS.ES.MAP.TITLE'|translate" [routerLink]="['map']">
-      <mat-icon>location_on</mat-icon>
-    </button>
+<!--    <button mat-icon-button color="light"-->
+<!--            [title]="'PLUGINS.ES.MAP.TITLE'|translate" [routerLink]="['map']">-->
+<!--      <mat-icon>location_on</mat-icon>-->
+<!--    </button>-->
 
     <button mat-icon-button [title]="'COMMON.DISPLAYED_COLUMNS'|translate" (click)="openSelectColumnsModal($event)">
       <mat-icon>more_vert</mat-icon>
@@ -160,17 +144,10 @@
     </ion-col>
   </ion-row>
 
-  <!--ion-fab right bottom>
-    <button ion-fab color="light" (click)="openTripModal()"><ion-icon name="md-add"></ion-icon></button>
-  </ion-fab-->
 </ion-content>
 
-<ion-footer hidden-xs hidden-sm *ngIf="inlineEdition">
-  <form-buttons-bar (onCancel)="onRefresh.emit()" (onSave)="save()" [disabled]="loading || !dirty"></form-buttons-bar>
-</ion-footer>
-
-<ion-fab vertical="bottom" horizontal="end" visible-xs visible-sm>
-  <ion-fab-button color="secondary" (click)="addRow()">
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
+<!--<ion-fab vertical="bottom" horizontal="end" visible-xs visible-sm>-->
+<!--  <ion-fab-button color="secondary" (click)="addRow()">-->
+<!--    <ion-icon name="add"></ion-icon>-->
+<!--  </ion-fab-button>-->
+<!--</ion-fab>-->

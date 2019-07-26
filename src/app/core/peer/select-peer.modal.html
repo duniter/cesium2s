@@ -30,7 +30,7 @@
 
       <!-- icon -->
       <ion-avatar slot="start" *ngIf="peer.reachable && peer.avatar" >
-        <ion-img [src]="peer.avatar"></ion-img>
+        <ion-img [src]="peer.avatar.src"></ion-img>
       </ion-avatar>
       <ion-icon slot="start" *ngIf="peer.reachable && !peer.avatar" name="desktop" color="success" text-center></ion-icon>
       <ion-icon slot="start" *ngIf="!peer.reachable" name="desktop" color="medium" text-center></ion-icon>
@@ -50,7 +50,9 @@
           </ion-col>
           <ion-col no-padding>
             <ion-label text-wrap text-center color="medium">
-              <h3>{{peer.softwareName}}</h3>
+              <h3>{{peer.softwareName}}
+                <span *ngIf="peer.hasEndpoint('GVA')">(GVA)</span>
+              </h3>
               <h4><small>v{{peer.softwareVersion}}</small></h4>
             </ion-label>
           </ion-col>
