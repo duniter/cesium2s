@@ -2,7 +2,7 @@
   "name": "Cesium 2",
   "short_name": "Cesium 2",
   "manifest_version": 1,
-  "version": "2.0.0-beta1",
+  "version": "2.0.1",
   "default_locale": "en",
   "description": "A Duniter G1 wallet.",
   "icons": [{
