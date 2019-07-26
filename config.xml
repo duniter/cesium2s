@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="2001" id="fr.duniter.cesium2" version="2.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="2002" id="fr.duniter.cesium2" version="2.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>cesium2</name>
     <description>Cesium v2</description>
     <author email="contact@e-is.pro" href="http://www.e-is.pro">Environmental Information Systems</author>
