@@ -104,7 +104,9 @@ echo "----------------------------------"
 echo "- Creating web artifact..."
 echo "----------------------------------"
 cd $DIRNAME/www
-test -e "${PROJECT_NAME}.zip" || rm ${PROJECT_NAME}.zip
+if [[ -f "${PROJECT_NAME}.zip" ]]; then
+  rm "${PROJECT_NAME}.zip"
+fi
 zip -q -r ${PROJECT_NAME}.zip .
 if [[ $? -ne 0 ]]; then
     exit 1
@@ -117,7 +119,7 @@ echo "----------------------------------"
 rm ${DIRNAME}/platforms/android/app/build/outputs/apk/release/*.apk
 # Launch the build script
 PROJECT_DIR=${DIRNAME}
-cd ${DIRNAME}/scripts
+cd "${DIRNAME}/scripts"
 ./release-android.sh
 if [[ $? -ne 0 ]]; then
     exit 1
@@ -128,7 +130,7 @@ echo "- Executing git push, with tag: v$2"
 echo "----------------------------------"
 
 # Commit
-cd $DIRNAME
+cd "${DIRNAME}"
 git reset HEAD
 git add package.json config.xml src/assets/manifest.json install.sh
 git commit -m "v$2"
