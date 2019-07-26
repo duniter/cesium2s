@@ -27,6 +27,7 @@
       <!-- search bar -->
       <ion-searchbar #searchbar animated
                      type="search"
+                     *ngIf="hasSearch"
                      [hidden]="!showSearchBar"
                      show-cancel-button="always"
                      (ionChange)="onSearch.emit($event)"
@@ -37,7 +38,7 @@
                   *ngIf="hasSearch && !showSearchBar">
         <ion-icon slot="icon-only" name="search"></ion-icon>
       </ion-button>
-      <ion-button (click)="onValidate.emit($event)" *ngIf="mobile && hasValidate">
+      <ion-button (click)="onValidate.emit($event)" *ngIf="hasValidate">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
