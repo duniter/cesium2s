@@ -1,5 +1,5 @@
 {
-  "APP_NAME": "Cesium",
+  "APP_NAME": "Cesium²",
   "COMMON": {
     "BTN_CANCEL": "Annuler",
     "BTN_ABORT_CHANGES": "Abandonner les modifications",
@@ -87,7 +87,7 @@
     "DEVELOPED_BY": "Développé par :"
   },
   "HOME": {
-    "WELCOME": "Bienvenue dans l'application Cesium 2 !",
+    "WELCOME": "Bienvenue dans l'application Cesium² !",
     "DESCRIPTION": "Recevez et envoyez de la monnaie libre Ğ1",
     "REGISTER_HELP":  "L'inscription est rapide. Rejoignez-nous dès aujourd'hui !",
     "BTN_WOT_SEARCH": "Rechercher dans l'annuaire",

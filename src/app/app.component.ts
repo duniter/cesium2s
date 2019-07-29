@@ -4,6 +4,7 @@ import {AccountService, isNotNil, LocalSettingsService} from './core/core.module
 import {PlatformService} from "./core/services/platform.service";
 import {DOCUMENT} from "@angular/common";
 import {CoreOptions, LocalSettings} from "./core/services/model";
+import {TranslateService} from "@ngx-translate/core";
 
 
 @Component({
@@ -28,7 +29,8 @@ export class AppComponent {
     @Inject(DOCUMENT) private _document: HTMLDocument,
     private platform: PlatformService,
     private accountService: AccountService,
-    private settings: LocalSettingsService
+    private settings: LocalSettingsService,
+    private translate: TranslateService
   ) {
 
     this.platform.ready().then(() => {
@@ -38,6 +40,9 @@ export class AppComponent {
 
       // Add additional account fields
       this.addAccountFields();
+
+      // Update title
+      this.updateTitle();
 
     });
   }
@@ -102,6 +107,13 @@ export class AppComponent {
         }
       });
     }
+  }
+
+  protected updateTitle() {
+    // Set document title
+    this.translate.get('APP_NAME').subscribe(title => {
+      this._document.getElementById('appTitle').textContent = title;
+    });
   }
 
   protected addAccountFields() {
