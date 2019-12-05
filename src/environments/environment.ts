@@ -14,37 +14,50 @@ export const environment: Environment = {
     persistCache: false,
 
     defaultPeer: {
-        host: "localhost",
-        port: 4200,
+        host: "192.168.0.45",
+        port: 15000,
         useSsl: false
     },
 
     defaultPeers: [
-        {
-            host: "g1.duniter.fr",
-            port: 443,
-            useSsl: true
-        },
-        {
-            host: "g1.duniter.org",
-            port: 443,
-            useSsl: true
-        },
-        {
-            host: "g1.nordstrom.duniter.org",
-            port: 443,
-            useSsl: true
-        },
-        {
-            host: "g1.cgeek.fr",
-            port: 443,
-            useSsl: true
-        },
-        {
-            host: "server.e-is.pro",
-            port: 15000,
-            useSsl: false
-        }
+        // {
+        //     host: "g1.duniter.fr",
+        //     port: 443,
+        //     useSsl: true
+        // },
+        // {
+        //     host: "g1.duniter.org",
+        //     port: 443,
+        //     useSsl: true
+        // },
+        // {
+        //     host: "g1.nordstrom.duniter.org",
+        //     port: 443,
+        //     useSsl: true
+        // },
+        // {
+        //     host: "g1.cgeek.fr",
+        //     port: 443,
+        //     useSsl: true
+        // },
+        // {
+        //     host: "server.e-is.pro",
+        //     port: 15000,
+        //     useSsl: false
+        // },
+
+
+        // {
+        //     host: "dev.g1.dunitrust.org",
+        //     port: 443,
+        //     useSsl: true
+        // },
+        // {
+        //     host: "77.152.31.154",
+        //     port: 10901,
+        //     useSsl: false
+        // }
+
     ],
 
     timeout: 50000

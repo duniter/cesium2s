@@ -16,6 +16,9 @@ export class AppComponent {
 
   menuItems: Array<MenuItem> = [
     { title: 'MENU.HOME', path: '/', icon: 'home' },
+    { title: 'MENU.DASHBOARD', path: '/dashboard', icon: 'apps', profile: 'GUEST' },
+
+    { title: '' /*empty divider*/},
     { title: 'MENU.WOT', path: '/wot', icon: 'people' },
 
     // Settings

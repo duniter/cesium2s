@@ -22,6 +22,7 @@ import {MatPaginatorI18n} from "./material/material.paginator-i18n";
 import {ProgressBarService} from "./services/progress-bar.service";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {ProgressInterceptor} from "./interceptors/progess.interceptor";
+import {AppFormField} from "./form/field.component";
 import {
   SuggestionDataService,
   DataService,
@@ -58,6 +59,8 @@ import {InputElement, FormFieldDefinition, FieldEnumValue} from "./form/field.mo
 import {NgxMaterialTimepickerModule} from "ngx-material-timepicker";
 import {Color, ColorScale, ColorScaleLegendItem} from "./graph/graph-colors";
 import {ColorPickerModule} from 'ngx-color-picker';
+import {FormButtonsBarComponent} from "../core/form/form-buttons-bar.component";
+import {AboutModal} from "../core/about/modal-about";
 
 export {
   DataService, SuggestionDataService, TableDataService, LoadResult,
@@ -99,7 +102,8 @@ export {
     MatDateTime,
     MatLatLong,
     MatBooleanField,
-    MatAutocompleteField
+    MatAutocompleteField,
+    AppFormField
   ],
   exports: [
     MaterialModule,
@@ -119,7 +123,8 @@ export {
     MatLatLong,
     MatBooleanField,
     MatAutocompleteField,
-    ColorPickerModule
+    ColorPickerModule,
+    AppFormField
   ],
   providers: [
     DateFormatPipe,

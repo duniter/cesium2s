@@ -49,8 +49,8 @@
           <!-- locale -->
           <mat-form-field>
             <mat-select [placeholder]="'SETTINGS.LOCALE'|translate" formControlName="locale" required>
-              <mat-option *ngFor="let locale of locales" [value]="locale.id">
-                {{locale.name}}
+              <mat-option *ngFor="let item of locales" [value]="item.id">
+                {{item.name}}
               </mat-option>
             </mat-select>
             <mat-error *ngIf="form.controls.locale.hasError('required')" translate>ERROR.FIELD_REQUIRED</mat-error>

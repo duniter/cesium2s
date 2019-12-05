@@ -20,7 +20,6 @@ import {FormFieldDefinition} from "../../shared/form/field.model";
 export class AccountPage extends AppForm<Account> implements OnDestroy {
 
   isLogin: boolean;
-  subscriptions: Subscription[] = [];
   changesSubscription: Subscription;
   account: Account;
   uid: any = {
@@ -35,29 +34,29 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
   saving = false;
 
   constructor(
-    protected dateAdapter: DateAdapter<Moment>,
-    public formBuilder: FormBuilder,
-    public accountService: AccountService,
-    protected settings: LocalSettingsService,
-    protected validatorService: AccountValidatorService,
-    protected settingsValidatorService: UserSettingsValidatorService
+      protected dateAdapter: DateAdapter<Moment>,
+      public formBuilder: FormBuilder,
+      public accountService: AccountService,
+      protected settings: LocalSettingsService,
+      protected validatorService: AccountValidatorService,
+      protected settingsValidatorService: UserSettingsValidatorService
   ) {
     super(dateAdapter, validatorService.getFormGroup(accountService.account), settings);
 
-    // Add settings fo form 
+    // Add settings fo form
     this.settingsForm = settingsValidatorService.getFormGroup(accountService.account && accountService.account.settings);
     this.form.addControl('settings', this.settingsForm);
 
     // Store additional fields
-    this.additionalFields = accountService.additionalFields;
+    this.additionalFields = accountService.additionalFields.slice(); // copy
 
     // By default, disable the form
     this.disable();
 
     // Observed some events
-    this.subscriptions.push(this.accountService.onLogin.subscribe(account => this.onLogin(account)));
-    this.subscriptions.push(this.accountService.onLogout.subscribe(() => this.onLogout()));
-    this.subscriptions.push(this.onCancel.subscribe(() => {
+    this.registerSubscription(this.accountService.onLogin.subscribe(account => this.onLogin(account)));
+    this.registerSubscription(this.accountService.onLogout.subscribe(() => this.onLogout()));
+    this.registerSubscription(this.onCancel.subscribe(() => {
       this.setValue(this.accountService.account);
       this.markAsPristine();
     }));
@@ -67,8 +66,7 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(s => s.unsubscribe());
-    this.subscriptions = [];
+    super.ngOnDestroy();
     this.stopListenChanges();
   }
 
@@ -118,8 +116,8 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
     this.saving = true;
     this.error = undefined;
 
-    let json = Object.assign(this.accountService.account.asObject(), this.form.value);
-    let newAccount = Account.fromObject(json);
+    const json = Object.assign(this.accountService.account.asObject(), this.form.value);
+    const newAccount = Account.fromObject(json);
 
     console.debug("[account] Saving account...", newAccount);
     try {
@@ -148,10 +146,10 @@ export class AccountPage extends AppForm<Account> implements OnDestroy {
 
     // Always disable some additional fields
     this.additionalFields
-      .filter(field => field.extra.account && field.extra.account.disable)
-      .forEach(field => {
-        this.form.controls[field.key].disable();
-      });
+        .filter(field => field.extra && field.extra.account && field.extra.account.disable)
+        .forEach(field => {
+          this.form.controls[field.key].disable();
+        });
   }
 
 }

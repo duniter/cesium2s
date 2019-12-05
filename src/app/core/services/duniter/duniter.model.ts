@@ -48,11 +48,8 @@ export declare interface Identity extends IEntity {
   pubkey: string;
 }
 
-export interface NodeSummaryDuniter {
+export interface NodeSummary {
   software: string;
   version: string;
   forkWindowSize: number;
-}
-export interface NodeSummary {
-  duniter: NodeSummaryDuniter;
 }

@@ -6,6 +6,7 @@ import {AuthGuardService} from './core/core.module';
 import {WotSearchPage} from './wot/pages/wot-search';
 import {SettingsPage} from "./core/settings/settings.page";
 import {EsWotMap} from "./plugins/es/map/wot-map.component";
+import {DashboardPage} from "./core/dashboard/dashboard";
 
 const routeOptions: ExtraOptions = {
   enableTracing: false,
@@ -19,11 +20,16 @@ const routes: Routes = [
     path: '',
     component: HomePage
   },
-
   {
     path: 'home/:action',
     component: HomePage
   },
+  {
+    path: 'dashboard',
+    component: DashboardPage,
+    canActivate: [AuthGuardService]
+  },
+
   {
     path: 'account',
     pathMatch: 'full',

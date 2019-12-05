@@ -97,7 +97,6 @@ export class DuniterService implements IDuniterService {
   async checkPeerAlive(peer: Peer): Promise<boolean> {
     let summary: NodeSummary;
     let reachable = false;
-    console.log("checkPeerAlive");
 
     peer.endpoints = peer.endpoints || [];
 
@@ -109,8 +108,8 @@ export class DuniterService implements IDuniterService {
           reachable = true;
           peer.status = 'UP';
           peer.endpoints.push(DuniterEndpointApis.GVA);
-          peer.softwareName = summary.duniter && summary.duniter.software;
-          peer.softwareVersion = summary.duniter && summary.duniter.version;
+          peer.softwareName = summary && summary.software;
+          peer.softwareVersion = summary && summary.version;
         }
       } catch (err) {
         // Continue
@@ -124,8 +123,8 @@ export class DuniterService implements IDuniterService {
         if (summary && !peer.hasEndpoint(DuniterEndpointApis.BMA)) {
           reachable = true;
           peer.endpoints.push(DuniterEndpointApis.BMA);
-          peer.softwareName = summary.duniter && summary.duniter.software;
-          peer.softwareVersion = summary.duniter && summary.duniter.version;
+          peer.softwareName = summary && summary.software;
+          peer.softwareVersion = summary && summary.version;
         }
       } catch (err) {
         // Continue

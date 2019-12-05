@@ -1,0 +1,5 @@
+@import 'core';
+$card-background: rgba(255, 255, 255, .7) !default;
+ion-card {
+  background-color: $card-background;
+}

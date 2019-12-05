@@ -71,7 +71,7 @@ import {GvaService} from "./services/duniter/gva/gva.service";
 import {BmaService} from "./services/duniter/bma/bma.service";
 import {Ws2pService} from "./services/duniter/ws2p/ws2p.service";
 import {Peer} from "./services/network/network.model";
-import {AppFormField} from "../shared/form/field.component";
+import {DashboardPage} from "./dashboard/dashboard";
 
 export {
     environment,
@@ -140,6 +140,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     declarations: [
         HomePage,
         AboutModal,
+        DashboardPage,
 
         // Auth & Register
         AuthForm,
@@ -155,8 +156,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         // Components
         MenuComponent,
         TableSelectColumnsComponent,
-        FormButtonsBarComponent,
-        AppFormField
+        FormButtonsBarComponent
     ],
     exports: [
         CommonModule,
@@ -172,8 +172,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         MenuComponent,
         ReactiveFormsModule,
         TranslateModule,
-        AboutModal,
-        AppFormField
+        AboutModal
     ],
     entryComponents: [
         AboutModal,

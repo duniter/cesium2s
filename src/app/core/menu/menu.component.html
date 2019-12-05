@@ -41,8 +41,15 @@
                 </h3>
                 <h4>{{account?.email}}</h4>
               </ion-label>
-              <ion-label color="medium" text-wrap *ngIf="!account || !account.lastName">
-                <h4 padding >{{account?.pubkey}}</h4>
+              <ion-label color="medium" *ngIf="!account || !account.lastName">
+
+                <h4 class="ion-padding">
+                  {{'MENU.WALLET'|translate}}
+                  <ion-icon name="key"></ion-icon>
+                  <span *ngIf="account?.pubkey">
+                    {{account.pubkey.substring(0,8) + '...' + account.pubkey.substring(35)}}
+                  </span>
+                </h4>
               </ion-label>
             </button>
 

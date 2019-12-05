@@ -9,7 +9,7 @@
       <!-- <ion-back-button icon="arrow-back" [defaultHref]="defaultBackHref" (onClick)="onBackClick($event)" #backButton>
       </ion-back-button> -->
 
-      <ion-menu-toggle>
+      <ion-menu-toggle [hidden]="canGoBack">
         <ion-button>
           <ion-icon slot="icon-only" name="menu"></ion-icon>
         </ion-button>
@@ -34,11 +34,14 @@
                      (ionCancel)="toggleSearchBar()">
       </ion-searchbar>
 
+      <!-- search button -->
       <ion-button (click)="toggleSearchBar()"
                   *ngIf="hasSearch && !showSearchBar">
         <ion-icon slot="icon-only" name="search"></ion-icon>
       </ion-button>
-      <ion-button (click)="onValidate.emit($event)" *ngIf="hasValidate">
+
+      <!-- validate button -->
+      <ion-button (click)="onValidate.emit($event)" visible-xs visible-sm visible-mobile *ngIf="hasValidate">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>

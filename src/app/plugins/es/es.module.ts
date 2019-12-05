@@ -40,7 +40,7 @@ export class EsModule {
         console.debug("[es] Starting ES plugin...");
 
         // Register options in settings
-        settings.registerFields(Object.getOwnPropertyNames(EsOptions).map(key => EsOptions[key]));
+        settings.registerAdditionalFields(Object.getOwnPropertyNames(EsOptions).map(key => EsOptions[key]));
 
         // Add profile fields
         this.addProfileFields(wotService);

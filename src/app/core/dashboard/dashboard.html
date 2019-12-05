@@ -1,0 +1,56 @@
+<app-toolbar [title]="'DASHBOARD.TITLE'|translate"
+             color="primary">
+</app-toolbar>
+
+
+<ion-content class="ion-padding no-padding-xs" color="primary">
+
+    <!-- Wallet -->
+    <ion-card color="">
+        <ion-card-header>
+            <ion-card-title>
+                <ion-label>
+                    <ion-icon name="card"></ion-icon>
+                    <ion-text>Gestion du compte</ion-text>
+                </ion-label>
+            </ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="no-padding-xs">
+            <ion-button color="primary">
+                <ion-icon slot="end" name="send"></ion-icon>
+                Effectuer un paiement
+            </ion-button>
+
+            <ion-button color="secondary">
+                <ion-icon slot="start" name="download"></ion-icon>
+                Recevoir un paiement
+            </ion-button>
+
+            <ion-button color="tertiary" >
+                <ion-icon slot="start" name="list"></ion-icon>
+                Historique des opérations
+            </ion-button>
+
+        </ion-card-content>
+    </ion-card>
+
+    <!-- WoT -->
+    <ion-card>
+        <ion-card-header>
+            <ion-card-title>
+                <ion-label>
+                    <ion-icon name="people"></ion-icon>
+                    <ion-text>Annuaire &amp; Toile de confiance</ion-text>
+                </ion-label>
+            </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            <ion-button><ion-icon name="search"></ion-icon>Rechercher</ion-button>
+
+            <ion-button><ion-icon name="ribbon"></ion-icon>Certifier quelqu'un</ion-button>
+
+
+        </ion-card-content>
+    </ion-card>
+
+</ion-content>

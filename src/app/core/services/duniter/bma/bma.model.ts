@@ -1,10 +1,15 @@
-import {PendingIdentity, Source} from "../duniter.model";
+import {NodeSummary, PendingIdentity, Source} from "../duniter.model";
 import {Entity} from "../../model";
 
 export const BmaConstants = {
     LIMIT_REQUEST_COUNT: 5, // simultaneous async request to a Duniter node
     LIMIT_REQUEST_DELAY: 1000, // time (in second) to wait between to call of a rest request
 };
+
+
+export interface BmaNodeSummary {
+    duniter: NodeSummary;
+}
 
 export class BmaSource extends Entity<BmaSource, string> implements Source {
 

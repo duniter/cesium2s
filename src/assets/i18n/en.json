@@ -69,13 +69,15 @@
   },
   "MENU": {
     "HOME": "Home",
+    "DASHBOARD": "Dashboard",
     "WOT": "Registry",
     "ADMINISTRATION_DIVIDER": "Administration",
     "FOOTER_VERSION_ABOUT": "v{{version}} | About",
     "LOCAL_SETTINGS": "Settings",
     "SERVER_SETTINGS": "Server settings",
     "LOGOUT": "Logout",
-    "ABOUT": "About"
+    "ABOUT": "About",
+    "WALLET": "Wallet"
   },
   "ABOUT": {
     "TITLE": "About",
@@ -97,6 +99,8 @@
   },
   "AUTH": {
     "TITLE": "Authentication",
+    "SALT": "Secret identifier (salt)",
+    "PASSWORD": "Password",
     "BTN_LOGIN": "Log In",
     "BTN_REGISTER": "Sign up",
     "NO_ACCOUNT_QUESTION": "Don't have an account?",
@@ -128,8 +132,12 @@
       "EMAIL_ALREADY_REGISTERED": "Email already registered"
     }
   },
+  "DASHBOARD": {
+    "TITLE": "Dashboard"
+  },
   "ACCOUNT": {
     "TITLE": "My account",
+    "UID": "User ID",
     "EMAIL_NOT_CONFIRMED_LABEL": "The email of this account has not yet validated: <b>check your mailbox</b> and click on the link provided.",
     "EMAIL_NOT_RECEIVED_QUESTION": "If you did not receive the validation email, <br/>you can <b>request a new mailing</b>:",
     "BTN_RESEND": "Resend",
@@ -155,13 +163,9 @@
     "NETWORK_DIVIDER": "Network",
     "PEER_URL": "Network peer address",
     "BTN_CHANGE_PEER": "Change node",
-    "DATA_ENTRY_DIVIDER": "Other preferences",
-    "USAGE_MODE": "Usage mode",
-    "USAGE_MODES":  {
-      "FIELD": "On field",
-      "DESK": "In office"
-    },
-    "BTN_CHANGE_PEER": "Change peer",
+    "OTHER_DIVIDER": "Other preferences",
+    "PROPERTY_KEY": "Option",
+    "PROPERTY_VALUE": "Value",
     "OPTIONS": {
       "COLORS": {
         "PRIMARY": "Theme > Primary color",
@@ -173,20 +177,6 @@
       "PEER_NOT_REACHABLE": "Unreachable peer"
     }
   },
-  "USER": {
-    "TITLE": "User",
-    "AVATAR": "Avatar",
-    "EMAIL": "Email",
-    "PASSWORD": "Password",
-    "FIRST_NAME": "First name",
-    "LAST_NAME": "Last name",
-    "PSEUDONYM": "Uid (pseudonym)",
-    "PUBKEY": "Public key",
-    "PROFILE": "Profile",
-    "PROFILE_ADMIN": "Administrator",
-    "PROFILE_USER": "Observer",
-    "PROFILE_GUEST": "Invité"
-  },
   "IDENTITY": {
     "UID": "Uid",
     "EMAIL": "Email",
@@ -194,10 +184,16 @@
     "PUBKEY": "Public key"
   },
   "WOT": {
+    "AVATAR": "Avatar",
+    "UID": "Name / Uid",
+    "PUBKEY": "Public key",
     "SEARCH": {
       "TITLE": "Annuaire",
       "FILTER": {
-        "SEARCH": "Search: pubkey, uid,..."
+        "SEARCH": "Search: pubkey, uid,...",
+        "PENDING": "Pending memberships",
+        "WALLET": "Simple wallets",
+        "MEMBER": "Members"
       }
     }
   },

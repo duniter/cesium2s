@@ -63,7 +63,7 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
   ) {
     super(dateAdapter, validator.getFormGroup(), settings);
 
-    this.propertyDefinitions = settings.propertyDefinitions.slice(); // copy options
+    this.propertyDefinitions = settings.additionalFields.slice(); // copy options
     this.propertyDefinitions.forEach(o => this.propertyDefinitionsMap[o.key] = o); // fill map
 
     this.propertiesFormHelper = new FormArrayHelper<{key: string; value: string}>(
@@ -120,7 +120,7 @@ export class SettingsPage extends AppForm<LocalSettings> implements OnInit, OnDe
     if (!data) return; //skip
     this.data = data;
 
-    const json: any = Object.assign({}, this.settings.settings || {});
+    const json: any = Object.assign({}, data || {});
 
     // Transform properties map into array
     json.properties = EntityUtils.getObjectAsArray(data.properties || {});

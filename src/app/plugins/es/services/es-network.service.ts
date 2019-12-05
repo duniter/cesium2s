@@ -9,6 +9,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {catchError, map, timeout} from "rxjs/operators";
 import {EsEndpointApis, EsOptions} from "../es.constants";
 import {NodeSummary} from "../../../core/services/duniter/duniter.model";
+import {EsNodeSummary} from "./es.model";
 
 
 export declare type SelectPeerCallback = (peers: Peer[], options?: {allowSelectDownPeer: boolean; }) => Promise<Peer>;
@@ -151,8 +152,8 @@ export class EsNetworkService {
       if (summary) {
         reachable = true;
         peer.endpoints.push(EsEndpointApis.CORE);
-        peer.softwareName = summary.duniter.software;
-        peer.softwareVersion = summary.duniter.version;
+        peer.softwareName = summary && summary.software;
+        peer.softwareVersion = summary && summary.version;
       }
     }
     catch(err) {
@@ -166,7 +167,8 @@ export class EsNetworkService {
 
   async nodeSummary(peer?: Peer): Promise<NodeSummary> {
     peer = peer || this._peer;
-    return await this.network.get(peer.url + '/node/summary');
+    const res = await this.network.get<EsNodeSummary>(peer.url + '/node/summary');
+    return res && res.duniter;
   }
 
   setSelectPeerCallback(callback: SelectPeerCallback) {

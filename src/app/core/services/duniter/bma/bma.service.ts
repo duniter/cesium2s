@@ -8,7 +8,7 @@ import {catchError, map} from "rxjs/operators";
 import {LoadResult, sliceResult, WatchFetchOptions} from "../../../../shared/services/data-service.class";
 import {IDuniterService} from "../duniter.service";
 import {isNilOrBlank} from "../../../../shared/functions";
-import {BmaLookupkupResult, BmaMembership} from "./bma.model";
+import {BmaLookupkupResult, BmaMembership, BmaNodeSummary} from "./bma.model";
 import {BmaErrorCodes} from "./bma.errors";
 
 
@@ -41,9 +41,10 @@ export class BmaService implements IDuniterService {
     return this.network.watch(this._peerUrl + '/blockchain/parameters');
   }
 
-  nodeSummary(peer?: Peer): Promise<NodeSummary> {
+  async nodeSummary(peer?: Peer): Promise<NodeSummary> {
     const peerUrl = peer && peer.url || this._peerUrl;
-    return this.network.get(peerUrl + '/node/summary');
+    const res = await this.network.get<BmaNodeSummary>(peerUrl + '/node/summary');
+    return res && res.duniter;
   }
 
   /**

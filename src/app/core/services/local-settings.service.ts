@@ -37,7 +37,8 @@ export class LocalSettingsService {
   private _debug = false;
   private _startPromise: Promise<any>;
   private _started = false;
-  private _propertyDefinitions: FormFieldDefinition[] = [];
+  private _additionalFields: FormFieldDefinition[] = [];
+
   private data: LocalSettings;
 
 
@@ -74,7 +75,7 @@ export class LocalSettingsService {
   ) {
 
     // Register default options
-    this.registerFields(Object.getOwnPropertyNames(CoreOptions).map(key => CoreOptions[key]));
+    this.registerAdditionalFields(Object.getOwnPropertyNames(CoreOptions).map(key => CoreOptions[key]));
 
     this.resetData();
 
@@ -221,20 +222,24 @@ export class LocalSettingsService {
     return value.value.split(',');
   }
 
-  get propertyDefinitions(): FormFieldDefinition[] {
-    return this._propertyDefinitions;
+  get additionalFields(): FormFieldDefinition[] {
+    return this._additionalFields;
   }
 
-  registerField(def: FormFieldDefinition) {
-    if (this._propertyDefinitions.findIndex(f => f.key === def.key) !== -1) {
+  getAdditionalField(key: string): FormFieldDefinition | undefined {
+    return this._additionalFields.find(f => f.key === key);
+  }
+
+  registerAdditionalField(def: FormFieldDefinition) {
+    if (this._additionalFields.findIndex(f => f.key === def.key) !== -1) {
       throw new Error(`Additional additional property {${def.key}} already define.`);
     }
     if (this._debug) console.debug(`[settings] Adding additional property {${def.key}}`, def);
-    this._propertyDefinitions.push(def);
+    this._additionalFields.push(def);
   }
 
-  registerFields(defs: FormFieldDefinition[]) {
-    (defs || []).forEach(propDef => this.registerField(propDef));
+  registerAdditionalFields(defs: FormFieldDefinition[]) {
+    (defs || []).forEach(propDef => this.registerAdditionalField(propDef));
   }
 
   /* -- Protected methods -- */

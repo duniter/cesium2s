@@ -126,7 +126,7 @@ ion-text {
 // Desktop or wide screen
 @media screen and (min-width: $screen-md) {
   ion-content {
-    // Avoid boittom-banner to override main-content
+    // Avoid bottom-banner to override main-content
     min-height: 606px;
 
     ion-card {

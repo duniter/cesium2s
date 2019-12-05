@@ -3,7 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Input, OnDestroy,
+  Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild
@@ -11,7 +12,7 @@ import {
 import {ProgressBarService} from '../services/progress-bar.service';
 import {Router} from "@angular/router";
 import {IonBackButton, IonRouterOutlet, IonSearchbar, Platform} from "@ionic/angular";
-import {isNil, isNotNil, toBoolean} from "../functions";
+import {isNotNil, toBoolean} from "../functions";
 import {distinctUntilChanged} from "rxjs/operators";
 import {Subscription} from "rxjs";
 
@@ -23,7 +24,7 @@ import {Subscription} from "rxjs";
 })
 export class ToolbarComponent implements OnInit, OnDestroy {
 
-  private _subscription: Subscription;
+  private _subscription = new Subscription();
 
   @Input()
   title = '';
@@ -33,7 +34,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
   @Input()
   class = '';
-
 
   @Input()
   mobile = false;
@@ -68,33 +68,33 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   @ViewChild('searchbar') searchbar: IonSearchbar;
 
   constructor(
-    private progressBarService: ProgressBarService,
-    protected router: Router,
-    public routerOutlet: IonRouterOutlet,
-    private cd: ChangeDetectorRef,
-    private platform: Platform
+      private progressBarService: ProgressBarService,
+      private router: Router,
+      private routerOutlet: IonRouterOutlet,
+      private cd: ChangeDetectorRef,
+      private platform: Platform
   ) {
   }
 
   ngOnInit() {
     this.mobile = toBoolean(this.mobile, this.platform.is('mobile'));
-    this.hasValidate = this.hasValidate || this.onValidate.observers.length > 0 && this.mobile;
+    this.hasValidate = toBoolean(this.hasValidate, this.onValidate.observers.length > 0 && this.mobile);
+    this.canGoBack = toBoolean(this.canGoBack, this.routerOutlet.canGoBack() || isNotNil(this.defaultBackHref));
+
     this.hasSearch = toBoolean(this.hasSearch, this.onSearch.observers.length > 0);
     this.showSearchBar = false;
-    this._subscription = this.progressBarService.onProgressChanged
-      .pipe(
-        //debounceTime(100),
-        distinctUntilChanged()
-      )
-      .subscribe((mode) => {
-        if (this.progressBarMode !== mode) {
-          this.progressBarMode = mode;
-          this.cd.detectChanges();
-        }
-      });
-    if (isNil(this.canGoBack)) {
-      this.canGoBack = this.routerOutlet.canGoBack() || isNotNil(this.defaultBackHref);
-    }
+
+    // Listen progress bar service mode
+    this._subscription.add(this.progressBarService.onProgressChanged
+        .pipe(
+            distinctUntilChanged()
+        )
+        .subscribe((mode) => {
+          if (this.progressBarMode !== mode) {
+            this.progressBarMode = mode;
+            this.cd.detectChanges();
+          }
+        }));
   }
 
   ngOnDestroy(): void {
@@ -114,18 +114,19 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     this.onBackClick.emit(event);
 
-    // Stop propagation, if need
+    // Stop propagation, if need (can be cancelled by onBackClick observers)
     if (event.defaultPrevented) return;
 
+    // Execute the back action
     this.goBack();
   }
 
-  goBack() {
+  async goBack(): Promise<void> {
     if (this.routerOutlet.canGoBack()) {
-      this.routerOutlet.pop();
+      await this.routerOutlet.pop();
     }
     else {
-      this.router.navigateByUrl(this.defaultBackHref);
+      await this.router.navigateByUrl(this.defaultBackHref);
     }
   }
 

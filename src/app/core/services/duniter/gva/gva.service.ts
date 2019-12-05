@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import gql from "graphql-tag";
 import {GraphqlService} from "../../network/graphql.service";
 import {IDuniterService} from "../duniter.service";
-import {GvaPendingIdentity, GvaSource} from "./gva.model";
+import {GvaNode, GvaPendingIdentity, GvaSource} from "./gva.model";
 import {GvaErrorCodes} from "./gva.errors";
 import {Observable} from "rxjs";
 import {BlockchainParameters, NodeSummary, PendingIdentity, Source} from "../duniter.model";
@@ -57,11 +57,10 @@ export const Queries = {
   }`,
   // Get node summary
   nodeSummary: gql`query NodeSummary{
-    nodeSummary {
-      duniter {
+    node {
+      summary {
         software
         version
-        forkWindowSize
       } 
     }
   }
@@ -128,11 +127,11 @@ export class GvaService implements IDuniterService {
   }
 
   async nodeSummary(peer?: Peer): Promise<NodeSummary> {
-    const res = await this.graphql.peerQuery<{nodeSummary: NodeSummary}>(peer,
+    const res = await this.graphql.peerQuery<{node: GvaNode}>(peer,
       {
         query: Queries.nodeSummary
       });
-    return res && res.nodeSummary;
+    return res && res.node && res.node.summary;
   }
 
   blockchainParameters(): Observable<BlockchainParameters> {

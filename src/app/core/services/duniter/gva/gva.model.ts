@@ -1,5 +1,9 @@
-import {PendingIdentity, Source} from "../duniter.model";
+import {NodeSummary, PendingIdentity, Source} from "../duniter.model";
 import {Entity} from "../../model";
+
+export interface GvaNode {
+    summary: NodeSummary;
+}
 
 export class GvaSource extends Entity<GvaSource, string> implements Source {
 

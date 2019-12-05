@@ -1,3 +1,8 @@
+import {NodeSummary} from "../../../core/services/duniter/duniter.model";
+
+export interface EsNodeSummary {
+  duniter: NodeSummary;
+}
 
 export interface EsSocial {
   type: string;

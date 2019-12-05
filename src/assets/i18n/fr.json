@@ -69,13 +69,15 @@
   },
   "MENU": {
     "HOME": "Accueil",
+    "DASHBOARD": "Tableau de bord",
     "WOT": "Annuaire",
     "ADMINISTRATION_DIVIDER": "Administration",
     "FOOTER_VERSION_ABOUT": "v{{version}} | à propos",
     "LOCAL_SETTINGS": "Paramètres",
     "SERVER_SETTINGS": "Configuration serveur",
     "LOGOUT": "Se déconnecter",
-    "ABOUT": "À propos"
+    "ABOUT": "À propos",
+    "WALLET": "Portefeuille"
   },
   "ABOUT": {
     "TITLE": "À propos",
@@ -130,6 +132,9 @@
       "NOT_SAME_PASSWORD": "Les mots de passe ne correspondent pas"
     }
   },
+  "DASHBOARD": {
+    "TITLE": "Tableau de bord"
+  },
   "ACCOUNT": {
     "TITLE": "Mon compte",
     "UID": "Pseudonyme",
@@ -141,7 +146,7 @@
       "DESCRIPTION": "Voici les données enregistrées concernant votre compte :",
       "TECHNICAL_DIVIDER": "Information techniques",
       "PROFILE": "Profil utilisateur",
-      "PUBKEY": "Clé publique pour la signature numérique"
+      "PUBKEY": "Clé publique du portefeuille"
     },
     "SETTINGS": {
       "TITLE": "Préférences",
@@ -166,10 +171,6 @@
     "FIELD_DISPLAY": "Affichage",
     "BTN_ADD_FIELD": "Ajouter un champ",
     "FIELDS": {
-      "QUALITATIVE_VALUE": "Paramètre avec liste de valeurs",
-      "TAXON_GROUP": "Espèce commerciale",
-      "TAXON_NAME": "Espèce scientifique",
-      "GEAR": "Engin de pêche",
       "ATTRIBUTES": {
         "LABEL": "Code",
         "NAME": "Libellé"
@@ -201,7 +202,7 @@
       "FILTER": {
         "SEARCH": "Recherche : pseudo, clé publique...",
         "PENDING": "Inscriptions en attente",
-        "WALLET": "Portefeuilles",
+        "WALLET": "Portefeuilles simples",
         "MEMBER": "Membres"
       }
     }
