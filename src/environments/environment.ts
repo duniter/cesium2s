@@ -14,7 +14,7 @@ export const environment: Environment = {
     persistCache: false,
 
     defaultPeer: {
-        host: "192.168.0.45",
+        host: "localhost",
         port: 15000,
         useSsl: false
     },
@@ -47,16 +47,17 @@ export const environment: Environment = {
         // },
 
 
-        // {
-        //     host: "dev.g1.dunitrust.org",
-        //     port: 443,
-        //     useSsl: true
-        // },
-        // {
-        //     host: "77.152.31.154",
-        //     port: 10901,
-        //     useSsl: false
-        // }
+        /* -- Dunitrust DEV nodes -- */
+        {
+            host: "dev.g1.dunitrust.org",
+            port: 443,
+            useSsl: true
+        },
+        {
+            host: "77.152.31.154",
+            port: 10901,
+            useSsl: false
+        }
 
     ],
 

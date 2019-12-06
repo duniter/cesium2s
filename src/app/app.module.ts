@@ -24,6 +24,7 @@ import {CacheModule} from "ionic-cache";
 import {Network} from "@ionic-native/network/ngx";
 import {WotModule} from "./wot/wot.module";
 import {PluginsModule} from "./plugins/plugins.module";
+import {IonicStorageModule} from "@ionic/storage";
 
 @NgModule({
   declarations: [
@@ -38,7 +39,11 @@ import {PluginsModule} from "./plugins/plugins.module";
     // functional modules
     CoreModule,
     WotModule,
-    PluginsModule
+    PluginsModule,
+    IonicStorageModule.forRoot({
+      name: 'cesium2',
+      driverOrder: ['indexeddb', 'sqlite', 'websql']
+    })
   ],
   bootstrap: [AppComponent],
   providers: [
