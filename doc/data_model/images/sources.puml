@@ -1,0 +1,86 @@
+@startuml
+sprite $block jar:archimate/technology-node
+sprite $source jar:archimate/technology-artifact
+sprite $tx jar:archimate/technology-event
+
+!define Junction_Start circle #black
+!define Junction_End circle #whitesmoke
+
+Junction_Start JunctionStart
+Junction_End JunctionEnd
+
+rectangle "Block #0" as b0 <<$block>> #lightgreen
+rectangle "Block #1" as b1 <<$block>> #lightgreen
+rectangle "Source #1" as s1 <<$source>> #lightgreen
+
+JunctionStart -down-> b0
+b0 -down-> b1
+s1 -left-* b1
+
+note left of b1
+   100% network
+   consensus
+   (no branch)
+end note
+
+actor "User 1" as u1
+rectangle "Transaction #1" as tx1 <<$tx>> #lightgreen
+
+u1 -down-> tx1 : emit\na TX
+tx1 .left.> b1 : reference
+tx1 .left.> s1 : use
+
+rectangle "Branch #A" as branch_a {
+    rectangle "Block #2" as b2 <<$block>> #red
+    rectangle "Source #2" as s2 <<$source>> #red
+    rectangle "Block #3" as b3 <<$block>> #lightblue
+    rectangle "Source #3" as s3 <<$source>> #lightblue
+    rectangle "Transaction #1" as tx1copy <<$tx>> #lightgreen
+
+    b2 -down-> b3
+    b2 *-left- s2
+    tx1copy <-left-* b2 : apply
+    b3 <-right- s3
+}
+
+note top of branch_a
+  50% network
+  consensus
+end note
+
+rectangle "Branch #B" as branch_b {
+    rectangle "Block #2'" as b2_ <<$block>> #red
+    rectangle "Source #2'" as s2_ <<$source>> #red
+
+    rectangle "Block #3'" as b3_ <<$block>> #red
+    rectangle "Source #3'" as s3_ <<$source>> #lightblue
+    rectangle "Transaction #1" as tx1_copy <<$tx>> #lightgreen
+
+    b2_ -down-> b3_
+    b2_ *-left- s2_
+    tx1_copy <-left-* b2_ : apply
+    b3_ *-right- s3_
+}
+
+note top of branch_b
+  50% network
+  consensus
+end note
+
+b2 .left. b2_ #white
+
+b1 -down-> b2
+b1 -down-> b2_
+
+b3 -down-> JunctionEnd
+b3_ -down-> JunctionEnd
+
+legend left
+  Wallet's sources and associated blocks, on a blockchain fork.
+
+<$block> : a block
+<$source> : a source
+<$tx> : a transaction
+
+end legend
+@enduml
