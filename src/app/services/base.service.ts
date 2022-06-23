@@ -2,6 +2,12 @@ import {Injectable} from "@angular/core";
 import {Platform} from "@ionic/angular";
 import {environment} from "../../environments/environment";
 
+export interface IPlatform {
+  ready(): Promise<any>;
+  mobile?: boolean;
+  touchUi?: boolean;
+}
+
 @Injectable()
 export abstract class AppBaseService {
 
@@ -16,7 +22,7 @@ export abstract class AppBaseService {
     return this._started;
   }
 
-  protected constructor(protected platform: Platform, opts?: {
+  protected constructor(protected ionicPlatform: IPlatform, opts?: {
     logPrefix?: string;
     name?: string;
   }) {
@@ -24,7 +30,7 @@ export abstract class AppBaseService {
     this._logPrefix = (opts && opts.logPrefix) || ("[" + (opts && opts.name || 'base-service') + "] ");
   }
 
-  start(): Promise<any> {
+  start(immediate?: boolean): Promise<any> {
     if (this._startPromise) return this._startPromise;
     if (this._started) return Promise.resolve();
 
@@ -32,7 +38,7 @@ export abstract class AppBaseService {
     const now = Date.now();
     this.info('Starting service...');
 
-    this._startPromise = this.platform.ready()
+    this._startPromise = (immediate ? Promise.resolve() : this.ionicPlatform.ready())
       .then(() => this.doStart())
       .then((result: any) => {
         this._started = true;

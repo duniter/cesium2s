@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {WalletService} from "../services/wallet.service";
+import {AccountService} from "../services/account.service";
 
 @Component({
   selector: 'app-wallet',
@@ -11,7 +11,7 @@ export class WalletPage implements OnInit {
   public walletId: string;
 
   constructor(
-    public  wallet: WalletService,
+    public  wallet: AccountService,
     private activatedRoute: ActivatedRoute
   ) {
 

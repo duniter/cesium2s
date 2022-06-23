@@ -1,8 +1,8 @@
 {
   "name": "Cesium2",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Cesium team",
+  "homepage": "https://cesium.app",
   "scripts": {
     "postinstall": "ngcc",
     "ng": "ng",
@@ -10,7 +10,10 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-defs": "yarn generate:defs && yarn generate:meta",
+    "generate:defs": "ts-node --skip-project node_modules/.bin/polkadot-types-from-defs --package sample-polkadotjs-typegen/interfaces --input ./src/interfaces",
+    "generate:meta": "ts-node --skip-project node_modules/.bin/polkadot-types-from-chain --package sample-polkadotjs-typegen/interfaces --endpoint ./edgeware.json --output ./src/interfaces"
   },
   "private": true,
   "dependencies": {
@@ -26,13 +29,13 @@
     "@capacitor/keyboard": "1.0.2",
     "@capacitor/status-bar": "1.0.2",
     "@ionic/angular": "^5.5.2",
-    "@polkadot/api": "^5.0.1",
-    "@polkadot/extension-dapp": "^0.39.1",
+    "@polkadot/api": "^5.1.1",
+    "@duniter/core-types": "file:/home/blavenie/git/duniter/lc-core-substrate/types-bundle/dist",
     "crypto-browserify": "^3.12.0",
-    "rxjs": "~6.6.7",
+    "rxjs": "~7.5.5",
     "stream-browserify": "^3.0.0",
     "tslib": "^2.0.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.6"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.0.1",
@@ -64,8 +67,13 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "protractor": "~7.0.0",
-    "ts-node": "~8.3.0",
-    "typescript": "~4.2.4"
+    "ts-node": "^8.6.2",
+    "typescript": "~4.2.4",
+    "@polkadot/typegen": "^5.1.1",
+    "@polkadot/types": "^5.1.1"
   },
-  "description": "An Ionic project"
+  "description": "Manage G1 wallet",
+  "engines": {
+    "node": ">= 14.17.3"
+  }
 }
