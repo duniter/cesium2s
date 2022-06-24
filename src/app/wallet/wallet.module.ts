@@ -1,17 +1,14 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-
-import {IonicModule} from '@ionic/angular';
 
 import {WalletPage} from './wallet.page';
 import {WalletPageRoutingModule} from "./wallet-routing.module";
+import {AppSharedModule} from "@app/shared/shared.module";
+import {TranslateModule} from "@ngx-translate/core";
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
+    AppSharedModule,
+    TranslateModule.forChild(),
     WalletPageRoutingModule
   ],
   declarations: [WalletPage]

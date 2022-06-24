@@ -1,0 +1,47 @@
+{
+  "short_name": "Cesium",
+  "name": "Cesium",
+  "manifest_version": 1,
+  "version": "2.0.0-rc1",
+  "default_locale": "fr",
+  "description": "Cesium Wallet for Ğ1 libre currency",
+  "icons": [
+    {
+      "src": "img/logo_32px.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "img/logo_96px.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "img/logo_144px.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "img/logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg"
+    }
+  ],
+  "background_color": "#1a237e",
+  "theme_color": "black",
+  "dir": "ltr",
+  "start_url": "/#/app/home",
+  "display": "standalone",
+  "protocol_handlers": [
+    {
+      "protocol": "june",
+      "name": "Cesium",
+      "uriTemplate": "/#/app/home?uri=%s"
+    },
+    {
+      "protocol": "web+june",
+      "name": "Cesium",
+      "uriTemplate": "/#/app/home?uri=%s"
+    }
+  ]
+}

@@ -8,16 +8,17 @@ import {PlatformService} from "./services/platform.service";
 export class AppComponent {
   public appPages = [
 
-    { title: 'Wallet', url: '/wallet', icon: 'mail' },
+    { title: 'MENU.HOME', url: '/home', icon: 'home' },
+    { title: 'MENU.ACCOUNT', url: '/wallet/Alice', icon: 'card' },
+    { title: 'TRANSFER.SUB_TITLE', url: '/transfer', icon: 'paper-plane' },
 
-    { title: 'Inbox', url: '/folder/Inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/Outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/Favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/Archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/Trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/Spam', icon: 'warning' },
+    // { title: 'Messages', url: '/message/inbox', icon: 'mail' },
+
+    { title: 'MENU.WOT', url: '/wot', icon: 'people' },
+
+    { title: 'MENU.SETTINGS', url: '/settings', icon: 'settings' },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+  public labels = [];
 
   constructor(private platform: PlatformService) {
     this.start();

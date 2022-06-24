@@ -1,15 +1,19 @@
 import {Environment} from "./environment.class";
-import {Peer} from "@polkadot/types/interfaces";
 
 export const environment = <Environment>{
   production: true,
   name: 'Cesium2',
 
-  // TODO: use production peers
+  defaultLocale: 'fr',
+
+  // Storage
+  storage: {
+    driverOrder: ['sqlite', 'indexeddb', 'websql', 'localstorage']
+  },
+
   defaultPeers: [
-    {
-      host: 'localhost',
-      port: 9944
-    }
+    /* GDev public endpoints */
+    'wss://gdev.komun.org/ws',
+    'wss://1000i100.fr/ws'
   ]
 };

@@ -1,3 +1,4 @@
+import {KeysEnum, KeyValueType} from "@app/shared/types";
 
 export function isNil<T>(obj: T | null | undefined): boolean {
   return obj === undefined || obj === null;
@@ -14,6 +15,9 @@ export function isNotNilOrBlank<T>(obj: T | null | undefined): boolean {
 export function isNotNilOrNaN<T>(obj: T | null | undefined): boolean {
   return obj !== undefined && obj !== null && (typeof obj !== 'number' || !isNaN(obj));
 }
+export function isNilOrNaN<T>(obj: T | null | undefined): boolean {
+  return obj === undefined || obj === null || (typeof obj === 'number' && isNaN(obj));
+}
 export function isNotEmptyArray<T>(obj: T[] | null | undefined): boolean {
   return obj !== undefined && obj !== null && obj.length > 0;
 }
@@ -23,20 +27,17 @@ export function firstArrayValue<T>(obj: T[] | null | undefined): T | undefined {
 export function isEmptyArray<T>(obj: T[] | null | undefined): boolean {
   return obj === undefined || obj === null || !obj.length;
 }
-export function isArray(obj: any): obj is any[] {
-  return obj && isNotNil(obj['length']) || false;
+export function isNotNilBoolean(obj: any | null | undefined): obj is boolean {
+  return obj !== undefined && obj !== null && typeof obj === 'boolean' || false;
 }
 export function isNotNilString(obj: any | null | undefined): obj is string {
   return obj !== undefined && obj !== null && typeof obj === 'string' || false;
 }
+export function isBlankString(obj: any | null | undefined): obj is string {
+  return (typeof obj === 'string') && obj.trim().length === 0;
+}
 export function notNilOrDefault<T>(obj: T | null | undefined, defaultValue: T): T {
   return (obj !== undefined && obj !== null) ? obj : defaultValue;
-}
-export function isTrue(obj: any): boolean {
-  return obj === true;
-}
-export function isFalse(obj: any): boolean {
-  return obj === false;
 }
 export function arraySize<T>(obj: T[] | null | undefined): number {
   return isNotEmptyArray(obj) && obj.length || 0;
@@ -45,7 +46,7 @@ export function arrayGroupBy<
   T = any,
   K extends keyof T = any,
   M extends { [key: string]: T[];
-  } = { [key: string]: T[] }>(obj: T[], key: keyof T): M {
+} = { [key: string]: T[] }>(obj: T[], key: keyof T): M {
   if (isNil(obj)) return null;
   return obj.reduce((rv: any, x) => {
     (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -117,6 +118,10 @@ export function replaceAll(value: string, searchString: any, replacement): strin
   return value;
 }
 
+export function escapeRegExp(value: string) {
+  return value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 export function removeEnd(value: string, end: string): string {
   return value?.endsWith(end || '') ? value.substr(0, value.length - end.length) : value;
 }
@@ -131,26 +136,13 @@ export function changeCaseToUnderscore(value: string): string {
   return value.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
 }
 
-
-export function suggestFromStringArray(values: string[], value: any, options?: {
-  searchAttribute?: string;
-  searchAttributes?: string[];
-}): string[] {
-  value = (typeof value === 'string' && value !== '*') && value.toUpperCase() || undefined;
-  if (isNilOrBlank(value)) return values;
-
-  // If wildcard, search using regexp
-  if ((value as string).indexOf('*') !== -1) {
-    value = (value as string).replace('*', '.*');
-    return values.filter(v => matchUpperCase(v, value));
-  }
-
-  // If wildcard, search using startsWith
-  return values.filter(v => startsWithUpperCase(v, value));
+export function removeDiacritics(text: string): string {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
 export function joinPropertiesPath<T = any>(obj: T, properties: string[], separator?: string): string | undefined {
   if (!obj) throw new Error('Could not display an undefined entity.');
+  if (!properties) throw new Error('Missing \'properties\' argument');
   return properties
     .map(path => getPropertyByPath(obj, path))
     .filter(isNotNilOrBlank)
@@ -186,23 +178,22 @@ export function propertiesPathComparator<T = any>(keys: string[], defaultValues?
     throw new Error('Invalid arguments: missing \'keys\' or array \'defaultValues\' has a bad length');
   }
   return (a: T, b: T) => keys.map((key, index) => {
-    const valueA = getPropertyByPath(a, key, defaultValues && defaultValues[index]);
-    const valueB = getPropertyByPath(b, key, defaultValues && defaultValues[index]);
-    return valueA === valueB ? 0 : (valueA > valueB ? 1 : -1);
-  })
-    // Stop if not equals, otherwise continue with the next key
-    .find(res => res !== 0) || 0;
+      const valueA = getPropertyByPath(a, key, defaultValues && defaultValues[index]);
+      const valueB = getPropertyByPath(b, key, defaultValues && defaultValues[index]);
+      return valueA === valueB ? 0 : (valueA > valueB ? 1 : -1);
+    })
+      // Stop if not equals, otherwise continue with the next key
+      .find(res => res !== 0) || 0;
 }
 
-export function sort<T>(array: T[], attribute: string): T[] {
+export function sort<T>(array: T[], attribute: string, opts?: Intl.CollatorOptions): T[] {
   if (isEmptyArray(array)) return array;
+  const compareFn = opts
+    ? new Intl.Collator(undefined, opts).compare
+    : (v1, v2) => v1 === v2 ? 0 : v1 > v2 ? 1 : -1;
   return array
     .slice() // copy
-    .sort((a, b) => {
-      const valueA = a[attribute];
-      const valueB = b[attribute];
-      return valueA === valueB ? 0 : (valueA > valueB ? 1 : -1);
-    });
+    .sort((a, b) => compareFn(a[attribute], b[attribute]));
 }
 const INTEGER_REGEXP = /^[-]?\d+$/;
 export function isInt(value: string): boolean {
@@ -297,10 +288,6 @@ export function remove<T>(array: T[], predicate: (pmfm: T) => boolean): T {
   });
 }
 
-
-
-export declare type KeysEnum<T> = { [P in keyof Required<T>]: boolean };
-
 export function capitalizeFirstLetter(value: string) {
   if (!value || value.length === 0) return value;
   return value.substr(0, 1).toUpperCase() + value.substr(1);
@@ -308,6 +295,75 @@ export function capitalizeFirstLetter(value: string) {
 export function uncapitalizeFirstLetter(value: string) {
   if (!value || value.length === 0) return value;
   return value.substr(0, 1).toLowerCase() + value.substr(1);
+}
+
+export function splitByProperty<T, M extends KeyValueType<T> = KeyValueType<T>>(array: T[] | readonly T[], propertyName: keyof T | string): M {
+  return (array || []).reduce((res, value) => {
+    const key = (value as unknown as any)?.[propertyName];
+    if (isNotNil(key)) {
+      res[key] = value;
+    }
+    return res;
+  }, {}) as M;
+}
+
+export function splitById<T, M extends KeyValueType<T> = KeyValueType<T>>(array: T[] | readonly T[]): M {
+  return (array || []).reduce((res, value) => {
+    const key = value?.['id'];
+    if (isNotNil(key)) {
+      res[key] = value;
+    }
+    return res;
+  }, <M>{});
+}
+
+/**
+ * Determines if two objects or two values are equivalent.
+ *
+ * Two objects or values are considered equivalent if at least one of the following is true:
+ *
+ * * Both objects or values pass `===` comparison.
+ * * Both objects or values are of the same type and all of their properties are equal by
+ *   comparing them with `equals`.
+ *
+ * @param o1 Object or value to compare.
+ * @param o2 Object or value to compare.
+ * @returns true if arguments are equal.
+ */
+export function equals(o1: any, o2: any): boolean {
+  if (o1 === o2) return true;
+  if (o1 === null || o2 === null) return false;
+  if (o1 !== o1 && o2 !== o2) return true; // NaN === NaN
+  let t1 = typeof o1, t2 = typeof o2, length: number, key: any, keySet: any;
+  if (t1 == t2 && t1 == 'object') {
+    if (Array.isArray(o1)) {
+      if (!Array.isArray(o2)) return false;
+      if ((length = o1.length) == o2.length) {
+        for (key = 0; key < length; key++) {
+          if (!equals(o1[key], o2[key])) return false;
+        }
+        return true;
+      }
+    } else {
+      if (Array.isArray(o2)) {
+        return false;
+      }
+      keySet = Object.create(null);
+      for (key in o1) {
+        if (!equals(o1[key], o2[key])) {
+          return false;
+        }
+        keySet[key] = true;
+      }
+      for (key in o2) {
+        if (!(key in keySet) && typeof o2[key] !== 'undefined') {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+  return false;
 }
 
 export class Beans {
@@ -334,7 +390,7 @@ export class Beans {
   static isEmpty<T>(data: T, keys?: KeysEnum<T>|string[], opts?: {
     blankStringLikeEmpty?: boolean;
   }): boolean {
-    return isNil(data) || (isArray(keys) ? keys : Object.keys(keys || data))
+    return isNil(data) || (Array.isArray(keys) ? keys : Object.keys(keys || data))
       // Find index of the first NOT nil value
       .findIndex(key => {
         const value = data[key];

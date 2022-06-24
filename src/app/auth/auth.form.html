@@ -1,0 +1,59 @@
+<form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" class="form-container ion-padding" (keyup.enter)="doSubmit($event)">
+
+  <ion-list>
+    <!-- error -->
+    <ion-item lines="none" *ngIf="error && !loading" @slideUpDownAnimation>
+      <ion-icon color="danger" slot="start" name="alert-circle"></ion-icon>
+      <ion-label color="danger" class="error" [innerHTML]="error|translate"></ion-label>
+    </ion-item>
+
+
+    <!-- Username -->
+    <ion-item>
+      <ion-label color="medium" translate>LOGIN.SALT</ion-label>
+      <ion-input [placeholder]="''|translate"
+             formControlName="username"
+             autocomplete="off"
+             required>
+
+      </ion-input>
+    </ion-item>
+
+    <!-- Password -->
+    <ion-item>
+      <ion-label color="medium" translate>LOGIN.PASSWORD</ion-label>
+      <ion-input formControlName="password"
+                 autocomplete="off"
+                 required>
+
+      </ion-input>
+    </ion-item>
+    <!--<mat-form-field>
+      <input matInput [placeholder]="'USER.PASSWORD'|translate"
+             formControlName="password"
+             autocomplete="section-red new-password"
+             [type]="showPwd ? 'text' : 'password'"
+             (keyup.enter)="doSubmit($event)"
+             required>
+
+      &lt;!&ndash; Show pwd button &ndash;&gt;
+      <button matSuffix type="button"
+              mat-icon-button
+              *ngIf="mobile"
+              (click)="showPwd = !showPwd"
+              tabindex="-1">
+        <mat-icon>{{showPwd ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      <mat-error *ngIf="form.controls.password.hasError('required') && form.controls.password.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
+    </mat-form-field>-->
+  </ion-list>
+
+  <!-- Not register yet ? -->
+  <p *ngIf="canRegister" class="padding" style="text-align: center;">
+    <span translate>AUTH.NO_ACCOUNT_QUESTION</span>
+    <br/>
+    <a (click)="register()">
+      <span translate>AUTH.BTN_REGISTER</span>
+    </a>
+  </p>
+</form>

@@ -8,20 +8,31 @@ export const environment = <Environment>{
   production: false,
   name: 'Cesium2',
 
-  defaultPeers: [
-    {
-      host: 'localhost',
-      port: 9944
+  defaultLocale: 'fr',
+
+  // Storage
+  storage: {
+    name: 'decsium-dev',
+    driverOrder: ['sqlite', 'indexeddb', 'websql', 'localstorage']
+  },
+
+  keyring: {
+    ss58Format: 42 // dev
+  },
+
+  dev: {
+    //peer: 'ws://localhost:9944',
+    peer: 'wss://gdev.komun.org/ws',
+
+    auth: {
+      username: 'abc', password: 'def'
     }
+  },
+
+  defaultPeers: [
+    'ws://localhost:9944/ws',
+    /* GDev endpoints */
+    'wss://gdev.komun.org/ws',
+    'wss://1000i100.fr/ws'
   ]
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-import 'zone.js/dist/zone-error';
-import {Peer} from "@polkadot/types/interfaces";  // Included with Angular CLI.

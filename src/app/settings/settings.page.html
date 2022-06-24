@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title translate>SETTINGS.TITLE</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large" translate>SETTINGS.TITLE</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+
+    <ion-list *ngIf="!loading">
+      <ion-item>
+        <ion-icon slot="start" name="language"></ion-icon>
+        <ion-label color="dark" translate>COMMON.LANGUAGE</ion-label>
+        <ion-select [(ngModel)]="data.locale">
+          <ion-select-option *ngFor="let locale of locales" [value]="locale.key">
+            {{locale.value}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item-divider translate>SETTINGS.NETWORK_SETTINGS</ion-item-divider>
+
+      <ion-item>
+
+        <ion-icon slot="start" name="cloud-done"></ion-icon>
+        <ion-label color="dark" translate>SETTINGS.PEER</ion-label>
+
+        <ion-input [(ngModel)]="data.peer" class="ion-text-end">
+
+        </ion-input>
+        <ion-button slot="end" (click)="selectPeer()">
+          <ion-icon slot="icon-only" name=""></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <div class="ion-text-center">
+      <ion-button (click)="cancel()" color="light" >
+        <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+      </ion-button>
+      <ion-button (click)="save()" color="danger">
+        <ion-label translate="COMMON.BTN_SAVE"></ion-label>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+

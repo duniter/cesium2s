@@ -26,7 +26,9 @@
               "elliptic",
               "tweetnacl",
               "xxhashjs",
-              "safe-buffer"
+              "safe-buffer",
+              "ed2curve",
+              "crypto"
             ],
             "assets": [
               {
@@ -38,6 +40,11 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "manifest.json",
+                "input": "src/assets",
+                "output": "/"
               }
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
@@ -89,7 +96,6 @@
               "browserTarget": "app:build:production"
             },
             "ci": {
-              "progress": false
             }
           }
         },

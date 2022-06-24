@@ -1,0 +1,69 @@
+<ion-header [translucent]="true" *ngIf="showToolbar">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title translate>MENU.WOT</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <div id="container">
+
+    <ion-searchbar [placeholder]="'WOT.SEARCH_HELP'|translate"
+                   (change)="search()"
+                   (click)="searchClick.emit($event)">
+    </ion-searchbar>
+
+    <ion-list>
+
+      <ng-container *ngIf="loading">
+
+        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+      </ng-container>
+
+      <ng-template #items>
+        <ion-item-sliding *ngFor="let item of data">
+          <ion-item >
+            <ion-avatar slot="start" *ngIf="item.meta?.avatar; else iconPerson">
+              <ion-img [src]="item.meta?.avatar"></ion-img>
+            </ion-avatar>
+            <ng-template #iconPerson>
+              <ion-icon slot="start" name="person"></ion-icon>
+            </ng-template>
+            <ion-label>
+              <h2>{{item.meta?.name}}</h2>
+              <p>{{item.address|addressFormat}}</p>
+            </ion-label>
+            <ion-button slot="end" *ngIf="!mobile" (click)="transfer(item)" [title]="'BTN_SEND_MONEY'|translate">
+              <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <ion-item-options *ngIf="mobile">
+            <ion-item-option (click)="transfer(item)" [title]="'BTN_SEND_MONEY'|translate">
+              <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ng-template>
+
+    </ion-list>
+
+  </div>
+</ion-content>
+
+
+<ng-template #itemSkeleton>
+  <ion-item>
+    <ion-icon slot="start" name="person"></ion-icon>
+    <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+  </ion-item>
+</ng-template>
+
+
+<ng-template #inputSkeleton>
+  <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+</ng-template>
