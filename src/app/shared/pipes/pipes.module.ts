@@ -21,6 +21,7 @@ import {
 } from './arrays.pipe';
 import {MapGetPipe, MapKeysPipe, MapValuesPipe} from './maps.pipe';
 import {
+  AbbreviatePipe,
   IsNilOrBlankPipe,
   IsNotNilOrBlankPipe,
   StrIncludesPipe,
@@ -74,8 +75,10 @@ import {AddressFormatPipe} from "@app/shared/pipes/address.pipes";
     FormGetArrayPipe,
     FormGetGroupPipe,
     FormGetValuePipe,
+    // Currency pipes
     AmountFormatPipe,
-    AddressFormatPipe
+    AddressFormatPipe,
+    AbbreviatePipe
   ],
   exports: [
     PropertyGetPipe,
@@ -111,8 +114,10 @@ import {AddressFormatPipe} from "@app/shared/pipes/address.pipes";
     FormGetArrayPipe,
     FormGetGroupPipe,
     FormGetValuePipe,
+    // Currency pipes
     AmountFormatPipe,
-    AddressFormatPipe
+    AddressFormatPipe,
+    AbbreviatePipe
   ]
 })
 export class SharedPipesModule {

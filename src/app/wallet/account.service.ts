@@ -6,9 +6,10 @@ import {StartableService} from "@app/shared/services/startable-service.class";
 import {AuthData} from "@app/auth/auth.model";
 import {keyring} from "@polkadot/ui-keyring";
 import {environment} from "@environments/environment";
-import {StorageService} from "@app/services/storage.service";
+import {StorageService} from "@app/shared/services/storage.service";
 import {KeyringStorage} from "@app/shared/services/keyring-storage";
 import {RegisterData} from "@app/register/register.model";
+import { mnemonicGenerate } from '@polkadot/util-crypto';
 
 @Injectable({providedIn: 'root'})
 export class AccountService extends StartableService {
@@ -55,7 +56,33 @@ export class AccountService extends StartableService {
     return this._accounts[0];
   }
 
-  async register(auth: RegisterData): Promise<boolean> {
+  async generateNew() {
+    if (!this.started) await this.ready();
+
+    // generate a random mnemonic, 12 words in length
+    const mnemonic = mnemonicGenerate(12);
+
+    return mnemonic;
+  }
+
+  async register(data: RegisterData): Promise<boolean> {
+
+
+    // add the account, encrypt the stored JSON with an account-specific password
+    const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
+      name: data.meta?.name || 'NEW',
+      genesisHash: this.network.currency?.genesys
+    }, 'sr25519');
+
+    console.info('TODO check ', pair, json);
+
+    await this.addAccount({
+      address: json.address,
+      meta: {
+        name: data.meta?.name
+      }
+    })
+
     return true;
   }
 
@@ -92,6 +119,13 @@ export class AccountService extends StartableService {
     );
 
 
+  }
+
+  async addAccount(account: AccountWithMeta) {
+    const exists = this._accounts.some(a => a.address === account.address);
+    if (!exists) {
+      this._accounts.push(account);
+    }
   }
 
   async getAll(): Promise<AccountWithMeta[]> {

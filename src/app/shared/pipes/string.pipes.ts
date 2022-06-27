@@ -1,5 +1,6 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {changeCaseToUnderscore, isNilOrBlank, isNotNilOrBlank} from '../functions';
+import {abbreviate} from "@app/shared/currencies";
 
 @Pipe({
   name: 'isNotNilOrBlank'
@@ -63,5 +64,15 @@ export class StrIncludesPipe implements PipeTransform {
 export class TranslatablePipe implements PipeTransform {
   transform(value: string): string {
     return changeCaseToUnderscore(value)?.toUpperCase();
+  }
+}
+
+@Pipe({
+  name: 'abbreviate'
+})
+export class AbbreviatePipe implements PipeTransform {
+
+  transform(currencyName: string): string {
+    return abbreviate(currencyName);
   }
 }

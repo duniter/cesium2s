@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {PlatformService} from "./services/platform.service";
+import {PlatformService} from "./shared/services/platform.service";
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',

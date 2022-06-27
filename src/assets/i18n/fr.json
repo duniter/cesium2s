@@ -119,8 +119,8 @@
     "TITLE": "Cesium",
     "WELCOME": "Bienvenue dans l'application Cesium !",
     "WELCOME_READONLY": "Bienvenue dans Cesium <span class='badge badge-balanced'>Monit</span> !",
-    "MESSAGE": "Recevez et envoyez de la monnaie libre {{currency|abbreviate}}",
-    "MESSAGE_READONLY": "Suivez l'état de la monnaie libre {{currency|abbreviate}} en temps réel.",
+    "MESSAGE": "Recevez et envoyez de la monnaie libre {{currency}}",
+    "MESSAGE_READONLY": "Suivez l'état de la monnaie libre {{currency}} en temps réel.",
     "BTN_CURRENCY": "Explorer la monnaie {{currency|abbreviate}}",
     "BTN_ABOUT": "à propos",
     "BTN_HELP": "Aide en ligne",
@@ -520,10 +520,10 @@
     },
     "NEW": {
       "TITLE": "Création de compte",
-      "INTRO_WARNING_TIME": "La création d'un compte sur {{name|capitalize}} est très simple. Veuillez néanmoins prendre suffisament de temps pour faire correctement cette formalité (pour ne pas oublier les identifiants, mots de passe, etc.).",
+      "INTRO_WARNING_TIME": "La création d'un compte sur {{name}} est très simple. Veuillez néanmoins prendre suffisament de temps pour faire correctement cette formalité (pour ne pas oublier les identifiants, mots de passe, etc.).",
       "INTRO_WARNING_SECURITY": "Vérifiez que le matériel que vous utilisez actuellement (ordinateur, tablette, téléphone) <b>est sécurisé et digne de confiance</b>.",
       "INTRO_WARNING_SECURITY_HELP": "Anti-virus à jour, pare-feu activé, session protégée par mot de passe ou code pin, etc.",
-      "INTRO_HELP": "Cliquez sur <b>{{'COMMON.BTN_START'|translate}}</b> pour débuter la création de compte. Vous serez guidé étape par étape.",
+      "INTRO_HELP": "Cliquez sur <b>Commencer</b> pour débuter la création de compte. Vous serez guidé étape par étape.",
       "REGISTRATION_NODE": "Votre inscription sera enregistrée via le noeud Duniter <b>{{server}}</b>, qui le diffusera ensuite au reste du réseau de la monnaie.",
       "REGISTRATION_NODE_HELP": "Si vous ne faites pas confiance en ce noeud, veuillez en changer <a ng-click=\"doQuickFix('settings')\">dans les paramètres</a> de Cesium.",
       "SELECT_ACCOUNT_TYPE": "Choisissez le type de compte à créer :",
@@ -552,7 +552,12 @@
       "PSEUDO_NOT_AVAILABLE": "Pseudonyme non disponible",
       "INFO_LICENSE": "Avant de créer un compte membre, <b>veuillez lire et accepter la licence</b> d'usage de la monnaie :",
       "BTN_ACCEPT": "J'accepte",
-      "BTN_ACCEPT_LICENSE": "J'accepte la licence"
+      "BTN_ACCEPT_LICENSE": "J'accepte la licence",
+      "BTN_GENERATE_NEW_PHRASE": "Choisir une autre phrase",
+      "BTN_GENERATE_NEW_CODE": "Choisir un autre code secret",
+      "BTN_WROTE_MY_PHRASE": "OK, J'ai noté ma phrase",
+      "INPUT_WORD": "Mot n°{{number}}",
+      "YOUR_SECRET_CODE": "Votre code secret"
     },
     "POPUP_REGISTER": {
       "TITLE": "Choisissez un pseudonyme",

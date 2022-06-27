@@ -1,47 +1,71 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header [translucent]="true" *ngIf="mobile">
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title translate>HOME.TITLE</ion-title>
-    <ion-buttons slot="end">
-      <!-- locale button -->
-      <ion-button id="locale-menu-trigger" [title]="'COMMON.LANGUAGE'|translate">
-        <ion-icon slot="icon-only" name="language"></ion-icon>
-      </ion-button>
-      <ion-popover #popover trigger="locale-menu-trigger" triggerAction="locale-menu">
-        <ng-template>
-          <ion-content>
-            <ion-list>
-              <ion-item *ngFor="let item of locales"
-                        (click)="changeLocale(item.key) || popover.dismiss()"
-                        tappable>
-                <ion-label>{{item.value}}</ion-label>
-                <ion-icon slot="end" name="checkmark" *ngIf="data.locale===item.key"></ion-icon>
-              </ion-item>
-            </ion-list>
-          </ion-content>
-        </ng-template>
-      </ion-popover>
-
+    <ion-buttons slot="end" >
+      <ng-container [ngTemplateOutlet]="localeButton"></ng-container>
     </ion-buttons>
   </ion-toolbar>
+
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="circle-bg-dark">
+
+
+  <!-- Desktop: translucent top toolbar -->
+  <div *ngIf="!mobile">
+    <ion-toolbar translucent>
+      <ion-buttons slot="start">
+        <ion-menu-toggle>
+          <ion-button color="light" fill="clear">
+            <ion-icon slot="icon-only" name="menu"></ion-icon>
+          </ion-button>
+        </ion-menu-toggle>
+      </ion-buttons>
+
+      <ion-buttons slot="end">
+        <ng-container *ngTemplateOutlet="localeButton; context: {$implicit: 'light'}"></ng-container>
+      </ion-buttons>
+    </ion-toolbar>
+  </div>
 
   <div id="container">
 
-    <ion-button id="open-modal-trigger">
-      <ion-label translate>COMMON.BTN_LOGIN</ion-label>
-    </ion-button>
+    <ion-card  class="main welcome ion-padding ion-text-center ion-align-self-center">
+      <ion-card-header>
+        <div class="logo"></div>
+        <ion-card-subtitle [innerHTML]="'HOME.WELCOME'|translate">
+        </ion-card-subtitle>
+        <ion-card-title class="ion-text-center">
+          <ion-spinner *ngIf="loading; else message"></ion-spinner>
+          <ng-template #message>
+            {{'HOME.MESSAGE'|translate:{currency: currency} }}
+          </ng-template>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+
+        <!-- register -->
+        <ion-button id="open-register-modal"  expand="block">
+          <ion-label translate>LOGIN.CREATE_FREE_ACCOUNT</ion-label>
+        </ion-button>
+
+        <!-- login -->
+        <p class="ion-padding-top" translate>LOGIN.HAVE_ACCOUNT_QUESTION</p>
+        <ion-button id="open-auth-modal" color="light" expand="block">
+          <ion-label translate>COMMON.BTN_LOGIN</ion-label>
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
 
   </div>
 </ion-content>
 
 <ion-modal
-  #modal
-  trigger="open-modal-trigger"
+  #authModal
+  trigger="open-auth-modal"
   [backdropDismiss]="false"
 >
   <ng-template>
@@ -51,3 +75,41 @@
   </ng-template>
 </ion-modal>
 
+
+<ion-modal
+  #registerModal
+  trigger="open-register-modal"
+  [backdropDismiss]="false"
+>
+  <ng-template>
+    <ion-content scrollY="false">
+      <app-register-modal></app-register-modal>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ng-template #localeButton let-buttonColor>
+
+  <!-- locale button -->
+  <ion-button id="locale-menu-trigger"
+              [color]="buttonColor"
+              [title]="'COMMON.LANGUAGE'|translate">
+    <ion-icon slot="icon-only" name="language"></ion-icon>
+  </ion-button>
+
+  <!-- locale popover -->
+  <ion-popover #popover trigger="locale-menu-trigger" triggerAction="locale-menu">
+    <ng-template>
+      <ion-content>
+        <ion-list>
+          <ion-item *ngFor="let item of locales"
+                    (click)="changeLocale(item.key) || popover.dismiss()"
+                    tappable>
+            <ion-label>{{item.value}}</ion-label>
+            <ion-icon slot="end" name="checkmark" *ngIf="data.locale===item.key"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+</ng-template>

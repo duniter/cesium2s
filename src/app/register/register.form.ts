@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -9,7 +9,7 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import {Observable, of, Subscription, timer} from 'rxjs';
+import {BehaviorSubject, Observable, of, Subject, Subscription, timer} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
 import {AccountService} from "@app/wallet/account.service";
 import {SettingsService} from "@app/settings/settings.service";
@@ -17,12 +17,21 @@ import {environment} from "@environments/environment";
 import {RegisterData} from "@app/register/register.model";
 import {AccountExtendedMeta} from "@app/wallet/account.model";
 import {AppForm} from "@app/shared/form.class";
+import {IonSlide, IonSlides} from "@ionic/angular";
+import {NetworkService} from "@app/network/network.service";
+import {Currency} from "@app/network/currency.model";
+import {isNil, toBoolean} from "@app/shared/functions";
 
+export const REGISTER_FORM_SLIDES = {
+  MNEMONIC: 5,
+  ASK_WORD: 6,
+  CODE: 9
+}
 
 @Component({
-  selector: 'form-register',
-  templateUrl: 'form-register.html',
-  styleUrls: ['./form-register.scss']
+  selector: 'app-register-form',
+  templateUrl: 'register.form.html',
+  styleUrls: ['./register.form.scss']
 })
 export class RegisterForm extends AppForm<RegisterData> implements OnInit {
 
@@ -31,42 +40,35 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     speed: 400,
   };
 
-  forms: FormGroup[];
+  slideState = {
+    index: this.slideOpts.initialSlide,
+    isBeginning: true,
+    isEnd: false,
+    canNext: true
+  };
 
+  @Input('class') classList: string;
+
+  get currency(): Currency {
+    return this.networkService.currency;
+  }
+
+  @ViewChild('slides') slides: IonSlides;
 
   constructor(
     injector: Injector,
     private accountService: AccountService,
+    private networkService: NetworkService,
     public formBuilder: FormBuilder,
     protected settings?: SettingsService
   ) {
-    super(injector)
-
-    this.forms = [];
-    // Email form
-    this.forms.push(formBuilder.group({
-      email: new FormControl(null, Validators.compose([Validators.required, Validators.email]), this.emailAvailability(this.accountService)),
-      confirmEmail: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('email')]))
-    }));
-
-    // Password form
-    this.forms.push(formBuilder.group({
-      password: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(8)])),
-      confirmPassword: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('password')]))
-    }));
-
-    // Detail form
-    const formDetailDef = {
-      lastName: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(2)])),
-      firstName: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(2)]))
-    };
-
-    this.forms.push(formBuilder.group(formDetailDef));
+    super(injector);
 
     this.setForm(formBuilder.group({
-      emailStep: this.forms[0],
-      passwordStep: this.forms[1],
-      detailsStep: this.forms[2]
+      words: new FormControl(null, Validators.required),
+      wordNumber: new FormControl(null, Validators.required),
+      code: new FormControl(null, Validators.required),
+      name: new FormControl(null)
     }));
   }
 
@@ -74,29 +76,23 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     // For DEV only ------------------------
     if (!environment.production) {
       this.form.setValue({
-        emailStep: {
-          email: 'contact@e-is.pro',
-          confirmEmail: 'contact@e-is.pro'
-        },
-        passwordStep: {
-          password: 'contactera',
-          confirmPassword: 'contactera'
-        },
-        detailsStep: {
-          lastName: 'Lavenier 2',
-          firstName: 'Benoit'
-        }
+        words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
+        wordNumber: 1,
+        code: 'AAAAA',
+        name: 'Nouveau portefeuille'
       });
     }
   }
 
   get value(): RegisterData {
+    const json = this.form.value;
     const result: RegisterData = {
-      phrase: this.form.value.emailStep.email,
-      meta: <AccountExtendedMeta>{}
+      mnemonic: json.words.join(' '),
+      password: json.code,
+      meta: <AccountExtendedMeta>{
+        name: json.name
+      }
     };
-    result.meta.name = this.form.value.detailsStep;
-    //result.meta.name = this.form.value.detailsSte;
 
     return result;
   }
@@ -105,6 +101,32 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     return this.form.valid;
   }
 
+  async slideNext() {
+    return this.slides.slideNext()
+      .then(() => this.updateState());;
+  }
+
+  async slidePrev() {
+    return this.slides.slidePrev()
+      .then(() => this.updateState());
+  }
+
+  async slideTo(index: number) {
+    return this.slides.slideTo(index)
+      .then(() => this.updateState());
+  }
+
+  isBeginning() {
+    return this.slideState.isBeginning;
+  }
+
+  isEnd() {
+    return this.slideState.isEnd;
+  }
+
+  canNext() {
+    return this.slideState.canNext;
+  }
 
   equalsValidator(otherControlName: string): ValidatorFn {
     return function(c: AbstractControl): ValidationErrors | null {
@@ -133,4 +155,82 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     this.onCancel.emit();
   }
 
+  protected async updateState(){
+    this.slideState.index = await this.slides.getActiveIndex();
+    this.slideState.isBeginning = this.slideState.index === 0 || await this.slides.isBeginning();
+    this.slideState.isEnd = await this.slides.isEnd();
+    this.markForCheck();
+
+    switch (this.slideState.index) {
+      case REGISTER_FORM_SLIDES.MNEMONIC:
+        if (!this.form.get('words').valid) {
+          this.generatePhrase();
+        }
+        break;
+      case REGISTER_FORM_SLIDES.ASK_WORD:
+        this.generateWordNumber();
+        break;
+      case REGISTER_FORM_SLIDES.CODE:
+        this.generateCode();
+        break;
+    }
+  }
+
+  protected async generatePhrase() {
+    if (!environment.production) return;
+
+    // Clear previous phrase
+    this.form.get('words').reset(null);
+    this.slideState.canNext = false;
+    this.markForCheck();
+
+    setTimeout(async () => {
+      const mnemonic = await this.accountService.generateNew();
+      this.form.patchValue({
+        words: mnemonic.split(' ')
+      });
+    });
+  }
+
+  protected toggleCanNext() {
+    this.slideState.canNext = true;
+  }
+
+  protected generateWordNumber() {
+    const wordNumber = Math.min(Math.floor(Math.random() * 12 + 0.4) + 1, 12);
+    this.form.patchValue({wordNumber});
+    if (this.slideState.index === REGISTER_FORM_SLIDES.ASK_WORD) {
+      this.slideState.canNext = false;
+    }
+    this.markForCheck();
+  }
+
+  checkWord(word: string) {
+    if (!environment.production) {
+      this.slideState.canNext = true;
+    }
+    else {
+      const words = this.form.get('words').value;
+      const wordNumber = this.form.get('wordNumber').value;
+      const expectedWord = words[wordNumber - 1];
+      this.slideState.canNext = expectedWord === word;
+    }
+    this.markForCheck();
+  }
+
+
+  generateCode() {
+    let code: string;
+    if (!environment.production) {
+      code = 'AAAAA';
+    }
+    else {
+      code = Math.random().toString(36)
+        .replace(/[^a-z]+/g, '')
+        .substring(0, 5)
+        .toUpperCase();
+    }
+    this.form.patchValue({code});
+    this.markForCheck();
+  }
 }

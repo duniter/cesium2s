@@ -3,19 +3,25 @@ import {ApiPromise, WsProvider} from "@polkadot/api";
 import {SettingsService} from "../settings/settings.service";
 import {Peer, Peers} from "./peer.model";
 import {StartableService} from "@app/shared/services/startable-service.class";
+import {abbreviate} from "@app/shared/currencies";
+import {Currency} from "@app/network/currency.model";
 //import * as definitions from '@duniter/core-types/interfaces'
 
-const WELL_KNOWN_CURRENCIES = {
-  'Ğdev': {
-    symbol: 'ĞD'
+const WELL_KNOWN_CURRENCIES = Object.freeze({
+  'Ğdev': <Currency>{
+    name: 'Ğdev',
+    symbol: 'ĞD',
+    genesys: '0x096baa94878da1965c8a7929212f4e7a5f6a813cdcbbb401603b39e5e470b6e0'
   }
-}
+});
+
 @Injectable({providedIn: 'root'})
 export class NetworkService extends StartableService<ApiPromise> {
 
-  chain = {
+  currency = <Currency>{
     name: null,
-    symbol: null
+    symbol: null,
+    genesys: null
   }
 
   get api(): ApiPromise {
@@ -69,14 +75,15 @@ export class NetworkService extends StartableService<ApiPromise> {
     console.info('Connected to Blockchain genesis: ' + api.genesisHash.toHex());
 
     // Retrieve the chain name
-    const chain = ''+(await api.rpc.system.chain());
-    this.chain = WELL_KNOWN_CURRENCIES[chain];
+    const chain = '' + (await api.rpc.system.chain());
+    if (WELL_KNOWN_CURRENCIES[chain]) {
+      this.currency = WELL_KNOWN_CURRENCIES[chain];
+    }
+    this.currency.symbol = this.currency.symbol || abbreviate(this.currency.name);
 
     // Retrieve the latest header
     const lastHeader = await api.rpc.chain.getHeader();
-
-    // Log the information
-    console.info(`${chain}: last block #${lastHeader.number} has hash ${lastHeader.hash}`);
+    console.info(`${this.currency.name} - last block #${lastHeader.number} has hash ${lastHeader.hash}`);
 
     return api;
   }

@@ -1,6 +1,6 @@
 import {Component, Injector, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AccountService} from "../wallet/account.service";
-import {BasePage} from "@app/shared/page/base.page";
+import {BasePage} from "@app/shared/pages/base.page";
 import {UiAccount} from "@app/wallet/account.model";
 import {IonModal} from "@ionic/angular";
 import {from, Observable} from "rxjs";

@@ -1,3 +1,4 @@
+@import 'cesium.globals';
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
@@ -74,6 +75,10 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  /* APP variables */
+  --app-toolbar-height: #{$app-toolbar-height};
+  --app-footer-height: #{$app-footer-height};
 }
 
 @media (prefers-color-scheme: dark) {

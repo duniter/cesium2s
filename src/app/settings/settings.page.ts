@@ -1,7 +1,7 @@
 import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {SettingsService} from "@app/settings/settings.service";
 import {APP_LOCALES, LocaleConfig, Settings} from "@app/settings/settings.model";
-import {BasePage} from "@app/shared/page/base.page";
+import {BasePage} from "@app/shared/pages/base.page";
 
 @Component({
   selector: 'app-settings',

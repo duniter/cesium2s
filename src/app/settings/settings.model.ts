@@ -10,6 +10,7 @@ export const APP_LOCALES = new InjectionToken<LocaleConfig[]>('locales');
 
 export declare interface Settings {
   peer: string;
+  currency?: string;
   preferredPeers?: string[];
   pages?: any;
   locale?: string;

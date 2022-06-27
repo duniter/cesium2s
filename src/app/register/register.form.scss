@@ -1,10 +1,23 @@
-form ion-toolbar.toolbar-buttons {
-  .toolbar-content {
-    text-align: right;
-  }
+ion-slides {
+  height: calc(100% - var(--app-toolbar-height));
 
-  .toolbar-background {
-    border: 0;
-    background: inherit !important;
+  ion-slide {
+    align-items: flex-start !important;
+
+    ion-text, p {
+      font-size: 1rem;
+    }
+
+    .words {
+      ion-text h4 {
+        margin-top: 6px;
+      }
+    }
   }
 }
+
+.has-footer {
+  height: calc(100% - var(--app-toolbar-height) - var(--app-footer-height));
+}
+
+

@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {AccountService} from "./account.service";
 import {Clipboard} from "@capacitor/clipboard";
 import {AccountData} from "./account.model";
-import {BasePage} from "@app/shared/page/base.page";
+import {BasePage} from "@app/shared/pages/base.page";
 
 @Component({
   selector: 'app-wallet',

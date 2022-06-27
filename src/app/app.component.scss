@@ -1,5 +1,26 @@
+@import 'ionic.globals';
+@import 'cesium.globals';
+
+ion-menu {
+  --side-min-width: #{$app-menu-width};
+  --side-max-width: #{$app-menu-width};
+}
+
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
+}
+
+@media screen and (min-width: $screen-md) {
+  ion-menu ion-content {
+    --background: transparent;
+    background-image: url('/assets/img/logo.large.empty.transparent.svg');
+    background-repeat: no-repeat;
+    background-position: -500px -100px;
+    background-size: 1024px 1024px;
+    background-color: whitesmoke;
+    height: 100%;
+    --ion-item-background: transparent;
+  }
 }
 
 ion-menu.md ion-content {

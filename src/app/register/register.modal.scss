@@ -1,3 +1,10 @@
-modal-register {
+@import "cesium.globals";
 
+ion-content {
+  /* APP variables */
+  --app-toolbar-height: #{$app-toolbar-height};
+  --app-footer-height: #{$app-footer-height};
+
+  /*--offset-top: var(--app-toolbar-height) !important;
+  --offset-bottom: var(--app-footer-height) !important;*/
 }

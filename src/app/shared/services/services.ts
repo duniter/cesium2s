@@ -1,4 +1,4 @@
-import {getPropertyByPathAsString, isNotNil, isNotNilOrBlank, matchUpperCase, startsWithUpperCase} from "./functions";
+import {getPropertyByPathAsString, isNotNil, isNotNilOrBlank, matchUpperCase, startsWithUpperCase} from "../functions";
 
 export declare type EmptyObject = {
   [key: string]: any;

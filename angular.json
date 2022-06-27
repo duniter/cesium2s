@@ -28,7 +28,8 @@
               "xxhashjs",
               "safe-buffer",
               "ed2curve",
-              "crypto"
+              "crypto",
+              "store"
             ],
             "assets": [
               {
@@ -47,7 +48,15 @@
                 "output": "/"
               }
             ],
-            "styles": ["src/theme/variables.scss", "src/global.scss"],
+            "styles": [
+              "src/theme/_variables.scss",
+              "src/global.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/theme"
+              ]
+            },
             "scripts": [],
             "aot": false,
             "vendorChunk": true,

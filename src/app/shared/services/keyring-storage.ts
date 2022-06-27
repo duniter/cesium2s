@@ -1,5 +1,5 @@
 import {KeyringJson, KeyringStore} from "@polkadot/ui-keyring/types";
-import {StorageService} from "@app/services/storage.service";
+import {StorageService} from "@app/shared/services/storage.service";
 
 export class KeyringStorage implements KeyringStore {
   constructor(

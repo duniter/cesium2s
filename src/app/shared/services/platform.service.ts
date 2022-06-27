@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Platform} from "@ionic/angular";
-import {NetworkService} from "../network/network.service";
-import {SettingsService} from "../settings/settings.service";
+import {NetworkService} from "../../network/network.service";
+import {SettingsService} from "../../settings/settings.service";
 import {StartableService} from "@app/shared/services/startable-service.class";
-import {StorageService} from "@app/services/storage.service";
+import {StorageService} from "@app/shared/services/storage.service";
 import {environment} from "@environments/environment.prod";
 import {TranslateService} from "@ngx-translate/core";
 import * as momentImported from 'moment';

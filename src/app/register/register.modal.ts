@@ -1,24 +1,52 @@
-import {Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {RegisterForm} from "@app/register/register.form";
+import {REGISTER_FORM_SLIDES, RegisterForm} from "@app/register/register.form";
 import {AccountService} from "@app/wallet/account.service";
 import {FormUtils} from "@app/shared/forms";
 import {RegisterData} from "@app/register/register.model";
+import {environment} from "@environments/environment";
 
 @Component({
   selector: 'app-register-modal',
   templateUrl: 'register.modal.html',
-  styleUrls: ['./register.modal.scss']
+  styleUrls: ['./register.modal.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegisterModal {
+export class RegisterModal implements OnInit{
 
 
   @ViewChild('form', { static: true }) private form: RegisterForm;
 
+  get loading() {
+    return this.form.loading;
+  }
+
+  get mobile() {
+    return this.form.mobile;
+  }
+
   constructor(
     private accountService: AccountService,
-    public viewCtrl: ModalController) {
+    public viewCtrl: ModalController,
+    private _cd: ChangeDetectorRef
+    ) {
   }
+
+  async ngOnInit() {
+    await this.accountService.ready();
+    this.form.markAsReady();
+    this.form.markAsLoaded();
+    this.form.enable();
+    this._cd.markForCheck();
+
+    // DEV
+    if (!environment.production) {
+      setTimeout(() => {
+        this.form.slideTo(REGISTER_FORM_SLIDES.MNEMONIC);
+      });
+    }
+  }
+
 
   cancel() {
     console.debug('[register] cancelled');
@@ -43,7 +71,8 @@ export class RegisterModal {
 
     try {
       console.debug('[register] Sending registration to server...', data);
-      await this.accountService.register(data as RegisterData);
+
+      await this.accountService.register(data);
 
       console.debug('[register] Account registered!');
       await this.viewCtrl.dismiss();

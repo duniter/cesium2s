@@ -15,6 +15,7 @@ import {BehaviorSubject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {FormUtils} from "@app/shared/forms";
 import {WaitForOptions, waitForTrue} from "@app/shared/observables";
+import {SettingsService} from "@app/settings/settings.service";
 
 export declare interface OnReady {
   ngOnReady();
@@ -66,6 +67,7 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
   private _form: FormGroup;
 
   @Input() debug = false;
+  @Input() mobile: boolean;
   @Input() tabindex: number;
 
   get loading(): boolean {
@@ -154,6 +156,7 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
     form?: FormGroup
   ) {
     this.translate = injector.get(TranslateService);
+    this.mobile = injector.get(SettingsService).mobile;
     this._cd  = injector.get(ChangeDetectorRef);
     if (form) this.setForm(form);
   }

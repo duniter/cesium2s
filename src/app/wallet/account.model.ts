@@ -1,7 +1,7 @@
 
 export interface AccountMeta {
   name: string;
-  source: string;
+  source?: string;
 }
 
 export interface AccountExtendedMeta {

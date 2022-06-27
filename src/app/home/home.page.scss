@@ -1,6 +1,106 @@
+@import 'ionic.globals';
 ion-menu-button {
   color: var(--ion-color-primary);
 }
 
-#container {
+h1,
+h2,
+h3,
+h4,
+h5 {
+  white-space: normal;
+}
+
+
+.ion-text-center {
+  text-align: center;
+}
+
+
+ion-content {
+  --background: transparent;
+  --ion-toolbar-background: transparent;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  display: inline-block;
+  padding: 15px;
+  background-color: var(--ion-color-primary);
+
+  ion-card {
+    z-index: 9;
+    ion-card-header {
+      display: block;
+
+      ion-card-subtitle,
+      ion-card-title {
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+
+  ion-card.main {
+    min-width: 260px;
+    max-width: 430px;
+    margin-left: auto;
+    margin-right: auto;
+
+  }
+  ion-card.welcome {
+    background-color: rgba(var(--ion-color-light-rgb), 0.9);
+
+    button {
+      margin-top: 16px;
+    }
+
+    img {
+      @extend .ion-text-center;
+      max-width: 250px;
+    }
+  }
+}
+
+.logo {
+  margin-top: 15px;
+  width: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+@media screen and (max-width: $screen-xs-max) {
+  .logo {
+    height: 96px;
+    background-image: url('/assets/img/logo_96px.png');
+    background-size: 96px 96px;
+  }
+}
+
+@media screen and (min-width: $screen-sm) and (max-width: $screen-sm-max) {
+  .logo {
+    height: 144px;
+    background-image: url('/assets/img/logo_144px.png');
+    background-size: 144px 144px;
+  }
+}
+
+@media screen and (min-width: $screen-md) {
+  .logo {
+    height: 200px;
+    background-image: url('/assets/img/logo_200px.png');
+    background-size: 200px 200px;
+  }
+}
+
+
+@media screen and (min-width: $screen-md) {
+
+  .circle-bg-dark {
+    background-image: url('/assets/img/logo.large.empty.transparent.svg');
+    background-repeat: no-repeat;
+    background-position: -756px -100px;;
+    background-size: 1024px 1024px;
+  }
+
 }
