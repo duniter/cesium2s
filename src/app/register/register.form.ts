@@ -23,7 +23,8 @@ import {AccountMeta} from "@app/wallet/account.model";
 export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,
   ASK_WORD: 6,
-  CODE: 9
+  CODE: 9,
+  CODE_CONFIRMATION: 10
 }
 
 @Component({
@@ -66,6 +67,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
       words: new FormControl(null, Validators.required),
       wordNumber: new FormControl(null, Validators.required),
       code: new FormControl(null, Validators.required),
+      codeConfirmation: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('code')])),
       name: new FormControl(null)
     }));
   }
@@ -77,6 +79,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
         words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
         wordNumber: 1,
         code: 'AAAAA',
+        codeConfirmation: null,
         name: 'Nouveau portefeuille'
       });
     }
@@ -171,6 +174,9 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
       case REGISTER_FORM_SLIDES.CODE:
         this.generateCode();
         break;
+      case REGISTER_FORM_SLIDES.CODE_CONFIRMATION:
+        this.slideState.canNext = false;
+        break;
     }
   }
 
@@ -216,7 +222,6 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     this.markForCheck();
   }
 
-
   generateCode() {
     let code: string;
     if (!environment.production) {
@@ -229,6 +234,12 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
         .toUpperCase();
     }
     this.form.patchValue({code});
+    this.markForCheck();
+  }
+
+  checkCodeConfirmation(code: string) {
+    const expectedCode = this.form.get('code').value;
+    this.slideState.canNext = expectedCode === code;
     this.markForCheck();
   }
 }

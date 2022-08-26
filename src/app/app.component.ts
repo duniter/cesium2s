@@ -13,7 +13,7 @@ export class AppComponent {
   appPages = [
 
     { title: 'MENU.HOME', url: '/home', icon: 'home' },
-    { title: 'MENU.ACCOUNT', url: '/wallet/Alice', icon: 'card' },
+    { title: 'MENU.ACCOUNT', url: '/wallet', icon: 'card' },
     { title: 'TRANSFER.SUB_TITLE', url: '/transfer', icon: 'paper-plane' },
 
     // { title: 'Messages', url: '/message/inbox', icon: 'mail' },

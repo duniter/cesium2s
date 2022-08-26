@@ -6,6 +6,11 @@ import { WalletPage } from './wallet.page';
 const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    redirectTo: 'default'
+  },
+  {
+    path: ':address',
     component: WalletPage
   }
 ];

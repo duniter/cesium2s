@@ -13,7 +13,7 @@ export class AmountFormatPipe extends NumberFormatPipe {
     super();
   }
 
-  transform(val: number, opts?: Intl.NumberFormatOptions & {fixedDecimals?: number}): string | Promise<string> {
+  transform(val: number, opts?: Intl.NumberFormatOptions & {fixedDecimals?: number}): string {
     if (isNil(val)) return '';
     return super.transform(val / 100, opts) + (' ' + this.networkService.currencySign);
   }

@@ -3,7 +3,7 @@ import {Platform} from "@ionic/angular";
 import {NetworkService} from "../../network/network.service";
 import {SettingsService} from "../../settings/settings.service";
 import {StartableService} from "@app/shared/services/startable-service.class";
-import {StorageService} from "@app/shared/services/storage.service";
+import {StorageService} from "@app/shared/services/storage/storage.service";
 import {environment} from "@environments/environment.prod";
 import {TranslateService} from "@ngx-translate/core";
 import * as momentImported from 'moment';
@@ -50,13 +50,11 @@ export class PlatformService extends StartableService {
     // Configure translation
     await this.configureTranslate();
 
-    await this.configureStorage();
-
     await Promise.all([
-        this.settings.ready(),
-        this.network.ready()
-      ]
-    );
+      this.storage.ready(),
+      this.settings.ready(),
+      this.network.ready()
+    ]);
   }
 
 
@@ -98,10 +96,4 @@ export class PlatformService extends StartableService {
     });
   }
 
-  private async configureStorage(): Promise<void> {
-    console.info(`[platform] Configure storage...`);
-    await this.storage.configure({
-      group: environment.storage?.name
-    });
-  }
 }

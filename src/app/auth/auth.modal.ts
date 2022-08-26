@@ -85,9 +85,11 @@ export class AuthModal implements OnInit {
 
   protected markAsLoading(opts?: {emitEvent?: boolean}) {
     this.form.markAsLoading(opts);
+    this.markForCheck();
   }
 
   protected markAsLoaded(opts?: {emitEvent?: boolean}) {
     this.form.markAsLoaded(opts);
+    this.markForCheck();
   }
 }

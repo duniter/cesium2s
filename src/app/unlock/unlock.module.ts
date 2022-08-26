@@ -7,7 +7,7 @@ import {RegisterForm} from "@app/register/register.form";
 import {RegisterModal} from "@app/register/register.modal";
 import {TranslateModule} from "@ngx-translate/core";
 import {AppSharedModule} from "@app/shared/shared.module";
-import {AppUnlockModule} from "@app/unlock/unlock.module";
+import {UnlockForm} from "@app/unlock/unlock.form";
 
 @NgModule({
     imports: [
@@ -15,12 +15,11 @@ import {AppUnlockModule} from "@app/unlock/unlock.module";
       FormsModule,
       IonicModule,
       TranslateModule,
-      AppSharedModule,
-      AppUnlockModule
+      AppSharedModule
     ],
     exports: [
-        RegisterForm, RegisterModal
+        UnlockForm
     ],
-    declarations: [RegisterForm, RegisterModal]
+    declarations: [UnlockForm]
 })
-export class AppRegisterModule {}
+export class AppUnlockModule {}

@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy} from '@angular/router';
 
-import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
+import {IonicModule, IonicRouteStrategy, Platform} from '@ionic/angular';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
@@ -11,13 +11,14 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {IonicStorageModule} from '@ionic/storage-angular';
+import {IonicStorageModule, Storage} from '@ionic/storage-angular';
 import {environment} from "@environments/environment";
 import {AppSharedModule} from "@app/shared/shared.module";
 import {APP_BASE_HREF} from "@angular/common";
 import {JDENTICON_CONFIG} from "ngx-jdenticon";
 import {APP_LOCALES} from "@app/settings/settings.model";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {APP_STORAGE} from "@app/shared/services/storage/storage.interface";
+import {StorageService} from "@app/shared/services/storage/storage.service";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -33,7 +34,7 @@ export function createTranslateLoader(http: HttpClient) {
       AppRoutingModule,
       AppSharedModule,
       IonicStorageModule.forRoot({
-        name: environment.name || 'cesium', // default
+        name: environment.name || 'cesium',
         ...environment.storage
       }),
       TranslateModule.forRoot({
@@ -49,6 +50,8 @@ export function createTranslateLoader(http: HttpClient) {
     providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       { provide: PlatformService, useClass: PlatformService },
+      { provide: StorageService, useClass: StorageService, deps: [Platform, Storage] },
+      { provide: APP_STORAGE, useExisting: StorageService },
 
       {provide: APP_BASE_HREF, useValue: (environment.baseUrl || '/')},
 

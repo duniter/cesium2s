@@ -1,7 +1,4 @@
-import {ChangeDetectorRef, OnDestroy, Pipe, PipeTransform} from '@angular/core';
-import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms';
-import {Subscription} from 'rxjs';
-import {equals} from '../functions';
+import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
   name: 'addressFormat'

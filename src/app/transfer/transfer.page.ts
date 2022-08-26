@@ -1,18 +1,37 @@
-import {Component, Injector, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Injector,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {AccountService} from "../wallet/account.service";
 import {BasePage} from "@app/shared/pages/base.page";
-import {Account} from "@app/wallet/account.model";
+import {Account, AccountUtils} from "@app/wallet/account.model";
 import {IonModal} from "@ionic/angular";
-import {from, Observable} from "rxjs";
+import {
+  BehaviorSubject,
+  combineAll,
+  combineLatestAll,
+  concat,
+  concatAll,
+  from,
+  Observable,
+  Subject,
+  switchMap,
+  zip
+} from "rxjs";
 import {isNotNil} from "@app/shared/functions";
-import {FormBuilder} from "@angular/forms";
 
 @Component({
   selector: 'app-transfer',
   templateUrl: './transfer.page.html',
   styleUrls: ['./transfer.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TransferPage extends BasePage<Observable<Account>[]> implements OnInit, OnDestroy {
+export class TransferPage extends BasePage<Observable<Account[]>> implements OnInit, OnDestroy {
 
   showComment: boolean;
   issuer: Partial<Account> = {};
@@ -21,10 +40,16 @@ export class TransferPage extends BasePage<Observable<Account>[]> implements OnI
 
   @ViewChild('modal') modal: IonModal;
 
+  get balance(): number {
+    if (!this.issuer?.data) return undefined;
+    return (this.issuer.data.free || 0) + (this.issuer.data.reserved || 0);
+  }
+
+
   constructor(
     injector: Injector,
-    formBuilder: FormBuilder,
-    public  wallet: AccountService,
+    protected accountService: AccountService,
+    protected cd: ChangeDetectorRef
   ) {
     super(injector, {name: 'transfer'});
   }
@@ -39,14 +64,10 @@ export class TransferPage extends BasePage<Observable<Account>[]> implements OnI
     }
   }
 
-  protected async ngOnLoad(): Promise<Observable<Account>[]> {
-    await this.wallet.ready();
+  protected async ngOnLoad(): Promise<Observable<Account[]>> {
+    await this.accountService.ready();
 
-    const accounts = await this.wallet.getAll();
-    return accounts
-      .map(a => a.meta?.name)
-      .filter(isNotNil)
-      .map(id => from(this.wallet.getById(id)));
+    return this.accountService.watchAll({positiveBalanceFirst: true});
   }
 
   setRecipient(recipient: string|Account) {
@@ -58,14 +79,26 @@ export class TransferPage extends BasePage<Observable<Account>[]> implements OnI
       this.recipient.address = recipient;
       this.recipient.meta = null;
     }
+    this.markForCheck();
   }
 
-  cancel() {
+  cancel(event?: UIEvent) {
     //
   }
 
-  submit() {
-    // TODO send TX
+  async submit(event?: UIEvent) {
+    // Check valid
+    if (!this.recipient || !this.issuer) return; // Skip
 
+    this.resetError();
+
+    try {
+      const txHash = await this.accountService.transfer(this.issuer, this.recipient, this.amount);
+
+      await this.showToast({message: 'INFO.TRANSFER_SENT'});
+    }
+    catch (err) {
+      this.setError(err);
+    }
   }
 }

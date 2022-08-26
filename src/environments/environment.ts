@@ -3,17 +3,21 @@
 // The list of file replacements can be found in `angular.json`.
 
 import {Environment} from "./environment.class";
+import {AuthData} from "@app/auth/auth.model";
+import {Drivers} from "@ionic/storage";
 
 export const environment = <Environment>{
+  //production: true,
   production: false,
-  name: 'Cesium&sup2;',
+
+  name: 'Cesium',
 
   defaultLocale: 'fr',
 
   // Storage
   storage: {
-    name: 'decsium-dev',
-    driverOrder: ['sqlite', 'indexeddb', 'websql', 'localstorage']
+    name: 'cesium',
+    driverOrder: ['localForage-cordovaSQLiteDriver', Drivers.IndexedDB, Drivers.LocalStorage]
   },
 
   keyring: {
@@ -22,17 +26,21 @@ export const environment = <Environment>{
 
   dev: {
     //peer: 'ws://localhost:9944',
-    peer: 'wss://gdev.komun.org/ws',
+    //peer: 'wss://gdev.komun.org/ws',
+    peer: 'wss://gdev.librelois.fr/ws',
 
-    auth: {
-      salt: 'test', password: 'test'
+    auth: <AuthData>{
+      v1: {
+        salt: 'test', password: 'test'
+      }
     }
   },
 
   defaultPeers: [
-    'ws://localhost:9944/ws',
+    //'ws://localhost:9944/ws',
     /* GDev endpoints */
-    'wss://gdev.komun.org/ws',
-    'wss://1000i100.fr/ws'
+    'wss://gdev.librelois.fr/ws',
+    //'wss://gdev.komun.org/ws',
+    //'wss://1000i100.fr/ws'
   ]
 };

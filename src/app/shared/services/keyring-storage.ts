@@ -1,35 +1,38 @@
 import {KeyringJson, KeyringStore} from "@polkadot/ui-keyring/types";
-import {StorageService} from "@app/shared/services/storage.service";
+import {Directive} from '@angular/core';
+import {IStorage} from "@app/shared/services/storage/storage.interface";
 
+// @dynamic
+@Directive()
 export class KeyringStorage implements KeyringStore {
   constructor(
-    protected storage: StorageService,
+    protected storage: IStorage,
     protected storagePrefix?: string
   ) {
     this.storagePrefix = this.storagePrefix || 'keyring-';
   }
 
-  get(key: string, cb) {
-    this.storage.getObject(this.storagePrefix + key)
+  get(key: string, cb: (value: KeyringJson) => void) {
+    this.storage.get(this.storagePrefix + key)
       .then(json => cb(json as unknown as KeyringJson));
   }
 
-  set(key: string, value: KeyringJson, cb) {
-    this.storage.setObject(this.storagePrefix + key, value).then(cb);
+  set(key: string, value: KeyringJson, cb?: () => void) {
+    this.storage.set(this.storagePrefix + key, value)
+      .then(() => cb && cb());
   }
 
-  remove(key, cb) {
-    this.storage.removeItem(this.storagePrefix + key).then(cb);
+  remove(key: string, cb?: () => void) {
+    this.storage.remove(this.storagePrefix + key)
+      .then(() => cb && cb());
   }
 
-  async all(cb) {
-    const keys = await this.storage.keys();
-    for (let key of keys) {
+  all(cb: (key: string, value: KeyringJson) => void) {
+    this.storage.forEach((value, key, counter) => {
       if (key.startsWith(this.storagePrefix)) {
-        const json = await this.storage.getObject(key);
         const shortKey = key.substring(this.storagePrefix.length);
-        cb(shortKey, json as unknown as KeyringJson);
+        cb(shortKey, value as KeyringJson);
       }
-    }
+    });
   }
 }

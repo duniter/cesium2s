@@ -155,7 +155,8 @@
 
   <!-- check code -->
   <ion-slide>
-
+    <app-unlock-form [control]="form|formGetControl: 'codeConfirmation'"
+      (change)="checkCodeConfirmation($event)"></app-unlock-form>
   </ion-slide>
 
   <!-- congratulation ! -->

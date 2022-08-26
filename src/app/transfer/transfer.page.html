@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -16,22 +16,37 @@
   <div id="container">
 
     <ion-list>
+      <!-- error -->
+      <ion-item *ngIf="error" lines="none" color="light">
+        <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
+        <ion-label color="danger">{{error|translate}}</ion-label>
+      </ion-item>
+
+      <!-- TO -->
       <ion-item>
         <ion-label color="medium" slot="start" translate>TRANSFER.TO</ion-label>
         <ion-input [(ngModel)]="recipient.address" (ionFocus)="modal.present()">
         </ion-input>
-        <ion-button slot="end" id="open-modal-trigger">
+        <ion-button slot="end" fill="clear" id="open-modal-trigger" [title]="'COMMON.BTN_SEARCH'|translate">
           <ion-icon slot="icon-only" name="search"></ion-icon>
         </ion-button>
       </ion-item>
-      <ion-item>
+
+      <!-- FROM -->
+      <ion-item >
         <ion-label color="medium" translate>TRANSFER.FROM</ion-label>
-        <ion-select [(ngModel)]="issuer.address">
-          <ng-container *ngFor="let account$ of data">
-          <ion-select-option *ngIf="(account$|async); let account" [value]="account.address">{{account.meta?.name}}</ion-select-option>
-          </ng-container>
+        <ion-select *ngIf="data|async; let accounts; else inputSkeleton"
+                    [(ngModel)]="issuer.address" [interface]="mobile ? 'action-sheet' : 'popover'"
+                    [okText]="'COMMON.BTN_OK'|translate"
+                    [cancelText]="'COMMON.BTN_CANCEL'|translate">
+          <ion-select-option *ngFor="let account of accounts"
+                             [value]="account.address"
+                             [disabled]="!(account|balance)">
+            {{account|accountName}}
+            <ng-container *ngIf="account|balance; let balance">({{balance|amountFormat}})</ng-container>
+          </ion-select-option>
         </ion-select>
-        <ion-badge *ngIf="issuer" slot="end">{{issuer.free|amountFormat}}</ion-badge>
+        <ion-badge *ngIf="issuer?.address" slot="end">{{issuer|balance|amountFormat}}</ion-badge>
       </ion-item>
 
       <ion-item>
@@ -56,10 +71,10 @@
     </ion-list>
 
     <div class="ion-text-center" *ngIf="!mobile">
-      <ion-button (click)="cancel()" color="light">
+      <ion-button (click)="cancel($event)" color="light">
         <ion-label translate>COMMON.BTN_CANCEL</ion-label>
       </ion-button>
-      <ion-button (click)="submit()">
+      <ion-button (click)="submit($event)">
         <ion-icon slot="start" name="paper-plane"></ion-icon>
         <ion-label translate>TRANSFER.BTN_SEND</ion-label>
       </ion-button>
@@ -72,7 +87,7 @@
     [isOpen]="false"
     [initialBreakpoint]="0.25"
     [breakpoints]="[0.25, 0.5, 0.75]"
-    [backdropDismiss]="false"
+    backdropDismiss="true"
     [backdropBreakpoint]="0.5"
   >
     <ng-template>
@@ -88,11 +103,15 @@
 </ion-content>
 
 <ion-footer *ngIf="mobile">
-  <ion-button (click)="wallet.transfer()" color="light">
+  <ion-button (click)="cancel($event)" color="light">
     <ion-label translate>COMMON.BTN_CANCEL</ion-label>
   </ion-button>
-  <ion-button (click)="wallet.transfer()">
+  <ion-button (click)="submit($event)">
     <ion-icon slot="start" name="paper-plane"></ion-icon>
     <ion-label translate>TRANSFER.BTN_SEND</ion-label>
   </ion-button>
 </ion-footer>
+
+<ng-template #inputSkeleton>
+  <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+</ng-template>

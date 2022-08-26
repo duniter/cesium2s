@@ -5,13 +5,21 @@ import {Peer, Peers} from "./peer.model";
 import {StartableService} from "@app/shared/services/startable-service.class";
 import {abbreviate} from "@app/shared/currencies";
 import {Currency} from "@app/network/currency.model";
+import {cryptoWaitReady} from "@polkadot/util-crypto";
 //import * as definitions from '@duniter/core-types/interfaces'
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
   'Ğdev': <Currency>{
     name: 'Ğdev',
     symbol: 'ĞD',
+    ss58Format: 42,
     genesys: '0x096baa94878da1965c8a7929212f4e7a5f6a813cdcbbb401603b39e5e470b6e0'
+  },
+  'Ğ1': <Currency>{
+    name: 'Ğ1',
+    symbol: 'Ğ1',
+    ss58Format: 42,
+    genesys: '0x___TODO___'
   }
 });
 
@@ -29,8 +37,7 @@ export class NetworkService extends StartableService<ApiPromise> {
   }
 
   get currencySign(): string {
-    // TODO
-    return 'GD'
+    return this.currency.symbol || '';
   }
 
   constructor(
@@ -42,7 +49,6 @@ export class NetworkService extends StartableService<ApiPromise> {
   }
 
   protected async ngOnStart(): Promise<any> {
-
     const settings = await this.settings.ready();
 
     const peers = await this.filterAliveNodes(settings.preferredPeers);
@@ -69,7 +75,7 @@ export class NetworkService extends StartableService<ApiPromise> {
 
     // get the chain information
     const chainInfo = await api.registry.getChainProperties();
-    this.debug('Connecting to chain: ', chainInfo);
+    this.debug('Connecting to chain: ', chainInfo.toHuman());
 
     // Read the genesys block hash
     console.info('Connected to Blockchain genesis: ' + api.genesisHash.toHex());

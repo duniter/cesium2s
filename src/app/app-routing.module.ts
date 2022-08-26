@@ -12,7 +12,7 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomeModule)
   },
   {
-    path: 'wallet/:id',
+    path: 'wallet',
     loadChildren: () => import('./wallet/wallet.module').then( m => m.WalletPageModule)
   },
   {

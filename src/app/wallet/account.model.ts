@@ -1,9 +1,9 @@
 import {KeypairType} from "@polkadot/util-crypto/types";
-import {Option, u64} from "@polkadot/types-codec";
-import {H256} from "@polkadot/types/interfaces/runtime";
 
 export interface Account {
   address: string;
+  publicKey?: string;
+  default?: boolean;
   type?: KeypairType;
   meta: AccountMeta;
 
@@ -24,4 +24,12 @@ export interface AccountData {
   free?: number;
   reserved?: number;
   feeFrozen?: number;
+}
+
+
+export class AccountUtils {
+  static getBalance(account: Partial<Account>): number {
+    if (!account?.data) return undefined; // Data not loaded. This should be done by the account service
+    return (account.data.free || 0) + (account.data.reserved || 0);
+  }
 }
