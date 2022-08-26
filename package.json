@@ -52,6 +52,7 @@
     "moment-timezone": "^0.5.34",
     "ngx-jdenticon": "^1.0.4",
     "rxjs": "~7.4.0",
+    "scrypt-async": "^2.0.1",
     "stream-browserify": "^3.0.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.6"

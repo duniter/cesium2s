@@ -1,7 +1,7 @@
 import {Component, Injector, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AccountService} from "../wallet/account.service";
 import {BasePage} from "@app/shared/pages/base.page";
-import {UiAccount} from "@app/wallet/account.model";
+import {Account} from "@app/wallet/account.model";
 import {IonModal} from "@ionic/angular";
 import {from, Observable} from "rxjs";
 import {isNotNil} from "@app/shared/functions";
@@ -12,11 +12,11 @@ import {FormBuilder} from "@angular/forms";
   templateUrl: './transfer.page.html',
   styleUrls: ['./transfer.page.scss'],
 })
-export class TransferPage extends BasePage<Observable<UiAccount>[]> implements OnInit, OnDestroy {
+export class TransferPage extends BasePage<Observable<Account>[]> implements OnInit, OnDestroy {
 
   showComment: boolean;
-  issuer: Partial<UiAccount> = {};
-  recipient: Partial<UiAccount> = {};
+  issuer: Partial<Account> = {};
+  recipient: Partial<Account> = {};
   amount: number;
 
   @ViewChild('modal') modal: IonModal;
@@ -39,7 +39,7 @@ export class TransferPage extends BasePage<Observable<UiAccount>[]> implements O
     }
   }
 
-  protected async ngOnLoad(): Promise<Observable<UiAccount>[]> {
+  protected async ngOnLoad(): Promise<Observable<Account>[]> {
     await this.wallet.ready();
 
     const accounts = await this.wallet.getAll();
@@ -49,7 +49,7 @@ export class TransferPage extends BasePage<Observable<UiAccount>[]> implements O
       .map(id => from(this.wallet.getById(id)));
   }
 
-  setRecipient(recipient: string|UiAccount) {
+  setRecipient(recipient: string|Account) {
     if (typeof recipient === 'object') {
       this.recipient.address = recipient.address;
       this.recipient.meta = recipient.meta;

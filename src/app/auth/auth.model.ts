@@ -1,9 +1,12 @@
-import {AccountExtendedMeta} from "@app/wallet/account.model";
+import {AccountMeta} from "@app/wallet/account.model";
 
 export interface AuthData {
-  username: string;
-  password: string;
 
   phrase?: string;
-  meta?: AccountExtendedMeta;
+  meta?: AccountMeta;
+
+  v1?: {
+    salt: string;
+    password: string;
+  }
 }

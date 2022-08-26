@@ -35,13 +35,13 @@ export abstract class BaseService<O extends IBaseServiceOptions = IBaseServiceOp
 
   protected debug(msg, ...params: any[]) {
     if (!this._debug) return;
-    if (params) console.debug(this._logPrefix + msg, params);
+    if (params?.length) console.debug(this._logPrefix + msg, ...params);
     else console.debug(this._logPrefix + msg)
   }
 
   protected log(msg, ...params: any[]) {
     if (!this._debug) return;
-    if (params) console.log(this._logPrefix + msg, params);
+    if (params?.length) console.log(this._logPrefix + msg, params);
     else console.log(this._logPrefix + msg)
   }
 }

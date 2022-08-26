@@ -19,6 +19,10 @@ import {JDENTICON_CONFIG} from "ngx-jdenticon";
 import {APP_LOCALES} from "@app/settings/settings.model";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
 @NgModule({
     declarations: [AppComponent],
     imports: [
@@ -29,13 +33,15 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
       AppRoutingModule,
       AppSharedModule,
       IonicStorageModule.forRoot({
-        name: 'cesium', // default
+        name: environment.name || 'cesium', // default
         ...environment.storage
       }),
       TranslateModule.forRoot({
+        defaultLanguage: environment.defaultLocale,
+
         loader: {
           provide: TranslateLoader,
-          useFactory: (httpClient) => new TranslateHttpLoader(httpClient, './assets/i18n/', `.json`),
+          useFactory: (createTranslateLoader),
           deps: [HttpClient]
         }
       }),

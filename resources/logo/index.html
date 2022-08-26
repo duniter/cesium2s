@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <style id="bx-google-fonts">@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic);</style>
+        <title>Cesium logos</title>
+        <link rel="stylesheet" href="preview.css">
+    </head>
+    <body class="bright">
+        <button style="margin-left: -100px" onclick="document.body.className = 'bright'">clair</button>
+        <button onclick="document.body.className = 'dark'">obscur</button>
+
+
+        <img src="svg/colors/logo.large.cesium.dune.svg"/>
+        <img src="svg/colors/logo.large.cesium.svg"/>
+        <img src="svg/colors/logo.large.cs.dune.svg"/>
+        <img src="svg/colors/logo.large.cs.svg"/>
+        <img src="svg/colors/logo.large.empty.svg"/>
+        <img src="svg/colors/logo.large.empty.transparent.svg"/>
+        <img src="svg/colors/logo.large.empty.transparent.noticks.svg"/>
+        <img src="svg/colors/logo.small.cs.dune.svg"/>
+        <img src="svg/colors/logo.small.cs.svg"/>
+        <img src="svg/colors/logo.small.empty.svg"/>
+        <img src="svg/colors/logo.small.empty.transparent.svg"/>
+
+        <img src="svg/colors/logo.large.empty.dune.svg"/>
+        <img src="svg/colors/logo.small.empty.dune.svg"/>
+
+
+        <img src="svg/black/logo.large.cesium.svg"/>
+        <img src="svg/black/logo.large.cs.svg"/>
+        <img src="svg/black/logo.large.empty.transparent.svg"/>
+        <img src="svg/black/logo.small.cs.svg"/>
+        <img src="svg/black/logo.small.empty.transparent.svg"/>
+
+
+        <img src="svg/white/logo.large.cesium.svg"/>
+        <img src="svg/white/logo.large.cs.svg"/>
+        <img src="svg/white/logo.large.empty.transparent.svg"/>
+        <img src="svg/white/logo.small.cs.svg"/>
+        <img src="svg/white/logo.small.empty.transparent.svg"/>
+
+
+
+
+        <script>
+            var $ = s => Array.from( document.querySelectorAll(s) );
+                $('img')
+                    .map( img => img.outerHTML = `
+                        <section>
+                            <h3>${img.src.split('/').pop()}</h3>
+                            <icon class="large"><img src="${img.src}"></icon>
+                            <icon class="medium"><img src="${img.src}"></icon>
+                            <icon class="small"><img src="${img.src}"></icon>
+                            <icon class="tiny"><img src="${img.src}"></icon>
+                        </section>
+                    ` )
+                    .join('')
+        </script>
+    </body>
+</html>

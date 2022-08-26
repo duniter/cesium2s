@@ -1,8 +1,8 @@
-import {AccountExtendedMeta} from "@app/wallet/account.model";
+import {AccountMeta} from "@app/wallet/account.model";
 
 export interface RegisterData {
   mnemonic: string;
-  password: string;
+  password?: string;
 
-  meta?: AccountExtendedMeta;
+  meta?: AccountMeta;
 }

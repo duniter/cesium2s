@@ -1,9 +1,8 @@
 import {ChangeDetectionStrategy, Component, Injector, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {AccountService} from "./account.service";
 import {Clipboard} from "@capacitor/clipboard";
-import {AccountData} from "./account.model";
 import {BasePage} from "@app/shared/pages/base.page";
+import {Account} from "@app/wallet/account.model";
 
 @Component({
   selector: 'app-wallet',
@@ -11,7 +10,7 @@ import {BasePage} from "@app/shared/pages/base.page";
   styleUrls: ['./wallet.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WalletPage extends BasePage<AccountData> implements OnInit {
+export class WalletPage extends BasePage<Account> implements OnInit {
 
   public walletId: string;
 
@@ -32,7 +31,7 @@ export class WalletPage extends BasePage<AccountData> implements OnInit {
     super.ngOnInit();
   }
 
-  protected ngOnLoad(): Promise<AccountData> {
+  protected ngOnLoad(): Promise<Account> {
     return this.accountService.getById(this.walletId);
   }
 

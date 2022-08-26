@@ -6,7 +6,7 @@ import {Environment} from "./environment.class";
 
 export const environment = <Environment>{
   production: false,
-  name: 'Cesium2',
+  name: 'Cesium&sup2;',
 
   defaultLocale: 'fr',
 
@@ -25,7 +25,7 @@ export const environment = <Environment>{
     peer: 'wss://gdev.komun.org/ws',
 
     auth: {
-      username: 'abc', password: 'def'
+      salt: 'test', password: 'test'
     }
   },
 

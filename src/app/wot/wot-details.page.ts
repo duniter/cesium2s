@@ -1,10 +1,9 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Injector, OnInit} from '@angular/core';
 
 import {BasePage} from "@app/shared/pages/base.page";
-import {AccountWithMeta, UiAccount} from "@app/wallet/account.model";
+import {Account} from "@app/wallet/account.model";
 import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
-import {WotSearchFilter} from "@app/wot/wot.model";
 
 @Component({
   selector: 'app-wot-details',
@@ -12,7 +11,7 @@ import {WotSearchFilter} from "@app/wot/wot.model";
   styleUrls: ['./wot-details.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WotDetailsPage extends BasePage<UiAccount> implements OnInit {
+export class WotDetailsPage extends BasePage<Account> implements OnInit {
 
   address = this.activatedRoute.snapshot.paramMap.get('address');
 
@@ -26,7 +25,7 @@ export class WotDetailsPage extends BasePage<UiAccount> implements OnInit {
   ngOnInit() {
   }
 
-  protected async ngOnLoad(): Promise<UiAccount> {
+  protected async ngOnLoad(): Promise<Account> {
 
     await this.wotService.ready();
 

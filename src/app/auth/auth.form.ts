@@ -21,6 +21,7 @@ import {FormUtils} from "@app/shared/forms";
 export class AuthForm extends AppForm<AuthData> implements OnInit {
 
   readonly mobile: boolean;
+  showSalt = false;
   showPwd = false;
   canRegister: boolean;
 
@@ -41,7 +42,7 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
   ) {
     super(injector,
       formBuilder.group({
-        username: [null, Validators.required],
+        salt: [null, Validators.required],
         password: [null, Validators.required]
       }));
 
@@ -80,14 +81,12 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     }
 
     this.markAsLoading();
-    const data = this.form.value;
+    const data = this.value;
+    this.showSalt = false; // Hide salt
     this.showPwd = false; // Hide password
     this.error = null; // Reset error
 
-    setTimeout(() => this.onSubmit.emit({
-      username: data.username,
-      password: data.password
-    }));
+    setTimeout(() => this.onSubmit.emit(data));
   }
 
   register() {
@@ -99,6 +98,16 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
       });
       return modal.present();
     }, 200);
+  }
+
+  get value(): AuthData {
+    const data = this.form.value;
+    return {
+      v1: {
+        salt: data.salt,
+        password: data.password
+      }
+    };
   }
 
   /* -- protected functions -- */

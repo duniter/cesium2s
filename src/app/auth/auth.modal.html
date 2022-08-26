@@ -22,7 +22,7 @@
 
 <ion-content style="height: 100%">
   <app-auth-form #form
-                 (onSubmit)="doSubmit()"
+                 (onSubmit)="doSubmit($event)"
                  (onCancel)="cancel()">
   </app-auth-form>
 

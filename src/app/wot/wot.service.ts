@@ -1,13 +1,11 @@
 import {Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
 import {ApiPromise} from "@polkadot/api";
-import {Account, AccountData, UiAccount, AccountWithMeta} from "../wallet/account.model";
 import {StartableService} from "@app/shared/services/startable-service.class";
 import {WotSearchFilter} from "@app/wot/wot.model";
 import {AccountService} from "@app/wallet/account.service";
 import {sleep} from "@app/shared/functions";
-import {accounts} from "@polkadot/ui-keyring/observable/accounts";
-import {map} from "rxjs";
+import {Account} from "@app/wallet/account.model";
 
 @Injectable({providedIn: 'root'})
 export class WotService extends StartableService<void> {
@@ -29,7 +27,7 @@ export class WotService extends StartableService<void> {
     // Noting to do
   }
 
-  async search(filter?: WotSearchFilter): Promise<UiAccount[]> {
+  async search(filter?: WotSearchFilter): Promise<Account[]> {
     if (!this.started) await this.ready();
 
     console.info(this._logPrefix + 'Searching...', filter);
@@ -40,7 +38,7 @@ export class WotService extends StartableService<void> {
 
     return (await this.accountService.getAll())
       .map((account, i) => {
-        return <UiAccount>{
+        return <Account>{
           address: account.address,
           meta: {
             name: account.meta?.name,

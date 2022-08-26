@@ -1,26 +1,24 @@
-import {Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, Injector, Input, OnInit, ViewChild} from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
   FormBuilder,
   FormControl,
-  FormGroup,
   ValidationErrors,
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import {BehaviorSubject, Observable, of, Subject, Subscription, timer} from 'rxjs';
+import {Observable, timer} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
 import {AccountService} from "@app/wallet/account.service";
 import {SettingsService} from "@app/settings/settings.service";
 import {environment} from "@environments/environment";
 import {RegisterData} from "@app/register/register.model";
-import {AccountExtendedMeta} from "@app/wallet/account.model";
 import {AppForm} from "@app/shared/form.class";
-import {IonSlide, IonSlides} from "@ionic/angular";
+import {IonSlides} from "@ionic/angular";
 import {NetworkService} from "@app/network/network.service";
 import {Currency} from "@app/network/currency.model";
-import {isNil, toBoolean} from "@app/shared/functions";
+import {AccountMeta} from "@app/wallet/account.model";
 
 export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,
@@ -89,7 +87,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     const result: RegisterData = {
       mnemonic: json.words.join(' '),
       password: json.code,
-      meta: <AccountExtendedMeta>{
+      meta: <AccountMeta>{
         name: json.name
       }
     };
@@ -103,7 +101,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
 
   async slideNext() {
     return this.slides.slideNext()
-      .then(() => this.updateState());;
+      .then(() => this.updateState());
   }
 
   async slidePrev() {

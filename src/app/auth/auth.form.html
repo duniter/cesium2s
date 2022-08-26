@@ -8,11 +8,10 @@
     </ion-item>
 
 
-    <!-- Username -->
+    <!-- Salt -->
     <ion-item>
       <ion-label color="medium" translate>LOGIN.SALT</ion-label>
-      <ion-input [placeholder]="''|translate"
-             formControlName="username"
+      <ion-input formControlName="salt" type="password"
              autocomplete="off"
              required>
 
@@ -22,10 +21,9 @@
     <!-- Password -->
     <ion-item>
       <ion-label color="medium" translate>LOGIN.PASSWORD</ion-label>
-      <ion-input formControlName="password"
+      <ion-input formControlName="password" type="password"
                  autocomplete="off"
                  required>
-
       </ion-input>
     </ion-item>
     <!--<mat-form-field>

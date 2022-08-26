@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 import {PlatformService} from "./shared/services/platform.service";
+import {environment} from "@environments/environment";
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  public appPages = [
+
+  appName = environment.name;
+  appPages = [
 
     { title: 'MENU.HOME', url: '/home', icon: 'home' },
     { title: 'MENU.ACCOUNT', url: '/wallet/Alice', icon: 'card' },
@@ -18,7 +22,6 @@ export class AppComponent {
 
     { title: 'MENU.SETTINGS', url: '/settings', icon: 'settings' },
   ];
-  public labels = [];
 
   constructor(private platform: PlatformService) {
     this.start();

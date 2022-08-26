@@ -1,28 +1,27 @@
+import {KeypairType} from "@polkadot/util-crypto/types";
+import {Option, u64} from "@polkadot/types-codec";
+import {H256} from "@polkadot/types/interfaces/runtime";
 
+export interface Account {
+  address: string;
+  type?: KeypairType;
+  meta: AccountMeta;
+
+  data?: AccountData;
+}
 export interface AccountMeta {
   name: string;
-  source?: string;
-}
+  genesisHash?: string;
 
-export interface AccountExtendedMeta {
-  name?: string;
+  // Extends meta
   uid?: string;
   avatar?: string;
   email?: string;
 }
 
-export interface Account {
-  address: string;
-}
-export interface AccountWithMeta extends Account {
-  meta: AccountMeta;
-}
-
-
-export interface UiAccount extends Account {
+export interface AccountData {
+  randomId?: string;
   free?: number;
-  meta: AccountExtendedMeta;
-}
-
-export interface AccountData extends UiAccount {
+  reserved?: number;
+  feeFrozen?: number;
 }

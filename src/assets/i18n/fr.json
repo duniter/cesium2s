@@ -119,7 +119,7 @@
     "TITLE": "Cesium",
     "WELCOME": "Bienvenue dans l'application Cesium !",
     "WELCOME_READONLY": "Bienvenue dans Cesium <span class='badge badge-balanced'>Monit</span> !",
-    "MESSAGE": "Recevez et envoyez de la monnaie libre {{currency}}",
+    "MESSAGE": "Recevez et envoyez de la monnaie libre {{currency|abbreviate}}",
     "MESSAGE_READONLY": "Suivez l'état de la monnaie libre {{currency}} en temps réel.",
     "BTN_CURRENCY": "Explorer la monnaie {{currency|abbreviate}}",
     "BTN_ABOUT": "à propos",

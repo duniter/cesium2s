@@ -3,6 +3,7 @@ import {ModalController} from '@ionic/angular';
 import {AccountService} from '@app/wallet/account.service';
 import {AuthForm} from './auth.form';
 import {firstNotNilPromise} from '@app/shared/observables';
+import {AuthData} from "@app/auth/auth.model";
 
 @Component({
   selector: 'app-auth-modal',
@@ -43,7 +44,7 @@ export class AuthModal implements OnInit {
     this.viewCtrl.dismiss();
   }
 
-  async doSubmit(): Promise<any> {
+  async doSubmit(data?: AuthData): Promise<any> {
     if (this.form.disabled) return;
     if (!this.form.valid) {
       this.form.markAllAsTouched();
@@ -52,7 +53,7 @@ export class AuthModal implements OnInit {
     this.markAsLoading();
 
     try {
-      const data = this.form.value;
+      data = data || this.form.value;
 
       // Disable the form
       this.form.disable();
