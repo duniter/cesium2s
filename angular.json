@@ -1,7 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "defaultProject": "app",
   "newProjectRoot": "projects",
   "projects": {
     "app": {
@@ -29,7 +28,11 @@
               "safe-buffer",
               "ed2curve",
               "crypto",
-              "store"
+              "store",
+              "localforage",
+              "bn.js",
+              "ip-regexp",
+              "eventemitter3"
             ],
             "assets": [
               {
@@ -195,13 +198,15 @@
     }
   },
   "cli": {
-    "defaultCollection": "@ionic/angular-toolkit",
     "packageManager": "yarn",
     "analytics": false,
     "cache": {
       "enabled": true,
       "environment": "all"
-    }
+    },
+    "schematicCollections": [
+      "@ionic/angular-toolkit"
+    ]
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {
