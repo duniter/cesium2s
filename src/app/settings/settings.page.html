@@ -20,7 +20,10 @@
       <ion-item>
         <ion-icon slot="start" name="language"></ion-icon>
         <ion-label color="dark" translate>COMMON.LANGUAGE</ion-label>
-        <ion-select [(ngModel)]="data.locale">
+        <ion-select [(ngModel)]="data.locale"
+                    [interface]="mobile ? 'action-sheet' : 'popover'"
+                    [okText]="'COMMON.BTN_OK'|translate"
+                    [cancelText]="'COMMON.BTN_CANCEL'|translate">
           <ion-select-option *ngFor="let locale of locales" [value]="locale.key">
             {{locale.value}}
           </ion-select-option>
@@ -38,8 +41,25 @@
 
         </ion-input>
         <ion-button slot="end" (click)="selectPeer()">
-          <ion-icon slot="icon-only" name=""></ion-icon>
+          <ion-label>...</ion-label>
         </ion-button>
+      </ion-item>
+
+      <ion-item-divider translate>SETTINGS.AUTHENTICATION_SETTINGS</ion-item-divider>
+
+      <ion-item>
+
+        <ion-icon slot="start" name="lock-open"></ion-icon>
+        <ion-label color="dark" translate>SETTINGS.KEEP_AUTH</ion-label>
+
+        <ion-select [(ngModel)]="data.unAuthDelayMs"
+                    [interface]="mobile ? 'action-sheet' : 'popover'"
+                    [okText]="'COMMON.BTN_OK'|translate"
+                    [cancelText]="'COMMON.BTN_CANCEL'|translate">
+          <ion-select-option *ngFor="let item of unauthOptions" [value]="item.value">
+            {{item.label|translate:{value: item.labelParam} }}
+          </ion-select-option>
+        </ion-select>
       </ion-item>
     </ion-list>
 

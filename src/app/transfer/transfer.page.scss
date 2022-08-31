@@ -8,3 +8,7 @@ ion-menu-button {
 .balance {
   color: var(--ion-color-base);
 }
+ion-select.hidden {
+  display: none;
+  visibility: hidden;
+}

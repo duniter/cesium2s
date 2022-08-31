@@ -1,21 +1,23 @@
 <form [formGroup]="form">
   <ion-list>
     <ion-item lines="none">
-      <ion-text>
-        <p>TODO i18n - Pour vous authentifier, veuillez <b>composer votre code secret</b> :</p>
-      </ion-text>
+      <p [innerHTML]="helpMessage|translate"></p>
+
     </ion-item>
 
     <ion-item>
       <ion-label color="medium">{{'AUTH.PASSPHRASE'|translate }}</ion-label>
-      <ion-input formControlName="code" [maxlength]="maxLength" [minlength]="minLength" required
-                 (ionInput)="onChange($event)"></ion-input>
+      <ion-input [formControl]="control"
+                 [maxlength]="maxLength"
+                 [minlength]="minLength"
+                 (ionChange)="onChange($event)"
+                 required></ion-input>
       <ion-icon slot="end" name="checkmark" *ngIf="$valid|async"></ion-icon>
     </ion-item>
 
-    <ion-item *ngIf="debug" lines="none">
-      <ion-text>
-        {{form|formGetValue:'code'}}
+    <ion-item *ngIf="debug && expectedCode" lines="none">
+      <ion-text color="primary">
+        <small>expected: {{expectedCode}}</small>
       </ion-text>
     </ion-item>
   </ion-list>

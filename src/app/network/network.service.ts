@@ -58,7 +58,7 @@ export class NetworkService extends StartableService<ApiPromise> {
 
     const peer = this.selectRandomPeer(peers);
     const wsUri = Peers.getWsUri(peer);
-    console.info(`Connecting to peer {${wsUri}}...`)
+    console.info(`${this._logPrefix}Connecting to peer {${wsUri}}...`)
 
     // Extract all types from definitions - fast and dirty approach, flatted on 'types'
     // const types = Object.values(definitions).reduce((res: any, { types }): object => {
@@ -75,10 +75,10 @@ export class NetworkService extends StartableService<ApiPromise> {
 
     // get the chain information
     const chainInfo = await api.registry.getChainProperties();
-    this.debug('Connecting to chain: ', chainInfo.toHuman());
+    console.debug(`${this._logPrefix}Connecting to chain: `, chainInfo.toHuman());
 
     // Read the genesys block hash
-    console.info('Connected to Blockchain genesis: ' + api.genesisHash.toHex());
+    console.info(`${this._logPrefix}Blockchain genesis: ` + api.genesisHash.toHex());
 
     // Retrieve the chain name
     const chain = '' + (await api.rpc.system.chain());
@@ -89,7 +89,7 @@ export class NetworkService extends StartableService<ApiPromise> {
 
     // Retrieve the latest header
     const lastHeader = await api.rpc.chain.getHeader();
-    console.info(`${this.currency.name} - last block #${lastHeader.number} has hash ${lastHeader.hash}`);
+    console.info(`${this._logPrefix}${this.currency.name} - last block #${lastHeader.number} has hash ${lastHeader.hash}`);
 
     return api;
   }

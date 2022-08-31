@@ -19,12 +19,18 @@
       </ion-select>
     </ng-container>
   </ion-toolbar>
+  <ion-progress-bar type="indeterminate" *ngIf="loading"></ion-progress-bar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header>
     <ion-toolbar class="ion-text-end" color="secondary">
-      <ion-title size="large">{{ balance | amountFormat }}</ion-title>
+      <ion-title size="large" *ngIf="loaded; else loadingText">
+        {{ balance | amountFormat }}
+      </ion-title>
+      <ng-template #loadingText>
+        <ion-title translate>COMMON.LOADING</ion-title>
+      </ng-template>
     </ion-toolbar>
   </ion-header>
 
@@ -39,12 +45,14 @@
       <ion-item>
         <ion-icon slot="start" name="key"></ion-icon>
         <ion-label color="medium" translate>COMMON.PUBKEY</ion-label>
-        <ion-input *ngIf="loaded; else inputSkeleton"
+        <ion-input *ngIf="loaded; else skeleton60"
                    class="ion-text-end"
                    [value]="data?.address"
                    readonly>
         </ion-input>
-        <ion-button slot="end" (click)="copyAddress()" fill="clear" [title]="'COMMON.COPY'|translate">
+        <ion-button slot="end" (click)="copyAddress()"
+                    [disabled]="loading"
+                    fill="clear" [title]="'COMMON.COPY'|translate">
           <ion-icon slot="icon-only" name="copy"></ion-icon>
         </ion-button>
       </ion-item>
@@ -72,7 +80,7 @@
   </div>
 </ion-content>
 
-<ng-template #inputSkeleton>
+<ng-template #skeleton60>
   <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
 </ng-template>
 

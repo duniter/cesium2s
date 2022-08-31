@@ -5,9 +5,9 @@
 import {Environment} from "./environment.class";
 import {AuthData} from "@app/auth/auth.model";
 import {Drivers} from "@ionic/storage";
+import {StorageDrivers} from "@app/shared/services/storage/storage.utils";
 
 export const environment = <Environment>{
-  //production: true,
   production: false,
 
   name: 'Cesium',
@@ -17,7 +17,7 @@ export const environment = <Environment>{
   // Storage
   storage: {
     name: 'cesium',
-    driverOrder: ['localForage-cordovaSQLiteDriver', Drivers.IndexedDB, Drivers.LocalStorage]
+    driverOrder: [StorageDrivers.IndexedDB, StorageDrivers.WebSQL, StorageDrivers.LocalStorage]
   },
 
   keyring: {

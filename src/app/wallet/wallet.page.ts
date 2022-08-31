@@ -45,12 +45,16 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
     protected networkService: NetworkService,
     protected accountService: AccountService
   ) {
-    super(injector, {name: 'wallet-page'})
+    super(injector, {
+      name: 'wallet-page',
+      loadDueTime: accountService.started ? 0 : 250
+    })
 
     this.address = this.activatedRoute.snapshot.paramMap.get('address');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    console.info(this._logPrefix + 'Initializing...');
     super.ngOnInit();
   }
 
@@ -58,12 +62,14 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
 
     // force page reload, when auth was previously cancelled
     if (!this.loading && !this.data) {
+      this.info('Reloading page...');
       setTimeout(() => this.load());
     }
   }
 
   protected async ngOnLoad(): Promise<Account> {
 
+    this.info('Loading page...');
     this.currency = this.networkService.currencySign;
 
     const accounts = await this.accountService.getAll();
@@ -108,7 +114,7 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
     if (!this.authModal.isOpen) {
       await this.authModal.present();
     }
-    const {data, role} = await this.authModal.onDidDismiss();
+    const {data, role} = await this.authModal.onWillDismiss();
     if (!data?.address) return null;
     return data;
   }

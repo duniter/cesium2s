@@ -45,18 +45,39 @@
           </ng-template>
         </ion-card-title>
       </ion-card-header>
-      <ion-card-content>
+      <ion-card-content *ngIf="!loading" @fadeInAnimation>
 
-        <!-- register -->
-        <ion-button id="open-register-modal"  expand="block">
-          <ion-label translate>LOGIN.CREATE_FREE_ACCOUNT</ion-label>
-        </ion-button>
+        <ng-container *ngIf="isLogin; else noAccount">
+          <!-- my account -->
+          <ion-button expand="block" [routerLink]="'/wallet'">
+            <ion-icon name="person" slot="start"></ion-icon>
+            <ion-label translate>MENU.ACCOUNT</ion-label>
+          </ion-button>
 
-        <!-- login -->
-        <p class="ion-padding-top" translate>LOGIN.HAVE_ACCOUNT_QUESTION</p>
-        <ion-button id="open-auth-modal" color="light" expand="block">
-          <ion-label translate>COMMON.BTN_LOGIN</ion-label>
-        </ion-button>
+          <!-- disconnect button -->
+          <p [class.cdk-visually-hidden]="mobile">
+            <ion-text [innerHTML]="'HOME.NOT_YOUR_ACCOUNT_QUESTION' | translate: {pubkey: (defaultAccount|accountName) }"></ion-text>
+            <br/>
+            <ion-text>
+              <a href="#" (click)="logout($event)">
+                <span translate>HOME.BTN_CHANGE_ACCOUNT</span>
+              </a>
+            </ion-text>
+          </p>
+        </ng-container>
+
+        <ng-template #noAccount>
+          <!-- register -->
+          <ion-button expand="block"  (click)="register($event)">
+            <ion-label translate>LOGIN.CREATE_FREE_ACCOUNT</ion-label>
+          </ion-button>
+
+          <!-- login -->
+          <p class="ion-padding-top" translate>LOGIN.HAVE_ACCOUNT_QUESTION</p>
+          <ion-button color="light" expand="block" (click)="login()">
+            <ion-label translate>COMMON.BTN_LOGIN</ion-label>
+          </ion-button>
+        </ng-template>
       </ion-card-content>
     </ion-card>
 
@@ -74,7 +95,6 @@
     </ion-content>
   </ng-template>
 </ion-modal>
-
 
 <ion-modal
   #registerModal

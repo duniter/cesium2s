@@ -1,0 +1,7 @@
+//@use './ionic/ionic.functions.string';
+//@use './ionic/ionic.functions.color';
+
+@function calculateRem($size) {
+  $remSize: $size / 16px;
+  @return $remSize * 1rem;
+}

@@ -40,6 +40,7 @@ export class UnlockForm extends AppForm<string> implements OnInit {
 
   @Input('class') classList: string = null;
 
+  @Input() helpMessage = 'AUTH.PASSPHRASE_HELP';
   @Input() expectedCode: string = null;
   @Input() minLength: number = 5;
   @Input() maxLength: number = 5;
@@ -62,7 +63,7 @@ export class UnlockForm extends AppForm<string> implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.control) {
+    if (!this.control && this.formGroupDir && this.controlName) {
       const formControlName = (this.formGroupDir.directives || []).find(d => this.controlName && d.name === this.controlName);
       this.control = formControlName && formControlName.control;
       if (this.formGroupDir && this.control) {
@@ -75,7 +76,7 @@ export class UnlockForm extends AppForm<string> implements OnInit {
       }
       else {
         this.setForm(this.formBuilder.group({
-          code: new FormControl(this.createValidator())
+          code: new FormControl(null, this.createValidator())
         }));
         this.control = this.form.get('code') as FormControl;
       }
@@ -94,21 +95,20 @@ export class UnlockForm extends AppForm<string> implements OnInit {
 
   }
 
-  get value(): RegisterData {
-    const json = this.form.value;
-    return json.code;
+  get value(): string {
+    return this.control.value;
   }
 
   get valid(): boolean {
-    return this.form.valid;
+    return this.control.valid;
   }
 
   cancel() {
     this.onCancel.emit();
   }
 
-  onChange(event: UIEvent, value?: string) {
-    value = this.control?.value;
+  onChange(event: CustomEvent<{ value: string; }>) {
+    let value = event.detail?.value;
     value = value && value.toUpperCase() || null;
     if (value && value.length > this.maxLength) {
       event.preventDefault();

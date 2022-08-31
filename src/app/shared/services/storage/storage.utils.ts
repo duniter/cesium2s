@@ -1,4 +1,7 @@
 import {InjectionToken} from "@angular/core";
+import {Drivers} from "@ionic/storage";
+import * as LocalForage from "localforage";
+
 
 export interface IStorage<T = any> {
   readonly driver: string;
@@ -10,5 +13,13 @@ export interface IStorage<T = any> {
   clear(): Promise<void>;
   forEach(iteratorCallback: (value: any, key: string, iterationNumber: Number) => any): Promise<void>;
 }
+
+export const StorageDrivers = {
+  //SQLLite: CordovaSQLiteDriver._driver,
+  SecureStorage: Drivers.SecureStorage,
+  WebSQL: LocalForage.WEBSQL,
+  IndexedDB: Drivers.IndexedDB,
+  LocalStorage: Drivers.LocalStorage
+};
 
 export const APP_STORAGE = new InjectionToken<IStorage>('Storage');

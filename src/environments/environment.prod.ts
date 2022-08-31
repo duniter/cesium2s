@@ -1,4 +1,5 @@
 import {Environment} from "./environment.class";
+import {StorageDrivers} from "@app/shared/services/storage/storage.utils";
 
 export const environment = <Environment>{
   production: true,
@@ -8,7 +9,7 @@ export const environment = <Environment>{
 
   // Storage
   storage: {
-    driverOrder: ['sqlite', 'indexeddb', 'websql', 'localstorage']
+    driverOrder: [StorageDrivers.IndexedDB, StorageDrivers.WebSQL, StorageDrivers.LocalStorage]
   },
 
   defaultPeers: [

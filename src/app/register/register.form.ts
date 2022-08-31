@@ -24,7 +24,8 @@ export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,
   ASK_WORD: 6,
   CODE: 9,
-  CODE_CONFIRMATION: 10
+  CODE_CONFIRMATION: 10,
+  CONGRATULATION: 11
 }
 
 @Component({
@@ -34,6 +35,7 @@ export const REGISTER_FORM_SLIDES = {
 })
 export class RegisterForm extends AppForm<RegisterData> implements OnInit {
 
+  private readonly _isDevelopment: boolean;
   slideOpts = {
     initialSlide: 0,
     speed: 400,
@@ -68,19 +70,24 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
       wordNumber: new FormControl(null, Validators.required),
       code: new FormControl(null, Validators.required),
       codeConfirmation: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('code')])),
-      name: new FormControl(null)
+      name: new FormControl(null),
+      address: new FormControl(null)
     }));
+
+    this.debug = !environment.production;
+    this._isDevelopment = !environment.production;
   }
 
   ngOnInit() {
     // For DEV only ------------------------
-    if (!environment.production) {
+    if (this._isDevelopment) {
       this.form.setValue({
         words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
         wordNumber: 1,
         code: 'AAAAA',
         codeConfirmation: null,
-        name: 'Nouveau portefeuille'
+        name: 'Nouveau portefeuille',
+        address: null
       });
     }
   }
@@ -103,6 +110,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
   }
 
   async slideNext() {
+    console.log("slideNext from slide #" + this.slideState.index);
     return this.slides.slideNext()
       .then(() => this.updateState());
   }
@@ -162,10 +170,15 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     this.slideState.isEnd = await this.slides.isEnd();
     this.markForCheck();
 
+    console.debug('[register-form] Slide #' + this.slideState.index);
+
     switch (this.slideState.index) {
       case REGISTER_FORM_SLIDES.MNEMONIC:
         if (!this.form.get('words').valid) {
-          this.generatePhrase();
+          await this.generatePhrase();
+        }
+        else {
+          this.slideState.canNext = false;
         }
         break;
       case REGISTER_FORM_SLIDES.ASK_WORD:
@@ -175,13 +188,18 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
         this.generateCode();
         break;
       case REGISTER_FORM_SLIDES.CODE_CONFIRMATION:
-        this.slideState.canNext = false;
+        this.checkCodeConfirmation();
         break;
+      case REGISTER_FORM_SLIDES.CONGRATULATION:
+        await this.generateAccount();
+        break;
+      default:
+        this.slideState.canNext = true;
     }
   }
 
   protected async generatePhrase() {
-    if (!environment.production) return;
+    if (this._isDevelopment) return; // Keep existing mnemonic
 
     // Clear previous phrase
     this.form.get('words').reset(null);
@@ -189,11 +207,11 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     this.markForCheck();
 
     setTimeout(async () => {
-      const mnemonic = await this.accountService.generateNew();
+      const mnemonic = await this.accountService.generateMnemonic();
       this.form.patchValue({
         words: mnemonic.split(' ')
       });
-    });
+    }, 250 * Math.random());
   }
 
   protected toggleCanNext() {
@@ -237,9 +255,27 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     this.markForCheck();
   }
 
-  checkCodeConfirmation(code: string) {
+  checkCodeConfirmation() {
+    if (this.slideState.index !== REGISTER_FORM_SLIDES.CODE_CONFIRMATION) return;
+    const code = this.form.get('codeConfirmation').value;
     const expectedCode = this.form.get('code').value;
     this.slideState.canNext = expectedCode === code;
     this.markForCheck();
+  }
+
+  async generateAccount() {
+    if (this.slideState.index !== REGISTER_FORM_SLIDES.CONGRATULATION) return; // Skip
+
+    this.slideState.canNext = false;
+    this.markAsLoading();
+
+    setTimeout(async () => {
+      const data = this.value;
+      const account = await this.accountService.createAddress(data);
+      this.form.get('address').setValue(account.address);
+
+      this.slideState.canNext = true;
+      this.markAsLoaded();
+    }, 250);
   }
 }

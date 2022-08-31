@@ -1,9 +1,12 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable, Optional} from "@angular/core";
 import {Settings} from "./settings.model";
 import {environment} from "@environments/environment";
 import {StartableService} from "@app/shared/services/startable-service.class";
 import {Platform} from "@ionic/angular";
 import {Subject} from "rxjs";
+import {APP_STORAGE, IStorage} from "@app/shared/services/storage/storage.utils";
+
+const SETTINGS_STORAGE_KEY = 'settings';
 
 @Injectable({providedIn: 'root'})
 export class SettingsService extends StartableService<Settings> {
@@ -16,12 +19,18 @@ export class SettingsService extends StartableService<Settings> {
     return this._mobile;
   }
 
+  get data(): Settings {
+    return this._data;
+  }
+
   constructor(
-    protected ionicPlatform: Platform
+    protected ionicPlatform: Platform,
+    @Inject(APP_STORAGE) @Optional() protected storage?: IStorage
   ) {
     super(ionicPlatform, {
       name: 'settings-service'
-    })
+    });
+
   }
 
   protected async ngOnStart(): Promise<Settings> {
@@ -43,10 +52,14 @@ export class SettingsService extends StartableService<Settings> {
   }
 
   async restoreLocally(): Promise<Settings> {
+
+    const savedData = await this.storage.get(SETTINGS_STORAGE_KEY);
     const data = <Settings>{
       preferredPeers: !environment.production && environment.dev?.peer
         ? [environment.dev.peer]
-        : [...environment.defaultPeers]
+        : [...environment.defaultPeers],
+      unAuthDelayMs: 15 * 60_000, // 15min
+      ...savedData
     };
     return data;
   }
@@ -58,9 +71,16 @@ export class SettingsService extends StartableService<Settings> {
       ...data
     };
     this.changes.next(this._data);
+
+    // Saving changes
+    setTimeout(() => this.saveLocally(), 250);
   }
 
   async saveLocally() {
-    // TODO
+    if (!this.storage) return; // Skip, no storage
+
+    console.info('[settings] Saving settings to the storage...');
+    const data = this.clone();
+    await this.storage?.set('settings', data);
   }
 }

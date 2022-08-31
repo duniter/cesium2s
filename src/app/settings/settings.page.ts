@@ -10,6 +10,29 @@ import {BasePage} from "@app/shared/pages/base.page";
 })
 export class SettingsPage extends BasePage<Settings> implements OnInit {
 
+  unauthOptions = [
+    {
+      label: 'SETTINGS.KEEP_AUTH_OPTION.SECONDS',
+      labelParam: 10,
+      value: 10_000
+    },
+    {
+      label: 'SETTINGS.KEEP_AUTH_OPTION.SECONDS',
+      labelParam: 30,
+      value: 30_000
+    },
+    {
+      label: 'SETTINGS.KEEP_AUTH_OPTION.MINUTE',
+      labelParam: 1,
+      value: 60_000
+    },
+    {
+      label: 'SETTINGS.KEEP_AUTH_OPTION.MINUTES',
+      labelParam: 15,
+      value: 15*60_000
+    }
+  ];
+
   constructor(
     injector: Injector,
     @Inject(APP_LOCALES) public locales: LocaleConfig[]

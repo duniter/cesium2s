@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {PlatformService} from "./shared/services/platform.service";
 import {environment} from "@environments/environment";
 
@@ -28,8 +28,11 @@ export class AppComponent {
   }
 
   async start() {
+    var now = Date.now();
     console.info('[app] Starting...');
+
     await this.platform.start();
-    console.info('[app] Starting [OK]');
+
+    console.info(`[app] Starting [OK] in ${Date.now()-now}ms`);
   }
 }

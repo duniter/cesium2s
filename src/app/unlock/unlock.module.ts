@@ -8,18 +8,23 @@ import {RegisterModal} from "@app/register/register.modal";
 import {TranslateModule} from "@ngx-translate/core";
 import {AppSharedModule} from "@app/shared/shared.module";
 import {UnlockForm} from "@app/unlock/unlock.form";
+import {UnlockModal} from "@app/unlock/unlock.modal";
 
 @NgModule({
-    imports: [
-      CommonModule,
-      FormsModule,
-      IonicModule,
-      TranslateModule,
-      AppSharedModule
-    ],
-    exports: [
-        UnlockForm
-    ],
-    declarations: [UnlockForm]
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    TranslateModule,
+    AppSharedModule
+  ],
+  declarations: [
+    UnlockForm,
+    UnlockModal
+  ],
+  exports: [
+    UnlockForm,
+    UnlockModal
+  ],
 })
 export class AppUnlockModule {}

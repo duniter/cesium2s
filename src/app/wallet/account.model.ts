@@ -18,12 +18,16 @@ export interface AccountMeta {
   avatar?: string;
   email?: string;
 }
+export interface Tx {
 
+}
 export interface AccountData {
   randomId?: string;
   free?: number;
   reserved?: number;
   feeFrozen?: number;
+
+  txs: Tx[];
 }
 
 

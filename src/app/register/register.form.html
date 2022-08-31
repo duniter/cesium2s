@@ -34,22 +34,23 @@
 
   <!-- explanation 1 -->
   <ion-slide class="ion-padding">
-    <p>TODO i18n - Cesium fabrique votre portefeuille à partir d'une phrase de restauration. </p>
+    <p [innerHTML]="'ACCOUNT.NEW.STEP_1_HELP'|translate"></p>
+<!--    <img src="assets/account-step-1.png">-->
   </ion-slide>
 
   <!-- explanation 2 -->
   <ion-slide class="ion-padding">
-    <p>TODO i18n - Conservez cette phrase précieusement, car sans elle Cesium ne pourra pas resconstruire... </p>
+    <p [innerHTML]="'ACCOUNT.NEW.STEP_2_HELP'|translate"></p>
   </ion-slide>
 
   <!-- explanation 3 -->
   <ion-slide class="ion-padding">
-    <p>TODO i18n - Dna sune blockchain, pas de procédure de récupration par mail. </p>
+    <p [innerHTML]="'ACCOUNT.NEW.STEP_3_HELP'|translate: {currency: currency?.name}"></p>
   </ion-slide>
 
   <!-- explanation 4 -->
   <ion-slide class="ion-padding">
-    <p>TODO i18n - Il est temps de vous munir d'un papier... </p>
+    <p [innerHTML]="'ACCOUNT.NEW.STEP_4_HELP'|translate"></p>
   </ion-slide>
 
   <!-- generate mnemonic -->
@@ -57,7 +58,7 @@
     <ion-grid *ngIf="form|formGetValue:'words'; let words; else wordsSkeleton" class="words">
       <ion-row>
         <ion-col size="12">
-          <p>Cesium a généré votre phrase de restauration ! Tâchez ...</p>
+          <p [innerHTML]="'ACCOUNT.NEW.STEP_MNEMONIC_HELP'|translate"></p>
         </ion-col>
       </ion-row>
 
@@ -91,15 +92,15 @@
 
   <!-- check word -->
   <ion-slide>
-    <ion-list>
+    <ion-list *ngIf="form|formGetValue:'wordNumber' as wordNumber">
       <ion-item lines="none">
         <ion-text>
-          <p>TODO i18n - Avez-vous bien noté votre phrase de restauration ?</p>
+          <p [innerHTML]="'ACCOUNT.NEW.STEP_CHECK_WORD_HELP'|translate: {number: wordNumber}"></p>
         </ion-text>
       </ion-item>
 
       <ion-item>
-        <ion-label color="medium">{{'ACCOUNT.NEW.INPUT_WORD'|translate: {number: form|formGetValue:'wordNumber'} }}</ion-label>
+        <ion-label color="medium">{{'ACCOUNT.NEW.INPUT_WORD'|translate: {number: wordNumber} }}</ion-label>
         <ion-input (ionChange)="checkWord($event.detail.value)"></ion-input>
         <ion-icon slot="end" name="checkmark" *ngIf="slideState.canNext"></ion-icon>
       </ion-item>
@@ -109,14 +110,14 @@
   <!-- Explain code #1 -->
   <ion-slide>
     <ion-text>
-      <p>TODO i18n - Cesium va maintenant générer pour vous un code secret court, qui vous permettra...</p>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_1_HELP'|translate"></p>
     </ion-text>
   </ion-slide>
 
   <!-- Explain code #2 -->
   <ion-slide>
     <ion-text>
-      <p>TODO i18n - Ce code secret protège vos portefeuilles...</p>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_2_HELP'|translate"></p>
     </ion-text>
   </ion-slide>
 
@@ -125,14 +126,13 @@
 
     <ion-grid>
       <ion-row>
-        <ion-col>
-          <ion-text>TODO i18n - Et voila votre code</ion-text>
+        <ion-col size="12">
+          <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_3_HELP'|translate"></p>
+        </ion-col>
+        <ion-col size="12">
           <ion-label color="medium" translate>ACCOUNT.NEW.YOUR_SECRET_CODE</ion-label>
         </ion-col>
-      </ion-row>
-
-      <ion-row class="ion-padding-top">
-        <ion-col>
+        <ion-col size="12" class="ion-padding-top">
           <ion-item>
             <ion-text class="ion-text-center" style="width: 100%">
               <h2>{{form|formGetValue: 'code'}}</h2>
@@ -156,14 +156,42 @@
   <!-- check code -->
   <ion-slide>
     <app-unlock-form [control]="form|formGetControl: 'codeConfirmation'"
-      (change)="checkCodeConfirmation($event)"></app-unlock-form>
+                     helpMessage="ACCOUNT.NEW.STEP_CHECK_CODE_HELP"
+      (change)="checkCodeConfirmation()">
+
+    </app-unlock-form>
   </ion-slide>
 
   <!-- congratulation ! -->
   <ion-slide>
+    <ion-row>
+      <ion-col size="12">
+        <p [innerHTML]="'ACCOUNT.NEW.STEP_CONGRATULATION_1_HELP'|translate"></p>
+      </ion-col>
+      <ion-col size="12" class="ion-padding-top">
+        <ion-item>
+          <ion-text class="ion-text-center" style="width: 100%">
+            {{form|formGetValue: 'address'}}
+          </ion-text>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" class="ion-padding-top">
+        <p [innerHTML]="'ACCOUNT.NEW.STEP_CONGRATULATION_2_HELP'|translate"></p>
+      </ion-col>
+      <ion-col size="12" class="ion-padding-top">
+        <ion-item>
+          <ion-text class="ion-text-center" style="width: 100%">
+            <h2>{{form|formGetValue: 'address'|addressFormat}}</h2>
+          </ion-text>
+        </ion-item>
 
+      </ion-col>
+    </ion-row>
+
+    <ng-content select="[last]"></ng-content>
   </ion-slide>
 </ion-slides>
+
 
 <ng-template #wordsSkeleton>
   <ion-grid>

@@ -16,5 +16,6 @@ export declare interface Settings {
   locale?: string;
   mobile?: boolean;
   properties?: PropertiesMap;
+  unAuthDelayMs?: number;
 }
 

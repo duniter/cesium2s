@@ -1,6 +1,6 @@
 import {KeyringJson, KeyringStore} from "@polkadot/ui-keyring/types";
 import {Directive} from '@angular/core';
-import {IStorage} from "@app/shared/services/storage/storage.interface";
+import {IStorage} from "@app/shared/services/storage/storage.utils";
 
 // @dynamic
 @Directive()
@@ -29,6 +29,7 @@ export class KeyringStorage implements KeyringStore {
 
   all(cb: (key: string, value: KeyringJson) => void) {
     this.storage.forEach((value, key, counter) => {
+      console.debug("Reading key=" + key, value);
       if (key.startsWith(this.storagePrefix)) {
         const shortKey = key.substring(this.storagePrefix.length);
         cb(shortKey, value as KeyringJson);

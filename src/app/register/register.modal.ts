@@ -41,9 +41,9 @@ export class RegisterModal implements OnInit{
 
     // DEV
     if (!environment.production) {
-      setTimeout(() => {
-        this.form.slideTo(REGISTER_FORM_SLIDES.MNEMONIC);
-      });
+      // setTimeout(() => {
+      //   this.form.slideTo(REGISTER_FORM_SLIDES.MNEMONIC);
+      // });
     }
   }
 
@@ -54,6 +54,7 @@ export class RegisterModal implements OnInit{
   }
 
   async doSubmit(event?: any) {
+    console.debug('[register-modal] Submit...');
     if (this.form.disabled) return; // Skip
 
     if (!this.form.valid) {
@@ -68,18 +69,24 @@ export class RegisterModal implements OnInit{
     const data = this.form.value;
 
     this.form.disable();
+    this.form.markAsLoading();
 
     try {
-      console.debug('[register] Sending registration to server...', data);
+      console.debug('[register] Saving new account...');
 
-      await this.accountService.register(data);
+      const registered = await this.accountService.register(data);
 
-      console.debug('[register] Account registered!');
-      await this.viewCtrl.dismiss();
+      const address = registered && this.form.form.get('address').value;
+      if (address) {
+        console.debug('[register] Account registered, with address: ' + address);
+        const account = await this.accountService.getByAddress(address);
+        await this.viewCtrl.dismiss(account);
+      }
     }
     catch (err) {
       this.form.error = err && err.message || err;
       this.form.enable();
+      this.form.markAsLoaded();
     }
   }
 }

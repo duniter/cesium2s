@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
 import {ApiPromise, Keyring} from "@polkadot/api";
 import {Account, AccountMeta, AccountUtils} from "./account.model";
@@ -6,34 +6,76 @@ import {StartableService} from "@app/shared/services/startable-service.class";
 import {AuthData} from "@app/auth/auth.model";
 import {keyring} from "@polkadot/ui-keyring";
 import {environment} from "@environments/environment";
-import {StorageService} from "@app/shared/services/storage/storage.service";
-import {KeyringStorage} from "@app/shared/services/keyring-storage";
+import {KeyringStorage} from "@app/shared/services/storage/keyring-storage";
 import {RegisterData} from "@app/register/register.model";
 import {cryptoWaitReady, mnemonicGenerate} from '@polkadot/util-crypto';
-import {isNilOrNaN, isNotEmptyArray} from "@app/shared/functions";
-import {Inject} from "@angular/core";
-import {IStorage, APP_STORAGE} from "@app/shared/services/storage/storage.interface";
-import {BehaviorSubject, from, map, Observable, switchMap} from "rxjs";
+import {
+  isEmptyArray,
+  isNil,
+  isNilOrBlank,
+  isNilOrNaN,
+  isNotEmptyArray, isNotNil,
+  isNotNilOrBlank,
+  sleep
+} from "@app/shared/functions";
+import {APP_STORAGE, IStorage} from "@app/shared/services/storage/storage.utils";
+import {
+  BehaviorSubject,
+  debounceTime,
+  firstValueFrom,
+  from,
+  lastValueFrom,
+  map,
+  Observable,
+  skip, Subscription,
+  switchMap, timer
+} from "rxjs";
+import {ModalController} from "@ionic/angular";
+import {UnlockModal, UnlockModalOptions} from "@app/unlock/unlock.modal";
+import {Currency} from "@app/network/currency.model";
+import {SettingsService} from "@app/settings/settings.service";
+import {KeyringAddress} from "@polkadot/ui-keyring/types";
 
 const scrypt = require('scrypt-async');
+export interface LoadAccountDataOptions {
+  reload?: boolean;
+  withTx?: boolean;
+  withBalance?: boolean;
+}
 
 @Injectable({providedIn: 'root'})
 export class AccountService extends StartableService {
 
   private _$accounts = new BehaviorSubject<Account[]>([]);
   private _store = new KeyringStorage(this.storage);
+  private readonly _isDevelopment: boolean;
+  private _password: string = null;
+  private _passwordTimer: Subscription;
 
   get api(): ApiPromise {
     return this.network.api;
   }
 
+  get accounts(): Account[] {
+    return this._$accounts.value;
+  }
+
+  get isLogin(): boolean {
+    return this.started && isNotEmptyArray(this.accounts);
+  }
+
   constructor(
     protected network: NetworkService,
+    protected settings: SettingsService,
+    protected modalController: ModalController,
     @Inject(APP_STORAGE) protected storage: IStorage
   ) {
     super(network, {
-      name: 'wallet-service'
+      name: 'account-service'
     });
+
+    // DEV mode
+    this._isDevelopment = !environment.production;
   }
 
   protected async ngOnStart(): Promise<any> {
@@ -41,24 +83,52 @@ export class AccountService extends StartableService {
     // Wait crypto to be loaded by browser
     await cryptoWaitReady();
 
-    keyring.setDevMode(!environment.production);
+    const currency = this.network.currency;
 
-    // Set the default SS58 format
-    const ss58Format = this.network.currency?.ss58Format || 42; // 42 = dev format
-    keyring.setSS58Format(ss58Format);
+    // Configure keyring
+    keyring.setDevMode(this._isDevelopment);
+    keyring.setSS58Format(currency.ss58Format || 42 /* = dev format */);
 
+    // Restoring accounts
+    await this.restoreAccounts(currency);
+
+    // Add test account --- DEV only
+    if (this._isDevelopment) {
+      const auth =  environment.dev?.auth;
+      // Set password
+      this._password = auth?.password || 'AAAAA';
+
+      // Add a V1 Dev account
+      if (auth?.v1) {
+        await this.addV1Account({...auth.v1, meta: auth.meta});
+      }
+    }
+  }
+
+  async restoreAccounts(currency?: Currency) {
     // load all available addresses and accounts
     const now = Date.now();
-    console.info('Loading accounts...');
+    console.info('[account-service] Loading all accounts...');
+
+    // Prepare an observable, to known when keyring.loadAll() will be ready
+    const accounts$ = keyring.accounts.subject
+      .pipe(
+        debounceTime(250),
+        map(_ => keyring.getAccounts())
+      )
+
     keyring.loadAll({
       store: this._store,
-      ss58Format,
-      type: 'sr25519',
-      isDevelopment: !environment.production
+      ss58Format: currency?.ss58Format,
+      genesisHash: currency?.genesys,
+      isDevelopment: this._isDevelopment
     });
 
-    const keyringAddresses = keyring.getAccounts();
-    if (isNotEmptyArray(keyringAddresses)) {
+    const keyringAddresses = await firstValueFrom(accounts$);
+    if (isEmptyArray(keyringAddresses)) {
+      console.info('[account-service] Loading all accounts [OK] No account found');
+    }
+    else {
       const accounts = keyringAddresses.map(ka => {
         return <Account>{
           address: ka.address,
@@ -73,18 +143,13 @@ export class AccountService extends StartableService {
       // Load account's data
       await Promise.all(accounts.map(a => this.loadData(a)));
 
-      // Log
+      // DEBUG
       console.info(`Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
       accounts.forEach(a => {
-        console.info(` - ${a.address} (${a.meta?.name}) - free=${a.data.free} - reserved=${a.data.reserved}`);
+        console.info(` - ${a.address} (${a.meta?.name}) - free=${a.data?.free} - reserved=${a.data?.reserved}`);
       });
 
       this._$accounts.next(accounts);
-    }
-
-    // Auto login
-    if (!environment.production && environment.dev?.auth) {
-      setTimeout(() => this.login(environment.dev.auth));
     }
   }
 
@@ -94,20 +159,80 @@ export class AccountService extends StartableService {
     await this.ready();
 
     if (auth.v1) {
-      return this.loginV1({...auth.v1});
+      return this.addV1Account({...auth.v1, meta: auth.meta});
     }
 
     // TODO
     //return this._accounts[0];
   }
 
-  async generateNew() {
+  async auth(): Promise<boolean> {
+    if (isNotNilOrBlank(this._password)) {
+      console.debug(`${this._logPrefix}Already authenticated. Skip`);
+      return true; // ok
+    }
+
+    console.debug(`${this._logPrefix}Not auth: opening unlock modal...`);
+
+    const modal = await this.modalController.create({
+      component: UnlockModal,
+      componentProps: <UnlockModalOptions>{
+      }
+    });
+    await modal.present();
+    const {data, role} = await modal.onWillDismiss();
+
+    // User cancelled
+    if (isNilOrBlank(data)) {
+      console.debug(`${this._logPrefix}Not auth: cancelled`);
+      return false;
+    }
+
+    this._password = data as string;
+
+    // Un auth after a delay
+    this._passwordTimer?.unsubscribe();
+    const resetDelay = Math.max(this.settings.data?.unAuthDelayMs || 0, 5000); // 5s min
+    this._passwordTimer = timer(resetDelay)
+      .subscribe(() => {
+
+        if (isNotNil(this._password)) {
+          this._password = null;
+
+          // Lock all pairs
+          (this._$accounts.value || [])
+            .map(a => keyring.getPair(a.address))
+            .filter(pair => pair.isLocked)
+            .forEach(pair => pair.lock());
+        }
+        this._passwordTimer?.unsubscribe();
+        this._passwordTimer = null;
+      });
+    return true;
+  }
+
+  async generateMnemonic() {
     if (!this.started) await this.ready();
 
     // generate a random mnemonic, 12 words in length
     const mnemonic = mnemonicGenerate(12);
 
     return mnemonic;
+  }
+
+  async createAddress(data: RegisterData, save?: boolean): Promise<Account> {
+    // add the account, encrypt the stored JSON with an account-specific password
+    const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
+      name: data.meta?.name || 'default',
+      genesisHash: this.network.currency?.genesys
+    }, 'sr25519');
+
+    return {
+      address: json.address,
+      meta: {
+        name: data.meta?.name
+      }
+    };
   }
 
   async register(data: RegisterData): Promise<boolean> {
@@ -117,8 +242,6 @@ export class AccountService extends StartableService {
       name: data.meta?.name || 'default',
       genesisHash: this.network.currency?.genesys
     }, 'sr25519');
-
-    keyring.saveAccount(pair, data.password);
 
     //this.debug('check pair', pair, json);
 
@@ -136,11 +259,11 @@ export class AccountService extends StartableService {
     let accounts = this._$accounts.value || [];
     const existingAccount = accounts.find(a => a.address === account.address);
     if (existingAccount) {
-      console.warn(`Account with address '${account.address}' already added. Skip`);
+      console.warn(`${this._logPrefix}Account with address '${account.address}' already added. Skip`);
       account = existingAccount;
     }
     else {
-      console.info(`Add account with address '${account.address}'`);
+      console.info(`${this._logPrefix}Add account with address '${account.address}'`);
 
       // Define as default
       if (account.default || accounts.length === 1) await this.setDefaultAccount(account, accounts);
@@ -208,7 +331,7 @@ export class AccountService extends StartableService {
     // && keyring.isAvailable(address);
   }
 
-  async getDefault(opts?: { withTx?: boolean; reload?: boolean }): Promise<Account> {
+  async getDefault(opts?: LoadAccountDataOptions): Promise<Account> {
     if (!this.started) await this.ready();
 
     const accounts = this._$accounts.value || [];
@@ -227,7 +350,7 @@ export class AccountService extends StartableService {
     return await this.loadData(account, opts);
   }
 
-  async getByName(name: string, opts?: { withTx?: boolean; reload?: boolean }): Promise<Account> {
+  async getByName(name: string, opts?: LoadAccountDataOptions): Promise<Account> {
     if (!this.started) await this.ready();
 
     const accounts = this._$accounts.value || [];
@@ -238,7 +361,7 @@ export class AccountService extends StartableService {
     return await this.loadData(account, opts);
   }
 
-  async getByAddress(address: string, opts?: { withTx?: boolean; reload?: boolean }): Promise<Account> {
+  async getByAddress(address: string, opts?: LoadAccountDataOptions): Promise<Account> {
     if (!this.started) await this.ready();
 
     const accounts = this._$accounts.value || [];
@@ -264,31 +387,51 @@ export class AccountService extends StartableService {
     // the address we use to use for signing, as injected
     //const issuer = from.address ? await this.getByAddress(from.address) : await this.getByAddress(from.meta?.name);
 
-    console.info(`[account-service] Sending ${amount} :\nfrom: ${from.address}\nto ${to.address}`)
 
     const issuerAccount = await this.getByAddress(from.address);
-    const issuerPair = keyring.getPair(issuerAccount.address);
-    const toOwner = await this.isAvailable(to.address);
+    // Not enough credit
+    if (amount > issuerAccount.data.free) {
+      throw new Error('ERROR.NOT_ENOUGH_CREDIT');
+    }
 
+    console.info(`[account-service] Sending ${amount} :\nfrom: ${from.address}\nto ${to.address}`)
+
+    const issuerPair = keyring.getPair(issuerAccount.address);
     const convertedAmount = Math.floor(amount * 100);
 
-    // TODO display unlock modal if need
-    issuerPair.unlock('test');
+    // Unlock
+    if (issuerPair.isLocked) {
+      console.debug(`[account-service] Unlocking address ${from.address} ...`);
+      const isAuth = await this.auth();
+      if (!isAuth) throw new Error('ERROR.AUTH_REQUIRED');
+      issuerPair.unlock(this._password);
+    }
 
     try {
       // Sign and send a transfer from Alice to Bob
        const txHash = await this.api.tx.balances
          .transfer(to.address, convertedAmount)
-         .signAndSend(issuerPair, async ({status}) => {
+         .signAndSend(issuerPair, async ({status, events, findRecord}) => {
             if (status.isInBlock) {
-              console.info('Completed at block hash #' + status.hash.toHuman());
+              console.info(`${this._logPrefix}Completed at block hash #${status.hash.toHuman()}`);
 
-              if (toOwner) {
+              if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
+
+              await sleep(200);
+              // Update issuer account
+              //issuerAccount.data.free -= amount;
+
+              // Update receiver account
+              if (await this.isAvailable(to.address)) {
                 const toAccount = await this.getByAddress(to.address);
-                await this.loadData(toAccount);
+                //toAccount.data.free += amount;
+
+                await this.loadData(toAccount, {reload: true});
               }
 
-              await this.loadData(issuerAccount);
+              await this.loadData(issuerAccount, {reload: true});
+
+              // Notify account changes
               this.notifyChanged();
 
             } else {
@@ -308,26 +451,41 @@ export class AccountService extends StartableService {
     }
   }
 
-  private async loadData(account: Account, opts?: {reload?: boolean}): Promise<Account> {
-    if (!!account.data && opts?.reload !== true) return account; // Already loaded: skip
+  private async loadData(account: Account, opts?: LoadAccountDataOptions): Promise<Account> {
+    opts = {
+      reload: false,
+      withBalance: true,
+      withTx: false, // disable by default
+      ...opts
+    };
 
-    const {data} = await this.api.query.system.account(account.address);
+    // Load balance (free + reserved)
+    if (opts.withBalance === true && (isNil(account.data?.free) || opts.reload === true)) {
+      const {data} = await this.api.query.system.account(account.address);
+      account.data = {
+        ...account.data,
+        ...JSON.parse(data.toString())
+      };
+    }
 
-    account.data = JSON.parse(data.toString());
-    this.debug(`Loaded ${account.address} data:`, account.data);
+    // Load TX
+    if (opts.withTx === true && (isNil(account.data?.txs) || opts.reload === true)) {
+      console.warn('[account-service] TODO - Implement load Tx');
+    }
 
+    console.debug(`${this._logPrefix} Loaded ${account.address} data:`, account.data);
 
     return account;
   }
 
   private notifyChanged() {
-    this._$accounts.next(this._$accounts.value);
+    this._$accounts.next(this._$accounts.value.slice() /*create a copy*/);
   }
 
-  async loginV1(data: {salt: string, password: string; meta?: AccountMeta}): Promise<Account> {
+  async addV1Account(data: {salt: string, password: string; meta?: AccountMeta}): Promise<Account> {
     if (!data?.salt || !data?.password) return;
 
-    this.log('Authenticating using salt+pwd...');
+    console.info(this._logPrefix + ' Authenticating using salt+pwd...');
 
     const rawSeedString = await new Promise((resolve) => {
       scrypt(data.password, data.salt, {
@@ -339,19 +497,17 @@ export class AccountService extends StartableService {
       }, (result) => resolve(result));
     });
 
-    console.info(rawSeedString);
+    //console.debug('Computed seed (hex) from salt+pwd:', rawSeedString);
 
     const meta = {
-      name: data.meta?.name,
+      name: data.meta?.name || 'V1',
       genesisHash: this.network.currency?.genesys
     }
 
-    const {pair, json} = await keyring.addUri(`0x${rawSeedString}`, data.password, meta, 'ed25519');
+    const isAuth = await this.auth();
+    if (!isAuth) return; // Skip
 
-    pair.unlock(data.password);
-
-    keyring.saveAccount(pair, data.password);
-    keyring.addPair(pair, data.password);
+    const {pair, json} = await keyring.addUri(`0x${rawSeedString}`, this._password, meta, 'ed25519');
 
     const account = this.addAccount({
       address: json.address,
@@ -363,4 +519,12 @@ export class AccountService extends StartableService {
     return account;
   }
 
+  forgetAll() {
+    if (!this._isDevelopment) {
+      (this._$accounts.value || []).forEach(account => {
+        keyring.forgetAccount(account.address);
+      });
+    }
+    this._$accounts.next([]);
+  }
 }

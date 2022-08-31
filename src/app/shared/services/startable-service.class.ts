@@ -2,6 +2,7 @@ import {Optional} from '@angular/core';
 import {Subject} from 'rxjs';
 import {waitFor} from '../observables';
 import {BaseService, IBaseServiceOptions} from "@app/shared/services/base-service.class";
+import {environment} from "@environments/environment";
 
 export interface IStartableService<T = any> {
   started: boolean;
@@ -21,6 +22,7 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
 
   protected _startByReadyFunction = true; // should start when calling ready() ?
   protected _data: T = null;
+  protected _debug: boolean = false;
 
   private _started = false;
   private _startPromise: Promise<T> = null;
@@ -34,6 +36,7 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
     this._startPrerequisite = prerequisiteService
       ? () => prerequisiteService.ready()
       : () => Promise.resolve();
+    this._debug = !environment.production;
   }
 
   start(): Promise<T> {

@@ -46,7 +46,6 @@ export class PlatformService extends StartableService {
     this._mobile = this.mobile;
     this._touchUi = this.touchUi;
 
-
     // Configure translation
     await this.configureTranslate();
 

@@ -1,0 +1,9 @@
+
+.select-popover-large .popover-content{
+  width: #{$app-popover-width} !important;
+}
+
+.cdk-visually-hidden {
+  display: none;
+  visibility: hidden;
+}

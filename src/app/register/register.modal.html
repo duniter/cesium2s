@@ -30,7 +30,19 @@
   <app-register-form (onSubmit)="doSubmit()" (onCancel)="cancel()"
                      [class]="mobile ? '': 'has-footer'"
                      #form>
+
+
+    <ion-row *ngIf="form.debug" codeConfirmation>
+      <ion-text color="primary"  class="ion-padding">
+        <small>loading: {{loading}}<br/>
+          canNext: {{form.canNext()}}<br/>
+          isEnd: {{form.isEnd()}}<br/>
+        </small>
+      </ion-text>
+    </ion-row>
   </app-register-form>
+
+
   <!-- buttons -->
   <ion-toolbar>
 
@@ -62,11 +74,12 @@
         <ion-button *ngIf="form.isEnd()"
                     (click)="doSubmit()" fill="solid"
                     [disabled]="loading || !form.canNext()" color="tertiary">
-          <span translate>COMMON.BTN_SEND</span>
-          <ion-icon slot="end" name="send"></ion-icon>
+          <span translate>COMMON.BTN_SAVE</span>
+          <ion-icon slot="end" name="save"></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>
+
 
 
   </ion-toolbar>
