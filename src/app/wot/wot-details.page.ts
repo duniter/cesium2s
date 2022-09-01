@@ -58,13 +58,4 @@ export class WotDetailsPage extends BasePage<Account> implements OnInit {
     await this.showToast({message: 'INFO.COPY_TO_CLIPBOARD_DONE'});
   }
 
-  transfer(event?: UIEvent) {
-    this.router.navigate(['transfer'], {
-      queryParams: {
-        address: this.data.address,
-        name: this.data.meta?.name
-      }
-    });
-  }
-
 }

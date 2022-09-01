@@ -76,7 +76,7 @@ export class HomePage extends BasePage<Settings> implements OnInit {
 
     if (data?.address) {
       this.defaultAccount = data;
-      setTimeout(() => this.router.navigateByUrl('/wallet/' + data.address));
+      setTimeout(() => this.router.navigate(['/wallet', data.address]));
     }
   }
 

@@ -6,6 +6,7 @@ import {IonicModule} from '@ionic/angular';
 import {TranslateModule} from "@ngx-translate/core";
 import {SharedPipesModule} from "@app/shared/pipes/pipes.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {QRCodeModule} from "angular2-qrcode";
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     ReactiveFormsModule,
     IonicModule,
     TranslateModule,
+    QRCodeModule,
 
     // App modules
     SharedPipesModule
@@ -24,6 +26,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     ReactiveFormsModule,
     IonicModule,
     TranslateModule,
+    QRCodeModule,
 
     // App modules
     SharedPipesModule

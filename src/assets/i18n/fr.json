@@ -361,8 +361,8 @@
     "NOT_WRITTEN_EXPIRE_IN": "Date limite<br/>de traitement",
     "EXPIRED": "Expiré",
     "PSEUDO": "Pseudonyme",
-    "SIGNED_ON_BLOCK": "Emise au bloc #{{block}}",
-    "WRITTEN_ON_BLOCK": "Ecrite au bloc #{{block}}",
+    "SIGNED_ON_BLOCK": "Émise au bloc #{{block}}",
+    "WRITTEN_ON_BLOCK": "Écrite au bloc #{{block}}",
     "GENERAL_DIVIDER": "Informations générales",
     "NOT_MEMBER_ACCOUNT": "Compte simple (non membre)",
     "NOT_MEMBER_ACCOUNT_HELP": "Il s'agit d'un simple portefeuille, sans demande d'adhésion en attente.",
@@ -684,6 +684,8 @@
     "REST": "Reste du compte",
     "REST_TO": "à",
     "WARN_COMMENT_IS_PUBLIC": "Veuillez noter que <b>les commentaires sont publics</b> (non chiffrés).",
+    "BTN_QR_CODE": "QR Code",
+    "QR_CODE_HELP": "Demander au destinataire de flasher ce code. Il pourra alors déposer le paiement plus tard, quand il le souhaite.",
     "MODAL": {
       "TITLE": "Virement"
     }

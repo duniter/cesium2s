@@ -35,9 +35,14 @@ export class SettingsService extends StartableService<Settings> {
 
   protected async ngOnStart(): Promise<Settings> {
 
-    this._mobile = this.ionicPlatform.is('mobile');
+    this._mobile = this.ionicPlatform.is('mobile')
+      || this.ionicPlatform.is('iphone')
+      || this.ionicPlatform.is('android');
 
     const data = await this.restoreLocally();
+
+    console.info('[settings-restore] Mobile: ', this._mobile);
+    console.info('[settings-restore] Settings ready: ', data);
 
     return data;
   }

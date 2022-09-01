@@ -31,6 +31,7 @@ export abstract class BasePage<
   protected readonly _debug = !environment.production;
   protected readonly _logPrefix: string;
   protected readonly _options: O;
+  protected _presentingElement: Element = null;
 
   mobile: boolean = null;
   error: string = null;
@@ -57,10 +58,12 @@ export abstract class BasePage<
       ...options
     };
     this._logPrefix = `[${this._options.name}] `;
-
   }
 
   ngOnInit() {
+
+    // Get modal presenting element (iOS only)
+    this._presentingElement = this.mobile ? document.querySelector('.ion-page') : null;
 
     // Load data
     setTimeout(() => this.load(), this._options.loadDueTime || 0);

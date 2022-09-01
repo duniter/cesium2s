@@ -26,16 +26,15 @@
   <ion-header>
     <ion-toolbar class="ion-text-end" color="secondary">
       <ion-buttons slot="start">
-        <ion-button *ngIf="loaded" (click)="qrCodeModal.present()">
+        <ion-button [disabled]="loading"
+                    (click)="qrCodeModal.present()">
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-title size="large" *ngIf="loaded; else loadingText">
-        {{ balance | amountFormat }}
-      </ion-title>
-      <ng-template #loadingText>
-        <ion-title translate>COMMON.LOADING</ion-title>
-      </ng-template>
+      <ion-label slot="end"
+                 *ngIf="loaded" class="ion-text-end">
+        <b>{{ balance | amountFormat }}</b>
+      </ion-label>
     </ion-toolbar>
   </ion-header>
 
@@ -47,7 +46,7 @@
         <ion-label color="danger">{{error|translate}}</ion-label>
       </ion-item>
 
-      <ion-item>
+      <ion-item *ngIf="!mobile">
         <ion-icon slot="start" name="key"></ion-icon>
         <ion-label color="medium" translate>COMMON.PUBKEY</ion-label>
         <ion-input *ngIf="loaded; else skeleton60"
@@ -62,6 +61,10 @@
           <ion-icon slot="icon-only" name="copy"></ion-icon>
         </ion-button>
       </ion-item>
+      <ion-item *ngIf="mobile" (click)="copyAddress()" >
+        <ion-icon slot="start" name="key"></ion-icon>
+        <ion-label class="ion-text-wrap">{{data?.address}}</ion-label>
+      </ion-item>
 
 <!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->
 <!--        <ion-icon slot="start" name="ribbon"></ion-icon>-->
@@ -69,7 +72,9 @@
 <!--        <ion-badge color="success">{{(data?.data.free || 0) | amountFormat}} {{currency}}</ion-badge>-->
 <!--      </ion-item>-->
 
-      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">
+<!--      <ion-item detail  -->
+<!--                 [routerLink]="['/wot/cert/', data?.address]">-->
+        <ion-item detail (click)="notImplementedModal.present()">
         <ion-icon slot="start" name="ribbon"></ion-icon>
         <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
         <ion-badge color="success">0</ion-badge>
@@ -77,7 +82,7 @@
 
     </ion-list>
 
-    <div class="ion-text-center">
+    <div class="ion-text-center ion-padding-top">
       <ion-button [routerLink]="['/transfer', 'from', data?.address]"
                   [disabled]="loading">
         <ion-icon slot="start" name="paper-plane"></ion-icon>
@@ -93,8 +98,7 @@
 
 <ion-modal
   #authModal
-  [backdropDismiss]="false"
->
+  [backdropDismiss]="false">
   <ng-template>
     <ion-content scrollY="false">
       <app-auth-modal></app-auth-modal>
@@ -106,10 +110,50 @@
 <ion-modal
   #qrCodeModal
   [backdropDismiss]="true"
+  [presentingElement]="_presentingElement"
 >
   <ng-template>
-    <ion-content scrollY="false">
-      QRCODE
+    <ion-content [scrollY]="mobile">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title translate>COMMON.PUBKEY</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="qrCodeModal.dismiss()" translate>COMMON.BTN_CLOSE</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <qr-code [value]="data.address" [size]="250"></qr-code>
+
+      <!-- public key -->
+      <ion-list>
+        <ion-item lines="none" (click)="copyAddress()" tappable>
+          <ion-icon slot="start" name="key"></ion-icon>
+          <ion-label class="ion-text-wrap">{{data?.address}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+
+<ion-modal
+  #notImplementedModal
+  [backdropDismiss]="true"
+>
+  <ng-template>
+    <ion-content>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button (click)="notImplementedModal.dismiss()" translate>COMMON.BTN_CLOSE</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-item>
+        <ion-icon slot="start" name="warning" color="danger" lines="none"></ion-icon>
+        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED'|translate"></ion-label>
+      </ion-item>
     </ion-content>
   </ng-template>
 </ion-modal>

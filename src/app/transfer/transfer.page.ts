@@ -40,7 +40,8 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     reference: 'event'
   };
 
-  @ViewChild('modal') modal: IonModal;
+  @ViewChild('wotModal') wotModal: IonModal;
+  @ViewChild('qrCodeModal') qrCodeModal: IonModal;
 
   get balance(): number {
     if (!this.issuer?.data) return undefined;
@@ -61,6 +62,10 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     return !this.valid;
   }
 
+  get paymentData(): string {
+    return 'TODO';
+  }
+
   constructor(
     injector: Injector,
     protected accountService: AccountService,
@@ -76,8 +81,11 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
 
   ngOnDestroy() {
     super.ngOnDestroy();
-    if (this.modal.isOpen) {
-      this.modal.dismiss();
+    if (this.wotModal?.isOpen) {
+      this.wotModal.dismiss();
+    }
+    if (this.qrCodeModal?.isOpen) {
+      this.qrCodeModal.dismiss();
     }
   }
 
@@ -157,7 +165,13 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     this.issuer = null;
     this.recipient = {address: null, meta: null};
     this.amount = null;
-    this.markAsLoaded();
+    if (this.wotModal?.isOpen) {
+      this.wotModal.dismiss();
+    }
+    if (this.qrCodeModal?.isOpen) {
+      this.qrCodeModal.dismiss();
+    }
+    this.markAsLoaded({emitEvent: false});
     this.markForCheck();
   }
 }

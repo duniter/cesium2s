@@ -16,7 +16,15 @@ ion-item.error {
   }
 }
 
-/* */
-ion-toolbar {
-  --ion-toolbar-background: var(--ion-color-base);
+/* -- QR code -- */
+qr-code {
+  --size: min(350px, 80vw);
+  width: 100%;
+  height: var(--size);
+  display: block;
+  text-align: center;
+  img {
+    width: var(--size);
+    height: var(--size);
+  }
 }

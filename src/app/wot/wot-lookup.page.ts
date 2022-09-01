@@ -61,12 +61,7 @@ export class WotLookupPage extends BasePage<Account[]> implements OnInit {
   }
 
   transfer(item: Account) {
-    this.router.navigate(['transfer'], {
-      queryParams: {
-        name: item.meta?.name,
-        address: item.address
-      }
-    });
+    this.router.navigate(['/transfer', 'to', item.address]);
   }
 
   click(item: Account) {
