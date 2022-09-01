@@ -451,6 +451,13 @@ export class AccountService extends StartableService {
     }
   }
 
+  /**
+   * Load account data (balance, tx history, etc.).
+   * This load can be skipped, when data already loaded (See options)
+   * @param account
+   * @param opts
+   * @private
+   */
   private async loadData(account: Account, opts?: LoadAccountDataOptions): Promise<Account> {
     opts = {
       reload: false,
