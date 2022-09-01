@@ -28,3 +28,7 @@ qr-code {
     height: var(--size);
   }
 }
+
+ion-toolbar ion-menu-button {
+  color: var(--ion-color-base-contrast);
+}

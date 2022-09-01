@@ -6,6 +6,7 @@ import {AppSharedModule} from "@app/shared/shared.module";
 import {TranslateModule} from "@ngx-translate/core";
 import {AppAuthModule} from "@app/auth/auth.module";
 import {AppUnlockModule} from "@app/unlock/unlock.module";
+import {NgxJdenticonModule} from "ngx-jdenticon";
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import {AppUnlockModule} from "@app/unlock/unlock.module";
     TranslateModule.forChild(),
     WalletPageRoutingModule,
     AppAuthModule,
-    AppUnlockModule
+    AppUnlockModule,
+    NgxJdenticonModule
   ],
   declarations: [WalletPage]
 })

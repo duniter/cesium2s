@@ -2,7 +2,6 @@
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
-      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title translate>TRANSFER.TITLE</ion-title>
   </ion-toolbar>
@@ -27,13 +26,22 @@
       <!-- TO -->
       <ion-item>
         <ion-label color="medium" translate>TRANSFER.TO</ion-label>
-        <ion-input *ngIf="data|async|isNotEmptyArray; else inputSkeleton"
-          [(ngModel)]="recipient.address" (ionFocus)="!wotModal.isOpen && wotModal.present()">
-        </ion-input>
-        <ion-button slot="end" fill="clear" (click)="!wotModal.isOpen && wotModal.present()"
+        <ion-textarea *ngIf="data|async|isNotEmptyArray; else inputSkeleton"
+                   [rows]="mobile ? 2 : 1"
+                   class="ion-text-wrap ion-text-end"
+                   [(ngModel)]="recipient.address" (ionFocus)="wotModal.present()">
+        </ion-textarea>
+        <ion-button slot="end" fill="clear" id="open-modal-trigger"
+                    [class.cdk-visually-hidden]="loading || mobile"
                     [disabled]="loading"
                     [title]="'COMMON.BTN_SEARCH'|translate">
           <ion-icon slot="icon-only" name="search"></ion-icon>
+        </ion-button>
+        <ion-button slot="end" fill="clear" color="dark"
+                    *ngIf="_capacitor"
+                    (click)="scanRecipient($event)"
+                    [disabled]="loading">
+          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-item>
 
@@ -45,8 +53,7 @@
         </ng-container>
         <ng-template #select>
           <ng-container *ngIf="data|async; let accounts; else inputSkeleton">
-            <ion-select #ionSelect
-                        [compareWith]="compareWith"
+            <ion-select [compareWith]="compareWith"
                         [selectedText]="issuer|accountName"
                         [(ngModel)]="issuer"
                         [interface]="mobile ? 'action-sheet' : 'popover'"
@@ -56,13 +63,12 @@
               <ion-select-option *ngFor="let account of accounts"
                                  [value]="account"
                                  [disabled]="!(account|balance)">
-
                 {{account|accountName}}
                 <span *ngIf="account|balance; let balance">({{balance|amountFormat}})</span>
               </ion-select-option>
             </ion-select>
             <ion-badge *ngIf="issuer|balance; let balance" slot="end"
-              [color]="amount+fee>balance ? 'danger' : 'success'">
+              [color]="amount+fee>balance/100 ? 'danger' : 'success'">
               {{balance|amountFormat}}
             </ion-badge>
           </ng-container>
@@ -71,8 +77,8 @@
 
       <ion-item>
         <ion-label color="medium"  translate>TRANSFER.AMOUNT</ion-label>
-        <ion-input type="number" [(ngModel)]="amount">
-
+        <ion-input type="number" [(ngModel)]="amount"
+                   class="ion-text-end">
         </ion-input>
         <ion-label color="medium" slot="end" *ngIf="currency">{{currency.symbol}}</ion-label>
       </ion-item>
@@ -91,20 +97,22 @@
       </ion-item>
     </ion-list>
 
-    <div class="ion-text-center" *ngIf="!mobile">
+<!--    <div class="ion-text-center" *ngIf="!mobile">-->
+<!--      <ng-container *ngTemplateOutlet="buttons"></ng-container>-->
+<!--    </div>-->
+    <ion-toolbar class="ion-text-center" [color]="'transparent'">
       <ng-container *ngTemplateOutlet="buttons"></ng-container>
-    </div>
+    </ion-toolbar>
   </div>
-
 
   <ion-modal
     #wotModal
     trigger="open-modal-trigger"
     [initialBreakpoint]="0.25"
     [breakpoints]="[0.25, 0.5, 0.75]"
-    backdropDismiss="true"
+    [backdropDismiss]="false"
     [backdropBreakpoint]="0.5"
-    [canDismiss]="!!recipient?.address"
+    [keepContentsMounted]="true"
   >
     <ng-template>
       <app-wot-lookup
@@ -118,33 +126,36 @@
   </ion-modal>
 </ion-content>
 
-<ion-footer *ngIf="mobile" class="ion-text-center">
-  <ng-container *ngTemplateOutlet="buttons"></ng-container>
-</ion-footer>
+<!--<ion-footer *ngIf="mobile" class="ion-text-center">-->
+<!--  <ng-container *ngTemplateOutlet="buttons"></ng-container>-->
+<!--</ion-footer>-->
 
 <ng-template #buttons>
-  <ion-button (click)="cancel($event)" color="light" [disabled]="loading">
+  <ion-button (click)="cancel($event)" color="light"
+              [disabled]="loading" *ngIf="!mobile">
     <ion-label translate>COMMON.BTN_CANCEL</ion-label>
-  </ion-button>
-  <ion-button (click)="submit($event)" [disabled]="loading||invalid">
-    <ion-icon slot="start" name="paper-plane"></ion-icon>
-    <ion-label translate>TRANSFER.BTN_SEND</ion-label>
   </ion-button>
   <ion-button (click)="qrCodeModal.present()"
               [disabled]="loading||invalid">
     <ion-icon slot="start" name="qr-code"></ion-icon>
     <ion-label translate>TRANSFER.BTN_QR_CODE</ion-label>
   </ion-button>
+  <ion-button (click)="submit($event)" [disabled]="loading||invalid"
+              color="tertiary">
+    <ion-icon slot="start" name="paper-plane"></ion-icon>
+    <ion-label translate>TRANSFER.BTN_SEND</ion-label>
+  </ion-button>
 </ng-template>
 
 <ng-template #inputSkeleton>
-  <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+  <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
 </ng-template>
 
 <ion-modal
   #qrCodeModal
   [backdropDismiss]="true"
   [presentingElement]="_presentingElement"
+  [canDismiss]="true"
 >
   <ng-template>
     <ion-content>
@@ -160,6 +171,30 @@
         <ion-icon slot="start" name="help-circle" color="tertiary"></ion-icon>
         <ion-label class="ion-text-wrap" translate>TRANSFER.QR_CODE_HELP</ion-label>
       </ion-item>
+      <ion-item>
+        <ion-icon slot="start" name="warning" color="danger" lines="none"></ion-icon>
+        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED'|translate"></ion-label>
+      </ion-item>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+<ion-modal
+  #notImplementedModal
+  [backdropDismiss]="true"
+  [presentingElement]="_presentingElement"
+  [canDismiss]="true"
+>
+  <ng-template>
+    <ion-content>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button (click)="notImplementedModal.dismiss()" translate>COMMON.BTN_CLOSE</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
       <ion-item>
         <ion-icon slot="start" name="warning" color="danger" lines="none"></ion-icon>
         <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED'|translate"></ion-label>

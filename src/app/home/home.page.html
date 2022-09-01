@@ -3,7 +3,6 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title translate>HOME.TITLE</ion-title>
     <ion-buttons slot="end" >
       <ng-container [ngTemplateOutlet]="localeButton"></ng-container>
     </ion-buttons>
@@ -54,6 +53,12 @@
             <ion-label translate>MENU.ACCOUNT</ion-label>
           </ion-button>
 
+          <!-- transfer -->
+          <ion-button expand="block" [routerLink]="'/transfer'">
+            <ion-icon name="paper-plane" slot="start"></ion-icon>
+            <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
+          </ion-button>
+
           <!-- disconnect button -->
           <p [class.cdk-visually-hidden]="mobile">
             <ion-text [innerHTML]="'HOME.NOT_YOUR_ACCOUNT_QUESTION' | translate: {pubkey: (defaultAccount|accountName) }"></ion-text>
@@ -74,8 +79,9 @@
 
           <!-- login -->
           <p class="ion-padding-top" translate>LOGIN.HAVE_ACCOUNT_QUESTION</p>
-          <ion-button color="light" expand="block" (click)="login()">
+          <ion-button color="light" expand="block" (click)="login($event)">
             <ion-label translate>COMMON.BTN_LOGIN</ion-label>
+            <ion-icon slot="end" name="chevron-down"></ion-icon>
           </ion-button>
         </ng-template>
       </ion-card-content>
@@ -84,11 +90,24 @@
   </div>
 </ion-content>
 
+<ion-popover #loginMethodPopover>
+  <ng-template>
+    <ion-content>
+      <ion-list>
+        <ion-item *ngFor="let item of loginMethods"
+                  [disabled]="item.disabled"
+                  (click)="loginMethodPopover.dismiss(item.value)"
+                  tappable>
+          {{item.label|translate}}
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-popover>
+
 <ion-modal
-  #authModal
-  trigger="open-auth-modal"
-  [backdropDismiss]="false"
->
+  #loginModal
+  [backdropDismiss]="false">
   <ng-template>
     <ion-content scrollY="false">
       <app-auth-modal></app-auth-modal>
@@ -98,9 +117,7 @@
 
 <ion-modal
   #registerModal
-  trigger="open-register-modal"
-  [backdropDismiss]="false"
->
+  [backdropDismiss]="false">
   <ng-template>
     <ion-content scrollY="false">
       <app-register-modal></app-register-modal>

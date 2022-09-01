@@ -14,7 +14,7 @@ export class AppComponent {
 
     { title: 'MENU.HOME', url: '/home', icon: 'home' },
     { title: 'MENU.ACCOUNT', url: '/wallet', icon: 'card' },
-    { title: 'TRANSFER.SUB_TITLE', url: '/transfer', icon: 'paper-plane' },
+    { title: 'COMMON.BTN_SEND_MONEY', url: '/transfer', icon: 'paper-plane' },
 
     // { title: 'Messages', url: '/message/inbox', icon: 'mail' },
 

@@ -8,9 +8,9 @@ import {Drivers} from "@ionic/storage";
 import {StorageDrivers} from "@app/shared/services/storage/storage.utils";
 
 export const environment = <Environment>{
-  production: false,
+  production: true,
 
-  name: 'Cesium',
+  name: 'Cesium&sup2;',
 
   defaultLocale: 'fr',
 
@@ -30,6 +30,7 @@ export const environment = <Environment>{
     peer: 'wss://gdev.librelois.fr/ws',
 
     auth: <AuthData>{
+      address: '5GAT6CJW8yVKwUuQc7sM5Kk9GZVTpbZYk9PfjNXtvnNgAJZ1',
       v1: {
         salt: 'test', password: 'test'
       }

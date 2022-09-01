@@ -10,13 +10,16 @@ import {
 import {AccountService} from "../wallet/account.service";
 import {BasePage} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
-import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
+import {ActionSheetOptions, IonModal, Platform, PopoverOptions} from "@ionic/angular";
 import {BehaviorSubject, firstValueFrom, Observable} from "rxjs";
 import {isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
 import {filter} from "rxjs/operators";
 import {WotLookupPage} from "@app/wot/wot-lookup.page";
 import {NetworkService} from "@app/network/network.service";
 import {Currency} from "@app/network/currency.model";
+import {Router} from "@angular/router";
+import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
+import {BarcodeScannerWeb} from "@capacitor-community/barcode-scanner/dist/esm/web";
 
 @Component({
   selector: 'app-transfer',
@@ -31,6 +34,7 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
   recipient: Account = {address: null, meta: null};
   amount: number;
   fee: number;
+  protected _capacitor: boolean;
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet'
@@ -53,9 +57,9 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
   }
 
   get valid(): boolean {
-    const valid = this.amount > 0 && isNotNilOrBlank(this.issuer?.address) && isNotNilOrBlank(this.recipient?.address);
-    console.log(valid);
-    return valid;
+    return this.amount > 0
+      && isNotNilOrBlank(this.issuer?.address)
+      && isNotNilOrBlank(this.recipient?.address);
   }
 
   get invalid(): boolean {
@@ -68,25 +72,35 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
 
   constructor(
     injector: Injector,
+    protected ionicPlatform: Platform,
     protected accountService: AccountService,
     protected networkService: NetworkService,
+    protected router: Router,
     protected cd: ChangeDetectorRef
   ) {
     super(injector, {name: 'transfer', loadDueTime: 250});
+
   }
 
   ngOnInit() {
     super.ngOnInit();
+
+    // Hide modal when leave page
+    this.registerSubscription(
+      this.router.events
+        .pipe(filter(
+          (value, index) => {
+            console.log(value);
+            return true;
+          }
+        )).subscribe()
+    )
   }
 
-  ngOnDestroy() {
+  async ngOnDestroy() {
     super.ngOnDestroy();
-    if (this.wotModal?.isOpen) {
-      this.wotModal.dismiss();
-    }
-    if (this.qrCodeModal?.isOpen) {
-      this.qrCodeModal.dismiss();
-    }
+    await this.wotModal?.dismiss();
+    await this.qrCodeModal?.dismiss();
   }
 
   protected async ngOnLoad(): Promise<Observable<Account[]>> {
@@ -118,6 +132,8 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     }
 
     this.fee = (this.networkService.currency?.fees.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
+
+    this._capacitor = this.ionicPlatform.is('capacitor');
 
     return subject;
   }
@@ -156,21 +172,30 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     }
   }
 
+  async scanRecipient(event: UIEvent) {
+    if (!this._capacitor) return; // SKip
+
+    await BarcodeScanner.hideBackground(); // make background of WebView transparent
+
+    const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+
+    // if the result has content
+    if (result.hasContent) {
+      this.setRecipient(result.content);
+    }
+  }
+
   protected compareWith(a1: Account, a2: Account) {
     return a1.address === a2.address;
   }
 
-  protected reset() {
+  protected async reset() {
     this.showComment = false;
     this.issuer = null;
     this.recipient = {address: null, meta: null};
     this.amount = null;
-    if (this.wotModal?.isOpen) {
-      this.wotModal.dismiss();
-    }
-    if (this.qrCodeModal?.isOpen) {
-      this.qrCodeModal.dismiss();
-    }
+    await this.wotModal?.dismiss();
+    await this.qrCodeModal?.dismiss();
     this.markAsLoaded({emitEvent: false});
     this.markForCheck();
   }

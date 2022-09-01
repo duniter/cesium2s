@@ -32,7 +32,8 @@
               "localforage",
               "bn.js",
               "ip-regexp",
-              "eventemitter3"
+              "eventemitter3",
+              "qrious"
             ],
             "assets": [
               {

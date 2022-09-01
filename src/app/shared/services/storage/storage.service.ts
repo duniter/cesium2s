@@ -23,33 +23,34 @@ export class StorageService extends StartableService<Storage>
   protected async ngOnStart(): Promise<Storage> {
     await this.platform.ready();
     const storage = await this.storage.create();
-    console.info(`[storage-service] Started using driver=${storage?.driver}`);
+    //console.info(`[storage-service] Started using driver=${storage?.driver}`);
     return storage;
   }
 
   async set(key: string, value: any) {
-    console.debug(`[storage-service] Set ${key} = `, value);
+    //if (this._debug) console.debug(`[storage-service] Set ${key} = `, value);
 
     if (!this.started) await this.ready();
     return this._data.set(key, value);
   }
 
   async get(key: string): Promise<any> {
-    console.debug(`[storage-service] Get ${key} ...`);
+    if (this._debug) console.debug(`[storage-service] Get ${key}`);
     if (!this.started) await this.ready();
     return this._data.get(key);
   }
 
   async remove(key: string) {
     if (!this.started) await this.ready();
+    //if (this._debug) console.debug(`[storage-service] Remove key ${key}`);
     return this._data.remove(key);
   }
 
   async keys(): Promise<string[]> {
-    console.debug(`[storage-service] Get keys...`);
+    //if (this._debug) console.debug(`[storage-service] Get keys`);
     if (!this.started) await this.ready();
     const keys = await this._data.keys();
-    console.debug(`[storage-service] ${keys.length} keys found: `, keys);
+    //if (this._debug) console.debug(`[storage-service] ${keys.length} keys found: `, keys);
     return keys;
   }
 
@@ -60,8 +61,6 @@ export class StorageService extends StartableService<Storage>
 
   async forEach(iteratorCallback: (value: any, key: string, iterationNumber: Number) => any): Promise<void> {
     if (!this.started) await this.ready();
-    return this._data.forEach((value, key, iterationNumber) => {
-      iteratorCallback(value, key, iterationNumber);
-    });
+    return this._data.forEach(iteratorCallback);
   }
 }

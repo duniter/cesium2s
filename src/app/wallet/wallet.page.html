@@ -31,8 +31,7 @@
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-label slot="end"
-                 *ngIf="loaded" class="ion-text-end">
+      <ion-label slot="end" *ngIf="loaded" class="ion-text-end ion-margin-end">
         <b>{{ balance | amountFormat }}</b>
       </ion-label>
     </ion-toolbar>
@@ -47,7 +46,9 @@
       </ion-item>
 
       <ion-item *ngIf="!mobile">
-        <ion-icon slot="start" name="key"></ion-icon>
+        <ion-avatar slot="start" *ngIf="loaded">
+          <svg width="40" width="40" [data-jdenticon-value]="data.data?.randomId||data.address"></svg>
+        </ion-avatar>
         <ion-label color="medium" translate>COMMON.PUBKEY</ion-label>
         <ion-input *ngIf="loaded; else skeleton60"
                    class="ion-text-end"
@@ -111,17 +112,20 @@
   #qrCodeModal
   [backdropDismiss]="true"
   [presentingElement]="_presentingElement"
+  [canDismiss]="true"
 >
   <ng-template>
     <ion-content [scrollY]="mobile">
       <ion-header>
-        <ion-toolbar>
+        <ion-toolbar color="secondary">
           <ion-title translate>COMMON.PUBKEY</ion-title>
           <ion-buttons slot="end">
             <ion-button (click)="qrCodeModal.dismiss()" translate>COMMON.BTN_CLOSE</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
+
+      <!-- QR code -->
       <qr-code [value]="data.address" [size]="250"></qr-code>
 
       <!-- public key -->
@@ -140,6 +144,8 @@
 <ion-modal
   #notImplementedModal
   [backdropDismiss]="true"
+  [presentingElement]="_presentingElement"
+  [canDismiss]="true"
 >
   <ng-template>
     <ion-content>

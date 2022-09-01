@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
-import {ApiPromise, Keyring} from "@polkadot/api";
+import {ApiPromise} from "@polkadot/api";
 import {Account, AccountMeta, AccountUtils} from "./account.model";
 import {StartableService} from "@app/shared/services/startable-service.class";
 import {AuthData} from "@app/auth/auth.model";
@@ -14,7 +14,8 @@ import {
   isNil,
   isNilOrBlank,
   isNilOrNaN,
-  isNotEmptyArray, isNotNil,
+  isNotEmptyArray,
+  isNotNil,
   isNotNilOrBlank,
   sleep
 } from "@app/shared/functions";
@@ -24,19 +25,22 @@ import {
   debounceTime,
   firstValueFrom,
   from,
-  lastValueFrom,
   map,
   Observable,
-  skip, Subscription,
-  switchMap, timer
+  Subscription,
+  switchMap,
+  timer
 } from "rxjs";
 import {ModalController} from "@ionic/angular";
 import {UnlockModal, UnlockModalOptions} from "@app/unlock/unlock.modal";
 import {Currency} from "@app/network/currency.model";
 import {SettingsService} from "@app/settings/settings.service";
-import {KeyringAddress} from "@polkadot/ui-keyring/types";
+import {scryptEncode} from "@polkadot/util-crypto/scrypt/encode";
+import {Params} from "@polkadot/util-crypto/scrypt/types";
+import {u8aToHex} from "@polkadot/util";
+import {addressKey, contractKey} from "@polkadot/ui-keyring/defaults";
+import {formatAddress} from "@app/shared/currencies";
 
-const scrypt = require('scrypt-async');
 export interface LoadAccountDataOptions {
   reload?: boolean;
   withTx?: boolean;
@@ -93,17 +97,8 @@ export class AccountService extends StartableService {
     // Restoring accounts
     await this.restoreAccounts(currency);
 
-    // Add test account --- DEV only
-    if (this._isDevelopment) {
-      const auth =  environment.dev?.auth;
-      // Set password
-      this._password = auth?.password || 'AAAAA';
-
-      // Add a V1 Dev account
-      if (auth?.v1) {
-        await this.addV1Account({...auth.v1, meta: auth.meta});
-      }
-    }
+    // Add Dev account - DEV only
+    await this.configureDevAccount();
   }
 
   async restoreAccounts(currency?: Currency) {
@@ -151,6 +146,25 @@ export class AccountService extends StartableService {
       });
 
       this._$accounts.next(accounts);
+    }
+  }
+
+  /**
+  * Add test account --- DEV only
+  */
+  protected async configureDevAccount() {
+    if (!this._isDevelopment) return;
+    const auth =  environment.dev?.auth;
+
+    // Set password to AAAAA (or those defined in environment)
+    this._password = auth?.password || 'AAAAA';
+
+    // Add a V1 Dev account, if define in environment
+    if (auth?.v1) {
+      const alreadyExists = auth.address ? await this.isAvailable(auth.address) : false;
+      if (!alreadyExists) {
+        await this.addV1Account({...auth.v1, meta: auth.meta});
+      }
     }
   }
 
@@ -482,7 +496,7 @@ export class AccountService extends StartableService {
 
       // Load balance (free + reserved)
       if (opts.withBalance === true && (isNil(account.data?.free) || opts.reload === true)) {
-        console.debug(`${this._logPrefix} Loading ${account.address} data...`);
+        console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} data...`);
         const {data} = await this.api.query.system.account(account.address);
         account.data = {
           ...account.data,
@@ -493,19 +507,19 @@ export class AccountService extends StartableService {
 
       // Load TX
       if (opts.withTx === true && (isNil(account.data?.txs) || opts.reload === true)) {
-        console.debug(`${this._logPrefix} Loading ${account.address} TX history...`);
+        console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} TX history...`);
         console.warn('[account-service] TODO - Implement load TX history');
         // TODO
         //somethingLoaded = true;
       }
 
       if (loaded) {
-        console.debug(`${this._logPrefix} Loading ${account.address} data [OK] in ${Date.now()-now}`, account.data);
+        console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} data [OK] in ${Date.now()-now}ms`, account.data);
       }
 
     }
     catch(err) {
-      console.error(`${this._logPrefix}Failed to load ${account.address} data:`, err);
+      console.error(`${this._logPrefix}Failed to load ${formatAddress(account.address)} data:`, err);
       throw new Error('ERROR.LOAD_WALLET_DATA_ERROR');
     }
 
@@ -522,7 +536,7 @@ export class AccountService extends StartableService {
       if (!opts || opts.emitEvent !== false) this.notifyChanged();
     }
     catch(err) {
-      console.error(`${this._logPrefix}Failed to refresh data of:`, array.map(a => a.address));
+      console.error(`${this._logPrefix}Failed to refresh data of:`, array.map(a => formatAddress(a.address)));
       throw new Error('ERROR.UPDATE_WALLET_LIST_FAILED');
     }
   }
@@ -535,16 +549,14 @@ export class AccountService extends StartableService {
     if (!data?.salt || !data?.password) return;
 
     console.info(this._logPrefix + ' Authenticating using salt+pwd...');
-
-    const rawSeedString = await new Promise((resolve) => {
-      scrypt(data.password, data.salt, {
-        N: 4096,
-        r: 16,
-        p: 1,
-        dkLen: 32,
-        encoding: 'hex'
-      }, (result) => resolve(result));
+    const passwordU8a = Uint8Array.from(data.password.split('').map(x => x.charCodeAt(0)));
+    const saltU8a = Uint8Array.from(data.salt.split('').map(x => x.charCodeAt(0)));
+    const result = scryptEncode(passwordU8a, saltU8a, <Params>{
+      N: 4096,
+      r: 16,
+      p: 1
     });
+    const seedHex = u8aToHex(result.password.slice(0,32));
 
     //console.debug('Computed seed (hex) from salt+pwd:', rawSeedString);
 
@@ -556,9 +568,9 @@ export class AccountService extends StartableService {
     const isAuth = await this.auth();
     if (!isAuth) return; // Skip
 
-    const {pair, json} = await keyring.addUri(`0x${rawSeedString}`, this._password, meta, 'ed25519');
+    const {pair, json} = await keyring.addUri(seedHex, this._password, meta, 'ed25519');
 
-    const account = this.addAccount({
+    const account = await this.addAccount({
       address: json.address,
       publicKey: pair.publicKey.toString(),
       type: pair.type,

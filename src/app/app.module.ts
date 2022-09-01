@@ -19,7 +19,9 @@ import {JDENTICON_CONFIG} from "ngx-jdenticon";
 import {APP_LOCALES} from "@app/settings/settings.model";
 import {APP_STORAGE} from "@app/shared/services/storage/storage.utils";
 import {StorageService} from "@app/shared/services/storage/storage.service";
-import {Drivers} from "@ionic/storage";
+import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
+import {StatusBar} from "@capacitor/status-bar";
+import {SplashScreen} from "@capacitor/splash-screen";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

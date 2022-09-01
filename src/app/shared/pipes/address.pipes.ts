@@ -1,4 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
+import {formatAddress} from "@app/shared/currencies";
 
 @Pipe({
   name: 'addressFormat'
@@ -6,8 +7,6 @@ import {Pipe, PipeTransform} from '@angular/core';
 export class AddressFormatPipe implements PipeTransform {
 
   transform(value: string, withChecksum?: boolean ): string {
-    if (!value) return '';
-    if (value.length < 12) return '?';
-    return value.substring(0,6) + '...' + value.substring(value.length - 6);
+    return formatAddress(value, withChecksum);
   }
 }

@@ -26,3 +26,9 @@ export function abbreviate(currency: string): string {
 
   return currency;
 }
+
+export function formatAddress(value: string, withChecksum?: boolean ): string {
+  if (!value) return '';
+  if (value.length < 12) return '?';
+  return value.substring(0,6) + '\u2026' + value.substring(value.length - 6);
+}

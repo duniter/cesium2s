@@ -48,7 +48,7 @@
             </ion-avatar>
             <ng-template #iconPerson>
               <ion-avatar slot="start">
-                <svg width="40" width="40" [data-jdenticon-value]="item.address"></svg>
+                <svg width="40" width="40" [data-jdenticon-value]="item.data?.randomId||item.address"></svg>
               </ion-avatar>
             </ng-template>
             <ion-label>

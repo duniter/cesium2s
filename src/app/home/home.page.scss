@@ -1,7 +1,4 @@
 @import 'ionic.globals';
-ion-menu-button {
-  color: var(--ion-color-primary);
-}
 
 h1,
 h2,
@@ -11,11 +8,9 @@ h5 {
   white-space: normal;
 }
 
-
 .ion-text-center {
   text-align: center;
 }
-
 
 ion-content {
   --background: transparent;
@@ -64,6 +59,7 @@ ion-content {
 
 .logo {
   margin-top: 15px;
+  margin-bottom: 15px;
   width: 100%;
   background-position: center center;
   background-repeat: no-repeat;
