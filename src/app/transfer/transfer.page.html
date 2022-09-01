@@ -13,11 +13,12 @@
       <ion-title size="large" translate>TRANSFER.TITLE</ion-title>
     </ion-toolbar>
   </ion-header>
+
   <div id="container">
 
     <ion-list>
       <!-- error -->
-      <ion-item *ngIf="error" lines="none" color="light">
+      <ion-item *ngIf="error" lines="none" color="light" class="error">
         <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
         <ion-label color="danger">{{error|translate}}</ion-label>
       </ion-item>
@@ -59,7 +60,10 @@
                 <span *ngIf="account|balance; let balance">({{balance|amountFormat}})</span>
               </ion-select-option>
             </ion-select>
-            <ion-badge *ngIf="issuer" slot="end">{{issuer|balance|amountFormat}}</ion-badge>
+            <ion-badge *ngIf="issuer|balance; let balance" slot="end"
+              [color]="amount+fee>balance ? 'danger' : 'success'">
+              {{balance|amountFormat}}
+            </ion-badge>
           </ng-container>
         </ng-template>
       </ion-item>
@@ -69,12 +73,14 @@
         <ion-input type="number" [(ngModel)]="amount">
 
         </ion-input>
+        <ion-label color="medium" slot="end" *ngIf="currency">{{currency.symbol}}</ion-label>
       </ion-item>
 
       <ion-item lines="none">
         <ion-toggle [(ngModel)]="showComment">
         </ion-toggle>
         <ion-label class="ion-text-start" color="medium" translate>TRANSFER.BTN_ADD_COMMENT</ion-label>
+        <ion-badge slot="end" *ngIf="amount && fee">{{'TRANSFER.FEE'|translate:{fee: fee, currency: currency.symbol} }}</ion-badge>
       </ion-item>
 
       <ion-item  *ngIf="showComment">
@@ -82,14 +88,13 @@
 
         </ion-textarea>
       </ion-item>
-
     </ion-list>
 
     <div class="ion-text-center" *ngIf="!mobile">
-      <ion-button (click)="cancel($event)" color="light">
+      <ion-button (click)="cancel($event)" color="light" [disabled]="loading">
         <ion-label translate>COMMON.BTN_CANCEL</ion-label>
       </ion-button>
-      <ion-button (click)="submit($event)">
+      <ion-button (click)="submit($event)" [disabled]="loading||invalid">
         <ion-icon slot="start" name="paper-plane"></ion-icon>
         <ion-label translate>TRANSFER.BTN_SEND</ion-label>
       </ion-button>
@@ -118,10 +123,10 @@
 </ion-content>
 
 <ion-footer *ngIf="mobile">
-  <ion-button (click)="cancel($event)" color="light">
+  <ion-button (click)="cancel($event)" color="light" [disabled]="loading">
     <ion-label translate>COMMON.BTN_CANCEL</ion-label>
   </ion-button>
-  <ion-button (click)="submit($event)">
+  <ion-button (click)="submit($event)" [disabled]="loading||invalid">
     <ion-icon slot="start" name="paper-plane"></ion-icon>
     <ion-label translate>TRANSFER.BTN_SEND</ion-label>
   </ion-button>

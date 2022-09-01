@@ -75,7 +75,9 @@ export class WotLookupPage extends BasePage<Account[]> implements OnInit {
     }
     else {
       // Open
-      this.router.navigate(['wot', ''])
+      this.router.navigate([item.address], {
+        relativeTo: this.activatedRoute
+      })
     }
   }
 

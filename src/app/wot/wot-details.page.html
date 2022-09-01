@@ -2,68 +2,65 @@
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title translate>MENU.WOT</ion-title>
+    <ion-title size="large">{{data|accountName}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-header collapse="condense" *ngIf="showToolbar">
+    <ion-toolbar>
+      <ion-title size="large">{{data|accountName}}</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
   <div id="container">
 
-    <ion-searchbar [placeholder]="'WOT.SEARCH_HELP'|translate"
-                   (change)="search()"
-                   (click)="searchClick.emit($event)">
-    </ion-searchbar>
+    <ion-header>
+      <ion-toolbar class="ion-text-end" color="secondary">
+        <ion-avatar slot="start" *ngIf="data?.meta?.avatar">
+          <ion-img [src]="data.meta.avatar"></ion-img>
+        </ion-avatar>
+        <ion-title size="large" *ngIf="loaded; else loadingText">
+          {{ data|balance|amountFormat }}
+        </ion-title>
+        <ng-template #loadingText>
+          <ion-title translate>COMMON.LOADING</ion-title>
+        </ng-template>
+      </ion-toolbar>
+    </ion-header>
 
     <ion-list>
+      <ion-item>
+        <ion-icon slot="start" name="key"></ion-icon>
+        <ion-label color="medium" translate>COMMON.PUBKEY</ion-label>
+        <ion-input *ngIf="loaded; else skeleton60"
+                   class="ion-text-end"
+                   [value]="data?.address"
+                   readonly>
+        </ion-input>
 
-      <ng-container *ngIf="loading">
-
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-      </ng-container>
-
-      <ng-template #items>
-        <ion-item-sliding *ngFor="let item of data">
-          <ion-item >
-            <ion-avatar slot="start" *ngIf="item.meta?.avatar; else iconPerson">
-              <ion-img [src]="item.meta?.avatar"></ion-img>
-            </ion-avatar>
-            <ng-template #iconPerson>
-              <ion-icon slot="start" name="person"></ion-icon>
-            </ng-template>
-            <ion-label>
-              <h2>{{item.meta?.name}}</h2>
-              <p>{{item.address|addressFormat}}</p>
-            </ion-label>
-            <ion-button slot="end" *ngIf="!mobile" (click)="transfer(item)" [title]="'BTN_SEND_MONEY'|translate">
-              <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
-            </ion-button>
-          </ion-item>
-          <ion-item-options *ngIf="mobile">
-            <ion-item-option (click)="transfer(item)" [title]="'BTN_SEND_MONEY'|translate">
-              <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ng-template>
+        <ion-button slot="end" (click)="copyAddress()"
+                    [disabled]="loading"
+                    fill="clear" [title]="'COMMON.COPY'|translate">
+          <ion-icon slot="icon-only" name="copy"></ion-icon>
+        </ion-button>
+      </ion-item>
 
     </ion-list>
+
+    <div class="ion-text-center">
+      <ion-button [routerLink]="['/transfer', 'to', data?.address]"
+                  [disabled]="loading">
+        <ion-icon slot="start" name="paper-plane"></ion-icon>
+        <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
+      </ion-button>
+    </div>
 
   </div>
 </ion-content>
 
-
-<ng-template #itemSkeleton>
-  <ion-item>
-    <ion-icon slot="start" name="person"></ion-icon>
-    <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-  </ion-item>
-</ng-template>
-
-
-<ng-template #inputSkeleton>
-  <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+<ng-template #skeleton60>
+  <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
 </ng-template>

@@ -3,4 +3,9 @@ export interface Currency {
   symbol: string;
   ss58Format: number;
   genesys: string;
+  fees: {
+    identity: number;
+    tx: number;
+  },
+  decimals: number;
 }

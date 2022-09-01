@@ -8,6 +8,16 @@ const routes: Routes = [
     path: '',
     pathMatch: 'full',
     component: TransferPage
+  },
+  {
+    path: 'from/:from',
+    pathMatch: 'full',
+    component: TransferPage
+  },
+  {
+    path: 'to/:to',
+    pathMatch: 'full',
+    component: TransferPage
   }
 ];
 

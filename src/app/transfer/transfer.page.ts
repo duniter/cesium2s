@@ -12,9 +12,11 @@ import {BasePage} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
 import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
 import {BehaviorSubject, firstValueFrom, Observable} from "rxjs";
-import {isNotEmptyArray} from "@app/shared/functions";
+import {isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
 import {filter} from "rxjs/operators";
 import {WotLookupPage} from "@app/wot/wot-lookup.page";
+import {NetworkService} from "@app/network/network.service";
+import {Currency} from "@app/network/currency.model";
 
 @Component({
   selector: 'app-transfer',
@@ -28,6 +30,7 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
   issuer: Account = null;
   recipient: Account = {address: null, meta: null};
   amount: number;
+  fee: number;
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet'
@@ -44,10 +47,24 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     return (this.issuer.data.free || 0) + (this.issuer.data.reserved || 0);
   }
 
+  get currency(): Currency {
+    return this.networkService.currency;
+  }
+
+  get valid(): boolean {
+    const valid = this.amount > 0 && isNotNilOrBlank(this.issuer?.address) && isNotNilOrBlank(this.recipient?.address);
+    console.log(valid);
+    return valid;
+  }
+
+  get invalid(): boolean {
+    return !this.valid;
+  }
 
   constructor(
     injector: Injector,
     protected accountService: AccountService,
+    protected networkService: NetworkService,
     protected cd: ChangeDetectorRef
   ) {
     super(injector, {name: 'transfer', loadDueTime: 250});
@@ -76,10 +93,23 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
 
     const accounts = await firstValueFrom(subject);
 
+    // Load issuer
+    const issuerAddress = this.activatedRoute.snapshot.paramMap.get('from');
+    if (isNotNilOrBlank(issuerAddress)) {
+      this.issuer = (accounts||[]).find(a => a.address === issuerAddress);
+    }
     // Only one account: select it
-    if (accounts?.length === 1) {
+    else if (accounts?.length === 1) {
       this.issuer = accounts[0];
     }
+
+    // Load receiver
+    const receiverAddress = this.activatedRoute.snapshot.paramMap.get('to');
+    if (isNotNilOrBlank(receiverAddress)) {
+      this.recipient.address = receiverAddress;
+    }
+
+    this.fee = (this.networkService.currency?.fees.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
 
     return subject;
   }
@@ -95,26 +125,39 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
   }
 
   cancel(event?: UIEvent) {
-    //
+    this.reset();
   }
 
   async submit(event?: UIEvent) {
     // Check valid
     if (!this.recipient || !this.issuer) return; // Skip
 
+    this.markAsLoading();
     this.resetError();
 
     try {
-      const txHash = await this.accountService.transfer(this.issuer, this.recipient, this.amount);
+      await this.accountService.transfer(this.issuer, this.recipient, this.amount);
 
       await this.showToast({message: 'INFO.TRANSFER_SENT'});
+
+      this.reset();
     }
     catch (err) {
       this.setError(err);
+      this.markAsLoaded();
     }
   }
 
-  compareWith(a1: Account, a2: Account) {
+  protected compareWith(a1: Account, a2: Account) {
     return a1.address === a2.address;
+  }
+
+  protected reset() {
+    this.showComment = false;
+    this.issuer = null;
+    this.recipient = {address: null, meta: null};
+    this.amount = null;
+    this.markAsLoaded();
+    this.markForCheck();
   }
 }

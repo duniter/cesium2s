@@ -41,6 +41,7 @@ export interface LoadAccountDataOptions {
   reload?: boolean;
   withTx?: boolean;
   withBalance?: boolean;
+  emitEvent?: boolean;
 }
 
 @Injectable({providedIn: 'root'})
@@ -372,34 +373,49 @@ export class AccountService extends StartableService {
     return await this.loadData(account, opts);
   }
 
-  async transfer(from: Partial<Account>, to: Partial<Account>, amount: number) : Promise<string> {
+  async transfer(from: Partial<Account>, to: Partial<Account>, amount: number, fee?: number) : Promise<string> {
     if (!from || !to) throw new Error('Missing argument \'from\' or \'to\' !');
+    const currency = this.network.currency;
+
+    // Check currency
+    if (!currency) throw new Error('ERROR.CHECK_NETWORK_CONNECTION');
+
+    // Check amount
     if (isNilOrNaN(amount)) {
       throw new Error('ERROR.AMOUNT_REQUIRED');
     }
     if (amount < 0) {
       throw new Error('ERROR.AMOUNT_NEGATIVE');
     }
-    // Same issuer/recipient
+
+    // Check fee
+    fee = fee || currency.fees.tx || 0;
+    if (fee < 0) {
+      throw new Error('ERROR.FEE_NEGATIVE');
+    }
+
+    // Check issuer != recipient
     if (from.address === to.address) {
       throw new Error('ERROR.SAME_TX_RECIPIENT');
     }
-    // the address we use to use for signing, as injected
-    //const issuer = from.address ? await this.getByAddress(from.address) : await this.getByAddress(from.meta?.name);
 
-
+    // Get issuer account
     const issuerAccount = await this.getByAddress(from.address);
-    // Not enough credit
-    if (amount > issuerAccount.data.free) {
+
+    // Check enough credit
+    if ((amount + fee) > issuerAccount.data.free) {
       throw new Error('ERROR.NOT_ENOUGH_CREDIT');
     }
 
     console.info(`[account-service] Sending ${amount} :\nfrom: ${from.address}\nto ${to.address}`)
 
-    const issuerPair = keyring.getPair(issuerAccount.address);
-    const convertedAmount = Math.floor(amount * 100);
 
-    // Unlock
+    // Compute total amount (with fee) and remove decimals
+    const powBase = Math.pow(10, currency.decimals || 0);
+    const totalAmount = Math.floor((amount + fee) * powBase);
+
+    // Get pair, and unlock it
+    const issuerPair = keyring.getPair(issuerAccount.address);
     if (issuerPair.isLocked) {
       console.debug(`[account-service] Unlocking address ${from.address} ...`);
       const isAuth = await this.auth();
@@ -410,29 +426,23 @@ export class AccountService extends StartableService {
     try {
       // Sign and send a transfer from Alice to Bob
        const txHash = await this.api.tx.balances
-         .transfer(to.address, convertedAmount)
+         .transfer(to.address, totalAmount)
          .signAndSend(issuerPair, async ({status, events, findRecord}) => {
             if (status.isInBlock) {
               console.info(`${this._logPrefix}Completed at block hash #${status.hash.toHuman()}`);
 
               if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
 
-              await sleep(200);
-              // Update issuer account
-              //issuerAccount.data.free -= amount;
+              let outdatedAccounts = [issuerAccount];
 
               // Update receiver account
               if (await this.isAvailable(to.address)) {
                 const toAccount = await this.getByAddress(to.address);
-                //toAccount.data.free += amount;
-
-                await this.loadData(toAccount, {reload: true});
+                outdatedAccounts.push(toAccount);
               }
 
-              await this.loadData(issuerAccount, {reload: true});
-
-              // Notify account changes
-              this.notifyChanged();
+              await sleep(200);
+              await this.refreshData(outdatedAccounts, {reload: true});
 
             } else {
               console.info(`Current status`, status.toHuman());
@@ -466,23 +476,55 @@ export class AccountService extends StartableService {
       ...opts
     };
 
-    // Load balance (free + reserved)
-    if (opts.withBalance === true && (isNil(account.data?.free) || opts.reload === true)) {
-      const {data} = await this.api.query.system.account(account.address);
-      account.data = {
-        ...account.data,
-        ...JSON.parse(data.toString())
-      };
-    }
+    try {
+      const now = Date.now();
+      let loaded = false;
 
-    // Load TX
-    if (opts.withTx === true && (isNil(account.data?.txs) || opts.reload === true)) {
-      console.warn('[account-service] TODO - Implement load Tx');
-    }
+      // Load balance (free + reserved)
+      if (opts.withBalance === true && (isNil(account.data?.free) || opts.reload === true)) {
+        console.debug(`${this._logPrefix} Loading ${account.address} data...`);
+        const {data} = await this.api.query.system.account(account.address);
+        account.data = {
+          ...account.data,
+          ...JSON.parse(data.toString())
+        };
+        loaded = true;
+      }
 
-    console.debug(`${this._logPrefix} Loaded ${account.address} data:`, account.data);
+      // Load TX
+      if (opts.withTx === true && (isNil(account.data?.txs) || opts.reload === true)) {
+        console.debug(`${this._logPrefix} Loading ${account.address} TX history...`);
+        console.warn('[account-service] TODO - Implement load TX history');
+        // TODO
+        //somethingLoaded = true;
+      }
+
+      if (loaded) {
+        console.debug(`${this._logPrefix} Loading ${account.address} data [OK] in ${Date.now()-now}`, account.data);
+      }
+
+    }
+    catch(err) {
+      console.error(`${this._logPrefix}Failed to load ${account.address} data:`, err);
+      throw new Error('ERROR.LOAD_WALLET_DATA_ERROR');
+    }
 
     return account;
+  }
+
+  private async refreshData(accounts: Account|Account[], opts?: LoadAccountDataOptions) {
+    const array = Array.isArray(accounts) ? accounts : [accounts];
+    try {
+      const jobs = array.map(account => this.loadData(account, opts));
+      await Promise.all(jobs);
+
+      // Notify accounts changed
+      if (!opts || opts.emitEvent !== false) this.notifyChanged();
+    }
+    catch(err) {
+      console.error(`${this._logPrefix}Failed to refresh data of:`, array.map(a => a.address));
+      throw new Error('ERROR.UPDATE_WALLET_LIST_FAILED');
+    }
   }
 
   private notifyChanged() {

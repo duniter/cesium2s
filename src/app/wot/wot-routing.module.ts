@@ -8,13 +8,14 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: WotLookupPage
+    component: WotLookupPage,
   },
   {
     path: ':address',
     pathMatch: 'full',
     component: WotDetailsPage
   }
+
 ];
 
 @NgModule({

@@ -90,34 +90,34 @@ export abstract class BasePage<
 
   protected abstract ngOnLoad(): Promise<S>;
 
-  protected setError(err) {
+  protected setError(err, opts =  {emitEvent: true}) {
     let message = err?.message || err || 'ERROR.UNKNOWN_ERROR';
     if (!message) {
       console.error(err);
       message = 'ERROR.UNKNOWN_ERROR';
     }
     this.error = message;
-    this.markForCheck();
+    if (opts.emitEvent !== false) this.markForCheck();
   }
 
-  protected resetError() {
+  protected resetError(opts ={emitEvent: true}) {
     if (this.error) {
       this.error = null;
-      this.markForCheck();
+      if (opts.emitEvent !== false) this.markForCheck();
     }
   }
 
-  protected markAsLoading() {
+  protected markAsLoading(opts =  {emitEvent: true}) {
     if (!this.loading) {
       this.loading = true;
-      this.markForCheck();
+      if (opts.emitEvent !== false) this.markForCheck();
     }
   }
 
-  protected markAsLoaded() {
+  protected markAsLoaded(opts =  {emitEvent: true}) {
     if (this.loading) {
       this.loading = false;
-      this.markForCheck();
+      if (opts.emitEvent !== false) this.markForCheck();
     }
   }
 

@@ -2,12 +2,10 @@ import {AfterViewChecked, ChangeDetectionStrategy, Component, Injector, OnInit, 
 import {AccountService} from "./account.service";
 import {Clipboard} from "@capacitor/clipboard";
 import {BasePage} from "@app/shared/pages/base.page";
-import {Account, AccountData} from "@app/wallet/account.model";
-import {isEmptyArray, isNilOrBlank} from "@app/shared/functions";
-import {keyring} from "@polkadot/ui-keyring";
+import {Account} from "@app/wallet/account.model";
+import {isEmptyArray} from "@app/shared/functions";
 import {NetworkService} from "@app/network/network.service";
 import {BehaviorSubject} from "rxjs";
-import {AuthModal} from "@app/auth/auth.modal";
 import {IonModal} from "@ionic/angular";
 import {Router} from "@angular/router";
 
@@ -38,6 +36,8 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
   }
 
   @ViewChild('authModal') authModal: IonModal;
+
+  @ViewChild('qrCodeModal') qrCodeModal: IonModal;
 
   constructor(
     injector: Injector,
@@ -70,7 +70,7 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
   protected async ngOnLoad(): Promise<Account> {
 
     this.info('Loading page...');
-    this.currency = this.networkService.currencySign;
+    this.currency = this.networkService.currencySymbol;
 
     const accounts = await this.accountService.getAll();
     this.$account.next(accounts);
@@ -104,10 +104,17 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
   }
 
   async copyAddress() {
+    if (this.loading || !this.data?.address) return; // Skip
+
     await Clipboard.write({
-      string: this.data?.address
+      string: this.data.address
     });
     await this.showToast({message: 'INFO.COPY_TO_CLIPBOARD_DONE'});
+  }
+
+  async showQrCode() {
+    if (this.qrCodeModal.isOpen) return; // Skip
+    this.qrCodeModal.present();
   }
 
   async openAuthModal(): Promise<Account|null> {

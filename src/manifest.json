@@ -1,28 +1,28 @@
 {
   "short_name": "Cesium",
   "name": "Cesium",
-  "manifest_version": 1,
+  "manifest_version": 2,
   "version": "2.0.0-rc1",
   "default_locale": "fr",
   "description": "Cesium Wallet for Ğ1 libre currency",
   "icons": [
     {
-      "src": "img/logo_32px.png",
+      "src": "assets/img/logo_32px.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "img/logo_96px.png",
+      "src": "assets/img/logo_96px.png",
       "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "img/logo_144px.png",
+      "src": "assets/img/logo_144px.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "img/logo.svg",
+      "src": "assets/img/logo.svg",
       "sizes": "192x192",
       "type": "image/svg"
     }
@@ -30,18 +30,23 @@
   "background_color": "#1a237e",
   "theme_color": "black",
   "dir": "ltr",
-  "start_url": "/#/app/home",
+  "start_url": "/home",
   "display": "standalone",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_icon": "assets/icon/favicon.ico"
+  },
   "protocol_handlers": [
     {
       "protocol": "june",
-      "name": "Cesium",
-      "uriTemplate": "/#/app/home?uri=%s"
+      "name": "june",
+      "uriTemplate": "/home?uri=%s"
     },
     {
       "protocol": "web+june",
-      "name": "Cesium",
-      "uriTemplate": "/#/app/home?uri=%s"
+      "name": "web-june",
+      "uriTemplate": "/home?uri=%s"
     }
   ]
 }

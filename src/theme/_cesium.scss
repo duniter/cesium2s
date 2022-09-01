@@ -7,3 +7,16 @@
   display: none;
   visibility: hidden;
 }
+
+/* -- error message -- */
+.item.error,
+ion-item.error {
+  ion-label {
+    white-space: break-spaces !important;
+  }
+}
+
+/* */
+ion-toolbar {
+  --ion-toolbar-background: var(--ion-color-base);
+}

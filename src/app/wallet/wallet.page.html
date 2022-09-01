@@ -25,6 +25,11 @@
 <ion-content [fullscreen]="true">
   <ion-header>
     <ion-toolbar class="ion-text-end" color="secondary">
+      <ion-buttons slot="start">
+        <ion-button *ngIf="loaded" (click)="qrCodeModal.present()">
+          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
+        </ion-button>
+      </ion-buttons>
       <ion-title size="large" *ngIf="loaded; else loadingText">
         {{ balance | amountFormat }}
       </ion-title>
@@ -50,6 +55,7 @@
                    [value]="data?.address"
                    readonly>
         </ion-input>
+
         <ion-button slot="end" (click)="copyAddress()"
                     [disabled]="loading"
                     fill="clear" [title]="'COMMON.COPY'|translate">
@@ -72,7 +78,8 @@
     </ion-list>
 
     <div class="ion-text-center">
-      <ion-button [routerLink]="'../../transfer'">
+      <ion-button [routerLink]="['/transfer', 'from', data?.address]"
+                  [disabled]="loading">
         <ion-icon slot="start" name="paper-plane"></ion-icon>
         <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
       </ion-button>
@@ -91,6 +98,18 @@
   <ng-template>
     <ion-content scrollY="false">
       <app-auth-modal></app-auth-modal>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+<ion-modal
+  #qrCodeModal
+  [backdropDismiss]="true"
+>
+  <ng-template>
+    <ion-content scrollY="false">
+      QRCODE
     </ion-content>
   </ng-template>
 </ion-modal>

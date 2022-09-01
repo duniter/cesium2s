@@ -15,6 +15,6 @@ export class AmountFormatPipe extends NumberFormatPipe {
 
   transform(val: number, opts?: Intl.NumberFormatOptions & {fixedDecimals?: number}): string {
     if (isNil(val)) return '';
-    return super.transform(val / 100, opts) + (' ' + this.networkService.currencySign);
+    return super.transform(val / 100, opts) + (' ' + this.networkService.currencySymbol);
   }
 }

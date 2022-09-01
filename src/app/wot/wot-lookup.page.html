@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-header collapse="condense" *ngIf="showToolbar">
+    <ion-toolbar>
+      <ion-title size="large" translate>MENU.WOT</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
   <div id="container">
 
@@ -63,7 +68,6 @@
       </ng-template>
 
     </ion-list>
-
   </div>
 </ion-content>
 
@@ -76,9 +80,4 @@
       <p><ion-skeleton-text animated style="width: 50%;"></ion-skeleton-text></p>
     </ion-label>
   </ion-item>
-</ng-template>
-
-
-<ng-template #inputSkeleton>
-  <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
 </ng-template>
