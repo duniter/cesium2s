@@ -161,7 +161,7 @@ export class AccountService extends StartableService {
 
     // Add a V1 Dev account, if define in environment
     if (auth?.v1) {
-      const alreadyExists = auth.address ? await this.isAvailable(auth.address) : false;
+      const alreadyExists = auth.address && this._$accounts.value.some(a => a.address === auth.address);
       if (!alreadyExists) {
         await this.addV1Account({...auth.v1, meta: auth.meta});
       }
