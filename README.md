@@ -18,7 +18,7 @@ cd cesium2s
 
 # Install NodeJS v14+, then deps
 nvm use 14
-npm install -g yarn @ionic/cli @angular/cli
+npm install -g @ionic/cli @angular/cli @capacitor/cli
 npm install
 
 # Build and run !

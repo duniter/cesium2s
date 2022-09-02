@@ -8,7 +8,7 @@ import {Drivers} from "@ionic/storage";
 import {StorageDrivers} from "@app/shared/services/storage/storage.utils";
 
 export const environment = <Environment>{
-  production: true,
+  production: false,
 
   name: 'Cesium&sup2;',
 
