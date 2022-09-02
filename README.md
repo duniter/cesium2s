@@ -3,6 +3,9 @@
 Cesium 2, running on Substrate
 
 
+Cesium 2 use Angular 14, Ionic 5 and Capacitor.
+
+
 # Build
 
 ## In a post-it
@@ -21,3 +24,14 @@ npm install
 # Build and run !
 npm run start
 ```
+## Build for Android
+
+- Init the android project :
+```bash
+ionic capacitor add android
+npx cap sync
+```
+
+- Launch Android Studio
+- Open the Android project at `<cesium2s-root>/android`
+- Run !
