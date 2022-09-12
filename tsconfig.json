@@ -15,6 +15,9 @@
     "module": "es2020",
     "lib": ["es2018", "dom"],
     "allowSyntheticDefaultImports": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "paths" : {
       // Project sources
       "@app/*": ["src/app/*"],
