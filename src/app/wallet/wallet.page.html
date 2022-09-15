@@ -9,10 +9,15 @@
                   [class.cdk-visually-hidden]="accounts|isEmptyArray"
                   [(ngModel)]="data"
                   [interface]="mobile ? 'action-sheet' : 'popover'"
+                  [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
                   [okText]="'COMMON.BTN_OK'|translate"
                   [cancelText]="'COMMON.BTN_CANCEL'|translate">
         <ion-select-option *ngFor="let account of accounts"
                            [value]="account">
+
+          <ion-avatar *ngIf="loaded">
+            <svg width="40" width="40" [data-jdenticon-value]="data.data?.randomId||data.address"></svg>
+          </ion-avatar>
           {{account|accountName}}
         </ion-select-option>
 

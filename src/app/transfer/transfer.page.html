@@ -78,10 +78,10 @@
         </ng-template>
       </ion-item>
 
+      <!-- amount -->
       <ion-item>
         <ion-label color="medium"  translate>TRANSFER.AMOUNT</ion-label>
-        <ion-input type="number" [(ngModel)]="amount"
-                   class="ion-text-end">
+        <ion-input type="number" [(ngModel)]="amount">
         </ion-input>
         <ion-label color="medium" slot="end" *ngIf="currency">{{currency.symbol}}</ion-label>
       </ion-item>

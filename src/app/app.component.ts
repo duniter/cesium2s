@@ -5,6 +5,18 @@ import {AccountService} from "@app/wallet/account.service";
 import {Router} from "@angular/router";
 import {App} from "@capacitor/app";
 import {isNotNilOrBlank} from "@app/shared/functions";
+import {TransferController} from "@app/transfer/transfer.controller";
+import {PredefinedColors} from "@app/shared/colors/colors.utils";
+
+export interface IMenuItem {
+  title: string;
+  url?: string;
+  icon: string;
+  disabled?: () => boolean;
+  handle?: (event) => Promise<any>;
+  visible?: () => boolean;
+  color?: PredefinedColors;
+}
 
 @Component({
   selector: 'app-root',
@@ -14,11 +26,18 @@ import {isNotNilOrBlank} from "@app/shared/functions";
 export class AppComponent {
 
   appName = 'COMMON.APP_NAME';
-  appPages = [
+  appPages: IMenuItem[] = [
 
     { title: 'MENU.HOME', url: '/home', icon: 'home' },
     { title: 'MENU.ACCOUNT', url: '/wallet', icon: 'card' },
-    { title: 'COMMON.BTN_SEND_MONEY', url: '/transfer', icon: 'paper-plane' },
+    { title: 'COMMON.BTN_SEND_MONEY', url: '/transfer', icon: 'paper-plane',
+      visible: () => this.platform.mobile
+    },
+
+    { title: 'COMMON.BTN_SEND_MONEY', icon: 'paper-plane',
+      handle: (event) => this.transferController.transfer(event),
+      visible: () => !this.platform.mobile
+    },
 
     // { title: 'Messages', url: '/message/inbox', icon: 'mail' },
 
@@ -29,12 +48,13 @@ export class AppComponent {
     { title: 'COMMON.BTN_LOGOUT', icon: 'log-out', color: 'danger',
 
       handle: (event) => this.logout(event),
-      enable: () => this.accountService.isLogin && this.platform.mobile
+      visible: () => this.accountService.isLogin && this.platform.mobile
     },
   ];
 
   constructor(private platform: PlatformService,
               private accountService: AccountService,
+              private transferController: TransferController,
               private router: Router) {
     this.start();
   }

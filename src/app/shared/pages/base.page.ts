@@ -26,7 +26,7 @@ export abstract class BasePage<
 
   protected translate: TranslateService;
   protected settings: SettingsService;
-  protected readonly routerOutlet: IonRouterOutlet;
+  protected readonly routerOutlet: IonRouterOutlet | null;
   protected readonly activatedRoute: ActivatedRoute;
   protected toastController: ToastController;
   protected readonly _debug = !environment.production;
@@ -50,7 +50,7 @@ export abstract class BasePage<
     this._cd = injector.get(ChangeDetectorRef);
     this.settings = injector.get(SettingsService);
     this.translate = injector.get(TranslateService);
-    this.routerOutlet = injector.get(IonRouterOutlet);
+    this.routerOutlet = injector.get(IonRouterOutlet, null);
     this.activatedRoute = injector.get(ActivatedRoute);
     this.toastController = injector.get(ToastController);
     this.mobile = this.settings.mobile;

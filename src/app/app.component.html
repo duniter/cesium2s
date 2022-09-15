@@ -8,13 +8,14 @@
           <ion-note></ion-note>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item routerDirection="root" *ngIf="p.url"
+            <ion-item routerDirection="root" *ngIf="p.url && (!p.visible || p.visible())"
+                      [disabled]="p.disabled"
                       [routerLink]="p.url" lines="none" detail="false" routerLinkActive="selected">
               <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
             </ion-item>
-            <ion-item routerDirection="root" *ngIf="p.handle && p.enable()"
-                      (click)="p.handle($event)" lines="none" detail="false" routerLinkActive="selected">
+            <ion-item routerDirection="root" *ngIf="p.handle && (!p.visible || p.visible())"
+                      (click)="p.handle($event)" lines="none" detail="false" tappable class="ion-activatable">
               <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
             </ion-item>

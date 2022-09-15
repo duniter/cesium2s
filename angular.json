@@ -29,12 +29,13 @@
               "ed2curve",
               "crypto",
               "store",
-              "localforage",
               "bn.js",
               "ip-regexp",
               "eventemitter3",
               "qrious",
-              "localforage-cordovasqlitedriver"
+              "localforage",
+              "localforage-cordovasqlitedriver",
+              "moment"
             ],
             "assets": [
               {

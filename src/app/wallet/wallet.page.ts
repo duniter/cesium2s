@@ -6,8 +6,9 @@ import {Account} from "@app/wallet/account.model";
 import {isEmptyArray} from "@app/shared/functions";
 import {NetworkService} from "@app/network/network.service";
 import {BehaviorSubject} from "rxjs";
-import {IonModal} from "@ionic/angular";
+import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
 import {Router} from "@angular/router";
+import {WotLookupPage} from "@app/wot/wot-lookup.page";
 
 @Component({
   selector: 'app-wallet',
@@ -17,10 +18,17 @@ import {Router} from "@angular/router";
 })
 export class WalletPage extends BasePage<Account> implements OnInit, AfterViewChecked {
 
+  protected $account = new BehaviorSubject<Account[]>(null);
+  protected actionSheetOptions: Partial<ActionSheetOptions> = {
+    cssClass: 'select-account-action-sheet'
+  };
+  protected popoverOptions: Partial<PopoverOptions> = {
+    cssClass: 'select-account-popover',
+    reference: 'event'
+  };
+
   address: string;
   currency: string;
-
-  $account = new BehaviorSubject<Account[]>(null);
 
   get account(): Account {
     return this.data;

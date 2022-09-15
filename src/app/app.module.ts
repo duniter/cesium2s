@@ -22,6 +22,7 @@ import {StorageService} from "@app/shared/services/storage/storage.service";
 import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
 import {StatusBar} from "@capacitor/status-bar";
 import {SplashScreen} from "@capacitor/splash-screen";
+import {AppTransferModule} from "@app/transfer/transfer.module";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -36,6 +37,7 @@ export function createTranslateLoader(http: HttpClient) {
       IonicModule.forRoot(),
       AppRoutingModule,
       AppSharedModule,
+      AppTransferModule,
       IonicStorageModule.forRoot({
         name: environment.name || 'cesium',
         ...environment.storage

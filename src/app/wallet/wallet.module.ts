@@ -19,4 +19,4 @@ import {NgxJdenticonModule} from "ngx-jdenticon";
   ],
   declarations: [WalletPage]
 })
-export class WalletPageModule {}
+export class AppWalletModule {}

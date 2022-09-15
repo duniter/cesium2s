@@ -3,25 +3,31 @@ import {
   ChangeDetectorRef,
   Component,
   Injector,
+  Input,
   OnDestroy,
-  OnInit,
   ViewChild
 } from '@angular/core';
 import {AccountService} from "../wallet/account.service";
 import {BasePage} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
-import {ActionSheetOptions, IonModal, IonRouterOutlet, IonTextarea, Platform, PopoverOptions} from "@ionic/angular";
+import {ActionSheetOptions, IonModal, IonTextarea, ModalController, Platform, PopoverOptions} from "@ionic/angular";
 import {BehaviorSubject, firstValueFrom, Observable} from "rxjs";
 import {isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
 import {filter} from "rxjs/operators";
-import {WotLookupPage} from "@app/wot/wot-lookup.page";
 import {NetworkService} from "@app/network/network.service";
 import {Currency} from "@app/network/currency.model";
 import {Router} from "@angular/router";
 import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
-import {BarcodeScannerWeb} from "@capacitor-community/barcode-scanner/dist/esm/web";
 import {Capacitor} from "@capacitor/core";
 import {CapacitorPlugins} from "@app/shared/services/plugins";
+
+export interface TransferPageOptions {
+  issuer?: Account;
+  recipient?: Account;
+  amount?: number;
+  fee?: number;
+  dismissOnSubmit?: boolean;
+}
 
 @Component({
   selector: 'app-transfer',
@@ -29,13 +35,8 @@ import {CapacitorPlugins} from "@app/shared/services/plugins";
   styleUrls: ['./transfer.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TransferPage extends BasePage<Observable<Account[]>> implements OnInit, OnDestroy {
+export class TransferPage extends BasePage<Observable<Account[]>> implements OnDestroy, TransferPageOptions {
 
-  showComment: boolean;
-  issuer: Account = null;
-  recipient: Account = {address: null, meta: null};
-  amount: number;
-  fee: number;
   protected _enableScan: boolean = false;
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
@@ -45,6 +46,14 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     cssClass: 'select-account-popover',
     reference: 'event'
   };
+
+  @Input() issuer: Account = null;
+  @Input() recipient: Account = {address: null, meta: null};
+  @Input() amount: number;
+  @Input() fee: number;
+  @Input() showComment: boolean;
+  @Input() dismissOnSubmit: boolean = false; // True is modal
+  @Input() showToastOnSubmit: boolean = true;
 
   @ViewChild('wotModal') wotModal: IonModal;
   @ViewChild('qrCodeModal') qrCodeModal: IonModal;
@@ -72,19 +81,63 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     return 'TODO';
   }
 
+  get $account(): Observable<Account[]> {
+    return  this.data;
+  }
+
   constructor(
     injector: Injector,
     protected ionicPlatform: Platform,
     protected accountService: AccountService,
     protected networkService: NetworkService,
+    protected modalCtrl: ModalController,
     protected router: Router,
     protected cd: ChangeDetectorRef
   ) {
     super(injector, {name: 'transfer', loadDueTime: 250});
+
+    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
+
   }
 
-  ngOnInit() {
-    super.ngOnInit();
+  protected async ngOnLoad(): Promise<Observable<Account[]>> {
+
+    await this.accountService.ready();
+
+    const $account = new BehaviorSubject<Account[]>(null);
+    this.registerSubscription(
+      this.accountService.watchAll({positiveBalanceFirst: true})
+        .pipe(filter(isNotEmptyArray))
+        .subscribe((value) => {
+          $account.next(value);
+          if (this.loaded) this.cd.markForCheck();
+        })
+    );
+
+    // Load accounts
+    const accounts = await firstValueFrom($account);
+
+    // Init issuer
+    if (!this.issuer) {
+      const issuerAddress = this.activatedRoute.snapshot.paramMap.get('from');
+      if (isNotNilOrBlank(issuerAddress)) {
+        this.issuer = (accounts||[]).find(a => a.address === issuerAddress);
+      }
+      // Only one account: select it
+      else if (accounts?.length === 1) {
+        this.issuer = accounts[0];
+      }
+    }
+
+    // Load receiver
+    const receiverAddress = this.activatedRoute.snapshot.paramMap.get('to');
+    if (isNotNilOrBlank(receiverAddress)) {
+      this.recipient.address = receiverAddress;
+    }
+
+    this.fee = (this.networkService.currency?.fees.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
+
+    return $account.asObservable();
   }
 
   ionViewWillLeave() {
@@ -141,45 +194,6 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     }
   }
 
-  protected async ngOnLoad(): Promise<Observable<Account[]>> {
-
-    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
-
-    await this.accountService.ready();
-
-    const subject = new BehaviorSubject<Account[]>(null);
-    this.registerSubscription(
-      this.accountService.watchAll({positiveBalanceFirst: true})
-        .pipe(filter(isNotEmptyArray))
-        .subscribe((value) => {
-          subject.next(value);
-          if (this.loaded) this.cd.markForCheck();
-        })
-    );
-
-    const accounts = await firstValueFrom(subject);
-
-    // Load issuer
-    const issuerAddress = this.activatedRoute.snapshot.paramMap.get('from');
-    if (isNotNilOrBlank(issuerAddress)) {
-      this.issuer = (accounts||[]).find(a => a.address === issuerAddress);
-    }
-    // Only one account: select it
-    else if (accounts?.length === 1) {
-      this.issuer = accounts[0];
-    }
-
-    // Load receiver
-    const receiverAddress = this.activatedRoute.snapshot.paramMap.get('to');
-    if (isNotNilOrBlank(receiverAddress)) {
-      this.recipient.address = receiverAddress;
-    }
-
-    this.fee = (this.networkService.currency?.fees.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
-
-
-    return subject;
-  }
 
   setRecipient(recipient: string|Account): boolean {
     if (typeof recipient === 'object') {
@@ -193,7 +207,7 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
   }
 
   cancel(event?: UIEvent) {
-    this.reset();
+    this.close();
   }
 
   async submit(event?: UIEvent) {
@@ -204,20 +218,38 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     this.resetError();
 
     try {
-      await this.accountService.transfer(this.issuer, this.recipient, this.amount);
+      const hash = await this.accountService.transfer(this.issuer, this.recipient, this.amount);
 
-      await this.showToast({message: 'INFO.TRANSFER_SENT'});
-
-      this.reset();
-
-      if (this.routerOutlet.canGoBack()) {
-        await this.routerOutlet.pop();
+      if (this.showToastOnSubmit) {
+        await this.showToast({message: 'INFO.TRANSFER_SENT'});
       }
+
+      this.close(hash);
+
     }
     catch (err) {
       this.setError(err);
       this.markAsLoaded();
     }
+  }
+
+  async close(data?: any) {
+    if (this.routerOutlet) {
+      if (this.routerOutlet?.canGoBack()) {
+        this.routerOutlet.pop();
+      }
+      else {
+        await this.router.navigateByUrl('/wallet');
+      }
+    }
+    else {
+      const hasTop = !!(await this.modalCtrl.getTop())
+      if (hasTop) {
+        await this.modalCtrl.dismiss(data);
+      }
+    }
+
+    this.reset();
   }
 
   async scanRecipient(event: UIEvent) {
