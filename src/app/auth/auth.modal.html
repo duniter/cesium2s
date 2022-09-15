@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
 
-    <ion-title [innerHTML]="auth?'AUTH.TITLE': 'LOGIN.TITLE'|translate">
+    <ion-title [innerHTML]="title|translate">
     </ion-title>
 
     <ion-buttons slot="end">
@@ -20,7 +20,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="height: 100%">
+<ion-content style="height: 100%" [scrollY]="scrollY">
   <app-auth-form #form
                  (onSubmit)="doSubmit($event)"
                  (onCancel)="cancel()">

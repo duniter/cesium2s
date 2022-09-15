@@ -2,6 +2,7 @@ import {InjectionToken} from "@angular/core";
 import {Drivers} from "@ionic/storage";
 import * as LocalForage from "localforage";
 
+import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 
 export interface IStorage<T = any> {
   readonly driver: string;
@@ -15,7 +16,7 @@ export interface IStorage<T = any> {
 }
 
 export const StorageDrivers = {
-  //SQLLite: CordovaSQLiteDriver._driver,
+  SQLLite: CordovaSQLiteDriver._driver,
   SecureStorage: Drivers.SecureStorage,
   WebSQL: LocalForage.WEBSQL,
   IndexedDB: Drivers.IndexedDB,

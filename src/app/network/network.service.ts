@@ -5,7 +5,6 @@ import {Peer, Peers} from "./peer.model";
 import {StartableService} from "@app/shared/services/startable-service.class";
 import {abbreviate} from "@app/shared/currencies";
 import {Currency} from "@app/network/currency.model";
-//import * as definitions from '@duniter/core-types/interfaces'
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
   'Ğdev': <Partial<Currency>>{

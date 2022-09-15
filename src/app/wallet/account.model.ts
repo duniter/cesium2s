@@ -1,4 +1,5 @@
 import {KeypairType} from "@polkadot/util-crypto/types";
+import {Subject} from "rxjs";
 
 export interface Account {
   address: string;
@@ -8,6 +9,7 @@ export interface Account {
   meta: AccountMeta;
 
   data?: AccountData;
+  dataSubject?: Subject<AccountData>;
 }
 export interface AccountMeta {
   name: string;

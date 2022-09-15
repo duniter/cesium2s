@@ -7,8 +7,9 @@ import {StorageService} from "@app/shared/services/storage/storage.service";
 import {environment} from "@environments/environment.prod";
 import {TranslateService} from "@ngx-translate/core";
 import * as momentImported from 'moment';
-import {Subject} from "rxjs";
-import {Settings} from "@app/settings/settings.model";
+import {StatusBar} from "@capacitor/status-bar";
+import {Keyboard} from "@capacitor/keyboard";
+
 const moment = momentImported;
 
 @Injectable({
@@ -18,7 +19,8 @@ export class PlatformService extends StartableService {
 
   private _mobile: boolean = null;
   private _touchUi: boolean = null;
-
+  private _cordova: boolean = null;
+  private _capacitor: boolean = null;
 
   get mobile(): boolean {
     return this._mobile != null ? this._mobile : this.ionicPlatform.is('mobile');
@@ -27,6 +29,14 @@ export class PlatformService extends StartableService {
   get touchUi(): boolean {
     return this._touchUi != null ? this._touchUi :
       (this.mobile || this.ionicPlatform.is('tablet') || this.ionicPlatform.is('phablet'));
+  }
+
+  get capacitor(): boolean {
+    return this._capacitor != null ? this._capacitor : this.ionicPlatform.is('capacitor');
+  }
+
+  get cordova(): boolean {
+    return this._cordova != null ? this._cordova : this.ionicPlatform.is('cordova');
   }
 
   constructor(
@@ -45,6 +55,11 @@ export class PlatformService extends StartableService {
 
     this._mobile = this.mobile;
     this._touchUi = this.touchUi;
+    this._cordova = this.cordova;
+    this._capacitor = this.capacitor;
+
+    // Configure Capacitor plugins
+    await this.configureCapacitorPlugins();
 
     // Configure translation
     await this.configureTranslate();
@@ -54,6 +69,24 @@ export class PlatformService extends StartableService {
       this.settings.ready(),
       this.network.ready()
     ]);
+  }
+
+  protected async configureCapacitorPlugins() {
+    if (!this._capacitor) return; // Skip
+
+    console.info('[platform] Configuring Cordova plugins...');
+
+    let plugin: string;
+    try {
+      plugin = 'StatusBar';
+      await StatusBar.setOverlaysWebView({overlay: false});
+
+      plugin = 'Keyboard';
+      await Keyboard.setAccessoryBarVisible({isVisible: false});
+    }
+    catch(err) {
+      console.error(`[platform] Error while configuring ${plugin} plugin: ${err?.originalStack || JSON.stringify(err)}`);
+    }
   }
 
 

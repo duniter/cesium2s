@@ -5,15 +5,19 @@ import {AuthForm} from './auth.form';
 import {firstNotNilPromise} from '@app/shared/observables';
 import {AuthData} from "@app/auth/auth.model";
 
+export interface AuthModalOptions {
+  auth?: boolean;
+  scrollY?: boolean;
+  title?: string;
+}
 @Component({
   selector: 'app-auth-modal',
   templateUrl: 'auth.modal.html',
   styleUrls: ['./auth.modal.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AuthModal implements OnInit {
+export class AuthModal implements OnInit, AuthModalOptions {
 
-  title: string = null;
   get loading() {
     return this.form?.loading;
   }
@@ -22,7 +26,9 @@ export class AuthModal implements OnInit {
     return this.form?.mobile;
   }
 
-  @Input() auth = false;
+  @Input() auth = false; // false for login, true for auth
+  @Input() scrollY = false;
+  @Input() title: string = null;
 
   @ViewChild('form', { static: true }) private form: AuthForm;
 
@@ -34,7 +40,7 @@ export class AuthModal implements OnInit {
 
   ngOnInit() {
 
-    this.title = this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE';
+    this.title = this.title || (this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE');
 
     this.form.markAsReady({emitEvent: false});
     this.form.markAsLoaded();

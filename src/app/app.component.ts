@@ -3,6 +3,8 @@ import {PlatformService} from "./shared/services/platform.service";
 import {environment} from "@environments/environment";
 import {AccountService} from "@app/wallet/account.service";
 import {Router} from "@angular/router";
+import {App} from "@capacitor/app";
+import {isNotNilOrBlank} from "@app/shared/functions";
 
 @Component({
   selector: 'app-root',
@@ -11,7 +13,7 @@ import {Router} from "@angular/router";
 })
 export class AppComponent {
 
-  appName = environment.name;
+  appName = 'COMMON.APP_NAME';
   appPages = [
 
     { title: 'MENU.HOME', url: '/home', icon: 'home' },
@@ -24,10 +26,10 @@ export class AppComponent {
 
     { title: 'MENU.SETTINGS', url: '/settings', icon: 'settings' },
 
-    { title: 'HOME.BTN_CHANGE_ACCOUNT', icon: 'log-out', color: 'danger',
+    { title: 'COMMON.BTN_LOGOUT', icon: 'log-out', color: 'danger',
 
       handle: (event) => this.logout(event),
-      enable: () => this.accountService.isLogin
+      enable: () => this.accountService.isLogin && this.platform.mobile
     },
   ];
 
@@ -41,9 +43,13 @@ export class AppComponent {
     var now = Date.now();
     console.info('[app] Starting...');
 
+    // Start all stuff (services, plugins, etc.)
     await this.platform.start();
 
     console.info(`[app] Starting [OK] in ${Date.now()-now}ms`);
+
+    // Detecting deep link
+    await this.detectDeepLink();
   }
 
   async logout(event) {
@@ -51,5 +57,29 @@ export class AppComponent {
     await this.router.navigateByUrl('/home', {
       replaceUrl: true
     });
+  }
+
+  async detectDeepLink(){
+    try {
+      const {url} = await App.getLaunchUrl();
+      if (isNotNilOrBlank(url)) {
+
+        const slashIndex = url.indexOf('/');
+        if (slashIndex !== -1) {
+          const relativeUrl = url.substring(slashIndex+1);
+          console.info('[app] Detected a deep link: ' + relativeUrl);
+
+          // TODO: call the router ?
+          await this.router.navigateByUrl(relativeUrl);
+        }
+        else {
+          console.warn(`[app] Detected a INVALID deep link: ${url} - missing slash`);
+        }
+      }
+    }
+    catch(err) {
+      console.error(`[platform] Cannot get launch URL: ${err.message||err}\n${err?.originalStack || JSON.stringify(err)}`);
+      // Continue
+    }
   }
 }

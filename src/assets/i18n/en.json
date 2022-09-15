@@ -438,7 +438,7 @@
     "ASSOCIATED_PUBKEY": "Public key :",
     "BTN_METHODS": "Other methods",
     "BTN_METHODS_DOTS": "Change method...",
-    "METHOD_POPOVER_TITLE": "Methods",
+    "METHOD_POPOVER_TITLE": "Connection methods",
     "MEMORIZE_AUTH_FILE": "Memorize this keychain during the navigation session",
     "SCRYPT_PARAMETERS": "Paramètres (Scrypt) :",
     "AUTO_LOGOUT": {

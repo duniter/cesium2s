@@ -7,7 +7,7 @@ import {AppForm} from "@app/shared/form.class";
 import {AuthData} from "@app/auth/auth.model";
 import {SettingsService} from "@app/settings/settings.service";
 import {NetworkService} from "@app/network/network.service";
-import {environment} from "@duniter/core-types/environments/environment";
+import {environment} from "@environments/environment";
 import {FormUtils} from "@app/shared/forms";
 
 
@@ -64,7 +64,7 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     this.onCancel.emit();
   }
 
-  async doSubmit(event?: UIEvent) {
+  async doSubmit(event?: Event) {
     if (event) {
       event.preventDefault();
       event.stopPropagation();

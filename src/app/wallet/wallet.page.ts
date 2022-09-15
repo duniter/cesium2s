@@ -22,21 +22,11 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
 
   $account = new BehaviorSubject<Account[]>(null);
 
-  get loaded(): boolean {
-    return !this.loading;
-  }
-
-  get balance(): number {
-    if (!this.data?.data) return undefined;
-    return (this.data.data.free || 0) + (this.data.data.reserved || 0);
-  }
-
   get account(): Account {
     return this.data;
   }
 
   @ViewChild('authModal') authModal: IonModal;
-
   @ViewChild('qrCodeModal') qrCodeModal: IonModal;
 
   constructor(
@@ -115,6 +105,10 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
   async showQrCode() {
     if (this.qrCodeModal.isOpen) return; // Skip
     this.qrCodeModal.present();
+  }
+
+  addNewWallet(event: UIEvent) {
+
   }
 
   async openAuthModal(): Promise<Account|null> {

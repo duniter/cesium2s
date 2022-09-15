@@ -4,10 +4,9 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title translate>ACCOUNT.TITLE</ion-title>
-
-    <ng-container *ngIf="$account|async; let accounts">
-      <ion-select slot="end"
-                  *ngIf="accounts|isNotEmptyArray"
+    <ion-buttons slot="end">
+      <ion-select *ngIf="$account|async; let accounts"
+                  [class.cdk-visually-hidden]="accounts|isEmptyArray"
                   [(ngModel)]="data"
                   [interface]="mobile ? 'action-sheet' : 'popover'"
                   [okText]="'COMMON.BTN_OK'|translate"
@@ -16,8 +15,13 @@
                            [value]="account">
           {{account|accountName}}
         </ion-select-option>
+
+        <ion-select-option (click)="addNewWallet($event)"
+                           [value]="null"
+                           translate>ACCOUNT.WALLET_LIST.BTN_NEW</ion-select-option>
       </ion-select>
-    </ng-container>
+    </ion-buttons>
+
   </ion-toolbar>
   <ion-progress-bar type="indeterminate" *ngIf="loading"></ion-progress-bar>
 </ion-header>
@@ -31,9 +35,9 @@
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-label slot="end" *ngIf="loaded" class="ion-text-end ion-margin-end">
-        <b>{{ balance | amountFormat }}</b>
-      </ion-label>
+      <ion-title slot="end" *ngIf="loaded" class="balance">
+        {{ data|balance|amountFormat }}
+      </ion-title>
     </ion-toolbar>
   </ion-header>
 

@@ -5,8 +5,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 import {TranslateModule} from "@ngx-translate/core";
 import {SharedPipesModule} from "@app/shared/pipes/pipes.module";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {QRCodeModule} from "angular2-qrcode";
+import {ListPopoverModule} from "@app/shared/popover/list.popover.module";
 
 @NgModule({
   imports: [
@@ -17,8 +17,9 @@ import {QRCodeModule} from "angular2-qrcode";
     TranslateModule,
     QRCodeModule,
 
-    // App modules
-    SharedPipesModule
+    // Sub modules
+    SharedPipesModule,
+    ListPopoverModule
   ],
   exports: [
     CommonModule,
@@ -28,8 +29,9 @@ import {QRCodeModule} from "angular2-qrcode";
     TranslateModule,
     QRCodeModule,
 
-    // App modules
-    SharedPipesModule
+    // Sub modules
+    SharedPipesModule,
+    ListPopoverModule
   ]
 })
 export class AppSharedModule {}

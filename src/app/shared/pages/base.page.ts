@@ -5,7 +5,7 @@ import {changeCaseToUnderscore, isNotNilOrBlank} from "@app/shared/functions";
 import {environment} from "@environments/environment";
 import {waitIdle} from "@app/shared/forms";
 import {WaitForOptions} from "@app/shared/observables";
-import {ToastController, ToastOptions} from "@ionic/angular";
+import {IonRouterOutlet, ToastController, ToastOptions} from "@ionic/angular";
 import {TranslateService} from "@ngx-translate/core";
 import {Subscription} from "rxjs";
 
@@ -26,6 +26,7 @@ export abstract class BasePage<
 
   protected translate: TranslateService;
   protected settings: SettingsService;
+  protected readonly routerOutlet: IonRouterOutlet;
   protected readonly activatedRoute: ActivatedRoute;
   protected toastController: ToastController;
   protected readonly _debug = !environment.production;
@@ -49,6 +50,7 @@ export abstract class BasePage<
     this._cd = injector.get(ChangeDetectorRef);
     this.settings = injector.get(SettingsService);
     this.translate = injector.get(TranslateService);
+    this.routerOutlet = injector.get(IonRouterOutlet);
     this.activatedRoute = injector.get(ActivatedRoute);
     this.toastController = injector.get(ToastController);
     this.mobile = this.settings.mobile;
@@ -167,4 +169,5 @@ export abstract class BasePage<
   protected unregisterSubscription(sub: Subscription) {
     this._subscription?.remove(sub);
   }
+
 }

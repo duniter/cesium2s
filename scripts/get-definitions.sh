@@ -1,3 +1,5 @@
 #!/bin/bash
 
-curl -H "Content-Type: application/json" -d '{"id":"1", "jsonrpc":"2.0", "method": "state_getMetadata", "params":[]}' http://localhost:9933 > ../src/interfaces/duniter-types.json
+NODE=http://localhost:9933
+
+curl -H "Content-Type: application/json" -d '{"id":"1", "jsonrpc":"2.0", "method": "state_getMetadata", "params":[]}' ${NODE} > ../src/interfaces/types.json

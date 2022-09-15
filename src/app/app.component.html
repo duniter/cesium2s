@@ -2,9 +2,10 @@
   <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
-        <ion-list id="inbox-list">
-          <ion-list-header [innerHTML]="appName"></ion-list-header>
-          <ion-note>profile name</ion-note>
+        <ion-list id="main-menu-list">
+          <ion-list-header [innerHTML]="'COMMON.APP_NAME'|translate"></ion-list-header>
+
+          <ion-note></ion-note>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
             <ion-item routerDirection="root" *ngIf="p.url"
@@ -13,7 +14,7 @@
               <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
             </ion-item>
             <ion-item routerDirection="root" *ngIf="p.handle && p.enable()"
-                      (click)="p.handle()" lines="none" detail="false" routerLinkActive="selected">
+                      (click)="p.handle($event)" lines="none" detail="false" routerLinkActive="selected">
               <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
             </ion-item>

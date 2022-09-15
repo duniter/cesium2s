@@ -90,41 +90,6 @@
   </div>
 </ion-content>
 
-<ion-popover #loginMethodPopover>
-  <ng-template>
-    <ion-content>
-      <ion-list>
-        <ion-item *ngFor="let item of loginMethods"
-                  [disabled]="item.disabled"
-                  (click)="loginMethodPopover.dismiss(item.value)"
-                  tappable>
-          {{item.label|translate}}
-        </ion-item>
-      </ion-list>
-    </ion-content>
-  </ng-template>
-</ion-popover>
-
-<ion-modal
-  #loginModal
-  [backdropDismiss]="false">
-  <ng-template>
-    <ion-content scrollY="false">
-      <app-auth-modal></app-auth-modal>
-    </ion-content>
-  </ng-template>
-</ion-modal>
-
-<ion-modal
-  #registerModal
-  [backdropDismiss]="false">
-  <ng-template>
-    <ion-content scrollY="false">
-      <app-register-modal></app-register-modal>
-    </ion-content>
-  </ng-template>
-</ion-modal>
-
 <ng-template #localeButton let-buttonColor>
 
   <!-- locale button -->
@@ -140,7 +105,7 @@
       <ion-content>
         <ion-list>
           <ion-item *ngFor="let item of locales"
-                    (click)="changeLocale(item.key) || popover.dismiss()"
+                    (click)="changeLocale(item.key) && popover.dismiss()"
                     tappable>
             <ion-label>{{item.value}}</ion-label>
             <ion-icon slot="end" name="checkmark" *ngIf="data.locale===item.key"></ion-icon>

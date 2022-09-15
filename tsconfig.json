@@ -13,7 +13,7 @@
     "incremental": true,
     "target": "es2020",
     "module": "es2020",
-    "lib": ["es2018", "dom"],
+    "lib": ["es2020", "dom"],
     "allowSyntheticDefaultImports": true,
     "typeRoots": [
       "node_modules/@types"
@@ -28,7 +28,7 @@
       "rxjs/*": ["node_modules/rxjs/*"],
 
       // Local deps        // Package name
-      "@duniter/core-types/*": ["src/*"],
+      "@duniter/types": ["src/interfaces/types-lookup.ts"],
 
       // here we replace the @polkadot/api augmentation with our own, generated from chain
       "@polkadot/api/augment": ["src/interfaces/augment-api.ts"],
@@ -50,6 +50,6 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": false
   }
 }

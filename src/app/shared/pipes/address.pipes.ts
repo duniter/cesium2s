@@ -6,7 +6,7 @@ import {formatAddress} from "@app/shared/currencies";
 })
 export class AddressFormatPipe implements PipeTransform {
 
-  transform(value: string, withChecksum?: boolean ): string {
-    return formatAddress(value, withChecksum);
+  transform(value: string): string {
+    return formatAddress(value);
   }
 }

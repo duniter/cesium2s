@@ -26,19 +26,22 @@
       <!-- TO -->
       <ion-item>
         <ion-label color="medium" translate>TRANSFER.TO</ion-label>
-        <ion-textarea *ngIf="data|async|isNotEmptyArray; else inputSkeleton"
+        <ion-textarea *ngIf="data|async|isNotEmptyArray; else inputSkeleton" #fromInput
                    [rows]="mobile ? 2 : 1"
-                   class="ion-text-wrap ion-text-end"
-                   [(ngModel)]="recipient.address" (ionFocus)="wotModal.present()">
+                   class="ion-text-wrap ion-padding-start"
+                   [(ngModel)]="recipient.address"
+                   (ionFocus)="focusFrom($event, fromInput)">
         </ion-textarea>
-        <ion-button slot="end" fill="clear" id="open-modal-trigger"
-                    [class.cdk-visually-hidden]="loading || mobile"
+        <ion-button slot="end" fill="clear"
+                    (click)="showWotModal($event, 0.75)"
                     [disabled]="loading"
                     [title]="'COMMON.BTN_SEARCH'|translate">
           <ion-icon slot="icon-only" name="search"></ion-icon>
         </ion-button>
+
+        <!-- Scan QR code-->
         <ion-button slot="end" fill="clear" color="dark"
-                    *ngIf="_capacitor"
+                    *ngIf="_enableScan"
                     (click)="scanRecipient($event)"
                     [disabled]="loading">
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
@@ -107,20 +110,22 @@
 
   <ion-modal
     #wotModal
-    trigger="open-modal-trigger"
-    [initialBreakpoint]="0.25"
+    [initialBreakpoint]="_initialWotModalBreakpoint"
     [breakpoints]="[0.25, 0.5, 0.75]"
-    [backdropDismiss]="false"
+    [backdropDismiss]="true"
     [backdropBreakpoint]="0.5"
-    [keepContentsMounted]="true"
   >
     <ng-template>
       <app-wot-lookup
-        [showToolbar]="false"
+        showToolbar="true"
+        toolbarColor="secondary"
         [showSearchBar]="true"
         [showItemActions]="false"
-        (itemClick)="setRecipient($event) || wotModal.dismiss()"
+        (itemClick)="setRecipient($event) && hideWotModal()"
         (searchClick)="wotModal.setCurrentBreakpoint(0.75)">
+
+        <ion-button toolbar-end fill="clear" (click)="hideWotModal($event)" translate>COMMON.BTN_CLOSE</ion-button>
+
       </app-wot-lookup>
     </ng-template>
   </ion-modal>

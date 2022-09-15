@@ -1,13 +1,16 @@
 <ion-header [translucent]="true" *ngIf="showToolbar">
-  <ion-toolbar color="primary">
+  <ion-toolbar [color]="toolbarColor">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title translate>MENU.WOT</ion-title>
+    <ion-buttons slot="end">
+      <ng-content select="[toolbar-end]"></ng-content>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="showSearchBar">
   <ion-header collapse="condense" *ngIf="showToolbar">
     <ion-toolbar>
       <ion-title size="large" translate>MENU.WOT</ion-title>

@@ -34,7 +34,7 @@ import {FormGetArrayPipe, FormGetControlPipe, FormGetGroupPipe, FormGetPipe, For
 import {PropertyGetPipe} from './property.pipes';
 import {AmountFormatPipe} from "@app/shared/pipes/amount.pipe";
 import {AddressFormatPipe} from "@app/shared/pipes/address.pipes";
-import {AccountBalancePipe, AccountNamePipe} from "@app/shared/pipes/account.pipes";
+import {AccountBalancePipe, AccountNamePipe, AccountPropertyPipe} from "@app/shared/pipes/account.pipes";
 
 @NgModule({
   imports: [
@@ -81,6 +81,7 @@ import {AccountBalancePipe, AccountNamePipe} from "@app/shared/pipes/account.pip
     AddressFormatPipe,
     AbbreviatePipe,
     // Account pipes
+    AccountPropertyPipe,
     AccountBalancePipe,
     AccountNamePipe
   ],
@@ -123,6 +124,7 @@ import {AccountBalancePipe, AccountNamePipe} from "@app/shared/pipes/account.pip
     AddressFormatPipe,
     AbbreviatePipe,
     // Account pipes
+    AccountPropertyPipe,
     AccountBalancePipe,
     AccountNamePipe
   ]

@@ -26,11 +26,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
+<ion-content [scrollY]="scrollY">
+
   <app-register-form (onSubmit)="doSubmit()" (onCancel)="cancel()"
                      [class]="mobile ? '': 'has-footer'"
                      #form>
-
 
     <ion-row *ngIf="form.debug" codeConfirmation>
       <ion-text color="primary"  class="ion-padding">

@@ -10,17 +10,22 @@ import {AppSharedModule} from "@app/shared/shared.module";
 import {AppUnlockModule} from "@app/unlock/unlock.module";
 
 @NgModule({
-    imports: [
-      CommonModule,
-      FormsModule,
-      IonicModule,
-      TranslateModule,
-      AppSharedModule,
-      AppUnlockModule
-    ],
-    exports: [
-        RegisterForm, RegisterModal
-    ],
-    declarations: [RegisterForm, RegisterModal]
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    TranslateModule,
+    AppSharedModule,
+    AppUnlockModule
+  ],
+  declarations: [
+    RegisterForm,
+    RegisterModal
+  ],
+  exports: [
+    RegisterForm,
+    RegisterModal,
+    TranslateModule
+  ]
 })
 export class AppRegisterModule {}

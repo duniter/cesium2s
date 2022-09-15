@@ -1,1 +1,6 @@
 
+ion-toolbar {
+  ion-buttons[slot="end"] {
+    padding-inline-end: var(--ion-padding);
+  }
+}

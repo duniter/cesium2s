@@ -32,3 +32,11 @@ qr-code {
 ion-toolbar ion-menu-button {
   color: var(--ion-color-base-contrast);
 }
+
+ion-toolbar {
+  user-select: none;
+
+  ion-title.balance {
+    font-weight: bold;
+  }
+}

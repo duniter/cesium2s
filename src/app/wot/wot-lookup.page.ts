@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
 import {WotSearchFilter} from "@app/wot/wot.model";
 import {toBoolean} from "@app/shared/functions";
+import {PredefinedColors} from "@app/shared/colors/colors.utils";
 
 @Component({
   selector: 'app-wot-lookup',
@@ -22,6 +23,7 @@ export class WotLookupPage extends BasePage<Account[]> implements OnInit {
   @Output() itemClick = new EventEmitter<Account>();
 
   @Input() showItemActions: boolean;
+  @Input() toolbarColor: PredefinedColors = 'primary';
 
   constructor(injector: Injector,
               private router: Router,
@@ -80,7 +82,7 @@ export class WotLookupPage extends BasePage<Account[]> implements OnInit {
     super.markAsLoading();
   }
 
-  searchChanged(event: CustomEvent<any>, value: string) {
+  searchChanged(event: Event, value: string) {
     if (!event || event.defaultPrevented) return;
     event.preventDefault();
     event.stopPropagation();

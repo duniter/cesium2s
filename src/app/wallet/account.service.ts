@@ -1,7 +1,7 @@
 import {Inject, Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
 import {ApiPromise} from "@polkadot/api";
-import {Account, AccountMeta, AccountUtils} from "./account.model";
+import {Account, AccountData, AccountMeta, AccountUtils} from "./account.model";
 import {StartableService} from "@app/shared/services/startable-service.class";
 import {AuthData} from "@app/auth/auth.model";
 import {keyring} from "@polkadot/ui-keyring";
@@ -26,7 +26,7 @@ import {
   firstValueFrom,
   from,
   map,
-  Observable,
+  Observable, Subject,
   Subscription,
   switchMap,
   timer
@@ -132,7 +132,8 @@ export class AccountService extends StartableService {
           meta: {
             name: ka.meta.name,
             genesisHash: ka.meta.genesisHash
-          }
+          },
+          dataSubject: new Subject<AccountData>()
         }
       });
 
@@ -492,7 +493,7 @@ export class AccountService extends StartableService {
 
     try {
       const now = Date.now();
-      let loaded = false;
+      let changed = false;
 
       // Load balance (free + reserved)
       if (opts.withBalance === true && (isNil(account.data?.free) || opts.reload === true)) {
@@ -502,7 +503,7 @@ export class AccountService extends StartableService {
           ...account.data,
           ...JSON.parse(data.toString())
         };
-        loaded = true;
+        changed = true;
       }
 
       // Load TX
@@ -513,7 +514,10 @@ export class AccountService extends StartableService {
         //somethingLoaded = true;
       }
 
-      if (loaded) {
+      // Emit change event
+      if (changed) {
+        account.dataSubject = account.dataSubject || new Subject();
+        account.dataSubject.next(account.data);
         console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} data [OK] in ${Date.now()-now}ms`, account.data);
       }
 

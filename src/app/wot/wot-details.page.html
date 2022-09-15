@@ -22,7 +22,7 @@
         <ion-avatar slot="start" *ngIf="data?.meta?.avatar">
           <ion-img [src]="data.meta.avatar"></ion-img>
         </ion-avatar>
-        <ion-title size="large" *ngIf="loaded; else loadingText">
+        <ion-title size="large" *ngIf="loaded; else loadingText" class="balance">
           {{ data|balance|amountFormat }}
         </ion-title>
         <ng-template #loadingText>

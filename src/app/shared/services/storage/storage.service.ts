@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
+import {ENVIRONMENT_INITIALIZER, Injectable} from '@angular/core';
 import {Storage} from '@ionic/storage-angular';
 import {StartableService} from "@app/shared/services/startable-service.class";
 import {IStorage} from "@app/shared/services/storage/storage.utils";
 import {Platform} from '@ionic/angular';
+import {environment} from "@environments/environment";
+import cordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class StorageService extends StartableService<Storage>
   implements IStorage<Storage> {
 
@@ -21,10 +21,21 @@ export class StorageService extends StartableService<Storage>
   }
 
   protected async ngOnStart(): Promise<Storage> {
-    await this.platform.ready();
-    const storage = await this.storage.create();
-    //console.info(`[storage-service] Started using driver=${storage?.driver}`);
-    return storage;
+    try {
+      console.debug(`[storage-service] Starting... {driverOrder: ${environment.storage?.driverOrder}}`);
+
+      // Define Cordova SQLLite driver
+      await this.storage.defineDriver(cordovaSQLiteDriver);
+
+      // Create the storage instance
+      const storage = await this.storage.create();
+
+      console.info(`[storage-service] Started using driver: ${storage?.driver}`);
+      return storage;
+    }
+    catch (err) {
+      console.error('[storage-service] Cannot create storage: ' + (err?.message || err), err);
+    }
   }
 
   async set(key: string, value: any) {

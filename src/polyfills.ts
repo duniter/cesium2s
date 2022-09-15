@@ -53,6 +53,7 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+// Polkadot API augment
 import '@polkadot/api-augment'
 (window as any).global = window;
 

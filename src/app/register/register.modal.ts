@@ -1,21 +1,21 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {REGISTER_FORM_SLIDES, RegisterForm} from "@app/register/register.form";
 import {AccountService} from "@app/wallet/account.service";
 import {FormUtils} from "@app/shared/forms";
 import {RegisterData} from "@app/register/register.model";
 import {environment} from "@environments/environment";
-
+export interface RegisterModalOptions {
+  scrollY?: boolean;
+}
 @Component({
   selector: 'app-register-modal',
   templateUrl: 'register.modal.html',
   styleUrls: ['./register.modal.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegisterModal implements OnInit{
+export class RegisterModal implements OnInit, RegisterModalOptions {
 
-
-  @ViewChild('form', { static: true }) private form: RegisterForm;
 
   get loading() {
     return this.form.loading;
@@ -24,6 +24,9 @@ export class RegisterModal implements OnInit{
   get mobile() {
     return this.form.mobile;
   }
+
+  @Input() scrollY = false;
+  @ViewChild('form', { static: true }) private form: RegisterForm;
 
   constructor(
     private accountService: AccountService,

@@ -10,7 +10,7 @@ import {
 import {AccountService} from "../wallet/account.service";
 import {BasePage} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
-import {ActionSheetOptions, IonModal, Platform, PopoverOptions} from "@ionic/angular";
+import {ActionSheetOptions, IonModal, IonRouterOutlet, IonTextarea, Platform, PopoverOptions} from "@ionic/angular";
 import {BehaviorSubject, firstValueFrom, Observable} from "rxjs";
 import {isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
 import {filter} from "rxjs/operators";
@@ -20,6 +20,8 @@ import {Currency} from "@app/network/currency.model";
 import {Router} from "@angular/router";
 import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
 import {BarcodeScannerWeb} from "@capacitor-community/barcode-scanner/dist/esm/web";
+import {Capacitor} from "@capacitor/core";
+import {CapacitorPlugins} from "@app/shared/services/plugins";
 
 @Component({
   selector: 'app-transfer',
@@ -34,7 +36,7 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
   recipient: Account = {address: null, meta: null};
   amount: number;
   fee: number;
-  protected _capacitor: boolean;
+  protected _enableScan: boolean = false;
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet'
@@ -79,22 +81,16 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     protected cd: ChangeDetectorRef
   ) {
     super(injector, {name: 'transfer', loadDueTime: 250});
-
   }
 
   ngOnInit() {
     super.ngOnInit();
+  }
+
+  ionViewWillLeave() {
 
     // Hide modal when leave page
-    this.registerSubscription(
-      this.router.events
-        .pipe(filter(
-          (value, index) => {
-            console.log(value);
-            return true;
-          }
-        )).subscribe()
-    )
+    this.hideWotModal();
   }
 
   async ngOnDestroy() {
@@ -103,14 +99,62 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     await this.qrCodeModal?.dismiss();
   }
 
+  protected _autoOpenWotModal = true;
+
+  protected async focusFrom(event: UIEvent, textarea?: IonTextarea) {
+
+    if (this._autoOpenWotModal) {
+      await this.showWotModal(event);
+
+      if (textarea) {
+        const el = await textarea.getInputElement();
+        setTimeout( () => el.focus(), 250);
+      }
+    }
+
+  }
+
+  protected _initialWotModalBreakpoint = 0.25
+
+  protected async showWotModal(event: UIEvent, breakpoint?: number) {
+    breakpoint = breakpoint || 0.25;
+
+    this._initialWotModalBreakpoint = breakpoint;
+
+    if (!this.wotModal.isCmpOpen) {
+      await this.wotModal.present();
+    }
+
+    // Set breakpoint
+    if (breakpoint > 0.25){
+      const currentBreakpoint = await this.wotModal.getCurrentBreakpoint();
+      if (breakpoint > currentBreakpoint) {
+        await this.wotModal.setCurrentBreakpoint(breakpoint);
+      }
+    }
+  }
+
+  protected hideWotModal(event?: UIEvent) {
+    if (this.wotModal && this.wotModal.isCmpOpen) {
+      this.wotModal.dismiss();
+      this._autoOpenWotModal = false;
+    }
+  }
+
   protected async ngOnLoad(): Promise<Observable<Account[]>> {
+
+    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
+
     await this.accountService.ready();
 
     const subject = new BehaviorSubject<Account[]>(null);
     this.registerSubscription(
       this.accountService.watchAll({positiveBalanceFirst: true})
         .pipe(filter(isNotEmptyArray))
-        .subscribe((value) => subject.next(value))
+        .subscribe((value) => {
+          subject.next(value);
+          if (this.loaded) this.cd.markForCheck();
+        })
     );
 
     const accounts = await firstValueFrom(subject);
@@ -133,12 +177,11 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
 
     this.fee = (this.networkService.currency?.fees.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
 
-    this._capacitor = this.ionicPlatform.is('capacitor');
 
     return subject;
   }
 
-  setRecipient(recipient: string|Account) {
+  setRecipient(recipient: string|Account): boolean {
     if (typeof recipient === 'object') {
       this.recipient = recipient;
     }
@@ -146,6 +189,7 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
       this.recipient = {address: recipient, meta: null};
     }
     this.markForCheck();
+    return true;
   }
 
   cancel(event?: UIEvent) {
@@ -165,6 +209,10 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
       await this.showToast({message: 'INFO.TRANSFER_SENT'});
 
       this.reset();
+
+      if (this.routerOutlet.canGoBack()) {
+        await this.routerOutlet.pop();
+      }
     }
     catch (err) {
       this.setError(err);
@@ -173,7 +221,7 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
   }
 
   async scanRecipient(event: UIEvent) {
-    if (!this._capacitor) return; // SKip
+    if (!this._enableScan) return; // SKip
 
     await BarcodeScanner.hideBackground(); // make background of WebView transparent
 
