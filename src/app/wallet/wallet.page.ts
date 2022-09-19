@@ -1,4 +1,4 @@
-import {AfterViewChecked, ChangeDetectionStrategy, Component, Injector, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnInit, ViewChild} from '@angular/core';
 import {AccountService} from "./account.service";
 import {Clipboard} from "@capacitor/clipboard";
 import {BasePage} from "@app/shared/pages/base.page";
@@ -9,6 +9,8 @@ import {BehaviorSubject} from "rxjs";
 import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {WotLookupPage} from "@app/wot/wot-lookup.page";
+import { AuthController } from '@app/auth/auth.controller';
+import { firstNotNilPromise } from '@app/shared/observables';
 
 @Component({
   selector: 'app-wallet',
@@ -18,7 +20,11 @@ import {WotLookupPage} from "@app/wot/wot-lookup.page";
 })
 export class WalletPage extends BasePage<Account> implements OnInit, AfterViewChecked {
 
-  protected $account = new BehaviorSubject<Account[]>(null);
+  static NEW = <Account>{
+    address: ''
+  };
+
+  protected $accounts = new BehaviorSubject<Account[]>(null);
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet'
   };
@@ -30,8 +36,13 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
   address: string;
   currency: string;
 
+
   get account(): Account {
     return this.data;
+  }
+
+  get new(): Account {
+    return WalletPage.NEW;
   }
 
   @ViewChild('authModal') authModal: IonModal;
@@ -41,7 +52,8 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
     injector: Injector,
     protected router: Router,
     protected networkService: NetworkService,
-    protected accountService: AccountService
+    protected accountService: AccountService,
+    protected authController: AuthController
   ) {
     super(injector, {
       name: 'wallet-page',
@@ -70,23 +82,28 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
     this.info('Loading page...');
     this.currency = this.networkService.currencySymbol;
 
-    const accounts = await this.accountService.getAll();
-    this.$account.next(accounts);
+    this.registerSubscription(
+      this.accountService.watchAll()
+      .subscribe(accounts => this.$accounts.next(accounts))
+    );
+
+    const accounts = await firstNotNilPromise<Account[]>(this.$accounts); // TODO add destroy/stop
+    let account: Account;
 
     if (isEmptyArray(accounts)) {
-      const account = await this.openAuthModal();
+      account = await this.openAuthModal();
       // Redirect to home
       if (!account) {
         await this.router.navigateByUrl('/home');
         throw new Error('ERROR.AUTH_REQUIRED');
       }
-
-      this.$account.next([account]);
+      this.address = account.address;
+      this.$accounts.next([account]);
       return account;
     }
 
     if (this.address === 'default') {
-      const account = await this.accountService.getDefault();
+      account = await this.accountService.getDefault();
       this.address = account.address;
       return account;
     }
@@ -94,11 +111,20 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
     // Load by address
     const isAddressAvailable = await this.accountService.isAvailable(this.address);
     if (isAddressAvailable) {
-      return this.accountService.getByAddress(this.address);
+      account = await this.accountService.getByAddress(this.address);
+      this.address = account.address;
+      return account;
     }
 
     // Try by name
-    return this.accountService.getByName(this.address);
+    account = await this.accountService.getByName(this.address);
+    // Redirect to home
+    if (!account) {
+      await this.router.navigateByUrl('/home');
+      throw new Error('ERROR.AUTH_REQUIRED');
+    }
+    this.address =  account.address;
+    return account;
   }
 
   async copyAddress() {
@@ -115,11 +141,38 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
     this.qrCodeModal.present();
   }
 
-  addNewWallet(event: UIEvent) {
+  async onAccountChange(event: CustomEvent<{value: Account}>) {
+    const account = event?.detail.value;
+    if (account === WalletPage.NEW) {
+      event.preventDefault();
+      event.stopPropagation();
 
+      const newAccount = await this.addNewWallet();
+
+      // If cancelled, restore previous account
+      if (!newAccount && this.address) {
+        this.data = (this.$accounts.value || []).find(a => a.address === this.address);
+        this.markForCheck();
+      }
+    }
+    else {
+      this.address = account.address;
+    }
   }
 
-  async openAuthModal(): Promise<Account|null> {
+  async addNewWallet(event?: UIEvent): Promise<Account> {
+    const data = await this.authController.register();
+    if (!data) return null;
+
+    this.data = data;
+
+    return data;
+  }
+
+  async openAuthModal(event?: UIEvent): Promise<Account|null> {
+    event?.preventDefault();
+    event?.stopPropagation();
+    event?.stopImmediatePropagation();
     if (!this.authModal.isOpen) {
       await this.authModal.present();
     }

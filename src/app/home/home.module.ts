@@ -6,6 +6,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {HomePageRoutingModule} from "@app/home/home-routing.module";
 import {AppAuthModule} from "@app/auth/auth.module";
 import {AppRegisterModule} from "@app/register/register.module";
+import { AppTransferModule } from '@app/transfer/transfer.module';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import {AppRegisterModule} from "@app/register/register.module";
     TranslateModule.forChild(),
     HomePageRoutingModule,
     AppAuthModule,
-    AppRegisterModule
+    AppRegisterModule,
+    AppTransferModule
   ],
   declarations: [HomePage]
 })
