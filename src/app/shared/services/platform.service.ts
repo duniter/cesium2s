@@ -9,6 +9,7 @@ import {TranslateService} from "@ngx-translate/core";
 import * as momentImported from 'moment';
 import {StatusBar} from "@capacitor/status-bar";
 import {Keyboard} from "@capacitor/keyboard";
+import {CapacitorPlugins} from "@app/shared/capacitor/plugins";
 
 const moment = momentImported;
 
@@ -78,10 +79,10 @@ export class PlatformService extends StartableService {
 
     let plugin: string;
     try {
-      plugin = 'StatusBar';
+      plugin = CapacitorPlugins.StatusBar;
       await StatusBar.setOverlaysWebView({overlay: false});
 
-      plugin = 'Keyboard';
+      plugin = CapacitorPlugins.Keyboard;
       await Keyboard.setAccessoryBarVisible({isVisible: false});
     }
     catch(err) {
