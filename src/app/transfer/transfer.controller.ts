@@ -25,24 +25,31 @@ export class TransferController {
   constructor(
     private platform: PlatformService,
     private translate: TranslateService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private router: Router
   ) {
   }
 
   async transfer(event: UIEvent, opts?: TransferPageOptions): Promise<string|undefined> {
 
-    console.info('[transfer] Opening transfer modal');
+    if (this._mobile) {
+      console.info('[transfer] Opening transfer page');
+      this.router.navigateByUrl('/transfer');
+    }
+    else {
+      console.info('[transfer] Opening transfer modal');
 
-    const modal = await this.modalCtrl.create({
-          component: TransferPage,
-          componentProps: <TransferPageOptions>{
-            ...opts,
-            dismissOnSubmit: true
-          }
-        });
-    await modal.present();
-    const {data} = await modal.onWillDismiss();
+      const modal = await this.modalCtrl.create({
+            component: TransferPage,
+            componentProps: <TransferPageOptions>{
+              ...opts,
+              dismissOnSubmit: true
+            }
+          });
+      await modal.present();
+      const {data} = await modal.onWillDismiss();
 
-    return data;
+      return data;
+    }
   }
 }

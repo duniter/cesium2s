@@ -5,25 +5,20 @@
     </ion-buttons>
     <ion-title translate>ACCOUNT.TITLE</ion-title>
     <ion-buttons slot="end">
-      <ion-select *ngIf="$account|async; let accounts"
+      <ion-select *ngIf="$accounts|async; let accounts"
                   [class.cdk-visually-hidden]="accounts|isEmptyArray"
                   [(ngModel)]="data"
+                  (ionChange)="onAccountChange($event)"
                   [interface]="mobile ? 'action-sheet' : 'popover'"
                   [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
                   [okText]="'COMMON.BTN_OK'|translate"
                   [cancelText]="'COMMON.BTN_CANCEL'|translate">
         <ion-select-option *ngFor="let account of accounts"
                            [value]="account">
-
-          <ion-avatar *ngIf="loaded">
-            <svg width="40" width="40" [data-jdenticon-value]="data.data?.randomId||data.address"></svg>
-          </ion-avatar>
           {{account|accountName}}
         </ion-select-option>
-
-        <ion-select-option (click)="addNewWallet($event)"
-                           [value]="null"
-                           translate>ACCOUNT.WALLET_LIST.BTN_NEW</ion-select-option>
+        <ion-select-option [value]="new"
+                           translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
       </ion-select>
     </ion-buttons>
 

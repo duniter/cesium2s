@@ -7,6 +7,7 @@ import {Account} from "@app/wallet/account.model";
 import {fadeInAnimation} from "@app/shared/animations";
 import {Router} from "@angular/router";
 import {AuthController} from "@app/auth/auth.controller";
+import { TransferController } from '@app/transfer/transfer.controller';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,7 @@ export class HomePage extends BasePage<Settings> implements OnInit {
     public networkService: NetworkService,
     public accountService: AccountService,
     public authController: AuthController,
+    public transferController: TransferController,
     public router: Router,
     @Inject(APP_LOCALES) public locales: LocaleConfig[]
   ) {
@@ -78,9 +80,13 @@ export class HomePage extends BasePage<Settings> implements OnInit {
     }
   }
 
-  logout(event) {
+  logout(even?: UIEvent) {
     event?.preventDefault();
     this.accountService.forgetAll();
     this.defaultAccount = null;
+  }
+
+  transfer(event?: UIEvent) {
+    return this.transferController.transfer(event);
   }
 }

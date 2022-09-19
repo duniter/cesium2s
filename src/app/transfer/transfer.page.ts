@@ -19,7 +19,7 @@ import {Currency} from "@app/network/currency.model";
 import {Router} from "@angular/router";
 import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
 import {Capacitor} from "@capacitor/core";
-import {CapacitorPlugins} from "@app/shared/services/plugins";
+import {CapacitorPlugins} from "@app/shared/capacitor/plugins";
 
 export interface TransferPageOptions {
   issuer?: Account;
@@ -187,10 +187,10 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnD
     }
   }
 
-  protected hideWotModal(event?: UIEvent) {
+  protected async hideWotModal(event?: UIEvent) {
     if (this.wotModal && this.wotModal.isCmpOpen) {
-      this.wotModal.dismiss();
       this._autoOpenWotModal = false;
+      await this.wotModal.dismiss();
     }
   }
 
@@ -234,7 +234,9 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnD
   }
 
   async close(data?: any) {
+    // As a page
     if (this.routerOutlet) {
+      console.debug('[transfer] Closing page with result: ', data);
       if (this.routerOutlet?.canGoBack()) {
         this.routerOutlet.pop();
       }
@@ -242,10 +244,15 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnD
         await this.router.navigateByUrl('/wallet');
       }
     }
+    // As a modal
     else {
-      const hasTop = !!(await this.modalCtrl.getTop())
-      if (hasTop) {
-        await this.modalCtrl.dismiss(data);
+      // First close wot modal (if opened)
+      await this.hideWotModal();
+
+      const modal = await this.modalCtrl.getTop();
+      const hasModal = !!modal;
+      if (hasModal) {
+        this.modalCtrl.dismiss(data);
       }
     }
 

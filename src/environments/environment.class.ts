@@ -1,5 +1,5 @@
 import {AuthData} from "@app/auth/auth.model";
-import {StorageConfig} from '@ionic/storage-angular';
+import {StorageConfig} from '@ionic/storage';
 
 export interface Environment {
   name: string;

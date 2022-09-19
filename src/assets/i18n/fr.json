@@ -575,6 +575,7 @@
     "WALLET_LIST": {
       "TITLE": "Mes portefeuilles",
       "BTN_NEW": "Ajouter un portefeuille",
+      "BTN_NEW_DOTS": "Ajouter un portefeuille...",
       "BTN_DOWNLOAD": "Télécharger la liste",
       "BTN_IMPORT_FILE_DOTS": "Importer depuis un fichier...",
       "NO_WALLET": "Aucun portefeuille secondaire",

@@ -54,7 +54,7 @@
           </ion-button>
 
           <!-- transfer -->
-          <ion-button expand="block" [routerLink]="'/transfer'">
+          <ion-button expand="block" (click)="transfer()">
             <ion-icon name="paper-plane" slot="start"></ion-icon>
             <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
           </ion-button>

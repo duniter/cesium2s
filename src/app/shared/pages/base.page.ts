@@ -21,8 +21,8 @@ export abstract class BasePage<
   >
   implements OnInit, OnDestroy {
 
-  private _cd: ChangeDetectorRef;
-  private _subscription: Subscription;
+  protected _cd: ChangeDetectorRef;
+  protected _subscription: Subscription;
 
   protected translate: TranslateService;
   protected settings: SettingsService;

@@ -4,7 +4,7 @@ import {StartableService} from "@app/shared/services/startable-service.class";
 import {IStorage} from "@app/shared/services/storage/storage.utils";
 import {Platform} from '@ionic/angular';
 import {environment} from "@environments/environment";
-import cordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
+import * as cordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 
 @Injectable({providedIn: 'root'})
 export class StorageService extends StartableService<Storage>

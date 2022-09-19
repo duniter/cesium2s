@@ -14,6 +14,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {AuthModal, AuthModalOptions} from "@app/auth/auth.modal";
 import {Router} from "@angular/router";
 import {RegisterModal, RegisterModalOptions} from "@app/register/register.modal";
+import { Account } from "@app/wallet/account.model";
 
 export declare type LoginMethodType = 'v1' | 'v2' | 'keyfile-v1';
 export const LoginMethods: ListItem[] = [
@@ -120,7 +121,7 @@ export class AuthController {
     return data;
   }
 
-  async register(opts?: { redirectToWalletPage?: boolean; }) {
+  async register(opts?: { redirectToWalletPage?: boolean; }): Promise<Account> {
     const modal = await this.modalCtrl.create({
       component: RegisterModal,
       componentProps: <RegisterModalOptions>{
@@ -132,10 +133,17 @@ export class AuthController {
 
     const {data} = await modal.onWillDismiss();
 
-    if (data?.address && opts.redirectToWalletPage === true) {
-      setTimeout(() => this.router.navigate(['/wallet', data.address]));
-    }
+    try {
+      if (!data?.address) return null; // Skip
 
-    return data;
+      if (opts?.redirectToWalletPage) {
+        setTimeout(() => this.router.navigate(['/wallet', data.address]));
+      }
+
+      return data as Account;
+    }
+    finally {
+      await modal.onDidDismiss();
+    }
   }
 }
