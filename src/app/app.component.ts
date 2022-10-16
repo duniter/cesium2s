@@ -1,13 +1,16 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {PlatformService} from "./shared/services/platform.service";
 import {environment} from "@environments/environment";
 import {AccountService} from "@app/wallet/account.service";
 import {Router} from "@angular/router";
+import {fadeInAnimation} from "@app/shared/animations";
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
+  animations: [fadeInAnimation],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
 
@@ -24,7 +27,7 @@ export class AppComponent {
 
     { title: 'MENU.SETTINGS', url: '/settings', icon: 'settings' },
 
-    { title: 'HOME.BTN_CHANGE_ACCOUNT', icon: 'log-out', color: 'danger',
+    { title: 'COMMON.BTN_LOGOUT', icon: 'log-out', color: 'danger',
 
       handle: (event) => this.logout(event),
       enable: () => this.accountService.isLogin
