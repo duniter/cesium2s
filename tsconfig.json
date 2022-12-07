@@ -11,40 +11,61 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "incremental": true,
-    "target": "es2020",
+    "target": "ES2022",
     "module": "es2020",
-    "lib": ["es2018", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "allowSyntheticDefaultImports": true,
     "typeRoots": [
       "node_modules/@types"
     ],
-    "paths" : {
-      // Project sources
-      "@app/*": ["src/app/*"],
-      "@environments/*": ["src/environments/*"],
-
-      // Force using the RxJS project's version
-      "rxjs": ["node_modules/rxjs"],
-      "rxjs/*": ["node_modules/rxjs/*"],
-
-      // Local deps        // Package name
-      "@duniter/core-types/*": ["src/*"],
-
-      // here we replace the @polkadot/api augmentation with our own, generated from chain
-      "@polkadot/api/augment": ["src/interfaces/augment-api.ts"],
-      // replace the augmented types with our own, as generated from definitions
-      "@polkadot/types/augment": ["src/interfaces/augment-types.ts"],
-      "@polkadot/types": ["./node_modules/@polkadot/types"],
-
-      // Node JS lib
-      "crypto": ["node_modules/crypto-browserify"],
-      "stream": ["node_modules/stream-browserify"],
-      "assert": ["node_modules/assert"],
-      "http": ["node_modules/stream-http"],
-      "https": ["node_modules/https-browserify"],
-      "os": ["node_modules/os-browserify"]
-
-    }
+    "paths": {
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@environments/*": [
+        "src/environments/*"
+      ],
+      "rxjs": [
+        "node_modules/rxjs"
+      ],
+      "rxjs/*": [
+        "node_modules/rxjs/*"
+      ],
+      "@duniter/core-types/*": [
+        "src/*"
+      ],
+      "@polkadot/api/augment": [
+        "src/interfaces/augment-api.ts"
+      ],
+      "@polkadot/types/augment": [
+        "src/interfaces/augment-types.ts"
+      ],
+      "@polkadot/types": [
+        "./node_modules/@polkadot/types"
+      ],
+      "crypto": [
+        "node_modules/crypto-browserify"
+      ],
+      "stream": [
+        "node_modules/stream-browserify"
+      ],
+      "assert": [
+        "node_modules/assert"
+      ],
+      "http": [
+        "node_modules/stream-http"
+      ],
+      "https": [
+        "node_modules/https-browserify"
+      ],
+      "os": [
+        "node_modules/os-browserify"
+      ]
+    },
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
