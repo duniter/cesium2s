@@ -74,7 +74,7 @@ export class HomePage extends BasePage<Settings> implements OnInit {
     await this.settings.ready();
     await this.networkService.ready();
 
-    this.currency = this.networkService.currency.name;
+    this.currency = this.networkService.currency.displayName;
 
     // Load account
     await this.accountService.ready();

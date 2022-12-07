@@ -9,9 +9,10 @@ import {Currency} from "@app/network/currency.model";
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
   'Ğdev': <Partial<Currency>>{
-    name: 'Ğdev',
-    symbol: 'ĞD',
-    ss58Format: 42,
+    network: "gdev",
+    displayName: 'Ğdev',
+    symbol: 'GD',
+    prefix: 42,
     genesys: '0x9f956a87b5568f12c757bb3426897bba6123a1ef311fcd0945bd669fd0e612f8',
     fees: {
       identity: 300, // = 3 Gdev
@@ -20,9 +21,10 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     decimals: 2
   },
   'Ğ1': <Partial<Currency>>{
-    name: 'Ğ1',
-    symbol: 'Ğ1',
-    ss58Format: 42,
+    network: "g1",
+    displayName: 'Ğ1',
+    symbol: 'G1',
+    prefix: 4450,
     genesys: '0x___TODO___',
     fees: {
       identity: 300, // = 3G1 - FIXME
@@ -36,7 +38,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
 export class NetworkService extends StartableService<ApiPromise> {
 
   currency = <Currency>{
-    name: null,
+    displayName: null,
     symbol: null,
     genesys: null
   }
@@ -99,8 +101,8 @@ export class NetworkService extends StartableService<ApiPromise> {
         this.currency = WELL_KNOWN_CURRENCIES[chain];
       }
     }
-    this.currency.name = this.currency.name || chain;
-    this.currency.symbol = this.currency.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.name);
+    this.currency.displayName = this.currency.displayName || chain;
+    this.currency.symbol = this.currency.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
     this.currency.decimals = this.currency.decimals || +(chainInfo.tokenDecimals.value?.[0].toHuman()) || 0;
 
     // Read the genesys block hash

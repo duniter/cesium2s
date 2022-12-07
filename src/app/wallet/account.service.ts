@@ -122,7 +122,7 @@ export class AccountService extends StartableService {
 
     // Configure keyring
     keyring.setDevMode(this._isDevelopment);
-    keyring.setSS58Format(currency.ss58Format || 42 /* = dev format */);
+    keyring.setSS58Format(currency.prefix || 42 /* = dev format */);
 
     // Restoring accounts
     await this.restoreAccounts(currency);
@@ -145,7 +145,7 @@ export class AccountService extends StartableService {
 
     keyring.loadAll({
       store: this._store,
-      ss58Format: currency?.ss58Format,
+      ss58Format: currency?.prefix,
       genesisHash: currency?.genesys,
       isDevelopment: this._isDevelopment
     });
