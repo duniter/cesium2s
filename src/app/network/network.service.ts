@@ -12,7 +12,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     name: 'Ğdev',
     symbol: 'ĞD',
     ss58Format: 42,
-    genesys: '0x07c112ff6ab9d7d0d531ebe59f98b35318b2813b1655577380819d38d6182d99',
+    genesys: '0x9f956a87b5568f12c757bb3426897bba6123a1ef311fcd0945bd669fd0e612f8',
     fees: {
       identity: 300, // = 3 Gdev
       tx: 1 // = 0.01 Gdev
