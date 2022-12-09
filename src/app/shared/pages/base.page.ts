@@ -7,7 +7,8 @@ import {waitIdle} from "@app/shared/forms";
 import {WaitForOptions} from "@app/shared/observables";
 import {ToastController, ToastOptions} from "@ionic/angular";
 import {TranslateService} from "@ngx-translate/core";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, map, Subscription, Observable} from "rxjs";
+import {RxState} from "@rx-angular/state";
 
 export interface BasePageOptions {
   name: string;
@@ -16,7 +17,7 @@ export interface BasePageOptions {
 
 @Directive()
 export abstract class BasePage<
-  S,
+  T extends object,
   O extends BasePageOptions = BasePageOptions
   >
   implements OnInit, OnDestroy {
@@ -28,6 +29,7 @@ export abstract class BasePage<
   protected settings: SettingsService;
   protected readonly activatedRoute: ActivatedRoute;
   protected toastController: ToastController;
+  protected readonly _state: RxState<T>;
   protected readonly _debug = !environment.production;
   protected readonly _logPrefix: string;
   protected readonly _options: O;
@@ -35,11 +37,25 @@ export abstract class BasePage<
 
   mobile: boolean = null;
   error: string = null;
-  loading = true;
-  data: S = null;
+  protected loadingSubject = new BehaviorSubject(true);
 
   get loaded(): boolean {
-    return !this.loading;
+    return !this.loadingSubject.value;
+  }
+  get loaded$(): Observable<boolean> {
+    return this.loadingSubject.pipe(map(loading => !loading));
+  }
+  get loading(): boolean {
+    return this.loadingSubject.value;
+  }
+  get loading$(): Observable<boolean> {
+    return this.loadingSubject.asObservable();
+  }
+  get data(): T {
+    return this._state.get();
+  }
+  set data(value: T) {
+    this._state.set(value);
   }
 
   protected constructor(
@@ -57,6 +73,7 @@ export abstract class BasePage<
       loadDueTime: 0,
       ...options
     };
+    this._state = injector.get(RxState);
     this._logPrefix = `[${this._options.name}] `;
   }
 
@@ -80,7 +97,8 @@ export abstract class BasePage<
 
     try {
 
-      this.data = await this.ngOnLoad();
+      const initialState = await this.ngOnLoad();
+      this._state.set(initialState);
 
       this.markForCheck();
       this.markAsLoaded();
@@ -91,7 +109,7 @@ export abstract class BasePage<
     }
   }
 
-  protected abstract ngOnLoad(): Promise<S>;
+  protected abstract ngOnLoad(): Promise<T>;
 
   protected setError(err, opts =  {emitEvent: true}) {
     let message = err?.message || err || 'ERROR.UNKNOWN_ERROR';
@@ -111,15 +129,15 @@ export abstract class BasePage<
   }
 
   protected markAsLoading(opts =  {emitEvent: true}) {
-    if (!this.loading) {
-      this.loading = true;
+    if (this.loaded) {
+      this.loadingSubject.next(true);
       if (opts.emitEvent !== false) this.markForCheck();
     }
   }
 
   protected markAsLoaded(opts =  {emitEvent: true}) {
     if (this.loading) {
-      this.loading = false;
+      this.loadingSubject.next(false);
       if (opts.emitEvent !== false) this.markForCheck();
     }
   }

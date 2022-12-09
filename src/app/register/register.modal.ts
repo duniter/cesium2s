@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {REGISTER_FORM_SLIDES, RegisterForm} from "@app/register/register.form";
-import {AccountService} from "@app/wallet/account.service";
+import {AccountsService} from "@app/wallet/accounts.service";
 import {FormUtils} from "@app/shared/forms";
 import {RegisterData} from "@app/register/register.model";
 import {environment} from "@environments/environment";
@@ -26,7 +26,7 @@ export class RegisterModal implements OnInit{
   }
 
   constructor(
-    private accountService: AccountService,
+    private accountService: AccountsService,
     public viewCtrl: ModalController,
     private _cd: ChangeDetectorRef
     ) {

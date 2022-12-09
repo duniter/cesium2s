@@ -7,18 +7,16 @@ import {StorageService} from "@app/shared/services/storage/storage.service";
 import {environment} from "@environments/environment.prod";
 import {TranslateService} from "@ngx-translate/core";
 import * as momentImported from 'moment';
-import {Subject} from "rxjs";
-import {Settings} from "@app/settings/settings.model";
+
 const moment = momentImported;
 
 @Injectable({
   providedIn: 'root'
 })
-export class PlatformService extends StartableService {
+export class PlatformService extends StartableService<{}> {
 
   private _mobile: boolean = null;
   private _touchUi: boolean = null;
-
 
   get mobile(): boolean {
     return this._mobile != null ? this._mobile : this.ionicPlatform.is('mobile');

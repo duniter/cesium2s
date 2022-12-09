@@ -5,10 +5,10 @@
     </ion-buttons>
     <ion-title translate>ACCOUNT.TITLE</ion-title>
 
-    <ng-container *ngIf="$account|async; let accounts">
+    <ng-container *rxLet="accounts$; let accounts; suspense: suspense">
       <ion-select slot="end"
                   *ngIf="accounts|isNotEmptyArray"
-                  [(ngModel)]="data"
+                  [(ngModel)]="account"
                   [interface]="mobile ? 'action-sheet' : 'popover'"
                   [okText]="'COMMON.BTN_OK'|translate"
                   [cancelText]="'COMMON.BTN_CANCEL'|translate">
@@ -17,24 +17,33 @@
           {{account|accountName}}
         </ion-select-option>
       </ion-select>
+
+      <ng-template #suspense>
+        <ion-spinner></ion-spinner>
+      </ng-template>
     </ng-container>
   </ion-toolbar>
-  <ion-progress-bar type="indeterminate" *ngIf="loading"></ion-progress-bar>
+  <ion-progress-bar type="indeterminate" *rxIf="loadingSubject"></ion-progress-bar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header>
-    <ion-toolbar class="ion-text-end" color="secondary">
-      <ion-buttons slot="start">
-        <ion-button [disabled]="loading"
-                    (click)="qrCodeModal.present()">
-          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-      <ion-label slot="end" *ngIf="loaded" class="ion-text-end ion-margin-end">
-        <b>{{ balance | amountFormat }}</b>
+    <ion-item color="secondary" >
+      <ion-avatar slot="start" (click)="avatarModal.present()">
+        <ng-container *rxIf="account$; let account">
+          <ion-img *ngIf="account.meta?.avatar; let avatar; else svgIcon"
+                   [src]="avatar"></ion-img>
+          <ng-template #svgIcon>
+            <svg width="40" width="40"
+               [data-jdenticon-value]="account.data?.randomId||account.address"></svg>
+          </ng-template>
+        </ng-container>
+      </ion-avatar>
+      <ion-label class="ion-text-center ion-margin-end">
+        <h2 translate>ACCOUNT.BALANCE</h2>
+        <p><b *rxIf="account$; let account">{{ account | balance | amountFormat }}</b></p>
       </ion-label>
-    </ion-toolbar>
+    </ion-item>
   </ion-header>
 
   <div id="container">
@@ -45,26 +54,27 @@
         <ion-label color="danger">{{error|translate}}</ion-label>
       </ion-item>
 
-      <ion-item *ngIf="!mobile">
-        <ion-avatar slot="start" *ngIf="loaded">
-          <svg width="40" width="40" [data-jdenticon-value]="data.data?.randomId||data.address"></svg>
-        </ion-avatar>
-        <ion-label color="medium" translate>COMMON.PUBKEY</ion-label>
-        <ion-input *ngIf="loaded; else skeleton60"
-                   class="ion-text-end"
-                   [value]="data?.address"
-                   readonly>
-        </ion-input>
+      <!-- pubkey -->
+      <ion-item (click)="copyAddress()">
 
-        <ion-button slot="end" (click)="copyAddress()"
-                    [disabled]="loading"
-                    fill="clear" [title]="'COMMON.COPY'|translate">
-          <ion-icon slot="icon-only" name="copy"></ion-icon>
+        <ion-icon name="key" slot="start"></ion-icon>
+
+        <ion-label>
+          <h2 translate>COMMON.PUBKEY</h2>
+          <p class="ion-text-wrap">
+            <span *rxIf="account$; let account; else skeleton60">{{account.address}}</span>
+          </p>
+        </ion-label>
+
+        <ion-avatar slot="end" *rxIf="account$; let account">
+          <svg width="40" width="40" [data-jdenticon-value]="account.data?.randomId||account.address"></svg>
+        </ion-avatar>
+
+        <ion-button
+          [disabled]="loading$|async"
+          (click)="qrCodeModal.present()" slot="end" fill="clear" shape="round">
+          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
-      </ion-item>
-      <ion-item *ngIf="mobile" (click)="copyAddress()" >
-        <ion-icon slot="start" name="key"></ion-icon>
-        <ion-label class="ion-text-wrap">{{data?.address}}</ion-label>
       </ion-item>
 
 <!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->
@@ -75,16 +85,16 @@
 
 <!--      <ion-item detail  -->
 <!--                 [routerLink]="['/wot/cert/', data?.address]">-->
-        <ion-item detail (click)="notImplementedModal.present()">
-        <ion-icon slot="start" name="ribbon"></ion-icon>
-        <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
+      <ion-item detail (click)="notImplementedModal.present()">
+          <ion-icon slot="start" name="ribbon"></ion-icon>
+          <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
         <ion-badge color="success">0</ion-badge>
       </ion-item>
 
     </ion-list>
 
     <div class="ion-text-center ion-padding-top">
-      <ion-button [routerLink]="['/transfer', 'from', data?.address]"
+      <ion-button [routerLink]="['/transfer', 'from', account?.address]"
                   [disabled]="loading">
         <ion-icon slot="start" name="paper-plane"></ion-icon>
         <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
@@ -126,15 +136,41 @@
       </ion-header>
 
       <!-- QR code -->
-      <qr-code [value]="data.address" [size]="250"></qr-code>
+      <qr-code [value]="account.address" [size]="250"></qr-code>
 
       <!-- public key -->
       <ion-list>
         <ion-item lines="none" (click)="copyAddress()" tappable>
           <ion-icon slot="start" name="key"></ion-icon>
-          <ion-label class="ion-text-wrap">{{data?.address}}</ion-label>
+          <ion-label class="ion-text-wrap">{{account?.address}}</ion-label>
         </ion-item>
       </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+<ion-modal
+  #avatarModal
+  [backdropDismiss]="true"
+  [presentingElement]="_presentingElement"
+  [canDismiss]="true"
+>
+  <ng-template>
+    <ion-content [scrollY]="mobile">
+      <ion-header>
+        <ion-toolbar color="secondary">
+          <ion-title translate>ACCOUNT.AVATAR</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="avatarModal.dismiss()" translate>COMMON.BTN_CLOSE</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-item>
+        <ion-icon slot="start" name="warning" color="danger" lines="none"></ion-icon>
+        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED'|translate"></ion-label>
+      </ion-item>
     </ion-content>
   </ng-template>
 </ion-modal>

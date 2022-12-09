@@ -5,6 +5,7 @@ import {Peer, Peers} from "./peer.model";
 import {StartableService} from "@app/shared/services/startable-service.class";
 import {abbreviate} from "@app/shared/currencies";
 import {Currency} from "@app/network/currency.model";
+import {RxService} from "@app/shared/services/rx-service.class";
 //import * as definitions from '@duniter/core-types/interfaces'
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
@@ -34,21 +35,24 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
   }
 });
 
-@Injectable({providedIn: 'root'})
-export class NetworkService extends StartableService<ApiPromise> {
+export interface NetworkState {
+  currency: Currency;
+  api: ApiPromise
+}
 
-  currency = <Currency>{
-    displayName: null,
-    symbol: null,
-    genesys: null
+@Injectable({providedIn: 'root'})
+export class NetworkService extends RxService<NetworkState> {
+
+  get currency() {
+    return this.get('currency');
   }
 
   get api(): ApiPromise {
-    return this._data;
+    return this.get('api');
   }
 
   get currencySymbol(): string {
-    return this.currency.symbol || '';
+    return this.currency?.symbol || '';
   }
 
   constructor(
@@ -91,6 +95,7 @@ export class NetworkService extends StartableService<ApiPromise> {
 
     console.info(`${this._logPrefix}Connecting to chain {${chain}}: `, chainInfo.toHuman());
 
+    let currency: Currency;
     // Check is well known currency
     if (WELL_KNOWN_CURRENCIES[chain]) {
       const wellKnownCurrency = WELL_KNOWN_CURRENCIES[chain];
@@ -98,23 +103,27 @@ export class NetworkService extends StartableService<ApiPromise> {
         console.warn(`${this._logPrefix}Invalid genesys for ${chain}! Expected ${wellKnownCurrency.genesys} but peer return ${genesys}`);
       }
       else {
-        this.currency = WELL_KNOWN_CURRENCIES[chain];
+        currency = { ...wellKnownCurrency };
       }
     }
-    this.currency.displayName = this.currency.displayName || chain;
-    this.currency.symbol = this.currency.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
-    this.currency.decimals = this.currency.decimals || +(chainInfo.tokenDecimals.value?.[0].toHuman()) || 0;
+    currency.displayName = currency.displayName || chain;
+    currency.symbol = currency.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
+    currency.decimals = currency.decimals || +(chainInfo.tokenDecimals.value?.[0].toHuman()) || 0;
+    currency.genesys = genesys;
 
     // Read the genesys block hash
-    console.debug(`${this._logPrefix}Blockchain symbol: ${this.currency.symbol}`);
-    console.debug(`${this._logPrefix}Blockchain decimals: ${this.currency.decimals}`);
-    console.debug(`${this._logPrefix}Blockchain genesis: ${genesys}`);
+    console.debug(`${this._logPrefix}Blockchain symbol: ${currency.symbol}`);
+    console.debug(`${this._logPrefix}Blockchain decimals: ${currency.decimals}`);
+    console.debug(`${this._logPrefix}Blockchain genesis: ${currency.genesys}`);
 
     // Retrieve the latest header
     const lastHeader = await api.rpc.chain.getHeader();
     console.info(`${this._logPrefix}Last block: #${lastHeader.number} - hash ${lastHeader.hash}`);
 
-    return api;
+    return {
+      currency,
+      api
+    };
   }
 
   async filterAliveNodes(peers: string[], opts?: {

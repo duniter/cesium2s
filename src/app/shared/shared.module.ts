@@ -7,6 +7,8 @@ import {TranslateModule} from "@ngx-translate/core";
 import {SharedPipesModule} from "@app/shared/pipes/pipes.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {QRCodeModule} from "angular2-qrcode";
+import {ForModule, LetModule} from "@rx-angular/template";
+import {IfModule} from "@rx-angular/template/experimental/if";
 
 @NgModule({
   imports: [
@@ -16,6 +18,10 @@ import {QRCodeModule} from "angular2-qrcode";
     IonicModule,
     TranslateModule,
     QRCodeModule,
+    // RxState template
+    LetModule,
+    ForModule,
+    IfModule,
 
     // App modules
     SharedPipesModule
@@ -27,6 +33,10 @@ import {QRCodeModule} from "angular2-qrcode";
     IonicModule,
     TranslateModule,
     QRCodeModule,
+    // RxState template
+    LetModule,
+    ForModule,
+    IfModule,
 
     // App modules
     SharedPipesModule

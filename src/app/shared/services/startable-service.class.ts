@@ -18,15 +18,21 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
   extends BaseService<O>
   implements IStartableService<T> {
 
-  onStart = new Subject<T>();
-
-  protected _startByReadyFunction = true; // should start when calling ready() ?
-  protected _data: T = null;
-  protected _debug: boolean = false;
-
   private _started = false;
   private _startPromise: Promise<T> = null;
   private _startPrerequisite: () => Promise<any> = null;
+
+  protected _startByReadyFunction = true; // should start when calling ready() ?
+  protected _debug: boolean = false;
+
+  protected get _data(): T{
+    return null;
+  }
+  protected set _data(value: T) {
+    // void
+  }
+
+  onStart = new Subject<T>();
 
   protected constructor(
     @Optional() prerequisiteService?: { ready: () => Promise<any> },
@@ -51,9 +57,9 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
         this._started = true;
         this._startPromise = undefined;
 
-        this.onStart.next(this._data);
+        this.onStart.next(data);
 
-        return this._data;
+        return data;
       })
       .catch(err => {
         console.error('Failed to start a service: ' + (err && err.message || err), err);
@@ -99,7 +105,7 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
   }
 
   protected async ngOnStop(): Promise<void> {
-    // Can be override by subclasses
+    // Can be overridden by subclasses
   }
 
   protected abstract ngOnStart(): Promise<T>;

@@ -3,6 +3,9 @@
 
   <h1>Playground</h1>
 
-  <div>{{ state$ | async | json }}</div>
+
+  <ng-container *rxLet="state$; let state">
+    <div>{{ state | json }}</div>
+  </ng-container>
 
 </ion-content>

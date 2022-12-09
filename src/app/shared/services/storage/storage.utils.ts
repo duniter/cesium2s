@@ -3,9 +3,8 @@ import {Drivers} from "@ionic/storage";
 import * as LocalForage from "localforage";
 
 
-export interface IStorage<T = any> {
+export interface IStorage {
   readonly driver: string;
-  ready(): Promise<T>
   set(key: string, value: any): Promise<void>;
   get(key: string): Promise<any>;
   remove(key: string): Promise<void>

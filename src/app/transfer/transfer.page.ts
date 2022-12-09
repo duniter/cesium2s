@@ -7,7 +7,7 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {AccountService} from "../wallet/account.service";
+import {AccountsService} from "../wallet/accounts.service";
 import {BasePage} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
 import {ActionSheetOptions, IonModal, Platform, PopoverOptions} from "@ionic/angular";
@@ -20,21 +20,34 @@ import {Currency} from "@app/network/currency.model";
 import {Router} from "@angular/router";
 import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
 import {BarcodeScannerWeb} from "@capacitor-community/barcode-scanner/dist/esm/web";
+import {RxState} from "@rx-angular/state";
 
+export interface TransferState {
+  currency: Currency;
+  fee: number;
+  accounts: Account[];
+  account: Account;
+  recipient: Partial<Account>;
+
+}
 @Component({
   selector: 'app-transfer',
   templateUrl: './transfer.page.html',
   styleUrls: ['./transfer.page.scss'],
+  providers: [RxState],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TransferPage extends BasePage<Observable<Account[]>> implements OnInit, OnDestroy {
+export class TransferPage extends BasePage<TransferState> implements OnInit, OnDestroy {x
 
   showComment: boolean;
-  issuer: Account = null;
-  recipient: Account = {address: null, meta: null};
   amount: number;
-  fee: number;
   protected _capacitor: boolean;
+
+  protected accounts$ = this._state.select('accounts');
+  protected recipient$ = this._state.select('recipient');
+  protected currency$ = this._state.select('currency');
+  protected fee$ = this._state.select('fee');
+
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet'
@@ -70,16 +83,56 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     return 'TODO';
   }
 
+  get issuer() {
+    return this._state.get('account');
+  }
+  set issuer(value: Account) {
+    this._state.set('account', (_) => value);
+  }
+
+  get recipient() {
+    return this._state.get('recipient');
+  }
+  set recipient(value: Partial<Account>) {
+    this._state.set('recipient', (_) => value);
+  }
+
   constructor(
     injector: Injector,
     protected ionicPlatform: Platform,
-    protected accountService: AccountService,
+    protected accountService: AccountsService,
     protected networkService: NetworkService,
     protected router: Router,
     protected cd: ChangeDetectorRef
   ) {
     super(injector, {name: 'transfer', loadDueTime: 250});
 
+
+    this._state.connect('accounts', this.accountService.watchAll({positiveBalanceFirst: true}));
+
+    this._state.hold(this.accounts$, accounts => {
+      // Load account
+      const fromAddress = this.activatedRoute.snapshot.paramMap.get('from');
+      if (isNotNilOrBlank(fromAddress)) {
+        this.issuer = (accounts || []).find(a => a.address === fromAddress);
+      }
+      // Only one account: select it
+      else if (accounts?.length === 1) {
+        this.issuer = accounts[0];
+      }
+
+      // Load recipient
+      const toAddress = this.activatedRoute.snapshot.paramMap.get('to');
+      if (isNotNilOrBlank(toAddress)) {
+        this.recipient = {address: toAddress};
+      }
+    });
+
+    this._state.connect('fee', this.currency$, (state, currency) => {
+      return (currency?.fees.tx || 0) / Math.pow(10, currency?.decimals || 0);
+    });
+
+    //this._state.hold(this.router.events)
   }
 
   ngOnInit() {
@@ -90,7 +143,7 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
       this.router.events
         .pipe(filter(
           (value, index) => {
-            console.log(value);
+            this.log('Router event: ', value);
             return true;
           }
         )).subscribe()
@@ -103,39 +156,21 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnI
     await this.qrCodeModal?.dismiss();
   }
 
-  protected async ngOnLoad(): Promise<Observable<Account[]>> {
+  protected async ngOnLoad(): Promise<TransferState> {
     await this.accountService.ready();
 
-    const subject = new BehaviorSubject<Account[]>(null);
-    this.registerSubscription(
-      this.accountService.watchAll({positiveBalanceFirst: true})
-        .pipe(filter(isNotEmptyArray))
-        .subscribe((value) => subject.next(value))
-    );
-
-    const accounts = await firstValueFrom(subject);
-
-    // Load issuer
-    const issuerAddress = this.activatedRoute.snapshot.paramMap.get('from');
-    if (isNotNilOrBlank(issuerAddress)) {
-      this.issuer = (accounts||[]).find(a => a.address === issuerAddress);
-    }
-    // Only one account: select it
-    else if (accounts?.length === 1) {
-      this.issuer = accounts[0];
-    }
-
-    // Load receiver
-    const receiverAddress = this.activatedRoute.snapshot.paramMap.get('to');
-    if (isNotNilOrBlank(receiverAddress)) {
-      this.recipient.address = receiverAddress;
-    }
-
-    this.fee = (this.networkService.currency?.fees.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
-
+    const currency = this.networkService.currency;
     this._capacitor = this.ionicPlatform.is('capacitor');
 
-    return subject;
+    return {
+      currency,
+      accounts: null,
+      account: null,
+      fee: null,
+      recipient: {
+        address: this.activatedRoute.snapshot.paramMap.get('to')
+      }
+    };
   }
 
   setRecipient(recipient: string|Account) {

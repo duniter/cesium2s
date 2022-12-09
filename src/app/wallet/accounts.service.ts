@@ -40,6 +40,8 @@ import {Params} from "@polkadot/util-crypto/scrypt/types";
 import {u8aToHex} from "@polkadot/util";
 import {addressKey, contractKey} from "@polkadot/ui-keyring/defaults";
 import {formatAddress} from "@app/shared/currencies";
+import {fromPromise} from "rxjs/dist/types/internal/observable/innerFrom";
+import {RxService} from "@app/shared/services/rx-service.class";
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -78,13 +80,16 @@ export const  SCRYPT_PARAMS = {
 
 const ED25519_SEED_LENGTH = 32;
 
-@Injectable({providedIn: 'root'})
-export class AccountService extends StartableService {
+export interface AccountsState {
+  accounts: Account[];
+  password: string;
+}
 
-  private _$accounts = new BehaviorSubject<Account[]>([]);
+@Injectable({providedIn: 'root'})
+export class AccountsService extends RxService<AccountsState> {
+
   private _store = new KeyringStorage(this.storage);
   private readonly _isDevelopment: boolean;
-  private _password: string = null;
   private _passwordTimer: Subscription;
 
   get api(): ApiPromise {
@@ -92,11 +97,19 @@ export class AccountService extends StartableService {
   }
 
   get accounts(): Account[] {
-    return this._$accounts.value;
+    return this.get('accounts');
   }
 
   get isLogin(): boolean {
     return this.started && isNotEmptyArray(this.accounts);
+  }
+
+  private get _password(): string {
+    return this.get('password');
+  }
+
+  private set _password(value: string) {
+    this._state.set('password', (_) => value);
   }
 
   constructor(
@@ -167,15 +180,21 @@ export class AccountService extends StartableService {
       });
 
       // Load account's data
-      await Promise.all(accounts.map(a => this.loadData(a)));
+      try {
+        await Promise.all(accounts.map(a => this.loadData(a)));
 
-      // DEBUG
-      console.info(`Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
-      accounts.forEach(a => {
-        console.info(` - ${a.address} (${a.meta?.name}) - free=${a.data?.free} - reserved=${a.data?.reserved}`);
-      });
+        // DEBUG
+        console.info(`Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
+        accounts.forEach(a => {
+          console.info(` - ${a.address} (${a.meta?.name}) - free=${a.data?.free} - reserved=${a.data?.reserved}`);
+        });
 
-      this._$accounts.next(accounts);
+        this._state.set('accounts', (_) => accounts);
+      }
+      catch (err) {
+        console.error('Arror while loading accounts', err);
+        this._state.set('accounts', (_) => []);
+      }
     }
   }
 
@@ -187,11 +206,11 @@ export class AccountService extends StartableService {
     const auth =  environment.dev?.auth;
 
     // Set password to AAAAA (or those defined in environment)
-    this._password = auth?.password || 'AAAAA';
+    this._state.set('password', (_) => auth?.password || 'AAAAA');
 
     // Add a V1 Dev account, if define in environment
     if (auth?.v1) {
-      const alreadyExists = auth.address && this._$accounts.value.some(a => a.address === auth.address);
+      const alreadyExists = auth.address && (this.accounts || []).some(a => a.address === auth.address);
       if (!alreadyExists) {
         await this.addV1Account({...auth.v1, meta: auth.meta});
       }
@@ -237,7 +256,7 @@ export class AccountService extends StartableService {
 
     // Un auth after a delay
     this._passwordTimer?.unsubscribe();
-    const resetDelay = Math.max(this.settings.data?.unAuthDelayMs || 0, 5000); // 5s min
+    const resetDelay = Math.max(this.settings.get('unAuthDelayMs') || 0, 5000); // 5s min
     this._passwordTimer = timer(resetDelay)
       .subscribe(() => {
 
@@ -245,7 +264,7 @@ export class AccountService extends StartableService {
           this._password = null;
 
           // Lock all pairs
-          (this._$accounts.value || [])
+          (this.accounts || [])
             .map(a => keyring.getPair(a.address))
             .filter(pair => pair.isLocked)
             .forEach(pair => pair.lock());
@@ -301,11 +320,12 @@ export class AccountService extends StartableService {
   }
 
   async addAccount(account: Account): Promise<Account> {
-    let accounts = this._$accounts.value || [];
+    let accounts = this.accounts || [];
     const existingAccount = accounts.find(a => a.address === account.address);
     if (existingAccount) {
       console.warn(`${this._logPrefix}Account with address '${account.address}' already added. Skip`);
       account = existingAccount;
+      await this.loadData(account);
     }
     else {
       console.info(`${this._logPrefix}Add account with address '${account.address}'`);
@@ -313,20 +333,19 @@ export class AccountService extends StartableService {
       // Define as default
       if (account.default || accounts.length === 1) await this.setDefaultAccount(account, accounts);
 
-      accounts = [...accounts, account];
+      await this.loadData(account);
+
+      // Append to accounts
+      this._state.set('accounts', (s) => ([...s.accounts, account]));
     }
-
-    await this.loadData(account);
-
-    this._$accounts.next(accounts)
 
     return account;
   }
 
-  setDefaultAccount(account: Account, accounts?: Account[]) : AccountService {
+  setDefaultAccount(account: Account, accounts?: Account[]) : AccountsService {
     account.default = true;
     // Set other as NOT default
-    accounts = accounts || this._$accounts.value || [];
+    accounts = accounts || this.accounts || [];
     accounts.filter(a => a.address !== account.address && a.default)
       .forEach(a => {
         a.default = false;
@@ -338,48 +357,43 @@ export class AccountService extends StartableService {
 
     let accounts$: Observable<Account[]>;
     if (!this.started) {
-      accounts$ = from(this.ready())
+      return from(this.ready())
         .pipe(
-          switchMap(() => this._$accounts)
+          switchMap(() => this.watchAll(opts))
         );
     }
-    else {
-      accounts$ = this._$accounts;
-    }
 
-    return accounts$.pipe(
-      map(accounts => {
+    return this._state.select('accounts')
+      .pipe(
+        map(accounts => {
 
-        // Sort with a balance first
-        if (opts?.positiveBalanceFirst) {
-          accounts.sort((a1, a2) => {
-            const b1 = AccountUtils.getBalance(a1);
-            const b2 = AccountUtils.getBalance(a2);
-            return b1 === b2 ? 0 : (b1 < b2 ? 0 : -1);
-          })
-        }
-        return accounts;
-      }));
+          // Sort with a balance first
+          if (opts?.positiveBalanceFirst) {
+            accounts.sort((a1, a2) => {
+              const b1 = AccountUtils.getBalance(a1);
+              const b2 = AccountUtils.getBalance(a2);
+              return b1 === b2 ? 0 : (b1 < b2 ? 0 : -1);
+            })
+          }
+          return accounts;
+        }));
   }
 
   async getAll(): Promise<Account[]> {
     if (!this.started) await this.ready();
 
-    return this._$accounts.value || [];
+    return this.accounts || [];
   }
 
   async isAvailable(address: string): Promise<boolean> {
     if (!this.started) await this.ready();
-    return this._$accounts.value.some(a => a.address === address);
-
-    // FIXME: why is is always return false ??
-    // && keyring.isAvailable(address);
+    return (this.accounts || []).some(a => a.address === address);
   }
 
   async getDefault(opts?: LoadAccountDataOptions): Promise<Account> {
     if (!this.started) await this.ready();
 
-    const accounts = this._$accounts.value || [];
+    const accounts = this.accounts || [];
     let account = accounts.find(a => a.default);
     if (!account) {
       if (accounts.length) {
@@ -398,7 +412,7 @@ export class AccountService extends StartableService {
   async getByName(name: string, opts?: LoadAccountDataOptions): Promise<Account> {
     if (!this.started) await this.ready();
 
-    const accounts = this._$accounts.value || [];
+    const accounts = this.accounts || [];
     const account = accounts.find(a => a.meta?.name === name);
     if (!account) throw {message: 'ERROR.UNKNOWN_WALLET_ID'};
 
@@ -409,7 +423,7 @@ export class AccountService extends StartableService {
   async getByAddress(address: string, opts?: LoadAccountDataOptions): Promise<Account> {
     if (!this.started) await this.ready();
 
-    const accounts = this._$accounts.value || [];
+    const accounts = this.accounts || [];
     const account = accounts.find(a => a.address === address);
     if (!account) throw {message: 'ERROR.UNKNOWN_WALLET_ID'};
 
@@ -572,7 +586,7 @@ export class AccountService extends StartableService {
   }
 
   private notifyChanged() {
-    this._$accounts.next(this._$accounts.value.slice() /*create a copy*/);
+    this._state.set('accounts', (s) => s.accounts.slice() /*create a copy*/);
   }
 
   async addV1Account(data: {salt: string, password: string; meta?: AccountMeta, scryptParams?: Params}): Promise<Account> {
@@ -596,22 +610,20 @@ export class AccountService extends StartableService {
 
     const {pair, json} = await keyring.addUri(seedHex, this._password, meta, 'ed25519');
 
-    const account = await this.addAccount({
+    return this.addAccount({
       address: json.address,
       publicKey: pair.publicKey.toString(),
       type: pair.type,
       meta
     });
-
-    return account;
   }
 
   forgetAll() {
     if (!this._isDevelopment) {
-      (this._$accounts.value || []).forEach(account => {
+      (this.accounts || []).forEach(account => {
         keyring.forgetAccount(account.address);
       });
     }
-    this._$accounts.next([]);
+    this._state.set('accounts', (_) => []);
   }
 }

@@ -4,7 +4,7 @@ import {APP_LOCALES, LocaleConfig, Settings} from "@app/settings/settings.model"
 import {BasePage} from "@app/shared/pages/base.page";
 import {NetworkService} from "@app/network/network.service";
 import {AbbreviatePipe} from "@app/shared/pipes/string.pipes";
-import {AccountService} from "@app/wallet/account.service";
+import {AccountsService} from "@app/wallet/accounts.service";
 import {Account} from "@app/wallet/account.model";
 import {fadeInAnimation} from "@app/shared/animations";
 import {AuthModal} from "@app/auth/auth.modal";
@@ -18,6 +18,7 @@ import {
   PopoverOptions
 } from "@ionic/angular";
 import {Router} from "@angular/router";
+import {RxState} from "@rx-angular/state";
 
 export interface LoginMethod {
   value: string;
@@ -28,7 +29,8 @@ export interface LoginMethod {
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
-  animations: [fadeInAnimation]
+  animations: [fadeInAnimation],
+  providers: [RxState]
 })
 export class HomePage extends BasePage<Settings> implements OnInit {
 
@@ -48,8 +50,9 @@ export class HomePage extends BasePage<Settings> implements OnInit {
     {value: 'keyfile-v1', label: 'Fichier de clef Duniter v1', disabled: true}
   ];
 
-  currency: string = null;
   defaultAccount: Account = null;
+  currency$ = this._state.select('currency');
+
 
   get isLogin(): boolean {
     return this.accountService.isLogin
@@ -62,7 +65,7 @@ export class HomePage extends BasePage<Settings> implements OnInit {
   constructor(
     injector: Injector,
     public networkService: NetworkService,
-    public accountService: AccountService,
+    public accountService: AccountsService,
     public router: Router,
     public actionSheetCtrl: ActionSheetController,
     @Inject(APP_LOCALES) public locales: LocaleConfig[]
@@ -74,7 +77,7 @@ export class HomePage extends BasePage<Settings> implements OnInit {
     await this.settings.ready();
     await this.networkService.ready();
 
-    this.currency = this.networkService.currency.displayName;
+    const currency = this.networkService.currency.displayName;
 
     // Load account
     await this.accountService.ready();
@@ -85,13 +88,16 @@ export class HomePage extends BasePage<Settings> implements OnInit {
       this.defaultAccount = null;
     }
 
-    return this.settings.clone();
+    return {
+      ...this.settings.clone(),
+      currency
+    };
   }
 
 
   changeLocale(locale: string) {
     this.settings.patchValue({locale});
-    this.data.locale = locale;
+    this._state.set('locale', (_) => locale);
     this.markForCheck();
   }
 

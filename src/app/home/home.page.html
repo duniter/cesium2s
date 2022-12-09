@@ -38,9 +38,9 @@
         <ion-card-subtitle [innerHTML]="'HOME.WELCOME'|translate">
         </ion-card-subtitle>
         <ion-card-title class="ion-text-center">
-          <ion-spinner *ngIf="loading; else message"></ion-spinner>
+          <ion-spinner *rxIf="loading; else message"></ion-spinner>
           <ng-template #message>
-            {{'HOME.MESSAGE'|translate:{currency: currency} }}
+            {{'HOME.MESSAGE'|translate:{currency: currency$|async} }}
           </ng-template>
         </ion-card-title>
       </ion-card-header>

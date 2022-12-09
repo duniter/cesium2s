@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {PlatformService} from "./shared/services/platform.service";
 import {environment} from "@environments/environment";
-import {AccountService} from "@app/wallet/account.service";
+import {AccountsService} from "@app/wallet/accounts.service";
 import {Router} from "@angular/router";
 import {fadeInAnimation} from "@app/shared/animations";
 
@@ -35,7 +35,7 @@ export class AppComponent {
   ];
 
   constructor(private platform: PlatformService,
-              private accountService: AccountService,
+              private accountService: AccountsService,
               private router: Router) {
     this.start();
   }
