@@ -1,5 +1,5 @@
 import {Optional} from '@angular/core';
-import {Subject} from 'rxjs';
+import {firstValueFrom, Subject, takeUntil} from 'rxjs';
 import {waitFor} from '../observables';
 import {BaseService, IBaseServiceOptions} from "@app/shared/services/base-service.class";
 import {environment} from "@environments/environment";
@@ -18,7 +18,8 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
   extends BaseService<O>
   implements IStartableService<T> {
 
-  onStart = new Subject<T>();
+  startSubject = new Subject<T>();
+  stopSubject = new Subject<void>();
 
   protected _startByReadyFunction = true; // should start when calling ready() ?
   protected _data: T = null;
@@ -51,7 +52,7 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
         this._started = true;
         this._startPromise = undefined;
 
-        this.onStart.next(this._data);
+        this.startSubject.next(this._data);
 
         return this._data;
       })
@@ -68,11 +69,15 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
     try {
       this.unsubscribe();
       await this.ngOnStop();
-      this._started = false;
-      this._startPromise = undefined;
     }
     catch (err) {
       console.error('Failed to stop a service: ' + (err && err.message || err), err);
+    }
+    finally {
+      this.stopSubject.next();
+      this._data = null;
+      this._started = false;
+      this._startPromise = undefined;
     }
   }
 
@@ -94,12 +99,13 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
     if (this._started) return Promise.resolve(this._data);
     if (this._startPromise) return this._startPromise;
     if (this._startByReadyFunction) return this.start();
-    return waitFor(() => this._started)
-      .then(() => this._data);
+    return firstValueFrom(this.startSubject
+        .pipe(takeUntil(this.stopSubject))
+      );
   }
 
   protected async ngOnStop(): Promise<void> {
-    // Can be override by subclasses
+    // Can be overwritten by subclasses
   }
 
   protected abstract ngOnStart(): Promise<T>;

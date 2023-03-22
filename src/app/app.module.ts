@@ -23,6 +23,7 @@ import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
 import {StatusBar} from "@capacitor/status-bar";
 import {SplashScreen} from "@capacitor/splash-screen";
 import {AppTransferModule} from "@app/transfer/transfer.module";
+import {AccountModule} from "@app/_test/account.module";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -51,6 +52,8 @@ export function createTranslateLoader(http: HttpClient) {
           deps: [HttpClient]
         }
       }),
+
+      AccountModule
     ],
     providers: [
       PlatformService,
