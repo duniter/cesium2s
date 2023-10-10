@@ -1,10 +1,8 @@
-# cesium2s
+# Cesium²
 
-Cesium 2, running on Substrate
+Cesium², running on Duniter v2 (Substrate).
 
-
-Cesium 2 use Angular 14, Ionic 5 and Capacitor.
-
+Cesium² use Angular, Ionic and Capacitor.
 
 # Build
 
@@ -17,7 +15,7 @@ git clone git@git.duniter.org:clients/cesium-grp/cesium2s.git
 cd cesium2s
 
 # Install NodeJS v14+, then deps
-nvm use 14
+nvm use 16
 npm install -g @ionic/cli @angular/cli @capacitor/cli
 npm install
 

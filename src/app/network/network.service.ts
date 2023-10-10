@@ -81,6 +81,9 @@ export class NetworkService extends StartableService<ApiPromise> {
       //,...types
     });
 
+    // Log API
+    //console.debug(`${this._logPrefix}API loaded [${Object.keys(api).join(',')}]`)
+
     // Get the chain information
     const chainInfo = await api.registry.getChainProperties();
     const chain = '' + (await api.rpc.system.chain());
@@ -97,6 +100,9 @@ export class NetworkService extends StartableService<ApiPromise> {
       else {
         this.currency = WELL_KNOWN_CURRENCIES[chain];
       }
+    }
+    else {
+      console.warn(`${this._logPrefix}Not a well known currency: ${chain}!`);
     }
     this.currency.name = this.currency.name || chain;
     this.currency.symbol = this.currency.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.name);

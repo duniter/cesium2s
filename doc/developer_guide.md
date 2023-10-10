@@ -27,4 +27,6 @@
     *  Utiliser IonicModal.
     *  Ne pas définir la modale dans le template HTML (inline) mais dans un composant séparé.
     *  Gérer la modale depuis le composant appelant via ModalController.
-  - Ne pas générer les imports TypeScript.
+  - Pour tout code généré (par GPT ou autre) :
+    - Ne pas générer les imports TypeScript.
+    - Ajouter une ligne de commentaire, en entête de classe, indiquant que le code est sous licence libre (GPL version 3), sans toutefois écrire toute la license. 

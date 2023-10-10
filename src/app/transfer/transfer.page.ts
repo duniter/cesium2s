@@ -135,7 +135,7 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnD
       this.recipient.address = receiverAddress;
     }
 
-    this.fee = (this.networkService.currency?.fees.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
+    this.fee = (this.networkService.currency?.fees?.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
 
     return $account.asObservable();
   }

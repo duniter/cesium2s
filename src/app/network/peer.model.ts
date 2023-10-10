@@ -17,7 +17,7 @@ export abstract class Peers {
         port = 443;
       }
       return {
-        host: url.host,
+        host: url.hostname,
         port,
         path: url.pathname
       };

@@ -26,7 +26,8 @@ import {
   firstValueFrom,
   from,
   map,
-  Observable, Subject,
+  Observable,
+  Subject,
   Subscription,
   switchMap,
   timer
@@ -36,14 +37,14 @@ import {UnlockModal, UnlockModalOptions} from "@app/unlock/unlock.modal";
 import {Currency} from "@app/network/currency.model";
 import {SettingsService} from "@app/settings/settings.service";
 import {scryptEncode} from "@polkadot/util-crypto/scrypt/encode";
-import {Params} from "@polkadot/util-crypto/scrypt/types";
+import {ScryptParams} from "@polkadot/util-crypto/scrypt/types";
 import {u8aToHex} from "@polkadot/util";
-import {addressKey, contractKey} from "@polkadot/ui-keyring/defaults";
 import {formatAddress} from "@app/shared/currencies";
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
   withTx?: boolean;
+  withCert?: boolean;
   withBalance?: boolean;
   emitEvent?: boolean;
 }
@@ -504,14 +505,26 @@ export class AccountService extends StartableService {
           ...JSON.parse(data.toString())
         };
         changed = true;
+
+
+        //await this.api.query.udAccountsStorage.udAccounts(account.address);
       }
 
       // Load TX
       if (opts.withTx === true && (isNil(account.data?.txs) || opts.reload === true)) {
         console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} TX history...`);
         console.warn('[account-service] TODO - Implement load TX history');
+
+
         // TODO
         //somethingLoaded = true;
+
+      }
+
+      // Load Cert
+      if (opts.withCert !== false) {
+        const certs = await this.api.query.cert.storageCertsByReceiver(account.address);
+        console.debug(`${this._logPrefix} Loaded certs:`, certs);
       }
 
       // Emit change event
@@ -555,7 +568,7 @@ export class AccountService extends StartableService {
     console.info(this._logPrefix + ' Authenticating using salt+pwd...');
     const passwordU8a = Uint8Array.from(data.password.split('').map(x => x.charCodeAt(0)));
     const saltU8a = Uint8Array.from(data.salt.split('').map(x => x.charCodeAt(0)));
-    const result = scryptEncode(passwordU8a, saltU8a, <Params>{
+    const result = scryptEncode(passwordU8a, saltU8a, <ScryptParams>{
       N: 4096,
       r: 16,
       p: 1
@@ -572,7 +585,7 @@ export class AccountService extends StartableService {
     const isAuth = await this.auth();
     if (!isAuth) return; // Skip
 
-    const {pair, json} = await keyring.addUri(seedHex, this._password, meta, 'ed25519');
+    const {pair, json} = keyring.addUri(seedHex, this._password, meta, 'ed25519');
 
     const account = await this.addAccount({
       address: json.address,
