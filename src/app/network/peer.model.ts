@@ -12,7 +12,7 @@ export abstract class Peers {
   static fromUri(peerUri: string): Peer {
     try {
       const url = new URL(peerUri);
-      let port = isNotNilOrBlank(url.port) ? +url.port : undefined;
+      let port = undefined;
       if (isNil(port) && (url.protocol === 'https:' || url.protocol === 'wss:')) {
         port = 443;
       }
