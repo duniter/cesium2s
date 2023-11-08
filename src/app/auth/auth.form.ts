@@ -9,7 +9,8 @@ import {SettingsService} from "@app/settings/settings.service";
 import {NetworkService} from "@app/network/network.service";
 import {environment} from "@duniter/core-types/environments/environment";
 import {FormUtils} from "@app/shared/forms";
-
+import {isNil} from '@app/shared/functions';
+import {getKeyringPairFromV1} from "@app/wallet/utils"
 
 @Component({
   selector: 'app-auth-form',
@@ -108,6 +109,16 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
         password: data.password
       }
     };
+  }
+
+  // get address corresponding to form input
+  get pubkey(): string {
+    let data = this.form.value;
+    // prevent displaying pubkey for empty credentials
+    if(isNil(data.salt) || isNil(data.password)) {
+      return ""
+    }
+    return getKeyringPairFromV1(data).address;
   }
 
   /* -- protected functions -- */
