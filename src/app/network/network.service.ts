@@ -13,7 +13,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     displayName: 'Ğdev',
     symbol: 'GD',
     prefix: 42,
-    genesys: '0x9f956a87b5568f12c757bb3426897bba6123a1ef311fcd0945bd669fd0e612f8',
+    genesis: '0x9f956a87b5568f12c757bb3426897bba6123a1ef311fcd0945bd669fd0e612f8',
     fees: {
       identity: 300, // = 3 Gdev
       tx: 1 // = 0.01 Gdev
@@ -25,7 +25,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     displayName: 'Ğ1',
     symbol: 'G1',
     prefix: 4450,
-    genesys: '0x___TODO___',
+    genesis: '0x___TODO___',
     fees: {
       identity: 300, // = 3G1 - FIXME
       tx: 1 // = 0.01 G1 - FIXME
@@ -40,7 +40,7 @@ export class NetworkService extends StartableService<ApiPromise> {
   currency = <Currency>{
     displayName: null,
     symbol: null,
-    genesys: null
+    genesis: null
   }
 
   get api(): ApiPromise {
@@ -87,15 +87,15 @@ export class NetworkService extends StartableService<ApiPromise> {
     // Get the chain information
     const chainInfo = await api.registry.getChainProperties();
     const chain = '' + (await api.rpc.system.chain());
-    const genesys = api.genesisHash.toHex();
+    const genesis = api.genesisHash.toHex();
 
     console.info(`${this._logPrefix}Connecting to chain {${chain}}: `, chainInfo.toHuman());
 
     // Check is well known currency
     if (WELL_KNOWN_CURRENCIES[chain]) {
       const wellKnownCurrency = WELL_KNOWN_CURRENCIES[chain];
-      if (wellKnownCurrency.genesys && wellKnownCurrency.genesys !== genesys) {
-        console.warn(`${this._logPrefix}Invalid genesys for ${chain}! Expected ${wellKnownCurrency.genesys} but peer return ${genesys}`);
+      if (wellKnownCurrency.genesis && wellKnownCurrency.genesis !== genesis) {
+        console.warn(`${this._logPrefix}Invalid genesis for ${chain}! Expected ${wellKnownCurrency.genesis} but peer return ${genesis}`);
       }
       else {
         this.currency = WELL_KNOWN_CURRENCIES[chain];
@@ -105,10 +105,10 @@ export class NetworkService extends StartableService<ApiPromise> {
     this.currency.symbol = this.currency.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
     this.currency.decimals = this.currency.decimals || +(chainInfo.tokenDecimals.value?.[0].toHuman()) || 0;
 
-    // Read the genesys block hash
+    // Read the genesis block hash
     console.debug(`${this._logPrefix}Blockchain symbol: ${this.currency.symbol}`);
     console.debug(`${this._logPrefix}Blockchain decimals: ${this.currency.decimals}`);
-    console.debug(`${this._logPrefix}Blockchain genesis: ${genesys}`);
+    console.debug(`${this._logPrefix}Blockchain genesis: ${genesis}`);
 
     // Retrieve the latest header
     const lastHeader = await api.rpc.chain.getHeader();

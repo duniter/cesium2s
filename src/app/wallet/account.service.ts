@@ -146,7 +146,7 @@ export class AccountService extends StartableService {
     keyring.loadAll({
       store: this._store,
       ss58Format: currency?.prefix,
-      genesisHash: currency?.genesys,
+      genesisHash: currency?.genesis,
       isDevelopment: this._isDevelopment
     });
 
@@ -272,7 +272,7 @@ export class AccountService extends StartableService {
     // add the account, encrypt the stored JSON with an account-specific password
     const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
       name: data.meta?.name || 'default',
-      genesisHash: this.network.currency?.genesys
+      genesisHash: this.network.currency?.genesis
     }, 'sr25519');
 
     return {
@@ -288,7 +288,7 @@ export class AccountService extends StartableService {
     // add the account, encrypt the stored JSON with an account-specific password
     const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
       name: data.meta?.name || 'default',
-      genesisHash: this.network.currency?.genesys
+      genesisHash: this.network.currency?.genesis
     }, 'sr25519');
 
     //this.debug('check pair', pair, json);
@@ -308,7 +308,7 @@ export class AccountService extends StartableService {
     // add the account, encrypt the stored JSON with an account-specific password
     const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
       name: data.meta?.name || 'default',
-      genesisHash: this.network.currency?.genesys
+      genesisHash: this.network.currency?.genesis
     }, 'sr25519');
 
     //this.debug('check pair', pair, json);
@@ -609,7 +609,7 @@ export class AccountService extends StartableService {
 
     const meta = {
       name: data.meta?.name || 'V1',
-      genesisHash: this.network.currency?.genesys
+      genesisHash: this.network.currency?.genesis
     }
 
     const isAuth = await this.auth();

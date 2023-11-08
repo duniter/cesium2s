@@ -3,7 +3,7 @@ export interface Currency {
   displayName: string;
   symbol: string;
   prefix: number;
-  genesys: string;
+  genesis: string;
   fees: {
     identity: number;
     tx: number;
