@@ -303,16 +303,11 @@ export class AccountService extends StartableService {
     return true;
   }
 
-  async addV2Account(data: RegisterData): Promise<Account> {
-
-    // add the account, encrypt the stored JSON with an account-specific password
-    const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
+  async addV2Account(data: {mnemonic: string; meta?: AccountMeta}): Promise<Account> {
+    const { pair, json } = keyring.addUri(data.mnemonic, this._password, {
       name: data.meta?.name || 'default',
       genesisHash: this.network.currency?.genesis
     }, 'sr25519');
-
-    //this.debug('check pair', pair, json);
-
     return this.addAccount({
       address: json.address,
       meta: {
