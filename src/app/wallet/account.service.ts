@@ -206,6 +206,9 @@ export class AccountService extends StartableService {
     if (auth.v1) {
       return this.addV1Account({...auth.v1, meta: auth.meta});
     }
+    else if (auth.v2) {
+      return this.addV2Account({...auth.v2, meta: auth.meta});
+    }
 
     // TODO
     //return this._accounts[0];
@@ -298,6 +301,24 @@ export class AccountService extends StartableService {
     })
 
     return true;
+  }
+
+  async addV2Account(data: RegisterData): Promise<Account> {
+
+    // add the account, encrypt the stored JSON with an account-specific password
+    const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
+      name: data.meta?.name || 'default',
+      genesisHash: this.network.currency?.genesys
+    }, 'sr25519');
+
+    //this.debug('check pair', pair, json);
+
+    return this.addAccount({
+      address: json.address,
+      meta: {
+        name: data.meta?.name
+      }
+    });
   }
 
   async addAccount(account: Account): Promise<Account> {

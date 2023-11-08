@@ -1,0 +1,46 @@
+<form
+  [formGroup]="form"
+  novalidate
+  (ngSubmit)="doSubmit($event)"
+  class="form-container ion-padding"
+  (keyup.enter)="doSubmit($event)"
+>
+  <ion-list>
+    <!-- error -->
+    <ion-item lines="none" *ngIf="error && !loading" @slideUpDownAnimation>
+      <ion-icon color="danger" slot="start" name="alert-circle"></ion-icon>
+      <ion-label
+        color="danger"
+        class="error"
+        [innerHTML]="error|translate"
+      ></ion-label>
+    </ion-item>
+
+    <!-- Mnemonic -->
+    <ion-item>
+      <ion-label color="medium">Mnemonic</ion-label>
+      <ion-input
+        formControlName="mnemonic"
+        type="password"
+        autocomplete="off"
+        required
+      >
+      </ion-input>
+    </ion-item>
+
+    <!-- Address -->
+    <ion-item>
+      <ion-label color="medium" translate>Address SS58</ion-label>
+      <ion-item>{{address}}</ion-item>
+    </ion-item>
+  </ion-list>
+
+  <!-- Not register yet ? -->
+  <p *ngIf="canRegister" class="padding" style="text-align: center">
+    <span translate>AUTH.NO_ACCOUNT_QUESTION</span>
+    <br />
+    <a (click)="register()">
+      <span translate>AUTH.BTN_REGISTER</span>
+    </a>
+  </p>
+</form>
