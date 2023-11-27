@@ -6,15 +6,25 @@ import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
 import {WotSearchFilter} from "@app/wot/wot.model";
 import {toBoolean} from "@app/shared/functions";
+import {debounceTime, mergeMap} from "rxjs";
+import {RxState} from "@rx-angular/state";
 import {PredefinedColors} from "@app/shared/colors/colors.utils";
+
+
+export interface WotLookupState {
+  searchText: string;
+  filter: WotSearchFilter;
+  items: Account[];
+}
 
 @Component({
   selector: 'app-wot-lookup',
   templateUrl: './wot-lookup.page.html',
   styleUrls: ['./wot-lookup.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [RxState]
 })
-export class WotLookupPage extends BasePage<Account[]> implements OnInit {
+export class WotLookupPage extends BasePage<WotLookupState> implements OnInit {
 
   @Input() debounceTime = 650;
   @Input() showToolbar = true;
@@ -25,11 +35,27 @@ export class WotLookupPage extends BasePage<Account[]> implements OnInit {
   @Input() showItemActions: boolean;
   @Input() toolbarColor: PredefinedColors = 'primary';
 
+  items$ = this._state.select('items');
+
   constructor(injector: Injector,
               private router: Router,
               private wotService: WotService
               ) {
     super(injector, {name: 'wot-lookup-page'});
+
+    this._state.connect('filter',
+      this._state.select('searchText')
+        .pipe(debounceTime(this.debounceTime)),
+      (s, text) => {
+          return {
+            ...s.filter,
+            text
+          }
+        });
+    this._state.connect('items',
+      this._state.select('filter').pipe(
+        mergeMap(filter => this.search(filter))
+      ));
   }
 
   ngOnInit() {
@@ -37,11 +63,17 @@ export class WotLookupPage extends BasePage<Account[]> implements OnInit {
     this.showItemActions = toBoolean(this.showItemActions, !this.itemClick.observed);
   }
 
-  protected async ngOnLoad(): Promise<Account[]> {
+  protected async ngOnLoad(): Promise<WotLookupState> {
 
     await this.wotService.ready();
 
-    return this.search({last: true});
+    const items = await this.search({last: true})
+
+    return {
+      searchText: null,
+      filter: {},
+      items
+    };
   }
 
   async search(filter?: WotSearchFilter): Promise<Account[]> {
@@ -50,8 +82,7 @@ export class WotLookupPage extends BasePage<Account[]> implements OnInit {
     this.markAsLoading();
 
     try {
-      this.data  = await this.wotService.search(filter);
-      return this.data;
+      return await this.wotService.search(filter);
     }
     catch (err) {
       this.setError(err);
@@ -82,11 +113,11 @@ export class WotLookupPage extends BasePage<Account[]> implements OnInit {
     super.markAsLoading();
   }
 
-  searchChanged(event: Event, value: string) {
+  async searchChanged(event: CustomEvent<any>, value: string) {
     if (!event || event.defaultPrevented) return;
     event.preventDefault();
     event.stopPropagation();
 
-    this.search({text: value});
+    this._state.set('searchText', (_) => value);
   }
 }

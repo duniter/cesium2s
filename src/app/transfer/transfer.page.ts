@@ -7,19 +7,28 @@ import {
   OnDestroy,
   ViewChild
 } from '@angular/core';
-import {AccountService} from "../wallet/account.service";
 import {BasePage} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
 import {ActionSheetOptions, IonModal, IonTextarea, ModalController, Platform, PopoverOptions} from "@ionic/angular";
-import {BehaviorSubject, firstValueFrom, Observable} from "rxjs";
-import {isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
+import {Observable} from "rxjs";
+import {isNotNilOrBlank} from "@app/shared/functions";
 import {filter} from "rxjs/operators";
 import {NetworkService} from "@app/network/network.service";
 import {Currency} from "@app/network/currency.model";
 import {Router} from "@angular/router";
 import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
+import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
 import {Capacitor} from "@capacitor/core";
 import {CapacitorPlugins} from "@app/shared/capacitor/plugins";
+import {RxState} from "@rx-angular/state";
+
+export interface TransferState {
+  currency: Currency;
+  fee: number;
+  accounts: Account[];
+  account: Account;
+  recipient: Partial<Account>;
+}
 
 export interface TransferPageOptions {
   issuer?: Account;
@@ -33,11 +42,18 @@ export interface TransferPageOptions {
   selector: 'app-transfer',
   templateUrl: './transfer.page.html',
   styleUrls: ['./transfer.page.scss'],
+  providers: [RxState],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TransferPage extends BasePage<Observable<Account[]>> implements OnDestroy, TransferPageOptions {
+export class TransferPage extends BasePage<TransferState> implements OnInit, OnDestroy {x
 
   protected _enableScan: boolean = false;
+
+  @RxStateSelect() protected accounts$: Observable<Account[]>;
+  @RxStateSelect() protected recipient$: Observable<Partial<Account>>;
+  @RxStateSelect() protected currency$: Observable<Currency>;
+  @RxStateSelect() protected fee$: Observable<number>;
+
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet'
@@ -47,10 +63,10 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnD
     reference: 'event'
   };
 
-  @Input() issuer: Account = null;
-  @Input() recipient: Account = {address: null, meta: null};
-  @Input() amount: number;
-  @Input() fee: number;
+  @Input() @RxStateProperty() issuer: Account = null;
+  @Input() @RxStateProperty() recipient: Account = {address: null, meta: null};
+  @Input() @RxStateProperty() amount: number;
+  @Input() @RxStateProperty() fee: number;
   @Input() showComment: boolean;
   @Input() dismissOnSubmit: boolean = false; // True is modal
   @Input() showToastOnSubmit: boolean = true;
@@ -81,9 +97,6 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnD
     return 'TODO';
   }
 
-  get $account(): Observable<Account[]> {
-    return  this.data;
-  }
 
   constructor(
     injector: Injector,
@@ -96,54 +109,70 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnD
   ) {
     super(injector, {name: 'transfer', loadDueTime: 250});
 
-    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
 
-  }
+    this._state.connect('accounts', this.accountService.watchAll({positiveBalanceFirst: true}));
 
-  protected async ngOnLoad(): Promise<Observable<Account[]>> {
-
-    await this.accountService.ready();
-
-    const $account = new BehaviorSubject<Account[]>(null);
-    this.registerSubscription(
-      this.accountService.watchAll({positiveBalanceFirst: true})
-        .pipe(filter(isNotEmptyArray))
-        .subscribe((value) => {
-          $account.next(value);
-          if (this.loaded) this.cd.markForCheck();
-        })
-    );
-
-    // Load accounts
-    const accounts = await firstValueFrom($account);
-
-    // Init issuer
-    if (!this.issuer) {
-      const issuerAddress = this.activatedRoute.snapshot.paramMap.get('from');
-      if (isNotNilOrBlank(issuerAddress)) {
-        this.issuer = (accounts||[]).find(a => a.address === issuerAddress);
+    this._state.hold(this.accounts$, accounts => {
+      // Load account
+      const fromAddress = this.activatedRoute.snapshot.paramMap.get('from');
+      if (isNotNilOrBlank(fromAddress)) {
+        this.issuer = (accounts || []).find(a => a.address === fromAddress);
       }
       // Only one account: select it
       else if (accounts?.length === 1) {
         this.issuer = accounts[0];
       }
-    }
 
-    // Load receiver
-    const receiverAddress = this.activatedRoute.snapshot.paramMap.get('to');
-    if (isNotNilOrBlank(receiverAddress)) {
-      this.recipient.address = receiverAddress;
-    }
+      // Load recipient
+      const toAddress = this.activatedRoute.snapshot.paramMap.get('to');
+      if (isNotNilOrBlank(toAddress)) {
+        this.recipient = {address: toAddress};
+      }
+    });
 
-    this.fee = (this.networkService.currency?.fees?.tx || 0) / Math.pow(10, this.networkService.currency?.decimals || 0);
+    this._state.connect('fee', this.currency$, (state, currency) => {
+      return (currency?.fees.tx || 0) / Math.pow(10, currency?.decimals || 0);
+    });
 
-    return $account.asObservable();
+    //this._state.hold(this.router.events)
   }
 
-  ionViewWillLeave() {
+  ngOnInit() {
+    super.ngOnInit();
 
     // Hide modal when leave page
-    this.hideWotModal();
+    this.registerSubscription(
+      this.router.events
+        .pipe(filter(
+          (value, index) => {
+            this.log('TODO Router event: ', value);
+            return true;
+          }
+        )).subscribe()
+    )
+  }
+
+  async ngOnDestroy() {
+    super.ngOnDestroy();
+    await this.wotModal?.dismiss();
+    await this.qrCodeModal?.dismiss();
+  }
+
+  protected async ngOnLoad(): Promise<TransferState> {
+    await this.accountService.ready();
+
+    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
+    const currency = this.networkService.currency;
+
+    return {
+      currency,
+      accounts: null,
+      account: null,
+      fee: null,
+      recipient: {
+        address: this.activatedRoute.snapshot.paramMap.get('to')
+      }
+    };
   }
 
   async ngOnDestroy() {
@@ -203,7 +232,6 @@ export class TransferPage extends BasePage<Observable<Account[]>> implements OnD
       this.recipient = {address: recipient, meta: null};
     }
     this.markForCheck();
-    return true;
   }
 
   cancel(event?: UIEvent) {

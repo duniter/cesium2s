@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {AccountService} from '@app/wallet/account.service';
+import {AccountsService} from '@app/wallet/accounts.service';
 import {AuthForm} from './auth.form';
 import {firstNotNilPromise} from '@app/shared/observables';
 import {AuthData} from "@app/auth/auth.model";
@@ -10,6 +10,7 @@ export interface AuthModalOptions {
   scrollY?: boolean;
   title?: string;
 }
+export declare type AuthModalRole = 'CANCEL'|'VALIDATE';
 @Component({
   selector: 'app-auth-modal',
   templateUrl: 'auth.modal.html',
@@ -32,7 +33,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
 
   @ViewChild('form', { static: true }) private form: AuthForm;
 
-  constructor(private accountService: AccountService,
+  constructor(private accountService: AccountsService,
               private viewCtrl: ModalController,
               private cd: ChangeDetectorRef
               ) {
@@ -47,7 +48,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
   }
 
   cancel() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss(null, <AuthModalRole>'CANCEL');
   }
 
   async doSubmit(data?: AuthData): Promise<any> {
@@ -66,7 +67,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
 
       const account = await this.accountService.login(data);
 
-      return this.viewCtrl.dismiss(account);
+      return this.viewCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
     }
     catch (err) {
       this.form.error = err && err.message || err;

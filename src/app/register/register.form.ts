@@ -10,7 +10,7 @@ import {
 } from '@angular/forms';
 import {Observable, timer} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
-import {AccountService} from "@app/wallet/account.service";
+import {AccountsService} from "@app/wallet/accounts.service";
 import {SettingsService} from "@app/settings/settings.service";
 import {environment} from "@environments/environment";
 import {RegisterData} from "@app/register/register.model";
@@ -58,7 +58,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
 
   constructor(
     injector: Injector,
-    private accountService: AccountService,
+    private accountService: AccountsService,
     private networkService: NetworkService,
     public formBuilder: FormBuilder,
     protected settings?: SettingsService
@@ -148,7 +148,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     };
   }
 
-  emailAvailability(accountService: AccountService): AsyncValidatorFn {
+  emailAvailability(accountService: AccountsService): AsyncValidatorFn {
     return function(control: AbstractControl): Observable<ValidationErrors | null> {
 
       return timer(500).pipe(mergeMap(() => Promise.resolve(true)/* accountService.checkEmailAvailable(control.value)*/

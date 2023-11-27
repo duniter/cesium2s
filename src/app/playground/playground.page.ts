@@ -1,7 +1,8 @@
 import {Component, Injector} from "@angular/core";
-import {RxBasePage} from "@app/playground/rx-base.page";
 import {RxState} from "@rx-angular/state";
-import {interval, map, mapTo} from "rxjs";
+import {interval} from "rxjs";
+import {NetworkService} from "@app/network/network.service";
+import {BasePage} from "@app/shared/pages/base.page";
 
 
 export declare interface PlaygroundState {
@@ -15,21 +16,21 @@ export declare interface PlaygroundState {
   //styleUrls: ['./playground.page.scss']
   providers: [RxState]
 })
-export class PlaygroundPage extends RxBasePage<PlaygroundState> {
-  readonly state$ = this.state.select();
+export class PlaygroundPage extends BasePage<PlaygroundState> {
+
+  readonly state$ = this._state.select();
 
   constructor(injector: Injector,
-              private state: RxState<PlaygroundState>) {
+              private network: NetworkService) {
     super(injector);
-    state.set({bar: 0, foo: 'foo'})
-    const sliceToAdd$ = interval(250)
-      .pipe(map((i) => {
-        return { bar: 5 * i, foo: 'foo'};
-      }));
-    state.connect(sliceToAdd$);
+    this._state.connect(
+      interval(250),
+      (state: PlaygroundState, slide: number) => <Partial<PlaygroundState>>{bar: state.bar + slide});
+
+    //network.api.consts
   }
 
-  protected ngOnLoad(): Promise<PlaygroundState> {
-    return Promise.resolve(undefined);
+  protected async ngOnLoad(): Promise<PlaygroundState> {
+    return {bar: 0, foo: 'foo'};
   }
 }

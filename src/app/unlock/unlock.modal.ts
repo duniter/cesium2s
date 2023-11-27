@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {AccountService} from '@app/wallet/account.service';
+import {AccountsService} from '@app/wallet/accounts.service';
 import {firstNotNilPromise} from '@app/shared/observables';
 import {UnlockForm} from "@app/unlock/unlock.form";
 
@@ -34,7 +34,7 @@ export class UnlockModal implements OnInit, UnlockModalOptions{
 
   @ViewChild('form', { static: true }) private form: UnlockForm;
 
-  constructor(private accountService: AccountService,
+  constructor(private accountService: AccountsService,
               private viewCtrl: ModalController,
               private cd: ChangeDetectorRef
               ) {

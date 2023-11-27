@@ -38,6 +38,7 @@ export abstract class BaseService<O extends IBaseServiceOptions = IBaseServiceOp
     this._subscription = null;
   }
 
+
   protected debug(msg, ...params: any[]) {
     if (!this._debug) return;
     if (params?.length) console.debug(this._logPrefix + msg, ...params);

@@ -26,14 +26,13 @@
       <!-- TO -->
       <ion-item>
         <ion-label color="medium" translate>TRANSFER.TO</ion-label>
-        <ion-textarea *ngIf="data|async|isNotEmptyArray; else inputSkeleton" #fromInput
+        <ion-textarea *rxIf="recipient$; let recipient; else inputSkeleton"
                    [rows]="mobile ? 2 : 1"
-                   class="ion-text-wrap ion-padding-start"
-                   [(ngModel)]="recipient.address"
-                   (ionFocus)="focusFrom($event, fromInput)">
+                   class="ion-text-wrap ion-text-end"
+                   [(ngModel)]="recipient.address" (ionFocus)="wotModal.present()">
         </ion-textarea>
-        <ion-button slot="end" fill="clear"
-                    (click)="showWotModal($event, 0.75)"
+        <ion-button slot="end" fill="clear" id="open-modal-trigger"
+                    [class.cdk-visually-hidden]="loading || mobile"
                     [disabled]="loading"
                     [title]="'COMMON.BTN_SEARCH'|translate">
           <ion-icon slot="icon-only" name="search"></ion-icon>
@@ -51,11 +50,11 @@
       <!-- FROM -->
       <ion-item tappable>
         <ion-label color="medium" translate>TRANSFER.FROM</ion-label>
-        <ng-container *ngIf="loading; else select">
+        <ng-container *rxIf="loadingSubject; else select">
           <ng-container *ngTemplateOutlet="inputSkeleton"></ng-container>
         </ng-container>
         <ng-template #select>
-          <ng-container *ngIf="data|async; let accounts; else inputSkeleton">
+          <ng-container *rxIf="accounts$; let accounts; else inputSkeleton">
             <ion-select [compareWith]="compareWith"
                         [selectedText]="issuer|accountName"
                         [(ngModel)]="issuer"

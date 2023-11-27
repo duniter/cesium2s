@@ -44,7 +44,7 @@
       </ng-container>
 
       <ng-template #items>
-        <ion-item-sliding *ngFor="let item of data">
+        <ion-item-sliding *rxFor="let item of items$">
           <ion-item [detail]="!itemClick.observed" (click)="click(item)">
             <ion-avatar slot="start" *ngIf="item.meta?.avatar; else iconPerson">
               <ion-img [src]="item.meta?.avatar"></ion-img>

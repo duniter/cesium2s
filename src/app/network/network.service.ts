@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { SettingsService } from '../settings/settings.service';
-import { Peer, Peers } from './peer.model';
-import { StartableService } from '@app/shared/services/startable-service.class';
-import { abbreviate } from '@app/shared/currencies';
-import { Currency } from '@app/network/currency.model';
+import {Injectable} from '@angular/core';
+import {ApiPromise, WsProvider} from '@polkadot/api';
+import {SettingsService} from '../settings/settings.service';
+import {Peer, Peers} from './peer.model';
+import {abbreviate} from '@app/shared/currencies';
+import {Currency} from '@app/network/currency.model';
+import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
+import {RxStateProperty} from "@app/shared/decorator/state.decorator";
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
   Ğdev: <Partial<Currency>>{
@@ -34,25 +35,18 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
   },
 });
 
+export interface NetworkState {
+  currency: Currency;
+  api: ApiPromise
+}
+
 @Injectable({ providedIn: 'root' })
-export class NetworkService extends StartableService<ApiPromise> {
-  currency = <Currency>{
-    network: null,
-    displayName: null,
-    symbol: null,
-    prefix: null,
-    genesis: null,
-    fees: { identity: null, tx: null },
-    decimals: null,
-  };
+export class NetworkService extends RxStartableService<NetworkState> {
 
-  get api(): ApiPromise {
-    return this._data;
-  }
+  @RxStateProperty() currency: Currency;
+  @RxStateProperty() api: ApiPromise;
 
-  get currencySymbol(): string {
-    return this.currency.symbol || '';
-  }
+  @RxStateProperty<NetworkState>('currency', 'symbol') currencySymbol: string;
 
   constructor(private settings: SettingsService) {
     super(settings, {
@@ -98,6 +92,7 @@ export class NetworkService extends StartableService<ApiPromise> {
       chainInfo.toHuman()
     );
 
+    let currency: Currency;
     // Check is well known currency
     if (WELL_KNOWN_CURRENCIES[chain]) {
       const wellKnownCurrency = WELL_KNOWN_CURRENCIES[chain];
@@ -106,30 +101,21 @@ export class NetworkService extends StartableService<ApiPromise> {
           `${this._logPrefix}Invalid genesis for ${chain}! Expected ${wellKnownCurrency.genesis} but peer return ${genesis}`
         );
       } else {
-        this.currency = WELL_KNOWN_CURRENCIES[chain];
+        currency = { ...wellKnownCurrency };
       }
     }
     else {
       console.warn(`${this._logPrefix}Not a well known currency: ${chain}!`);
     }
-    this.currency.displayName = this.currency.displayName || chain;
-    this.currency.symbol =
-      this.currency.symbol ||
-      chainInfo.tokenSymbol.value?.[0].toHuman() ||
-      abbreviate(this.currency.displayName);
-    this.currency.decimals =
-      this.currency.decimals ||
-      +chainInfo.tokenDecimals.value?.[0].toHuman() ||
-      0;
+    currency.displayName = currency.displayName || chain;
+    currency.symbol = currency.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
+    currency.decimals = currency.decimals || +chainInfo.tokenDecimals.value?.[0].toHuman() || 0;
+    currency.genesis = genesis;
 
-    // Read the genesis block hash
-    console.debug(
-      `${this._logPrefix}Blockchain symbol: ${this.currency.symbol}`
-    );
-    console.debug(
-      `${this._logPrefix}Blockchain decimals: ${this.currency.decimals}`
-    );
-    console.debug(`${this._logPrefix}Blockchain genesis: ${genesis}`);
+    // Read the genesys block hash
+    console.debug(`${this._logPrefix}Blockchain symbol: ${currency.symbol}`);
+    console.debug(`${this._logPrefix}Blockchain decimals: ${currency.decimals}`);
+    console.debug(`${this._logPrefix}Blockchain genesis: ${currency.genesis}`);
 
     // Retrieve the latest header
     const lastHeader = await api.rpc.chain.getHeader();
@@ -137,7 +123,10 @@ export class NetworkService extends StartableService<ApiPromise> {
       `${this._logPrefix}Last block: #${lastHeader.number} - hash ${lastHeader.hash}`
     );
 
-    return api;
+    return {
+      currency,
+      api
+    };
   }
 
   async filterAliveNodes(

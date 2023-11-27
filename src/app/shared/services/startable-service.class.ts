@@ -1,6 +1,5 @@
 import {Optional} from '@angular/core';
 import {firstValueFrom, Subject, takeUntil} from 'rxjs';
-import {waitFor} from '../observables';
 import {BaseService, IBaseServiceOptions} from "@app/shared/services/base-service.class";
 import {environment} from "@environments/environment";
 
@@ -105,7 +104,7 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
   }
 
   protected async ngOnStop(): Promise<void> {
-    // Can be overwritten by subclasses
+    // Can be overridden by subclasses
   }
 
   protected abstract ngOnStart(): Promise<T>;

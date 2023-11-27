@@ -5,22 +5,17 @@ import {StartableService} from "@app/shared/services/startable-service.class";
 import {Platform} from "@ionic/angular";
 import {Subject} from "rxjs";
 import {APP_STORAGE, IStorage} from "@app/shared/services/storage/storage.utils";
+import {RxService} from "@app/shared/services/rx-service.class";
 
 const SETTINGS_STORAGE_KEY = 'settings';
 
 @Injectable({providedIn: 'root'})
-export class SettingsService extends StartableService<Settings> {
-
-  private _mobile: boolean;
+export class SettingsService extends RxService<Settings> {
 
   changes = new Subject<Settings>();
 
   get mobile() {
-    return this._mobile;
-  }
-
-  get data(): Settings {
-    return this._data;
+    return this.get('mobile');
   }
 
   constructor(
@@ -35,16 +30,22 @@ export class SettingsService extends StartableService<Settings> {
 
   protected async ngOnStart(): Promise<Settings> {
 
-    this._mobile = this.ionicPlatform.is('mobile')
+    const mobile = this.ionicPlatform.is('mobile')
       || this.ionicPlatform.is('iphone')
       || this.ionicPlatform.is('android');
 
-    const data = await this.restoreLocally();
+    const data = {
+      ...(await this.restoreLocally()),
+      mobile
+    };
 
-    console.info('[settings-restore] Mobile: ', this._mobile);
     console.info('[settings-restore] Settings ready: ', data);
 
     return data;
+  }
+
+  get<K extends keyof Settings>(key: K): Settings[K] {
+    return super.get(key);
   }
 
   clone(): Settings {
@@ -52,30 +53,27 @@ export class SettingsService extends StartableService<Settings> {
       locale: environment.defaultLocale,
       peer: environment.defaultPeers && environment.defaultPeers[0],
       defaultPeers: environment.defaultPeers || [],
-      ...this._data
+      ...this._state.get()
     }
   }
 
   async restoreLocally(): Promise<Settings> {
 
-    const savedData = await this.storage.get(SETTINGS_STORAGE_KEY);
-    const data = <Settings>{
+    const data = await this.storage.get(SETTINGS_STORAGE_KEY);
+    return <Settings>{
+      // Default values
       preferredPeers: !environment.production && environment.dev?.peer
         ? [environment.dev.peer]
         : [...environment.defaultPeers],
       unAuthDelayMs: 15 * 60_000, // 15min
-      ...savedData
+      // Restored data
+      ...data
     };
-    return data;
   }
 
   patchValue(data: Partial<Settings>) {
     if (!data) return;
-    this._data = {
-      ...this._data,
-      ...data
-    };
-    this.changes.next(this._data);
+    this._state.set(state => <Settings>{...state, ...data});
 
     // Saving changes
     setTimeout(() => this.saveLocally(), 250);

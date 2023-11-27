@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {PlatformService} from "./shared/services/platform.service";
-import {AccountService} from "@app/wallet/account.service";
+import {AccountsService} from "@app/wallet/accounts.service";
 import {Router} from "@angular/router";
 import {App} from "@capacitor/app";
 import {isNotNilOrBlank} from "@app/shared/functions";
@@ -55,7 +55,7 @@ export class AppComponent {
   ];
 
   constructor(private platform: PlatformService,
-              private accountService: AccountService,
+              private accountService: AccountsService,
               private transferController: TransferController,
               private router: Router) {
     this.start();

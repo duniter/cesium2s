@@ -8,6 +8,7 @@ import {fadeInAnimation} from "@app/shared/animations";
 import {Router} from "@angular/router";
 import {AuthController} from "@app/auth/auth.controller";
 import { TransferController } from '@app/transfer/transfer.controller';
+import {RxState} from "@rx-angular/state";
 
 @Component({
   selector: 'app-home',
@@ -17,8 +18,9 @@ import { TransferController } from '@app/transfer/transfer.controller';
 })
 export class HomePage extends BasePage<Settings> implements OnInit {
 
-  currency: string = null;
   defaultAccount: Account = null;
+  currency$ = this._state.select('currency');
+
 
   get isLogin(): boolean {
     return this.accountService.isLogin
@@ -40,7 +42,7 @@ export class HomePage extends BasePage<Settings> implements OnInit {
     await this.settings.ready();
     await this.networkService.ready();
 
-    this.currency = this.networkService.currency.displayName;
+    const currency = this.networkService.currency.displayName;
 
     // Load account
     await this.accountService.ready();
@@ -51,12 +53,15 @@ export class HomePage extends BasePage<Settings> implements OnInit {
       this.defaultAccount = null;
     }
 
-    return this.settings.clone();
+    return {
+      ...this.settings.clone(),
+      currency
+    };
   }
 
   changeLocale(locale: string): boolean  {
     this.settings.patchValue({locale});
-    this.data.locale = locale;
+    this._state.set('locale', (_) => locale);
     this.markForCheck();
     return true;
   }

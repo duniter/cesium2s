@@ -1,30 +1,48 @@
-import {AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectionStrategy, Component, Injector, OnInit, ViewChild} from '@angular/core';
 import {AccountService} from "./account.service";
 import {Clipboard} from "@capacitor/clipboard";
 import {BasePage} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
-import {isEmptyArray} from "@app/shared/functions";
+import {isEmptyArray, isNilOrBlank, isNotNil} from "@app/shared/functions";
 import {NetworkService} from "@app/network/network.service";
-import {BehaviorSubject} from "rxjs";
 import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
 import {Router} from "@angular/router";
-import {WotLookupPage} from "@app/wot/wot-lookup.page";
-import { AuthController } from '@app/auth/auth.controller';
-import { firstNotNilPromise } from '@app/shared/observables';
+import {RxStateProperty} from "@app/shared/decorator/state.decorator";
+import {AuthController} from '@app/auth/auth.controller';
+import {RxState} from "@rx-angular/state";
+import {filter} from "rxjs/operators";
+
+
+export interface WalletState {
+  accounts: Account[];
+  account: Account;
+  address: string;
+  currency: string;
+}
 
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [RxState]
 })
-export class WalletPage extends BasePage<Account> implements OnInit, AfterViewChecked {
+export class WalletPage extends BasePage<WalletState> implements OnInit, AfterViewChecked {
 
   static NEW = <Account>{
     address: ''
   };
 
-  protected $accounts = new BehaviorSubject<Account[]>(null);
+  @RxStateProperty() accounts: Account[];
+  @RxStateProperty() account: Account;
+  @RxStateProperty() address: string;
+  @RxStateProperty() currency: string;
+
+  get balance(): number {
+    if (!this.account?.data) return undefined;
+    return (this.account.data.free || 0) + (this.account.data.reserved || 0);
+  }
+
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet'
   };
@@ -33,13 +51,10 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
     reference: 'event'
   };
 
-  address: string;
-  currency: string;
+  readonly account$ = this._state.select('account');
+  readonly accounts$ = this._state.select('accounts');
 
 
-  get account(): Account {
-    return this.data;
-  }
 
   get new(): Account {
     return WalletPage.NEW;
@@ -60,7 +75,42 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
       loadDueTime: accountService.started ? 0 : 250
     })
 
-    this.address = this.activatedRoute.snapshot.paramMap.get('address');
+    this._state.connect('accounts', this.accountService.watchAll());
+
+    const accounts$ = this._state.select('accounts')
+      .pipe(filter(isNotNil));
+
+    this._state.hold(accounts$.pipe(
+      filter(isNotNil),
+      filter(isEmptyArray)
+    ), async (accounts) => {
+      const account = await this.openAuthModal();
+      this._state.set('accounts', (state) => [account]);
+    });
+
+    this._state.hold(this._state.select(), async (s) => {
+      if (isEmptyArray(s.accounts) || isNotNil(s.account) || isNilOrBlank(s.address)) return;
+
+      console.debug(this._logPrefix + 'Loading account from address: ' + s.address);
+
+      if (s.address === 'default') {
+        const account = await this.accountService.getDefault();
+        this.account = account;
+        this.address = account?.address;
+      }
+
+      // Load by address
+      const isAddressAvailable = await this.accountService.isAvailable(s.address);
+      if (isAddressAvailable) {
+        this.account = await this.accountService.getByAddress(s.address);
+        return;
+      }
+
+      // Try by name
+      const account = await this.accountService.getByName(s.address);
+      this._state.set('account', (state) => account);
+      this._state.set('address', (state) => account.address);
+    });
   }
 
   async ngOnInit() {
@@ -70,75 +120,48 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
 
   ngAfterViewChecked() {
 
-    // force page reload, when auth was previously cancelled
-    if (!this.loading && !this.data) {
-      this.info('Reloading page...');
-      setTimeout(() => this.load());
-    }
+    // if (!this.loading && !this) {
+    //   // force page reload, when no accounts available
+    //   if (isEmptyArray(this.accounts)) {
+    //     this.info('No account: redirect to home...');
+    //     setTimeout(() => this.goHome());
+    //   }
+    //   else {
+    //     // force page reload, when auth was previously cancelled
+    //     this.info('Reloading page...');
+    //     setTimeout(() => this.load());
+    //   }
+    // }
   }
 
-  protected async ngOnLoad(): Promise<Account> {
+  protected goHome() {
+    return this.router.navigateByUrl('/home');
+  }
 
-    this.info('Loading page...');
-    this.currency = this.networkService.currencySymbol;
+  protected async ngOnLoad(): Promise<WalletState> {
 
-    this.registerSubscription(
-      this.accountService.watchAll()
-      .subscribe(accounts => this.$accounts.next(accounts))
-    );
+    this.info('Loading wallet page...');
 
-    const accounts = await firstNotNilPromise<Account[]>(this.$accounts); // TODO add destroy/stop
-    let account: Account;
-
-    if (isEmptyArray(accounts)) {
-      account = await this.openAuthModal();
-      // Redirect to home
-      if (!account) {
-        await this.router.navigateByUrl('/home');
-        throw new Error('ERROR.AUTH_REQUIRED');
-      }
-      this.address = account.address;
-      this.$accounts.next([account]);
-      return account;
-    }
-
-    if (this.address === 'default') {
-      account = await this.accountService.getDefault();
-      this.address = account.address;
-      return account;
-    }
-
-    // Load by address
-    const isAddressAvailable = await this.accountService.isAvailable(this.address);
-    if (isAddressAvailable) {
-      account = await this.accountService.getByAddress(this.address);
-      this.address = account.address;
-      return account;
-    }
-
-    // Try by name
-    account = await this.accountService.getByName(this.address);
-    // Redirect to home
-    if (!account) {
-      await this.router.navigateByUrl('/home');
-      throw new Error('ERROR.AUTH_REQUIRED');
-    }
-    this.address =  account.address;
-    return account;
+    return {
+      accounts: this.accountService.accounts,
+      account: null,
+      address: this.activatedRoute.snapshot.paramMap.get('address'),
+      currency: this.networkService.currencySymbol
+    };
   }
 
   async copyAddress() {
-    if (this.loading || !this.data?.address) return; // Skip
+    if (this.loading || !this.account?.address) return; // Skip
 
     await Clipboard.write({
-      string: this.data.address
+      string: this.account.address
     });
     await this.showToast({message: 'INFO.COPY_TO_CLIPBOARD_DONE'});
   }
 
-  async showQrCode() {
+  showQrCode() {
     if (this.qrCodeModal.isOpen) return; // Skip
-    this.qrCodeModal.present();
+    return this.qrCodeModal.present();
   }
 
   async onAccountChange(event: CustomEvent<{value: Account}>) {
@@ -177,7 +200,11 @@ export class WalletPage extends BasePage<Account> implements OnInit, AfterViewCh
       await this.authModal.present();
     }
     const {data, role} = await this.authModal.onWillDismiss();
-    if (!data?.address) return null;
+    if (!data?.address || role === 'CANCEL') {
+      // Redirect to home
+      await this.goHome();
+      throw new Error("CANCELLED");
+    }
     return data;
   }
 }

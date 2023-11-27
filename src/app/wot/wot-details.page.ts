@@ -4,7 +4,7 @@ import {BasePage} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
 import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
-import {AccountService} from "@app/wallet/account.service";
+import {AccountsService} from "@app/wallet/accounts.service";
 import {Clipboard} from "@capacitor/clipboard";
 
 @Component({
@@ -21,7 +21,7 @@ export class WotDetailsPage extends BasePage<Account> implements OnInit {
 
   constructor(injector: Injector,
               private router: Router,
-              private accountService: AccountService,
+              private accountService: AccountsService,
               private wotService: WotService
               ) {
     super(injector, {name: 'wot-details-page'});

@@ -2,11 +2,13 @@ import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {SettingsService} from "@app/settings/settings.service";
 import {APP_LOCALES, LocaleConfig, Settings} from "@app/settings/settings.model";
 import {BasePage} from "@app/shared/pages/base.page";
+import {RxState} from "@rx-angular/state";
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
+  providers: [RxState]
 })
 export class SettingsPage extends BasePage<Settings> implements OnInit {
 
