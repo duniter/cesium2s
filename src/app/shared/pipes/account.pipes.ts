@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Directive, Pipe, PipeTransform} from '@angular/core';
+import {ChangeDetectorRef, Directive, inject, Pipe, PipeTransform} from '@angular/core';
 import {NumberFormatPipe} from "@app/shared/pipes/number-format.pipe";
 import {NetworkService} from "@app/network/network.service";
 import {Account, AccountData, AccountUtils} from "@app/wallet/account.model";
@@ -6,6 +6,7 @@ import {equals, getPropertyByPath, isNotNilOrBlank} from "@app/shared/functions"
 import {AddressFormatPipe} from "@app/shared/pipes/address.pipes";
 import {Subscription} from "rxjs";
 import {formatAddress} from "@app/shared/currencies";
+import {AccountsService} from "@app/wallet/accounts.service";
 
 // @dynamic
 /**
@@ -18,11 +19,15 @@ export abstract class AccountAbstractPipe<T = any, O = any> implements PipeTrans
   private _lastOptions: O = null;
   private _changesSubscription: Subscription = null;
 
-  protected constructor(private _ref: ChangeDetectorRef) {
+  protected _accountsService = inject(AccountsService);
+
+  protected constructor(
+    private _cd: ChangeDetectorRef
+  ) {
   }
 
   transform(account: Partial<Account>, opts: O): T {
-    if (!account || (!account.data && !account.dataSubject)) {
+    if (!account?.data) {
       this._dispose();
       return undefined;
     }
@@ -45,11 +50,12 @@ export abstract class AccountAbstractPipe<T = any, O = any> implements PipeTrans
     this._dispose();
 
     // subscribe to onTranslationChange event, in case the translations change
-    if (!this._changesSubscription && account.dataSubject) {
-      this._changesSubscription = account.dataSubject.subscribe((status) => {
-        this.value = this._transform(account, opts);
-        this._ref.markForCheck();
-      });
+    if (!this._changesSubscription) {
+      this._changesSubscription = this._accountsService.watchByAddress(account.address)
+        .subscribe((updatedAccount) => {
+          this.value = this._transform(updatedAccount, opts);
+          this._cd.markForCheck();
+        });
     }
     return this.value;
   }
@@ -60,7 +66,7 @@ export abstract class AccountAbstractPipe<T = any, O = any> implements PipeTrans
 
   private _updateValue(account: Partial<Account>, opts?: O) {
     this.value = this._transform(account, opts);
-    this._ref.markForCheck();
+    this._cd.markForCheck();
   }
 
   protected abstract _transform(account: Partial<Account>, opts?: O): T;
@@ -116,8 +122,8 @@ export class AccountBalancePipe extends AccountAbstractPipe<number, void> {
 })
 export class AccountNamePipe extends AccountAbstractPipe<string, void> {
 
-  constructor(_ref: ChangeDetectorRef) {
-    super(_ref);
+  constructor(cd: ChangeDetectorRef) {
+    super(cd);
   }
 
   protected _transform(account: Partial<Account>): string {

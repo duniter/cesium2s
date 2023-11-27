@@ -1,16 +1,15 @@
 import {Inject, Injectable, Optional} from "@angular/core";
 import {Settings} from "./settings.model";
 import {environment} from "@environments/environment";
-import {StartableService} from "@app/shared/services/startable-service.class";
 import {Platform} from "@ionic/angular";
 import {Subject} from "rxjs";
 import {APP_STORAGE, IStorage} from "@app/shared/services/storage/storage.utils";
-import {RxService} from "@app/shared/services/rx-service.class";
+import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
 
 const SETTINGS_STORAGE_KEY = 'settings';
 
 @Injectable({providedIn: 'root'})
-export class SettingsService extends RxService<Settings> {
+export class SettingsService extends RxStartableService<Settings> {
 
   changes = new Subject<Settings>();
 

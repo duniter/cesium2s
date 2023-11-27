@@ -11,7 +11,6 @@ interface AccountDetailModalState {
   selector: 'app-account-detail-modal',
   templateUrl: './account-detail.modal.html',
   styleUrls: ['./account-detail.modal.scss'],
-  providers: [RxState]
 })
 export class AccountDetailModal {
   constructor(protected injector: Injector, protected state: RxState<AccountDetailModalState>, protected modalController: ModalController) {}

@@ -7,16 +7,17 @@ import {TranslateModule} from "@ngx-translate/core";
 import {AppAuthModule} from "@app/auth/auth.module";
 import {AppUnlockModule} from "@app/unlock/unlock.module";
 import {NgxJdenticonModule} from "ngx-jdenticon";
+import {PushPipe} from "@rx-angular/template/push";
 
 @NgModule({
-  imports: [
-    AppSharedModule,
-    TranslateModule.forChild(),
-    WalletPageRoutingModule,
-    AppAuthModule,
-    AppUnlockModule,
-    NgxJdenticonModule
-  ],
+    imports: [
+        AppSharedModule,
+        TranslateModule.forChild(),
+        WalletPageRoutingModule,
+        AppAuthModule,
+        AppUnlockModule,
+        NgxJdenticonModule
+    ],
   declarations: [WalletPage]
 })
 export class AppWalletModule {}

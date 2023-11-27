@@ -7,8 +7,10 @@ import {TranslateModule} from "@ngx-translate/core";
 import {SharedPipesModule} from "@app/shared/pipes/pipes.module";
 import {QrCodeModule} from "ng-qrcode";
 import {ListPopoverModule} from "@app/shared/popover/list.popover.module";
-import {ForModule, LetModule} from "@rx-angular/template";
-import {IfModule} from "@rx-angular/template/experimental/if";
+import {ForModule} from "@rx-angular/template/for";
+import {LetModule} from "@rx-angular/template/let";
+import {IfModule} from "@rx-angular/template/if";
+import {PushModule} from "@rx-angular/template/push";
 
 @NgModule({
   imports: [
@@ -20,6 +22,7 @@ import {IfModule} from "@rx-angular/template/experimental/if";
     QrCodeModule,
 
     // RxState template
+    PushModule,
     LetModule,
     ForModule,
     IfModule,
@@ -37,6 +40,7 @@ import {IfModule} from "@rx-angular/template/experimental/if";
     QrCodeModule,
 
     // RxState template
+    PushModule,
     LetModule,
     ForModule,
     IfModule,

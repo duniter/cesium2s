@@ -1,37 +1,37 @@
-import {AfterViewChecked, ChangeDetectionStrategy, Component, Injector, OnInit, ViewChild} from '@angular/core';
-import {AccountService} from "./account.service";
+import {ChangeDetectionStrategy, Component, Injector, OnInit, ViewChild} from '@angular/core';
+
 import {Clipboard} from "@capacitor/clipboard";
-import {BasePage} from "@app/shared/pages/base.page";
+import {BasePage, BasePageState} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
-import {isEmptyArray, isNilOrBlank, isNotNil} from "@app/shared/functions";
+import {isEmptyArray, isNil, isNotEmptyArray, isNotNil, isNotNilOrBlank} from "@app/shared/functions";
 import {NetworkService} from "@app/network/network.service";
 import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RxStateProperty} from "@app/shared/decorator/state.decorator";
 import {AuthController} from '@app/auth/auth.controller';
-import {RxState} from "@rx-angular/state";
-import {filter} from "rxjs/operators";
+import {catchError, filter, mergeMap} from "rxjs/operators";
+import {AccountsService} from "@app/wallet/accounts.service";
+import {map, merge} from "rxjs";
 
-
-export interface WalletState {
+export interface WalletState extends BasePageState {
   accounts: Account[];
   account: Account;
   address: string;
   currency: string;
+  balance: number;
 }
 
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RxState]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WalletPage extends BasePage<WalletState> implements OnInit, AfterViewChecked {
+export class WalletPage extends BasePage<WalletState> implements OnInit {
 
-  static NEW = <Account>{
+  static NEW = Object.freeze(<Account>{
     address: ''
-  };
+  });
 
   @RxStateProperty() accounts: Account[];
   @RxStateProperty() account: Account;
@@ -55,7 +55,6 @@ export class WalletPage extends BasePage<WalletState> implements OnInit, AfterVi
   readonly accounts$ = this._state.select('accounts');
 
 
-
   get new(): Account {
     return WalletPage.NEW;
   }
@@ -66,8 +65,9 @@ export class WalletPage extends BasePage<WalletState> implements OnInit, AfterVi
   constructor(
     injector: Injector,
     protected router: Router,
+    protected route: ActivatedRoute,
     protected networkService: NetworkService,
-    protected accountService: AccountService,
+    protected accountService: AccountsService,
     protected authController: AuthController
   ) {
     super(injector, {
@@ -75,42 +75,64 @@ export class WalletPage extends BasePage<WalletState> implements OnInit, AfterVi
       loadDueTime: accountService.started ? 0 : 250
     })
 
+    // Watch address from route or account
+    this._state.connect('address',
+      merge(
+        this.route.paramMap.pipe(map(paramMap => paramMap.get('address'))),
+        this.account$.pipe(map(a => a?.address))
+      ).pipe(
+        filter(address => isNotNilOrBlank(address) && address !== this.address)
+      ));
+
+    // Watch accounts
     this._state.connect('accounts', this.accountService.watchAll());
 
-    const accounts$ = this._state.select('accounts')
-      .pipe(filter(isNotNil));
+    // Open auth modal, if no account
+    this._state.connect('account', this.accounts$.pipe(
+      filter(accounts => isEmptyArray(accounts)),
+      mergeMap((_) => this.openAuthModal()
+        .catch((err) => {
+          if (err?.message === 'CANCELLED') {
+            console.error(this._logPrefix + 'User cancelled');
+            // Redirect to home
+            this.goHome();
+            return null;
+          }
+          throw err;
+        })
+      ),
+      filter(isNotNil)
+    ));
 
-    this._state.hold(accounts$.pipe(
-      filter(isNotNil),
-      filter(isEmptyArray)
-    ), async (accounts) => {
-      const account = await this.openAuthModal();
-      this._state.set('accounts', (state) => [account]);
-    });
+    // Add new wallet
+    this._state.hold(this.account$.pipe(filter(account => account === WalletPage.NEW)),
+      _ => this.addNewWallet());
 
-    this._state.hold(this._state.select(), async (s) => {
-      if (isEmptyArray(s.accounts) || isNotNil(s.account) || isNilOrBlank(s.address)) return;
+    // Load by address
+    this._state.connect('account', this._state.$.pipe(
+        filter(s => isNotEmptyArray(s.accounts) && isNil(s.account) && isNotNilOrBlank(s.address) && s.account !== WalletPage.NEW),
+        mergeMap(async (s) => {
+          console.debug(this._logPrefix + 'Loading account from address: ' + s.address);
 
-      console.debug(this._logPrefix + 'Loading account from address: ' + s.address);
+          let account: Account;
+          if (s.address === 'default') {
+            account = await this.accountService.getDefault();
+            return account
+          }
 
-      if (s.address === 'default') {
-        const account = await this.accountService.getDefault();
-        this.account = account;
-        this.address = account?.address;
-      }
+          // Load by address
+          const exists = await this.accountService.isAvailable(s.address);
+          if (exists) {
+            return this.accountService.getByAddress(s.address);
+          }
 
-      // Load by address
-      const isAddressAvailable = await this.accountService.isAvailable(s.address);
-      if (isAddressAvailable) {
-        this.account = await this.accountService.getByAddress(s.address);
-        return;
-      }
+          // Try by name
+          account = await this.accountService.getByName(s.address);
+          return account;
+        })
+      )
+    );
 
-      // Try by name
-      const account = await this.accountService.getByName(s.address);
-      this._state.set('account', (state) => account);
-      this._state.set('address', (state) => account.address);
-    });
   }
 
   async ngOnInit() {
@@ -118,23 +140,7 @@ export class WalletPage extends BasePage<WalletState> implements OnInit, AfterVi
     super.ngOnInit();
   }
 
-  ngAfterViewChecked() {
-
-    // if (!this.loading && !this) {
-    //   // force page reload, when no accounts available
-    //   if (isEmptyArray(this.accounts)) {
-    //     this.info('No account: redirect to home...');
-    //     setTimeout(() => this.goHome());
-    //   }
-    //   else {
-    //     // force page reload, when auth was previously cancelled
-    //     this.info('Reloading page...');
-    //     setTimeout(() => this.load());
-    //   }
-    // }
-  }
-
-  protected goHome() {
+  protected async goHome() {
     return this.router.navigateByUrl('/home');
   }
 
@@ -142,7 +148,7 @@ export class WalletPage extends BasePage<WalletState> implements OnInit, AfterVi
 
     this.info('Loading wallet page...');
 
-    return {
+    return <WalletState>{
       accounts: this.accountService.accounts,
       account: null,
       address: this.activatedRoute.snapshot.paramMap.get('address'),
@@ -164,30 +170,15 @@ export class WalletPage extends BasePage<WalletState> implements OnInit, AfterVi
     return this.qrCodeModal.present();
   }
 
-  async onAccountChange(event: CustomEvent<{value: Account}>) {
-    const account = event?.detail.value;
-    if (account === WalletPage.NEW) {
-      event.preventDefault();
-      event.stopPropagation();
 
-      const newAccount = await this.addNewWallet();
+  async addNewWallet(event?: Event): Promise<Account> {
+    event?.preventDefault();
+    event?.stopPropagation();
 
-      // If cancelled, restore previous account
-      if (!newAccount && this.address) {
-        this.data = (this.$accounts.value || []).find(a => a.address === this.address);
-        this.markForCheck();
-      }
-    }
-    else {
-      this.address = account.address;
-    }
-  }
-
-  async addNewWallet(event?: UIEvent): Promise<Account> {
     const data = await this.authController.register();
     if (!data) return null;
 
-    this.data = data;
+    this.account = data;
 
     return data;
   }
@@ -196,15 +187,13 @@ export class WalletPage extends BasePage<WalletState> implements OnInit, AfterVi
     event?.preventDefault();
     event?.stopPropagation();
     event?.stopImmediatePropagation();
-    if (!this.authModal.isOpen) {
-      await this.authModal.present();
+
+    const account = await this.authController.login(event, {});
+    if (!account?.address) {
+      // Stop if waiting
+      throw new Error('CANCELLED');
     }
-    const {data, role} = await this.authModal.onWillDismiss();
-    if (!data?.address || role === 'CANCEL') {
-      // Redirect to home
-      await this.goHome();
-      throw new Error("CANCELLED");
-    }
-    return data;
+
+    return account;
   }
 }

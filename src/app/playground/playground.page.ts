@@ -2,10 +2,10 @@ import {Component, Injector} from "@angular/core";
 import {RxState} from "@rx-angular/state";
 import {interval} from "rxjs";
 import {NetworkService} from "@app/network/network.service";
-import {BasePage} from "@app/shared/pages/base.page";
+import {BasePage, BasePageState} from "@app/shared/pages/base.page";
 
 
-export declare interface PlaygroundState {
+export declare interface PlaygroundState extends BasePageState {
   bar: number;
   foo: string;
 }
@@ -14,7 +14,6 @@ export declare interface PlaygroundState {
   selector: 'app-playground',
   templateUrl: './playground.page.html',
   //styleUrls: ['./playground.page.scss']
-  providers: [RxState]
 })
 export class PlaygroundPage extends BasePage<PlaygroundState> {
 
@@ -30,7 +29,7 @@ export class PlaygroundPage extends BasePage<PlaygroundState> {
     //network.api.consts
   }
 
-  protected async ngOnLoad(): Promise<PlaygroundState> {
+  protected async ngOnLoad() {
     return {bar: 0, foo: 'foo'};
   }
 }

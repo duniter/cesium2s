@@ -1,17 +1,18 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
 
-import {BasePage} from "@app/shared/pages/base.page";
+import {BasePage, BasePageState} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
 import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
 import {WotSearchFilter} from "@app/wot/wot.model";
 import {toBoolean} from "@app/shared/functions";
-import {debounceTime, mergeMap} from "rxjs";
+import {debounceTime, mergeMap, Observable} from "rxjs";
 import {RxState} from "@rx-angular/state";
 import {PredefinedColors} from "@app/shared/colors/colors.utils";
+import {RxStateSelect} from "@app/shared/decorator/state.decorator";
 
 
-export interface WotLookupState {
+export interface WotLookupState extends BasePageState {
   searchText: string;
   filter: WotSearchFilter;
   items: Account[];
@@ -22,7 +23,6 @@ export interface WotLookupState {
   templateUrl: './wot-lookup.page.html',
   styleUrls: ['./wot-lookup.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RxState]
 })
 export class WotLookupPage extends BasePage<WotLookupState> implements OnInit {
 
@@ -35,7 +35,7 @@ export class WotLookupPage extends BasePage<WotLookupState> implements OnInit {
   @Input() showItemActions: boolean;
   @Input() toolbarColor: PredefinedColors = 'primary';
 
-  items$ = this._state.select('items');
+  @RxStateSelect() items$: Observable<Account[]>;
 
   constructor(injector: Injector,
               private router: Router,
@@ -69,7 +69,7 @@ export class WotLookupPage extends BasePage<WotLookupState> implements OnInit {
 
     const items = await this.search({last: true})
 
-    return {
+    return <WotLookupState>{
       searchText: null,
       filter: {},
       items

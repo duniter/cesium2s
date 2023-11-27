@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Directive, inject, Injector, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Directive, Injector, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {SettingsService} from "@app/settings/settings.service";
 import {changeCaseToUnderscore, isNotNilOrBlank} from "@app/shared/functions";
@@ -7,18 +7,25 @@ import {waitIdle} from "@app/shared/forms";
 import {WaitForOptions} from "@app/shared/observables";
 import {IonRouterOutlet, ToastController, ToastOptions} from "@ionic/angular";
 import {TranslateService} from "@ngx-translate/core";
-import {BehaviorSubject, map, Subscription, Observable} from "rxjs";
+import {map, Observable, Subscription} from "rxjs";
 import {RxState} from "@rx-angular/state";
+import {RxStateProperty, RxStateRegister, RxStateSelect} from "@app/shared/decorator/state.decorator";
 
-export interface BasePageOptions {
+export interface BasePageState {
+  error: string;
+  loading: boolean;
+}
+
+export interface BasePageOptions<T extends BasePageState = BasePageState> {
   name: string;
   loadDueTime: number;
+  initialState?: Partial<T>
 }
 
 @Directive()
 export abstract class BasePage<
-  T extends object,
-  O extends BasePageOptions = BasePageOptions
+  T extends BasePageState = BasePageState,
+  O extends BasePageOptions<T> = BasePageOptions<T>
   >
   implements OnInit, OnDestroy {
 
@@ -30,28 +37,27 @@ export abstract class BasePage<
   protected readonly routerOutlet: IonRouterOutlet | null;
   protected readonly activatedRoute: ActivatedRoute;
   protected toastController: ToastController;
-  protected readonly _state: RxState<T>;
+  @RxStateRegister() protected readonly _state: RxState<T>;
   protected readonly _debug = !environment.production;
   protected readonly _logPrefix: string;
   protected readonly _options: O;
   protected _presentingElement: Element = null;
 
-  mobile: boolean = null;
-  error: string = null;
-  protected loadingSubject = new BehaviorSubject(true);
+  readonly mobile: boolean = null;
+
+  @RxStateProperty() error: string;
+  @RxStateProperty() loading: boolean
+
+  @RxStateSelect() error$: Observable<string>
+  @RxStateSelect() loading$: Observable<boolean>
 
   get loaded(): boolean {
-    return !this.loadingSubject.value;
+    return !this.loading;
   }
   get loaded$(): Observable<boolean> {
-    return this.loadingSubject.pipe(map(loading => !loading));
+    return this.loading$.pipe(map(value => value === false));
   }
-  get loading(): boolean {
-    return this.loadingSubject.value;
-  }
-  get loading$(): Observable<boolean> {
-    return this.loadingSubject.asObservable();
-  }
+
   get data(): T {
     return this._state.get();
   }
@@ -75,7 +81,9 @@ export abstract class BasePage<
       loadDueTime: 0,
       ...options
     };
-    this._state = injector.get(RxState);
+    if (options?.initialState) {
+      this._state.set(options.initialState);
+    }
     this._logPrefix = `[${this._options.name}] `;
   }
 
@@ -100,7 +108,9 @@ export abstract class BasePage<
     try {
 
       const initialState = await this.ngOnLoad();
-      this._state.set(initialState);
+      if (initialState) {
+        this._state.set(initialState);
+      }
 
       this.markForCheck();
       this.markAsLoaded();
@@ -111,9 +121,32 @@ export abstract class BasePage<
     }
   }
 
-  protected abstract ngOnLoad(): Promise<T>;
+  protected abstract ngOnLoad(): Promise<Partial<T>>;
 
-  protected setError(err, opts =  {emitEvent: true}) {
+  protected async unload() {
+    try {
+      const initialState = await this.ngOnUnload();
+      if (initialState) {
+        this._state.set(initialState);
+      }
+    }
+
+    finally {
+      this.setError(undefined);
+      this.markAsLoading();
+    }
+  }
+
+  protected ngOnUnload(): Promise<Partial<T>> {
+    const initialState: T = Object.keys(this._state.get())
+      .reduce((res, key) => {
+        res[key] = null;
+        return res;
+      }, {}) as T;
+    return Promise.resolve(initialState);
+  }
+
+  protected setError(err: any, opts =  {emitEvent: true}) {
     let message = err?.message || err || 'ERROR.UNKNOWN_ERROR';
     if (!message) {
       console.error(err);
@@ -132,14 +165,14 @@ export abstract class BasePage<
 
   protected markAsLoading(opts =  {emitEvent: true}) {
     if (this.loaded) {
-      this.loadingSubject.next(true);
+      this.loading = true;
       if (opts.emitEvent !== false) this.markForCheck();
     }
   }
 
   protected markAsLoaded(opts =  {emitEvent: true}) {
     if (this.loading) {
-      this.loadingSubject.next(false);
+      this.loading = false;
       if (opts.emitEvent !== false) this.markForCheck();
     }
   }

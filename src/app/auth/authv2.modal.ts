@@ -1,17 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { AccountService } from '@app/wallet/account.service';
-import { AuthV2Form } from './authv2.form';
-import { firstNotNilPromise } from '@app/shared/observables';
-import { AuthData } from '@app/auth/auth.model';
-import { RegisterData } from '@app/register/register.model';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild,} from '@angular/core';
+import {ModalController} from '@ionic/angular';
+import {AccountsService} from '@app/wallet/accounts.service';
+import {AuthV2Form} from './authv2.form';
+import {firstNotNilPromise} from '@app/shared/observables';
+import {AuthData} from '@app/auth/auth.model';
 
 @Component({
   selector: 'app-authv2-modal',
@@ -33,7 +25,7 @@ export class AuthV2Modal implements OnInit {
   @ViewChild('form', { static: true }) private form: AuthV2Form;
 
   constructor(
-    private accountService: AccountService,
+    private accountService: AccountsService,
     private viewCtrl: ModalController,
     private cd: ChangeDetectorRef
   ) {}

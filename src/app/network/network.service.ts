@@ -5,7 +5,9 @@ import {Peer, Peers} from './peer.model';
 import {abbreviate} from '@app/shared/currencies';
 import {Currency} from '@app/network/currency.model';
 import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
-import {RxStateProperty} from "@app/shared/decorator/state.decorator";
+import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
   Ğdev: <Partial<Currency>>{
@@ -37,6 +39,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
 
 export interface NetworkState {
   currency: Currency;
+  currencySymbol: string;
   api: ApiPromise
 }
 
@@ -44,14 +47,18 @@ export interface NetworkState {
 export class NetworkService extends RxStartableService<NetworkState> {
 
   @RxStateProperty() currency: Currency;
+  @RxStateProperty() currencySymbol: string;
   @RxStateProperty() api: ApiPromise;
 
-  @RxStateProperty<NetworkState>('currency', 'symbol') currencySymbol: string;
+  @RxStateSelect() currency$: Observable<Currency>;
+  //@RxStateProperty<NetworkState>('currency', 'symbol') currencySymbol: string;
 
   constructor(private settings: SettingsService) {
     super(settings, {
       name: 'network-service',
     });
+
+    this._state.connect('currencySymbol', this.currency$.pipe(map(currency => currency?.symbol)));
   }
 
   protected async ngOnStart(): Promise<any> {
@@ -84,12 +91,12 @@ export class NetworkService extends RxStartableService<NetworkState> {
 
     // Get the chain information
     const chainInfo = await api.registry.getChainProperties();
-    const chain = '' + (await api.rpc.system.chain());
+    const chain = '' + (await api.rpc.system.chain()).toHuman().split(' ')?.[0];
     const genesis = api.genesisHash.toHex();
 
     console.info(
-      `${this._logPrefix}Connecting to chain {${chain}}: `,
-      chainInfo.toHuman()
+      `${this._logPrefix}Connecting to chain {${chain}}: ` +
+      JSON.stringify(chainInfo.toHuman())
     );
 
     let currency: Currency;
@@ -100,16 +107,16 @@ export class NetworkService extends RxStartableService<NetworkState> {
         console.warn(
           `${this._logPrefix}Invalid genesis for ${chain}! Expected ${wellKnownCurrency.genesis} but peer return ${genesis}`
         );
-      } else {
-        currency = { ...wellKnownCurrency };
       }
+      currency = { ...wellKnownCurrency };
     }
     else {
       console.warn(`${this._logPrefix}Not a well known currency: ${chain}!`);
     }
-    currency.displayName = currency.displayName || chain;
-    currency.symbol = currency.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
-    currency.decimals = currency.decimals || +chainInfo.tokenDecimals.value?.[0].toHuman() || 0;
+    currency = currency || <Currency>{};
+    currency.displayName = currency?.displayName || chain;
+    currency.symbol = currency?.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
+    currency.decimals = currency?.decimals || +chainInfo.tokenDecimals.value?.[0].toHuman() || 0;
     currency.genesis = genesis;
 
     // Read the genesys block hash

@@ -1,14 +1,18 @@
 import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {APP_LOCALES, LocaleConfig, Settings} from "@app/settings/settings.model";
-import {BasePage} from "@app/shared/pages/base.page";
+import {BasePage, BasePageState} from "@app/shared/pages/base.page";
 import {NetworkService} from "@app/network/network.service";
-import {AccountService} from "@app/wallet/account.service";
+import {AccountsService} from "@app/wallet/accounts.service";
 import {Account} from "@app/wallet/account.model";
 import {fadeInAnimation} from "@app/shared/animations";
 import {Router} from "@angular/router";
 import {AuthController} from "@app/auth/auth.controller";
-import { TransferController } from '@app/transfer/transfer.controller';
-import {RxState} from "@rx-angular/state";
+import {TransferController} from '@app/transfer/transfer.controller';
+
+
+export interface HomePageState extends BasePageState, Settings {
+
+}
 
 @Component({
   selector: 'app-home',
@@ -16,7 +20,7 @@ import {RxState} from "@rx-angular/state";
   styleUrls: ['./home.page.scss'],
   animations: [fadeInAnimation],
 })
-export class HomePage extends BasePage<Settings> implements OnInit {
+export class HomePage extends BasePage<HomePageState> implements OnInit {
 
   defaultAccount: Account = null;
   currency$ = this._state.select('currency');
@@ -29,7 +33,7 @@ export class HomePage extends BasePage<Settings> implements OnInit {
   constructor(
     injector: Injector,
     public networkService: NetworkService,
-    public accountService: AccountService,
+    public accountService: AccountsService,
     public authController: AuthController,
     public transferController: TransferController,
     public router: Router,
@@ -84,7 +88,7 @@ export class HomePage extends BasePage<Settings> implements OnInit {
     }
   }
 
-  logout(even?: UIEvent) {
+  logout(even?: Event) {
     event?.preventDefault();
     this.accountService.forgetAll();
     this.defaultAccount = null;

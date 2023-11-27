@@ -5,7 +5,7 @@ import { AccountDetailModal } from './account-detail.modal';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import {Account} from "@app/wallet/account.model";
 import {RxStateProperty, RxStateRegister} from "@app/shared/decorator/state.decorator";
-import {AccountService} from "@app/wallet/account.service";
+import {AccountsService} from "@app/wallet/accounts.service";
 
 interface AccountListComponentState {
   accounts: Account[];
@@ -15,7 +15,6 @@ interface AccountListComponentState {
   selector: 'app-account-list',
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.scss'],
-  providers: [RxState],
   animations: [
     trigger('listAnimation', [
       transition('* <=> *', [
@@ -28,7 +27,7 @@ interface AccountListComponentState {
 export class AccountListComponent {
   @RxStateRegister() protected state: RxState<AccountListComponentState>;
 
-  constructor(protected accountService: AccountService,
+  constructor(protected accountService: AccountsService,
               protected modalController: ModalController) {
 
     accountService.accounts

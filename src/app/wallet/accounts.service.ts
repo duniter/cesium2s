@@ -2,7 +2,6 @@ import {Inject, Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
 import {ApiPromise} from "@polkadot/api";
 import {Account, AccountData, AccountMeta, AccountUtils} from "./account.model";
-import {StartableService} from "@app/shared/services/startable-service.class";
 import {AuthData} from "@app/auth/auth.model";
 import {keyring} from "@polkadot/ui-keyring";
 import {environment} from "@environments/environment";
@@ -21,11 +20,11 @@ import {
 } from "@app/shared/functions";
 import {APP_STORAGE, IStorage} from "@app/shared/services/storage/storage.utils";
 import {
-  BehaviorSubject,
   debounceTime,
   firstValueFrom,
   from,
   map,
+  mergeMap,
   Observable,
   Subject,
   Subscription,
@@ -40,8 +39,8 @@ import {scryptEncode} from "@polkadot/util-crypto/scrypt/encode";
 import {ScryptParams} from "@polkadot/util-crypto/scrypt/types";
 import {u8aToHex} from "@polkadot/util";
 import {formatAddress} from "@app/shared/currencies";
-import {fromPromise} from "rxjs/dist/types/internal/observable/innerFrom";
-import {RxService} from "@app/shared/services/rx-service.class";
+import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
+import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -87,31 +86,24 @@ export interface AccountsState {
 }
 
 @Injectable({providedIn: 'root'})
-export class AccountsService extends RxService<AccountsState> {
+export class AccountsService extends RxStartableService<AccountsState> {
 
   private _store = new KeyringStorage(this.storage);
-  private readonly _isDevelopment: boolean;
   private _passwordTimer: Subscription;
 
   get api(): ApiPromise {
     return this.network.api;
   }
 
-  get accounts(): Account[] {
-    return this.get('accounts');
-  }
+  @RxStateProperty() accounts: Account[];
+  @RxStateSelect() accounts$: Observable<Account[]>;
+
+  @RxStateProperty() private _password: string;
 
   get isLogin(): boolean {
     return this.started && isNotEmptyArray(this.accounts);
   }
 
-  private get _password(): string {
-    return this.get('password');
-  }
-
-  private set _password(value: string) {
-    this._state.set('password', (_) => value);
-  }
 
   constructor(
     protected network: NetworkService,
@@ -123,8 +115,6 @@ export class AccountsService extends RxService<AccountsState> {
       name: 'account-service'
     });
 
-    // DEV mode
-    this._isDevelopment = !environment.production;
   }
 
   protected async ngOnStart(): Promise<any> {
@@ -135,14 +125,26 @@ export class AccountsService extends RxService<AccountsState> {
     const currency = this.network.currency;
 
     // Configure keyring
-    keyring.setDevMode(this._isDevelopment);
+    keyring.setDevMode(!environment.production);
     keyring.setSS58Format(currency.prefix || 42 /* = dev format */);
 
     // Restoring accounts
-    await this.restoreAccounts(currency);
+    let accounts = await this.restoreAccounts(currency);
 
     // Add Dev account - DEV only
-    await this.configureDevAccount();
+    if (!environment.production) {
+      const devAccount = await this.configureDevAccount();
+      if (devAccount) {
+        accounts = [
+          ...accounts,
+          devAccount
+        ];
+      }
+    }
+
+    return {
+      accounts
+    };
   }
 
   async restoreAccounts(currency?: Currency) {
@@ -161,7 +163,7 @@ export class AccountsService extends RxService<AccountsState> {
       store: this._store,
       ss58Format: currency?.prefix,
       genesisHash: currency?.genesis,
-      isDevelopment: this._isDevelopment
+      isDevelopment: !environment.production
     });
 
     const keyringAddresses = await firstValueFrom(accounts$);
@@ -176,8 +178,7 @@ export class AccountsService extends RxService<AccountsState> {
           meta: {
             name: ka.meta.name,
             genesisHash: ka.meta.genesisHash
-          },
-          dataSubject: new Subject<AccountData>()
+          }
         }
       });
 
@@ -191,11 +192,11 @@ export class AccountsService extends RxService<AccountsState> {
           console.info(` - ${a.address} (${a.meta?.name}) - free=${a.data?.free} - reserved=${a.data?.reserved}`);
         });
 
-        this._state.set('accounts', (_) => accounts);
+        return accounts;
       }
       catch (err) {
-        console.error('Arror while loading accounts', err);
-        this._state.set('accounts', (_) => []);
+        console.error('Error while loading accounts', err);
+        return [];
       }
     }
   }
@@ -204,19 +205,20 @@ export class AccountsService extends RxService<AccountsState> {
   * Add test account --- DEV only
   */
   protected async configureDevAccount() {
-    if (!this._isDevelopment) return;
     const auth =  environment.dev?.auth;
 
     // Set password to AAAAA (or those defined in environment)
-    this._state.set('password', (_) => auth?.password || 'AAAAA');
+    this._password = auth?.password || 'AAAAA';
 
     // Add a V1 Dev account, if define in environment
     if (auth?.v1) {
       const alreadyExists = auth.address && (this.accounts || []).some(a => a.address === auth.address);
       if (!alreadyExists) {
-        await this.addV1Account({...auth.v1, meta: auth.meta});
+        return await this.addV1Account({...auth.v1, meta: auth.meta});
       }
     }
+
+    return undefined;
   }
 
   async login(auth: AuthData): Promise<Account> {
@@ -354,7 +356,9 @@ export class AccountsService extends RxService<AccountsState> {
       await this.loadData(account);
 
       // Append to accounts
-      this._state.set('accounts', (s) => ([...s.accounts, account]));
+      if (this.accounts) {
+        this.accounts = [...this.accounts, account];
+      }
     }
 
     return account;
@@ -373,7 +377,6 @@ export class AccountsService extends RxService<AccountsState> {
 
   watchAll(opts?: {positiveBalanceFirst?: boolean}): Observable<Account[]> {
 
-    let accounts$: Observable<Account[]>;
     if (!this.started) {
       return from(this.ready())
         .pipe(
@@ -417,9 +420,8 @@ export class AccountsService extends RxService<AccountsState> {
       if (accounts.length) {
         account = accounts[0];
         this.setDefaultAccount(account);
-      }
-      else {
-        throw {message: 'ERROR.UNKNOWN_WALLET_ID'};
+      } else {
+        throw {message: 'ERROR.UNKNOWN_WALLET_ID1'};
       }
     }
 
@@ -431,8 +433,11 @@ export class AccountsService extends RxService<AccountsState> {
     if (!this.started) await this.ready();
 
     const accounts = this.accounts || [];
+
     const account = accounts.find(a => a.meta?.name === name);
-    if (!account) throw {message: 'ERROR.UNKNOWN_WALLET_ID'};
+    if (!account) {
+      throw {message: 'ERROR.UNKNOWN_WALLET_ID2'};
+    }
 
     // Load
     return await this.loadData(account, opts);
@@ -443,10 +448,19 @@ export class AccountsService extends RxService<AccountsState> {
 
     const accounts = this.accounts || [];
     const account = accounts.find(a => a.address === address);
-    if (!account) throw {message: 'ERROR.UNKNOWN_WALLET_ID'};
+    if (!account) {
+      throw {message: 'ERROR.UNKNOWN_WALLET_ID3'};
+    }
 
     // Load data
     return await this.loadData(account, opts);
+  }
+
+
+  watchByAddress(address: string, opts?: LoadAccountDataOptions): Observable<Account> {
+    return this.accounts$.pipe(
+      map((accounts) => accounts?.find(a => a.address === address))
+    )
   }
 
   async transfer(from: Partial<Account>, to: Partial<Account>, amount: number, fee?: number) : Promise<string> {
@@ -583,17 +597,14 @@ export class AccountsService extends RxService<AccountsState> {
 
       // Load Cert
       if (opts.withCert !== false) {
-        const certs = await this.api.query.cert.storageCertsByReceiver(account.address);
-        console.debug(`${this._logPrefix} Loaded certs:`, certs);
+        // const certs = await this.api.query.cert.certsByReceiver(account.address);
+        // console.debug(`${this._logPrefix} Loaded certs:`, certs);
       }
 
       // Emit change event
-      if (changed) {
-        account.dataSubject = account.dataSubject || new Subject();
-        account.dataSubject.next(account.data);
+      if (changed && this.accounts) {
         console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} data [OK] in ${Date.now()-now}ms`, account.data);
       }
-
     }
     catch(err) {
       console.error(`${this._logPrefix}Failed to load ${formatAddress(account.address)} data:`, err);
@@ -652,11 +663,11 @@ export class AccountsService extends RxService<AccountsState> {
   }
 
   forgetAll() {
-    if (!this._isDevelopment) {
+    if (environment.production) {
       (this.accounts || []).forEach(account => {
         keyring.forgetAccount(account.address);
       });
     }
-    this._state.set('accounts', (_) => []);
+    this.accounts = [];
   }
 }

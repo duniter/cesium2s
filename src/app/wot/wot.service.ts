@@ -1,18 +1,18 @@
 import {Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
 import {ApiPromise} from "@polkadot/api";
-import {StartableService} from "@app/shared/services/startable-service.class";
 import {WotSearchFilter} from "@app/wot/wot.model";
 import {AccountsService} from "@app/wallet/accounts.service";
 import {sleep} from "@app/shared/functions";
 import {Account} from "@app/wallet/account.model";
+import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
 
 export interface WotState {
 
 }
 
 @Injectable({providedIn: 'root'})
-export class WotService extends StartableService<WotState> {
+export class WotService extends RxStartableService<WotState> {
 
   get api(): ApiPromise {
     return this.network.api;

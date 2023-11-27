@@ -4,10 +4,10 @@ import {
   Component,
   Injector,
   Input,
-  OnDestroy,
+  OnDestroy, OnInit,
   ViewChild
 } from '@angular/core';
-import {BasePage} from "@app/shared/pages/base.page";
+import {BasePage, BasePageState} from "@app/shared/pages/base.page";
 import {Account} from "@app/wallet/account.model";
 import {ActionSheetOptions, IonModal, IonTextarea, ModalController, Platform, PopoverOptions} from "@ionic/angular";
 import {Observable} from "rxjs";
@@ -21,8 +21,9 @@ import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decora
 import {Capacitor} from "@capacitor/core";
 import {CapacitorPlugins} from "@app/shared/capacitor/plugins";
 import {RxState} from "@rx-angular/state";
+import {AccountsService} from "@app/wallet/accounts.service";
 
-export interface TransferState {
+export interface TransferState extends BasePageState {
   currency: Currency;
   fee: number;
   accounts: Account[];
@@ -42,12 +43,13 @@ export interface TransferPageOptions {
   selector: 'app-transfer',
   templateUrl: './transfer.page.html',
   styleUrls: ['./transfer.page.scss'],
-  providers: [RxState],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TransferPage extends BasePage<TransferState> implements OnInit, OnDestroy {x
+export class TransferPage extends BasePage<TransferState> implements OnInit, OnDestroy {
 
   protected _enableScan: boolean = false;
+  protected _autoOpenWotModal = true;
+  protected _initialWotModalBreakpoint = 0.25
 
   @RxStateSelect() protected accounts$: Observable<Account[]>;
   @RxStateSelect() protected recipient$: Observable<Partial<Account>>;
@@ -64,7 +66,7 @@ export class TransferPage extends BasePage<TransferState> implements OnInit, OnD
   };
 
   @Input() @RxStateProperty() issuer: Account = null;
-  @Input() @RxStateProperty() recipient: Account = {address: null, meta: null};
+  @Input() @RxStateProperty() recipient: Partial<Account>;
   @Input() @RxStateProperty() amount: number;
   @Input() @RxStateProperty() fee: number;
   @Input() showComment: boolean;
@@ -101,13 +103,16 @@ export class TransferPage extends BasePage<TransferState> implements OnInit, OnD
   constructor(
     injector: Injector,
     protected ionicPlatform: Platform,
-    protected accountService: AccountService,
+    protected accountService: AccountsService,
     protected networkService: NetworkService,
     protected modalCtrl: ModalController,
     protected router: Router,
     protected cd: ChangeDetectorRef
   ) {
-    super(injector, {name: 'transfer', loadDueTime: 250});
+    super(injector, {name: 'transfer', loadDueTime: 250,
+    initialState: {
+      recipient: {address: null, meta: null}
+    }});
 
 
     this._state.connect('accounts', this.accountService.watchAll({positiveBalanceFirst: true}));
@@ -126,12 +131,12 @@ export class TransferPage extends BasePage<TransferState> implements OnInit, OnD
       // Load recipient
       const toAddress = this.activatedRoute.snapshot.paramMap.get('to');
       if (isNotNilOrBlank(toAddress)) {
-        this.recipient = {address: toAddress};
+        this.recipient = <Account>{address: toAddress};
       }
     });
 
     this._state.connect('fee', this.currency$, (state, currency) => {
-      return (currency?.fees.tx || 0) / Math.pow(10, currency?.decimals || 0);
+      return (currency?.fees?.tx || 0) / Math.pow(10, currency?.decimals || 0);
     });
 
     //this._state.hold(this.router.events)
@@ -158,7 +163,7 @@ export class TransferPage extends BasePage<TransferState> implements OnInit, OnD
     await this.qrCodeModal?.dismiss();
   }
 
-  protected async ngOnLoad(): Promise<TransferState> {
+  protected async ngOnLoad() {
     await this.accountService.ready();
 
     this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
@@ -175,13 +180,6 @@ export class TransferPage extends BasePage<TransferState> implements OnInit, OnD
     };
   }
 
-  async ngOnDestroy() {
-    super.ngOnDestroy();
-    await this.wotModal?.dismiss();
-    await this.qrCodeModal?.dismiss();
-  }
-
-  protected _autoOpenWotModal = true;
 
   protected async focusFrom(event: UIEvent, textarea?: IonTextarea) {
 
@@ -196,7 +194,6 @@ export class TransferPage extends BasePage<TransferState> implements OnInit, OnD
 
   }
 
-  protected _initialWotModalBreakpoint = 0.25
 
   protected async showWotModal(event: UIEvent, breakpoint?: number) {
     breakpoint = breakpoint || 0.25;
@@ -232,6 +229,7 @@ export class TransferPage extends BasePage<TransferState> implements OnInit, OnD
       this.recipient = {address: recipient, meta: null};
     }
     this.markForCheck();
+    return true;
   }
 
   cancel(event?: UIEvent) {

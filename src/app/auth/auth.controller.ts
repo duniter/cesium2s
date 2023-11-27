@@ -131,19 +131,14 @@ export class AuthController {
 
     await modal.present();
 
-    const {data} = await modal.onWillDismiss();
+    const {data} = await modal.onDidDismiss();
 
-    try {
-      if (!data?.address) return null; // Skip
+    if (!data?.address) return null; // Skip
 
-      if (opts?.redirectToWalletPage) {
-        setTimeout(() => this.router.navigate(['/wallet', data.address]));
-      }
-
-      return data as Account;
+    if (opts?.redirectToWalletPage) {
+      setTimeout(() => this.router.navigate(['/wallet', data.address]));
     }
-    finally {
-      await modal.onDidDismiss();
-    }
+
+    return data as Account;
   }
 }
