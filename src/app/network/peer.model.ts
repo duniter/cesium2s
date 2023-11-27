@@ -1,4 +1,4 @@
-import {isNil, isNotNil, isNotNilOrBlank} from "@app/shared/functions";
+import {isNil, isNilOrNaN, isNotNil, isNotNilOrBlank} from "@app/shared/functions";
 
 export interface Peer {
   host: string;
@@ -12,8 +12,8 @@ export abstract class Peers {
   static fromUri(peerUri: string): Peer {
     try {
       const url = new URL(peerUri);
-      let port = undefined;
-      if (isNil(port) && (url.protocol === 'https:' || url.protocol === 'wss:')) {
+      let port = parseInt(url.port);
+      if (isNilOrNaN(port) && (url.protocol === 'https:' || url.protocol === 'wss:')) {
         port = 443;
       }
       return {

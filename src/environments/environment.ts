@@ -25,7 +25,7 @@ export const environment = <Environment>{
   },
 
   dev: {
-    peer: 'ws://127.0.0.1:9944/ws',
+    peer: 'ws://127.0.0.1:9944',
     //peer: 'wss://gdev.komun.org/ws',
     // peer: 'wss://gdev.librelois.fr/ws',
 
