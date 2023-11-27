@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {BasePage, BasePageState} from "@app/shared/pages/base.page";
-import {Account} from "@app/wallet/account.model";
+import {Account} from "@app/account/account.model";
 import {ActionSheetOptions, IonModal, IonTextarea, ModalController, Platform, PopoverOptions} from "@ionic/angular";
 import {Observable} from "rxjs";
 import {isNotNilOrBlank} from "@app/shared/functions";
@@ -21,7 +21,7 @@ import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decora
 import {Capacitor} from "@capacitor/core";
 import {CapacitorPlugins} from "@app/shared/capacitor/plugins";
 import {RxState} from "@rx-angular/state";
-import {AccountsService} from "@app/wallet/accounts.service";
+import {AccountsService} from "@app/account/accounts.service";
 
 export interface TransferState extends BasePageState {
   currency: Currency;

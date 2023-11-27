@@ -2,16 +2,16 @@ import {ChangeDetectionStrategy, Component, Injector, OnInit, ViewChild} from '@
 
 import {Clipboard} from "@capacitor/clipboard";
 import {BasePage, BasePageState} from "@app/shared/pages/base.page";
-import {Account} from "@app/wallet/account.model";
+import {Account} from "@app/account/account.model";
 import {isEmptyArray, isNil, isNotEmptyArray, isNotNil, isNotNilOrBlank} from "@app/shared/functions";
 import {NetworkService} from "@app/network/network.service";
 import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
 import {ActivatedRoute, Router} from "@angular/router";
-import {RxStateProperty} from "@app/shared/decorator/state.decorator";
-import {AuthController} from '@app/auth/auth.controller';
+import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
+import {AuthController} from '@app/account/auth/auth.controller';
 import {catchError, filter, mergeMap} from "rxjs/operators";
-import {AccountsService} from "@app/wallet/accounts.service";
-import {map, merge} from "rxjs";
+import {AccountsService} from "@app/account/accounts.service";
+import {map, merge, Observable} from "rxjs";
 
 export interface WalletState extends BasePageState {
   accounts: Account[];
@@ -38,6 +38,9 @@ export class WalletPage extends BasePage<WalletState> implements OnInit {
   @RxStateProperty() address: string;
   @RxStateProperty() currency: string;
 
+  @RxStateSelect() account$: Observable<Account>;
+  @RxStateSelect() accounts$: Observable<Account[]>;
+
   get balance(): number {
     if (!this.account?.data) return undefined;
     return (this.account.data.free || 0) + (this.account.data.reserved || 0);
@@ -51,8 +54,6 @@ export class WalletPage extends BasePage<WalletState> implements OnInit {
     reference: 'event'
   };
 
-  readonly account$ = this._state.select('account');
-  readonly accounts$ = this._state.select('accounts');
 
 
   get new(): Account {
@@ -183,7 +184,7 @@ export class WalletPage extends BasePage<WalletState> implements OnInit {
     return data;
   }
 
-  async openAuthModal(event?: UIEvent): Promise<Account|null> {
+  async openAuthModal(event?: MouseEvent | TouchEvent | PointerEvent | CustomEvent): Promise<Account|null> {
     event?.preventDefault();
     event?.stopPropagation();
     event?.stopImmediatePropagation();

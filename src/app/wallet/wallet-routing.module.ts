@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { WalletPage } from './wallet.page';
+import {AuthGuardService} from "@app/account/auth-guard.service";
 
 const routes: Routes = [
   {
@@ -11,7 +12,8 @@ const routes: Routes = [
   },
   {
     path: ':address',
-    component: WalletPage
+    component: WalletPage,
+    canActivate: [AuthGuardService],
   }
 ];
 

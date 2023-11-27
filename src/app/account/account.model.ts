@@ -1,8 +1,8 @@
 import {KeypairType} from "@polkadot/util-crypto/types";
+import {HexString} from "@polkadot/util/types";
 
 export interface Account {
   address: string;
-  publicKey?: string;
   default?: boolean;
   type?: KeypairType;
   meta: AccountMeta;
@@ -10,12 +10,15 @@ export interface Account {
 }
 export interface AccountMeta {
   name: string;
-  genesisHash?: string;
+  genesisHash?: HexString | null;
 
   // Extends meta
+  publicKeyV1?: string;
   uid?: string;
   avatar?: string;
   email?: string;
+
+  [key: string]: unknown;
 }
 export interface Tx {
 

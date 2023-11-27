@@ -1,4 +1,4 @@
-import { AccountMeta } from '@app/wallet/account.model';
+import { AccountMeta } from '@app/account/account.model';
 
 export interface AuthData {
   address?: string;

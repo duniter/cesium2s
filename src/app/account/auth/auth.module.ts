@@ -9,8 +9,8 @@ import {AppSharedModule} from '@app/shared/shared.module';
 import {TranslateModule} from '@ngx-translate/core';
 import {AuthV2Modal} from './authv2.modal';
 import {AuthV2Form} from './authv2.form';
-import {AuthController} from "@app/auth/auth.controller";
-import {AppRegisterModule} from "@app/register/register.module";
+import {AuthController} from "@app/account/auth/auth.controller";
+import {AppRegisterModule} from "@app/account/register/register.module";
 
 @NgModule({
   imports: [

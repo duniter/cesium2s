@@ -3,12 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 import {Environment} from "./environment.class";
-import {AuthData} from "@app/auth/auth.model";
-import {Drivers} from "@ionic/storage";
+import {AuthData} from "@app/account/auth/auth.model";
 import {StorageDrivers} from "@app/shared/services/storage/storage.utils";
 
 export const environment = <Environment>{
-  production: false,
+  production: true,
 
   name: 'Cesium&sup2;',
 

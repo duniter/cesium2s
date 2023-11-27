@@ -51,12 +51,31 @@
       </ion-item>
 
       <!-- pubkey -->
-      <ion-item (click)="copyAddress()">
+      <ion-item (click)="copyAddress()" *ngIf="(account$ | async)?.publicKey; let publicKey">
 
         <ion-icon name="key" slot="start"></ion-icon>
 
         <ion-label>
           <h2 translate>COMMON.PUBKEY</h2>
+          <p class="ion-text-wrap">
+            <span>{{publicKey}}</span>
+          </p>
+        </ion-label>
+
+        <ion-button
+          [disabled]="loading$|async"
+          (click)="qrCodeModal.present()" slot="end" fill="clear" shape="round">
+          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <!-- address -->
+      <ion-item (click)="copyAddress()">
+
+        <ion-icon name="key" slot="start"></ion-icon>
+
+        <ion-label>
+          <h2 translate>COMMON.ADDRESS</h2>
           <p class="ion-text-wrap">
             <span *rxIf="account$; let account; else skeleton60">{{account.address}}</span>
           </p>

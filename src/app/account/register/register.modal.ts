@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {REGISTER_FORM_SLIDES, RegisterForm} from "@app/register/register.form";
-import {AccountsService} from "@app/wallet/accounts.service";
+import {REGISTER_FORM_SLIDES, RegisterForm} from "@app/account/register/register.form";
+import {AccountsService} from "@app/account/accounts.service";
 import {FormUtils} from "@app/shared/forms";
-import {RegisterData} from "@app/register/register.model";
+import {RegisterData} from "@app/account/register/register.model";
 import {environment} from "@environments/environment";
 export interface RegisterModalOptions {
   scrollY?: boolean;

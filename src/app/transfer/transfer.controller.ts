@@ -11,11 +11,11 @@ import {PlatformService} from "@app/shared/services/platform.service";
 import {PopoverOptions} from "@ionic/core";
 import {ListItem, ListPopover, ListPopoverOptions} from "@app/shared/popover/list.popover";
 import {TranslateService} from "@ngx-translate/core";
-import {AuthModal, AuthModalOptions} from "@app/auth/auth.modal";
+import {AuthModal, AuthModalOptions} from "@app/account/auth/auth.modal";
 import {Router} from "@angular/router";
-import {RegisterModal, RegisterModalOptions} from "@app/register/register.modal";
+import {RegisterModal, RegisterModalOptions} from "@app/account/register/register.modal";
 import {TransferPage, TransferPageOptions} from "@app/transfer/transfer.page";
-import {Account} from "@app/wallet/account.model";
+import {Account} from "@app/account/account.model";
 
 @Injectable()
 export class TransferController {

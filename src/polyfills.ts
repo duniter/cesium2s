@@ -47,7 +47,7 @@ import './zone-flags';
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'zone.js/dist/zone';  // Included with Angular CLI.
+import 'zone.js';  // Included with Angular CLI.
 
 
 /***************************************************************************************************
@@ -58,9 +58,5 @@ import '@polkadot/api-augment'
 (window as any).global = window;
 
 // Force moment-timezone to be loaded, otherwise moment().tz() will failed
-import { Moment } from 'moment';
-import * as momentImported from 'moment';
-const moment = momentImported;
-import * as momentTZImported from 'moment-timezone';
-const tz = momentTZImported;
-export { moment, tz, Moment };
+import 'moment';
+import 'moment-timezone';

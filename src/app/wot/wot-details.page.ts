@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, Injector, Input, OnInit} from '@angular/core';
 
 import {BasePage, BasePageState} from "@app/shared/pages/base.page";
-import {Account} from "@app/wallet/account.model";
+import {Account} from "@app/account/account.model";
 import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
-import {AccountsService} from "@app/wallet/accounts.service";
+import {AccountsService} from "@app/account/accounts.service";
 import {Clipboard} from "@capacitor/clipboard";
 import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
 import {firstValueFrom, mergeMap, Observable} from "rxjs";

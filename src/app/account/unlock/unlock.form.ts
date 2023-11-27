@@ -19,7 +19,7 @@ import {
 } from '@angular/forms';
 import {SettingsService} from "@app/settings/settings.service";
 import {environment} from "@environments/environment";
-import {RegisterData} from "@app/register/register.model";
+import {RegisterData} from "@app/account/register/register.model";
 import {AppForm} from "@app/shared/form.class";
 import {isNotNilOrBlank} from "@app/shared/functions";
 import {distinctUntilChanged, map, Subject} from "rxjs";

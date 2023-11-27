@@ -2,12 +2,12 @@ import {Inject, Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
 import {ApiPromise} from "@polkadot/api";
 import {Account, AccountData, AccountMeta, AccountUtils} from "./account.model";
-import {AuthData} from "@app/auth/auth.model";
+import {AuthData} from "@app/account/auth/auth.model";
 import {keyring} from "@polkadot/ui-keyring";
 import {environment} from "@environments/environment";
 import {KeyringStorage} from "@app/shared/services/storage/keyring-storage";
-import {RegisterData} from "@app/register/register.model";
-import {cryptoWaitReady, mnemonicGenerate} from '@polkadot/util-crypto';
+import {RegisterData} from "@app/account/register/register.model";
+import {base58Encode, cryptoWaitReady, mnemonicGenerate} from '@polkadot/util-crypto';
 import {
   isEmptyArray,
   isNil,
@@ -32,7 +32,7 @@ import {
   timer
 } from "rxjs";
 import {ModalController} from "@ionic/angular";
-import {UnlockModal, UnlockModalOptions} from "@app/unlock/unlock.modal";
+import {UnlockModal, UnlockModalOptions} from "@app/account/unlock/unlock.modal";
 import {Currency} from "@app/network/currency.model";
 import {SettingsService} from "@app/settings/settings.service";
 import {scryptEncode} from "@polkadot/util-crypto/scrypt/encode";
@@ -41,6 +41,7 @@ import {u8aToHex} from "@polkadot/util";
 import {formatAddress} from "@app/shared/currencies";
 import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
 import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
+import {getKeyringPairFromV1} from "@app/wallet/utils";
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -114,7 +115,6 @@ export class AccountsService extends RxStartableService<AccountsState> {
     super(network, {
       name: 'account-service'
     });
-
   }
 
   protected async ngOnStart(): Promise<any> {
@@ -245,13 +245,14 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     console.debug(`${this._logPrefix}Not auth: opening unlock modal...`);
 
-    const modal = await this.modalController.create({
-      component: UnlockModal,
-      componentProps: <UnlockModalOptions>{
-      }
-    });
-    await modal.present();
-    const {data, role} = await modal.onWillDismiss();
+    // const modal = await this.modalController.create({
+    //   component: UnlockModal,
+    //   componentProps: <UnlockModalOptions>{
+    //   }
+    // });
+    // await modal.present();
+    // const {data, role} = await modal.onWillDismiss();
+    const data = 'AAAAA';
 
     // User cancelled
     if (isNilOrBlank(data)) {
@@ -356,8 +357,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
       await this.loadData(account);
 
       // Append to accounts
-      if (this.accounts) {
-        this.accounts = [...this.accounts, account];
+      if (this.started) {
+        this.accounts = [...(this.accounts || []), account];
       }
     }
 
@@ -644,8 +645,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     //console.debug('Computed seed (hex) from salt+pwd:', rawSeedString);
 
-    const meta = {
-      name: data.meta?.name || 'V1',
+    const meta: AccountMeta = {
+      name: data.meta?.name || '',
       genesisHash: this.network.currency?.genesis
     }
 
@@ -653,10 +654,14 @@ export class AccountsService extends RxStartableService<AccountsState> {
     if (!isAuth) return; // Skip
 
     const {pair, json} = keyring.addUri(seedHex, this._password, meta, 'ed25519');
+    const publicKey = base58Encode(getKeyringPairFromV1(data).publicKey);
+    if (isNilOrBlank(meta.name)) {
+      meta.name = publicKey.slice(0,8);
+      meta.publicKeyV1 = publicKey;
+    }
 
     return this.addAccount({
       address: json.address,
-      publicKey: pair.publicKey.toString(),
       type: pair.type,
       meta
     });

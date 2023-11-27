@@ -1,9 +1,9 @@
-import { AccountMeta } from '@app/wallet/account.model';
+import { AccountMeta } from '@app/account/account.model';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { keyring } from '@polkadot/ui-keyring';
 import { u8aToHex } from '@polkadot/util';
 import { scryptEncode } from '@polkadot/util-crypto/scrypt/encode';
-import { SCRYPT_PARAMS } from '@app/wallet/accounts.service';
+import { SCRYPT_PARAMS } from '@app/account/accounts.service';
 import {ScryptParams} from "@polkadot/util-crypto/scrypt/types";
 
 export function getKeyringPairFromV1(data: {

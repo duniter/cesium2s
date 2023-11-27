@@ -10,15 +10,15 @@ import {
 } from '@angular/forms';
 import {Observable, timer} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
-import {AccountsService} from "@app/wallet/accounts.service";
+import {AccountsService} from "@app/account/accounts.service";
 import {SettingsService} from "@app/settings/settings.service";
 import {environment} from "@environments/environment";
-import {RegisterData} from "@app/register/register.model";
+import {RegisterData} from "@app/account/register/register.model";
 import {AppForm} from "@app/shared/form.class";
 import {IonSlides} from "@ionic/angular";
 import {NetworkService} from "@app/network/network.service";
 import {Currency} from "@app/network/currency.model";
-import {AccountMeta} from "@app/wallet/account.model";
+import {AccountMeta} from "@app/account/account.model";
 
 export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,

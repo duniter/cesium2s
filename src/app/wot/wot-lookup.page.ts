@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
 
 import {BasePage, BasePageState} from "@app/shared/pages/base.page";
-import {Account} from "@app/wallet/account.model";
+import {Account} from "@app/account/account.model";
 import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
 import {WotSearchFilter} from "@app/wot/wot.model";

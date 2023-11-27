@@ -1,7 +1,7 @@
 import { Component, Injector, Input } from '@angular/core';
 import { RxState } from '@rx-angular/state';
 import { ModalController } from '@ionic/angular';
-import {Account} from "@app/wallet/account.model";
+import {Account} from "@app/account/account.model";
 
 interface AccountDetailModalState {
   account: Account;

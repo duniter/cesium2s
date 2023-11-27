@@ -4,7 +4,7 @@ import {ModalController} from '@ionic/angular';
 import {RegisterModal} from '../register/register.modal';
 import {slideUpDownAnimation} from "@app/shared/animations";
 import {AppForm} from "@app/shared/form.class";
-import {AuthData} from "@app/auth/auth.model";
+import {AuthData} from "@app/account/auth/auth.model";
 import {SettingsService} from "@app/settings/settings.service";
 import {NetworkService} from "@app/network/network.service";
 import {environment} from "@environments/environment";
@@ -122,7 +122,7 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     let pubkey = pair.publicKey;
     return base58Encode(pubkey);
   }
-  
+
   // get address corresponding to form input
   get address(): string {
     let data = this.form.value;

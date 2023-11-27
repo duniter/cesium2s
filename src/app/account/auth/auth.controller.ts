@@ -11,10 +11,11 @@ import {PlatformService} from "@app/shared/services/platform.service";
 import {PopoverOptions} from "@ionic/core";
 import {ListItem, ListPopover, ListPopoverOptions} from "@app/shared/popover/list.popover";
 import {TranslateService} from "@ngx-translate/core";
-import {AuthModal, AuthModalOptions} from "@app/auth/auth.modal";
+import {AuthModal, AuthModalOptions} from "@app/account/auth/auth.modal";
 import {Router} from "@angular/router";
-import {RegisterModal, RegisterModalOptions} from "@app/register/register.modal";
-import { Account } from "@app/wallet/account.model";
+import {RegisterModal, RegisterModalOptions} from "@app/account/register/register.modal";
+import { Account } from "@app/account/account.model";
+import {AuthV2Modal} from "@app/account/auth/authv2.modal";
 
 export declare type LoginMethodType = 'v1' | 'v2' | 'keyfile-v1';
 export const LoginMethods: ListItem[] = [
@@ -48,7 +49,7 @@ export class AuthController {
   ) {
   }
 
-  async login(event, opts?: {
+  async login(event?: MouseEvent | TouchEvent | PointerEvent | CustomEvent, opts?: {
     loginMethod?: LoginMethodType,
     auth?: boolean,
     redirectToWalletPage?: boolean
@@ -100,6 +101,15 @@ export class AuthController {
       case 'v1':
         modal = await this.modalCtrl.create({
           component: AuthModal,
+          componentProps: <AuthModalOptions>{
+            auth: opts?.auth,
+            scrollY: false // TODO remove this !
+          }
+        });
+        break;
+      case 'v2':
+        modal = await this.modalCtrl.create({
+          component: AuthV2Modal,
           componentProps: <AuthModalOptions>{
             auth: opts?.auth,
             scrollY: false // TODO remove this !

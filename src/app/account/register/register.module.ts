@@ -3,12 +3,11 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 
 import {IonicModule} from '@ionic/angular';
-import {RegisterForm} from "@app/register/register.form";
-import {RegisterModal} from "@app/register/register.modal";
+import {RegisterForm} from "@app/account/register/register.form";
+import {RegisterModal} from "@app/account/register/register.modal";
 import {TranslateModule} from "@ngx-translate/core";
 import {AppSharedModule} from "@app/shared/shared.module";
-import {UnlockForm} from "@app/unlock/unlock.form";
-import {UnlockModal} from "@app/unlock/unlock.modal";
+import {AppUnlockModule} from "@app/account/unlock/unlock.module";
 
 @NgModule({
   imports: [
@@ -16,15 +15,17 @@ import {UnlockModal} from "@app/unlock/unlock.modal";
     FormsModule,
     IonicModule,
     TranslateModule,
-    AppSharedModule
+    AppSharedModule,
+    AppUnlockModule
   ],
   declarations: [
-    UnlockForm,
-    UnlockModal
+    RegisterForm,
+    RegisterModal
   ],
   exports: [
-    UnlockForm,
-    UnlockModal
-  ],
+    RegisterForm,
+    RegisterModal,
+    TranslateModule
+  ]
 })
-export class AppUnlockModule {}
+export class AppRegisterModule {}

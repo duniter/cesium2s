@@ -2,9 +2,9 @@ import {Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
 import {ApiPromise} from "@polkadot/api";
 import {WotSearchFilter} from "@app/wot/wot.model";
-import {AccountsService} from "@app/wallet/accounts.service";
+import {AccountsService} from "@app/account/accounts.service";
 import {sleep} from "@app/shared/functions";
-import {Account} from "@app/wallet/account.model";
+import {Account} from "@app/account/account.model";
 import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
 
 export interface WotState {

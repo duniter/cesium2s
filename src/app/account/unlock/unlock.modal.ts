@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {AccountsService} from '@app/wallet/accounts.service';
+import {AccountsService} from '@app/account/accounts.service';
 import {firstNotNilPromise} from '@app/shared/observables';
-import {UnlockForm} from "@app/unlock/unlock.form";
+import {UnlockForm} from "@app/account/unlock/unlock.form";
 
 export interface UnlockModalOptions {
   title?: string;

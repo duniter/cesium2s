@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {AccountsService} from '@app/wallet/accounts.service';
+import {AccountsService} from '@app/account/accounts.service';
 import {AuthForm} from './auth.form';
 import {firstNotNilPromise} from '@app/shared/observables';
-import {AuthData} from "@app/auth/auth.model";
+import {AuthData} from "@app/account/auth/auth.model";
 
 export interface AuthModalOptions {
   auth?: boolean;

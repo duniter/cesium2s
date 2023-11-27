@@ -1,12 +1,12 @@
 import {ChangeDetectorRef, Directive, inject, Pipe, PipeTransform} from '@angular/core';
 import {NumberFormatPipe} from "@app/shared/pipes/number-format.pipe";
 import {NetworkService} from "@app/network/network.service";
-import {Account, AccountData, AccountUtils} from "@app/wallet/account.model";
+import {Account, AccountData, AccountUtils} from "@app/account/account.model";
 import {equals, getPropertyByPath, isNotNilOrBlank} from "@app/shared/functions";
 import {AddressFormatPipe} from "@app/shared/pipes/address.pipes";
 import {Subscription} from "rxjs";
 import {formatAddress} from "@app/shared/currencies";
-import {AccountsService} from "@app/wallet/accounts.service";
+import {AccountsService} from "@app/account/accounts.service";
 
 // @dynamic
 /**

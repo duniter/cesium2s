@@ -4,6 +4,7 @@
     "APP_VERSION": "v{{version}}",
     "APP_BUILD": "date : {{build}}",
     "PUBKEY": "Clé publique",
+    "ADDRESS": "Addresse",
     "MEMBER": "Membre",
     "BLOCK" : "Bloc",
     "BTN_OK": "OK",

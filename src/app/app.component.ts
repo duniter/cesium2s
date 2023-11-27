@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {PlatformService} from "./shared/services/platform.service";
-import {AccountsService} from "@app/wallet/accounts.service";
+import {AccountsService} from "@app/account/accounts.service";
 import {Router} from "@angular/router";
 import {App} from "@capacitor/app";
 import {isNotNilOrBlank} from "@app/shared/functions";
@@ -62,7 +62,7 @@ export class AppComponent {
   }
 
   async start() {
-    var now = Date.now();
+    const now = Date.now();
     console.info('[app] Starting...');
 
     // Start all stuff (services, plugins, etc.)

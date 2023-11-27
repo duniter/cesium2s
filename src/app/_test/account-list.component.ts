@@ -3,9 +3,9 @@ import { RxState } from '@rx-angular/state';
 import { ModalController } from '@ionic/angular';
 import { AccountDetailModal } from './account-detail.modal';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
-import {Account} from "@app/wallet/account.model";
+import {Account} from "@app/account/account.model";
 import {RxStateProperty, RxStateRegister} from "@app/shared/decorator/state.decorator";
-import {AccountsService} from "@app/wallet/accounts.service";
+import {AccountsService} from "@app/account/accounts.service";
 
 interface AccountListComponentState {
   accounts: Account[];

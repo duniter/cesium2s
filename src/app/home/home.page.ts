@@ -2,11 +2,11 @@ import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {APP_LOCALES, LocaleConfig, Settings} from "@app/settings/settings.model";
 import {BasePage, BasePageState} from "@app/shared/pages/base.page";
 import {NetworkService} from "@app/network/network.service";
-import {AccountsService} from "@app/wallet/accounts.service";
-import {Account} from "@app/wallet/account.model";
+import {AccountsService} from "@app/account/accounts.service";
+import {Account} from "@app/account/account.model";
 import {fadeInAnimation} from "@app/shared/animations";
 import {Router} from "@angular/router";
-import {AuthController} from "@app/auth/auth.controller";
+import {AuthController} from "@app/account/auth/auth.controller";
 import {TransferController} from '@app/transfer/transfer.controller';
 
 
@@ -70,7 +70,7 @@ export class HomePage extends BasePage<HomePageState> implements OnInit {
     return true;
   }
 
-  async login(event: UIEvent) {
+  async login(event: MouseEvent | TouchEvent | PointerEvent | CustomEvent) {
     const data = await this.authController.login(event, {
       auth: true
     });

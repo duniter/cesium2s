@@ -1,16 +1,20 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild,} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {AccountsService} from '@app/wallet/accounts.service';
+import {AccountsService} from '@app/account/accounts.service';
 import {AuthV2Form} from './authv2.form';
 import {firstNotNilPromise} from '@app/shared/observables';
-import {AuthData} from '@app/auth/auth.model';
+import {AuthData} from '@app/account/auth/auth.model';
+
+export interface AuthV2ModalOptions {
+  auth?: boolean;
+}
 
 @Component({
   selector: 'app-authv2-modal',
   templateUrl: 'authv2.modal.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AuthV2Modal implements OnInit {
+export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
   title: string = null;
   get loading() {
     return this.form?.loading;
