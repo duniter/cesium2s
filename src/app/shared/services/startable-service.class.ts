@@ -110,4 +110,8 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
 
   protected abstract ngOnStart(): Promise<T>;
 
+  ngOnDestroy() {
+    this.stop();
+    super.ngOnDestroy();
+  }
 }

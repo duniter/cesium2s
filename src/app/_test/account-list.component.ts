@@ -4,6 +4,8 @@ import { ModalController } from '@ionic/angular';
 import { AccountDetailModal } from './account-detail.modal';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import {Account} from "@app/wallet/account.model";
+import {RxStateProperty, RxStateRegister} from "@app/shared/decorator/state.decorator";
+import {AccountService} from "@app/wallet/account.service";
 
 interface AccountListComponentState {
   accounts: Account[];
@@ -24,23 +26,19 @@ interface AccountListComponentState {
   ],
 })
 export class AccountListComponent {
-  constructor(protected injector: Injector,
-              protected state: RxState<AccountListComponentState>,
+  @RxStateRegister() protected state: RxState<AccountListComponentState>;
+
+  constructor(protected accountService: AccountService,
               protected modalController: ModalController) {
 
+    accountService.accounts
     this.accounts = [
       {address: 'tototototototot', meta: {name: 'portefeuille 1'}},
       {address: 'totosstototot', meta: {name: 'portefeuille 2'}},
     ]
   }
 
-  get accounts(): Account[] {
-    return this.state.get('accounts');
-  }
-
-  @Input() set accounts(value: Account[]) {
-    this.state.set('accounts', () => value);
-  }
+  @Input() @RxStateProperty() accounts: Account[];
 
   async showAccountDetail(account: Account) {
     const modal = await this.modalController.create({

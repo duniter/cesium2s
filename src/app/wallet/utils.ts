@@ -1,16 +1,16 @@
 import { AccountMeta } from '@app/wallet/account.model';
-import { Params } from '@polkadot/util-crypto/scrypt/types';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { keyring } from '@polkadot/ui-keyring';
 import { u8aToHex } from '@polkadot/util';
 import { scryptEncode } from '@polkadot/util-crypto/scrypt/encode';
 import { SCRYPT_PARAMS } from '@app/wallet/account.service';
+import {ScryptParams} from "@polkadot/util-crypto/scrypt/types";
 
 export function getKeyringPairFromV1(data: {
   salt: string;
   password: string;
   meta?: AccountMeta;
-  scryptParams?: Params;
+  scryptParams?: ScryptParams;
 }): KeyringPair {
   const ED25519_SEED_LENGTH = 32;
   const passwordU8a = Uint8Array.from(

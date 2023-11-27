@@ -50,27 +50,27 @@ export interface LoadAccountDataOptions {
 }
 
 export const  SCRYPT_PARAMS = {
-  SIMPLE: <Params>{
+  SIMPLE: <ScryptParams>{
     N: 2048,
     r: 8,
     p: 1
   },
-  DEFAULT: <Params>{
+  DEFAULT: <ScryptParams>{
     N: 4096,
     r: 16,
     p: 1
   },
-  SECURE: <Params>{
+  SECURE: <ScryptParams>{
     N: 16384,
     r: 32,
     p: 2
   },
-  HARDEST: <Params>{
+  HARDEST: <ScryptParams>{
     N: 65536,
     r: 32,
     p: 4
   },
-  EXTREME: <Params>{
+  EXTREME: <ScryptParams>{
     N: 262144,
     r: 64,
     p: 8
@@ -608,7 +608,7 @@ export class AccountService extends StartableService {
     this._$accounts.next(this._$accounts.value.slice() /*create a copy*/);
   }
 
-  async addV1Account(data: {salt: string, password: string; meta?: AccountMeta, scryptParams?: Params}): Promise<Account> {
+  async addV1Account(data: {salt: string, password: string; meta?: AccountMeta, scryptParams?: ScryptParams}): Promise<Account> {
     if (!data?.salt || !data?.password) return;
 
     console.info(this._logPrefix + ' Authenticating using salt+pwd...');

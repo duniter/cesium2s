@@ -1,11 +1,12 @@
 import {Subscription} from 'rxjs';
-import {environment} from "../../../environments/environment";
+import {environment} from "@environments/environment";
+import {OnDestroy} from "@angular/core";
 
 export interface IBaseServiceOptions {
   name?: string;
 }
 
-export abstract class BaseService<O extends IBaseServiceOptions = IBaseServiceOptions> {
+export abstract class BaseService<O extends IBaseServiceOptions = IBaseServiceOptions> implements OnDestroy {
 
   private _subscription: Subscription = null;
 
@@ -17,6 +18,10 @@ export abstract class BaseService<O extends IBaseServiceOptions = IBaseServiceOp
   ) {
     this._debug = !environment.production;
     this._logPrefix = `[${options?.name || 'base-service'}] `;
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe();
   }
 
   protected registerSubscription(sub: Subscription) {

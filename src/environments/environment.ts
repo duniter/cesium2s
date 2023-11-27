@@ -25,7 +25,7 @@ export const environment = <Environment>{
   },
 
   dev: {
-    peer: 'ws://localhost:9944/ws',
+    peer: 'ws://127.0.0.1:9944/ws',
     //peer: 'wss://gdev.komun.org/ws',
     // peer: 'wss://gdev.librelois.fr/ws',
 
@@ -38,7 +38,7 @@ export const environment = <Environment>{
   },
 
   defaultPeers: [
-    'ws://localhost:9944/ws',
+    'ws://127.0.0.1:9944',
     /* GDev endpoints */
     //'wss://gdev.librelois.fr/ws',
     //'wss://gdev.komun.org/ws',
