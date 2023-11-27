@@ -11,7 +11,7 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "incremental": true,
-    "target": "es2020",
+    "target": "es2022",
     "module": "es2020",
     "lib": ["es2020", "dom"],
     "allowSyntheticDefaultImports": true,
@@ -27,7 +27,7 @@
       "rxjs": ["node_modules/rxjs"],
       "rxjs/*": ["node_modules/rxjs/*"],
 
-      // Local deps        // Package name
+      // Local deps
       "@duniter/types": ["src/interfaces/types-lookup.ts"],
 
       // here we replace the @polkadot/api augmentation with our own, generated from chain
@@ -43,8 +43,8 @@
       "http": ["node_modules/stream-http"],
       "https": ["node_modules/https-browserify"],
       "os": ["node_modules/os-browserify"]
-
-    }
+    },
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

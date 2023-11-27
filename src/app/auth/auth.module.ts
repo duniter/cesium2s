@@ -3,10 +3,12 @@ import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {IonicModule} from '@ionic/angular';
-import {AuthForm} from "./auth.form";
-import {AuthModal} from "./auth.modal";
-import {AppSharedModule} from "@app/shared/shared.module";
-import {TranslateModule} from "@ngx-translate/core";
+import {AuthForm} from './auth.form';
+import {AuthModal} from './auth.modal';
+import {AppSharedModule} from '@app/shared/shared.module';
+import {TranslateModule} from '@ngx-translate/core';
+import {AuthV2Modal} from './authv2.modal';
+import {AuthV2Form} from './authv2.form';
 import {AuthController} from "@app/auth/auth.controller";
 import {AppRegisterModule} from "@app/register/register.module";
 
@@ -23,11 +25,13 @@ import {AppRegisterModule} from "@app/register/register.module";
     AppRegisterModule
   ],
   declarations: [
-    AuthForm, AuthModal
+    AuthForm, AuthModal, AuthV2Form, AuthV2Modal
   ],
   exports: [
     AuthForm,
     AuthModal,
+    AuthV2Form,
+    AuthV2Modal,
     TranslateModule
   ],
   providers: [

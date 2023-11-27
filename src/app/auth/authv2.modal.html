@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar [color]="auth ? 'danger': 'primary'">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()" *ngIf="mobile">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title [innerHTML]="auth?'AUTH.TITLE': 'LOGIN.TITLE'|translate">
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-spinner *ngIf="loading"></ion-spinner>
+
+      <ion-button (click)="doSubmit()" *ngIf="!loading && mobile">
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="height: 100%">
+  <app-authv2-form #form (onSubmit)="doSubmit($event)" (onCancel)="cancel()">
+  </app-authv2-form>
+
+  <ion-toolbar *ngIf="!mobile">
+    <ion-row class="ion-no-padding" nowrap>
+      <ion-col></ion-col>
+
+      <!-- buttons -->
+      <ion-col size="auto">
+        <ion-button fill="clear" color="dark" (click)="cancel()">
+          <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+        </ion-button>
+
+        <ion-button
+          [fill]="form.invalid ? 'clear' : 'solid'"
+          [disabled]="loading || form.invalid"
+          (click)="doSubmit()"
+          (keyup.enter)="doSubmit()"
+          [color]="auth ? 'danger' : 'tertiary'"
+        >
+          <ion-label
+            >{{auth?'AUTH.BTN_AUTH':'COMMON.BTN_LOGIN'|translate}}</ion-label
+          >
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-content>

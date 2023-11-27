@@ -15,7 +15,8 @@
               <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
             </ion-item>
             <ion-item routerDirection="root" *ngIf="p.handle && (!p.visible || p.visible())"
-                      (click)="p.handle($event)" lines="none" detail="false" tappable class="ion-activatable">
+                      (click)="p.handle($event)" lines="none" detail="false" tappable class="ion-activatable"
+                      tappable @fadeInAnimation>
               <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
             </ion-item>

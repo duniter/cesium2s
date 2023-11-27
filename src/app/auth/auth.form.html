@@ -26,6 +26,19 @@
                  required>
       </ion-input>
     </ion-item>
+
+    <!-- Pubkey v1 -->
+    <ion-item>
+      <ion-label color="medium">Clé publique v1</ion-label>
+      <ion-item>{{pubkey}}</ion-item>
+    </ion-item>
+
+    <!-- Address -->
+    <ion-item>
+      <ion-label color="medium" translate>Address SS58</ion-label>
+      <ion-item>{{address}}</ion-item>
+    </ion-item>
+
     <!--<mat-form-field>
       <input matInput [placeholder]="'USER.PASSWORD'|translate"
              formControlName="password"

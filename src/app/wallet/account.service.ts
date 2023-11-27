@@ -49,6 +49,36 @@ export interface LoadAccountDataOptions {
   emitEvent?: boolean;
 }
 
+export const  SCRYPT_PARAMS = {
+  SIMPLE: <Params>{
+    N: 2048,
+    r: 8,
+    p: 1
+  },
+  DEFAULT: <Params>{
+    N: 4096,
+    r: 16,
+    p: 1
+  },
+  SECURE: <Params>{
+    N: 16384,
+    r: 32,
+    p: 2
+  },
+  HARDEST: <Params>{
+    N: 65536,
+    r: 32,
+    p: 4
+  },
+  EXTREME: <Params>{
+    N: 262144,
+    r: 64,
+    p: 8
+  }
+};
+
+const ED25519_SEED_LENGTH = 32;
+
 @Injectable({providedIn: 'root'})
 export class AccountService extends StartableService {
 
@@ -93,7 +123,7 @@ export class AccountService extends StartableService {
 
     // Configure keyring
     keyring.setDevMode(this._isDevelopment);
-    keyring.setSS58Format(currency.ss58Format || 42 /* = dev format */);
+    keyring.setSS58Format(currency.prefix || 42 /* = dev format */);
 
     // Restoring accounts
     await this.restoreAccounts(currency);
@@ -116,8 +146,8 @@ export class AccountService extends StartableService {
 
     keyring.loadAll({
       store: this._store,
-      ss58Format: currency?.ss58Format,
-      genesisHash: currency?.genesys,
+      ss58Format: currency?.prefix,
+      genesisHash: currency?.genesis,
       isDevelopment: this._isDevelopment
     });
 
@@ -177,6 +207,9 @@ export class AccountService extends StartableService {
 
     if (auth.v1) {
       return this.addV1Account({...auth.v1, meta: auth.meta});
+    }
+    else if (auth.v2) {
+      return this.addV2Account({...auth.v2, meta: auth.meta});
     }
 
     // TODO
@@ -241,7 +274,7 @@ export class AccountService extends StartableService {
     // add the account, encrypt the stored JSON with an account-specific password
     const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
       name: data.meta?.name || 'default',
-      genesisHash: this.network.currency?.genesys
+      genesisHash: this.network.currency?.genesis
     }, 'sr25519');
 
     return {
@@ -257,7 +290,7 @@ export class AccountService extends StartableService {
     // add the account, encrypt the stored JSON with an account-specific password
     const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
       name: data.meta?.name || 'default',
-      genesisHash: this.network.currency?.genesys
+      genesisHash: this.network.currency?.genesis
     }, 'sr25519');
 
     //this.debug('check pair', pair, json);
@@ -270,6 +303,19 @@ export class AccountService extends StartableService {
     })
 
     return true;
+  }
+
+  async addV2Account(data: {mnemonic: string; meta?: AccountMeta}): Promise<Account> {
+    const { pair, json } = keyring.addUri(data.mnemonic, this._password, {
+      name: data.meta?.name || 'default',
+      genesisHash: this.network.currency?.genesis
+    }, 'sr25519');
+    return this.addAccount({
+      address: json.address,
+      meta: {
+        name: data.meta?.name
+      }
+    });
   }
 
   async addAccount(account: Account): Promise<Account> {
@@ -562,24 +608,20 @@ export class AccountService extends StartableService {
     this._$accounts.next(this._$accounts.value.slice() /*create a copy*/);
   }
 
-  async addV1Account(data: {salt: string, password: string; meta?: AccountMeta}): Promise<Account> {
+  async addV1Account(data: {salt: string, password: string; meta?: AccountMeta, scryptParams?: Params}): Promise<Account> {
     if (!data?.salt || !data?.password) return;
 
     console.info(this._logPrefix + ' Authenticating using salt+pwd...');
     const passwordU8a = Uint8Array.from(data.password.split('').map(x => x.charCodeAt(0)));
     const saltU8a = Uint8Array.from(data.salt.split('').map(x => x.charCodeAt(0)));
-    const result = scryptEncode(passwordU8a, saltU8a, <ScryptParams>{
-      N: 4096,
-      r: 16,
-      p: 1
-    });
-    const seedHex = u8aToHex(result.password.slice(0,32));
+    const result = scryptEncode(passwordU8a, saltU8a, data.scryptParams || SCRYPT_PARAMS.DEFAULT);
+    const seedHex = u8aToHex(result.password.slice(0,ED25519_SEED_LENGTH));
 
     //console.debug('Computed seed (hex) from salt+pwd:', rawSeedString);
 
     const meta = {
       name: data.meta?.name || 'V1',
-      genesisHash: this.network.currency?.genesys
+      genesisHash: this.network.currency?.genesis
     }
 
     const isAuth = await this.auth();

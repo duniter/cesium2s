@@ -13,7 +13,7 @@ import { TransferController } from '@app/transfer/transfer.controller';
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
-  animations: [fadeInAnimation]
+  animations: [fadeInAnimation],
 })
 export class HomePage extends BasePage<Settings> implements OnInit {
 
@@ -53,7 +53,6 @@ export class HomePage extends BasePage<Settings> implements OnInit {
 
     return this.settings.clone();
   }
-
 
   changeLocale(locale: string): boolean  {
     this.settings.patchValue({locale});

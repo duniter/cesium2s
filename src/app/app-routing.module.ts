@@ -27,10 +27,11 @@ const routes: Routes = [
     path: 'settings',
     loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
   },
+  // DEV only
   {
-    path: 'test',
-    loadChildren: () => import('./_test/account.module').then( m => m.AccountModule)
-  }
+    path: 'playground',
+    loadChildren: () => import('./playground/playground.module').then( m => m.PlaygroundModule)
+  },
 ];
 
 @NgModule({

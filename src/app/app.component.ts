@@ -1,12 +1,12 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {PlatformService} from "./shared/services/platform.service";
-import {environment} from "@environments/environment";
 import {AccountService} from "@app/wallet/account.service";
 import {Router} from "@angular/router";
 import {App} from "@capacitor/app";
 import {isNotNilOrBlank} from "@app/shared/functions";
 import {TransferController} from "@app/transfer/transfer.controller";
 import {PredefinedColors} from "@app/shared/colors/colors.utils";
+import {fadeInAnimation} from "@app/shared/animations";
 
 export interface IMenuItem {
   title: string;
@@ -22,6 +22,8 @@ export interface IMenuItem {
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
+  animations: [fadeInAnimation],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
 

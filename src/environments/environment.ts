@@ -27,7 +27,7 @@ export const environment = <Environment>{
   dev: {
     peer: 'ws://localhost:9944/ws',
     //peer: 'wss://gdev.komun.org/ws',
-    //peer: 'wss://gdev.librelois.fr/ws',
+    // peer: 'wss://gdev.librelois.fr/ws',
 
     auth: <AuthData>{
       address: '5GAT6CJW8yVKwUuQc7sM5Kk9GZVTpbZYk9PfjNXtvnNgAJZ1',

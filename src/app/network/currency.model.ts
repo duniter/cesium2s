@@ -1,8 +1,9 @@
 export interface Currency {
-  name: string;
+  network: string;
+  displayName: string;
   symbol: string;
-  ss58Format: number;
-  genesys: string;
+  prefix: number;
+  genesis: string;
   fees: {
     identity: number;
     tx: number;
