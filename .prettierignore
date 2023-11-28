@@ -1,0 +1,8 @@
+.local
+dist
+doc
+node_modules
+resources
+scripts
+www
+src/schema.graphql
