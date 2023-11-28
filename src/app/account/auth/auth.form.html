@@ -1,4 +1,4 @@
-<form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" class="form-container ion-padding" (keyup.enter)="doSubmit($event)">
+<form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" (keyup.enter)="doSubmit($event)">
 
   <ion-list>
     <!-- error -->
@@ -7,64 +7,84 @@
       <ion-label color="danger" class="error" [innerHTML]="error|translate"></ion-label>
     </ion-item>
 
-
     <!-- Salt -->
     <ion-item>
-      <ion-label color="medium" translate>LOGIN.SALT</ion-label>
-      <ion-input formControlName="salt" type="password"
-             autocomplete="off"
-             required>
-
+      <ion-input *ngIf="showSalt; else hideSalt" formControlName="salt"
+                 [label]="'LOGIN.SALT'|translate"
+                 labelPlacement="floating"
+                 autocomplete="off"
+                 required>
       </ion-input>
+      <ng-template #hideSalt>
+        <ion-input  formControlName="salt" type="password"
+                   [label]="'LOGIN.SALT'|translate"
+                   labelPlacement="floating"
+                   autocomplete="off"
+                   required>
+        </ion-input>
+      </ng-template>
+
+      <!-- show/hide button -->
+      <ion-button slot="end" (click)="toggleShowSalt($event)"
+                  fill="clear" color="medium"
+                  [tabindex]="-1">
+        <ion-icon slot="icon-only" [name]="showSalt ? 'eye-off': 'eye'" ></ion-icon>
+      </ion-button>
     </ion-item>
 
     <!-- Password -->
     <ion-item>
-      <ion-label color="medium" translate>LOGIN.PASSWORD</ion-label>
-      <ion-input formControlName="password" type="password"
+      <ion-input *ngIf="showPwd; else hidePwd"
+                 formControlName="password"
+                 [label]="'LOGIN.PASSWORD'|translate"
+                 labelPlacement="floating"
                  autocomplete="off"
                  required>
       </ion-input>
+      <ng-template #hidePwd>
+        <ion-input formControlName="password" type="password"
+                   [label]="'LOGIN.PASSWORD'|translate"
+                   labelPlacement="floating"
+                   autocomplete="off"
+                   required>
+        </ion-input>
+      </ng-template>
+
+      <!-- show/hide button -->
+      <ion-button slot="end" (click)="toggleShowPwd($event)"
+                  fill="clear" color="medium"
+                  [tabindex]="-1">
+        <ion-icon slot="icon-only" [name]="showPwd ? 'eye-off': 'eye'" ></ion-icon>
+      </ion-button>
     </ion-item>
 
     <!-- Pubkey v1 -->
-    <ion-item>
-      <ion-label color="medium">Clé publique v1</ion-label>
-      <ion-item>{{pubkey}}</ion-item>
+    <ion-item *ngIf="pubkey; let pubkey" @slideUpDownAnimation>
+      <ion-textarea [value]="pubkey"
+                 [label]="'COMMON.PUBKEY'|translate"
+                 labelPlacement="floating"
+                 [disabled]="true">
+      </ion-textarea>
     </ion-item>
 
     <!-- Address -->
-    <ion-item>
-      <ion-label color="medium" translate>Address SS58</ion-label>
-      <ion-item>{{address}}</ion-item>
+    <ion-item *ngIf="address; let address" @slideUpDownAnimation>
+      <ion-textarea [value]="address"
+                 class="ion-text-wrap"
+                 [label]="'COMMON.ADDRESS'|translate"
+                 labelPlacement="floating"
+                 [disabled]="true">
+      </ion-textarea>
     </ion-item>
 
-    <!--<mat-form-field>
-      <input matInput [placeholder]="'USER.PASSWORD'|translate"
-             formControlName="password"
-             autocomplete="section-red new-password"
-             [type]="showPwd ? 'text' : 'password'"
-             (keyup.enter)="doSubmit($event)"
-             required>
-
-      &lt;!&ndash; Show pwd button &ndash;&gt;
-      <button matSuffix type="button"
-              mat-icon-button
-              *ngIf="mobile"
-              (click)="showPwd = !showPwd"
-              tabindex="-1">
-        <mat-icon>{{showPwd ? 'visibility_off' : 'visibility'}}</mat-icon>
-      </button>
-      <mat-error *ngIf="form.controls.password.hasError('required') && form.controls.password.touched" translate>ERROR.FIELD_REQUIRED</mat-error>
-    </mat-form-field>-->
   </ion-list>
 
   <!-- Not register yet ? -->
   <p *ngIf="canRegister" class="padding" style="text-align: center;">
-    <span translate>AUTH.NO_ACCOUNT_QUESTION</span>
+    <span translate>LOGIN.NO_ACCOUNT_QUESTION</span>
     <br/>
     <a (click)="register()">
-      <span translate>AUTH.BTN_REGISTER</span>
+      <span translate>LOGIN.CREATE_ACCOUNT</span>
     </a>
   </p>
 </form>

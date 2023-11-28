@@ -1,17 +1,17 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Injector, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {RegisterModal} from '../register/register.modal';
 import {slideUpDownAnimation} from "@app/shared/animations";
 import {AppForm} from "@app/shared/form.class";
-import {AuthData} from "@app/account/auth/auth.model";
 import {SettingsService} from "@app/settings/settings.service";
 import {NetworkService} from "@app/network/network.service";
 import {environment} from "@environments/environment";
 import {FormUtils} from "@app/shared/forms";
-import {isNil} from '@app/shared/functions';
-import {getKeyringPairFromV1} from "@app/wallet/utils"
+import {isNil, toBoolean} from '@app/shared/functions';
+import {getKeyringPairFromV1} from "@app/account/utils"
 import {base58Encode} from '@polkadot/util-crypto';
+import {AuthData} from "@app/account/account.model";
 
 @Component({
   selector: 'app-auth-form',
@@ -22,10 +22,12 @@ import {base58Encode} from '@polkadot/util-crypto';
 })
 export class AuthForm extends AppForm<AuthData> implements OnInit {
 
+  protected showSalt = false;
+  protected showPwd = false;
+
   readonly mobile: boolean;
-  showSalt = false;
-  showPwd = false;
-  canRegister: boolean;
+
+  @Input() canRegister: boolean;
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<AuthData>();
@@ -55,6 +57,8 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.canRegister = toBoolean(this.canRegister, true);
 
     // For DEV only: set the default user, for testing
     if (!environment.production && environment.dev?.auth) {
@@ -134,6 +138,38 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
   }
 
   /* -- protected functions -- */
+
+  protected toggleShowSalt(event?: Event) {
+    event?.preventDefault();
+    this.showSalt = !this.showSalt;
+    this.markForCheck();
+
+    // Auto hide
+    if (this.showSalt) {
+      setTimeout(() => {
+        if (this.showSalt) {
+          this.showSalt = false;
+          this.markForCheck();
+        }
+      }, 2000);
+    }
+  }
+
+  protected toggleShowPwd(event?: Event) {
+    event?.preventDefault();
+    this.showPwd = !this.showPwd;
+    this.markForCheck();
+
+    // Auto hide
+    if (this.showPwd) {
+      setTimeout(() => {
+        if (this.showPwd) {
+          this.showPwd = false;
+          this.markForCheck();
+        }
+      }, 2000);
+    }
+  }
 
   protected markForCheck() {
     this._cd.markForCheck();

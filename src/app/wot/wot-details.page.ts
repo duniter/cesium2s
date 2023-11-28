@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Injector, Input, OnInit} from '@angular/core';
 
-import {BasePage, BasePageState} from "@app/shared/pages/base.page";
+import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
 import {Account} from "@app/account/account.model";
 import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
@@ -8,8 +8,9 @@ import {AccountsService} from "@app/account/accounts.service";
 import {Clipboard} from "@capacitor/clipboard";
 import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
 import {firstValueFrom, mergeMap, Observable} from "rxjs";
+import {RxState} from "@rx-angular/state";
 
-export interface WotDetailsPageState extends BasePageState {
+export interface WotDetailsPageState extends AppPageState {
   account: Account;
 }
 
@@ -17,9 +18,10 @@ export interface WotDetailsPageState extends BasePageState {
   selector: 'app-wot-details',
   templateUrl: './wot-details.page.html',
   styleUrls: ['./wot-details.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [RxState]
 })
-export class WotDetailsPage extends BasePage<WotDetailsPageState> implements OnInit {
+export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnInit {
 
   address = this.activatedRoute.snapshot.paramMap.get('address');
 
@@ -28,12 +30,11 @@ export class WotDetailsPage extends BasePage<WotDetailsPageState> implements OnI
   @RxStateProperty() account: Account;
   @RxStateSelect() account$: Observable<Account>;
 
-  constructor(injector: Injector,
-              private router: Router,
+  constructor(private router: Router,
               private accountService: AccountsService,
               private wotService: WotService
               ) {
-    super(injector, {name: 'wot-details-page'});
+    super({name: 'wot-details-page'});
 
     this._state.connect('account', this.activatedRoute.paramMap.pipe(
       mergeMap(async (map) => {

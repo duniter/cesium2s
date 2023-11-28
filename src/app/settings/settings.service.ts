@@ -43,16 +43,12 @@ export class SettingsService extends RxStartableService<Settings> {
     return data;
   }
 
-  get<K extends keyof Settings>(key: K): Settings[K] {
-    return super.get(key);
-  }
-
   clone(): Settings {
     return <Settings>{
       locale: environment.defaultLocale,
       peer: environment.defaultPeers && environment.defaultPeers[0],
       defaultPeers: environment.defaultPeers || [],
-      ...this._state.get()
+      ...this.get()
     }
   }
 
@@ -72,7 +68,7 @@ export class SettingsService extends RxStartableService<Settings> {
 
   patchValue(data: Partial<Settings>) {
     if (!data) return;
-    this._state.set(state => <Settings>{...state, ...data});
+    this.set(state => <Settings>{...state, ...data});
 
     // Saving changes
     setTimeout(() => this.saveLocally(), 250);
@@ -83,6 +79,6 @@ export class SettingsService extends RxStartableService<Settings> {
 
     console.info('[settings] Saving settings to the storage...');
     const data = this.clone();
-    await this.storage?.set('settings', data);
+    await this.storage.set('settings', data);
   }
 }

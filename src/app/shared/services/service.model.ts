@@ -56,3 +56,13 @@ export function suggestFromArray<T = any>(values: T[], searchText: any, opts?: {
 
 
 }
+
+export interface IStartableService<T = any> {
+  started: boolean;
+
+  start(): Promise<T>;
+
+  stop(): Promise<void>;
+
+  ready(): Promise<T>;
+}

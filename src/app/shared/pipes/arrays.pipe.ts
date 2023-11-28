@@ -65,10 +65,25 @@ export class ArrayFirstPipe implements PipeTransform {
 })
 export class ArrayPluckPipe implements PipeTransform {
 
-  transform<T>(val: T[], opts: { property: string; omitNil?: boolean }): any[] {
-    return (opts.omitNil !== true) ?
-      (val || []).map(value => value && value[opts.property]) :
-      (val || []).map(value => value && value[opts.property]).filter(isNotNil);
+  transform<T>(val: T[], opts: string | { property: string; omitNil?: boolean }): any[] {
+    const property = typeof opts === 'string' ? opts : opts?.property;
+    const omitNil = typeof opts === 'string' ? false : opts?.omitNil;
+    return (omitNil !== true) ?
+      (val || []).map(value => value && value[property]) :
+      (val || []).map(value => value && value[property]).filter(isNotNil);
+  }
+}
+@Pipe({
+  name: 'arrayJoin'
+})
+export class ArrayJoinPipe implements PipeTransform {
+
+  transform<T>(val: T[], opts: string | { separator: string; omitNil?: boolean }): string {
+    const separator = typeof opts === 'string' ? opts : (opts?.separator || ', ');
+    const omitNil = typeof opts === 'string' ? false : opts?.omitNil;
+    return (omitNil !== true) ?
+      (val || []).join(separator) :
+      (val || []).filter(isNotNil).join(separator);
   }
 }
 

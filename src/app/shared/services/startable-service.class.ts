@@ -1,32 +1,42 @@
 import {Optional} from '@angular/core';
 import {firstValueFrom, Subject, takeUntil} from 'rxjs';
-import {BaseService, IBaseServiceOptions} from "@app/shared/services/base-service.class";
-import {environment} from "@environments/environment";
+import {RxBaseServiceOptions} from "@app/shared/services/rx-service.class";
+import {IStartableService} from "@app/shared/services/service.model";
+import {BaseService} from "@app/shared/services/service.class";
 
-export interface IStartableService<T = any> {
-  started: boolean;
-  start(): Promise<T>;
-  stop(): Promise<void>;
-  ready(): Promise<T>;
+
+export interface StartableServiceOptions<T extends object = any>
+  extends RxBaseServiceOptions<T> {
+
 }
 
-export interface IStartableServiceOptions extends IBaseServiceOptions {
-}
-
-export abstract class StartableService<T = any, O extends IStartableServiceOptions = IStartableServiceOptions>
-  extends BaseService<O>
+export abstract class StartableService<T extends  object = any,
+  O extends StartableServiceOptions<T> = StartableServiceOptions<T>>
+  extends BaseService<T, O>
   implements IStartableService<T> {
 
   startSubject = new Subject<T>();
   stopSubject = new Subject<void>();
 
+  protected _data: T;
   protected _startByReadyFunction = true; // should start when calling ready() ?
-  protected _data: T = null;
   protected _debug: boolean = false;
 
   private _started = false;
   private _startPromise: Promise<T> = null;
   private _startPrerequisite: () => Promise<any> = null;
+
+  get started(): boolean {
+    return this._started;
+  }
+
+  get starting(): boolean {
+    return !!this._startPromise;
+  }
+
+  get data(): T {
+    return this._data;
+  }
 
   protected constructor(
     @Optional() prerequisiteService?: { ready: () => Promise<any> },
@@ -36,12 +46,11 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
     this._startPrerequisite = prerequisiteService
       ? () => prerequisiteService.ready()
       : () => Promise.resolve();
-    this._debug = !environment.production;
   }
 
   start(): Promise<T> {
     if (this._startPromise) return this._startPromise;
-    if (this._started) return Promise.resolve(this._data);
+    if (this._started) return Promise.resolve(this.data);
 
     this._startPromise = this._startPrerequisite()
       .then(() => this.ngOnStart())
@@ -51,9 +60,9 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
         this._started = true;
         this._startPromise = undefined;
 
-        this.startSubject.next(this._data);
+        this.startSubject.next(data);
 
-        return this._data;
+        return data;
       })
       .catch(err => {
         console.error('Failed to start a service: ' + (err && err.message || err), err);
@@ -86,14 +95,6 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
     return this.start(); // Then start again
   }
 
-  get started(): boolean {
-    return this._started;
-  }
-
-  get starting(): boolean {
-    return !!this._startPromise;
-  }
-
   ready(): Promise<T> {
     if (this._started) return Promise.resolve(this._data);
     if (this._startPromise) return this._startPromise;
@@ -104,13 +105,9 @@ export abstract class StartableService<T = any, O extends IStartableServiceOptio
   }
 
   protected async ngOnStop(): Promise<void> {
-    // Can be overridden by subclasses
+    // Can be overwritten by subclasses
   }
 
   protected abstract ngOnStart(): Promise<T>;
 
-  ngOnDestroy() {
-    this.stop();
-    super.ngOnDestroy();
-  }
 }

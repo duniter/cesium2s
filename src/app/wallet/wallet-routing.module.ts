@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {inject, NgModule} from '@angular/core';
+import {Routes, RouterModule, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
 
 import { WalletPage } from './wallet.page';
 import {AuthGuardService} from "@app/account/auth-guard.service";

@@ -14,7 +14,9 @@
     <ion-buttons slot="end">
       <ion-spinner *ngIf="loading"></ion-spinner>
 
-      <ion-button *ngIf="mobile && !form.isEnd()" (click)="form.slideNext()">
+      <ion-button *ngIf="mobile && !form.isEnd()"
+                  [disabled]="loading || !form.canNext()"
+                  (click)="form.slideNext()">
         <ion-label translate>COMMON.BTN_NEXT</ion-label>
         <ion-icon slot="end" name="arrow-forward"></ion-icon>
       </ion-button>
@@ -28,9 +30,7 @@
 
 <ion-content [scrollY]="scrollY">
 
-  <app-register-form (onSubmit)="doSubmit()" (onCancel)="cancel()"
-                     [class]="mobile ? '': 'has-footer'"
-                     #form>
+  <app-register-form #form (onSubmit)="doSubmit()" (onCancel)="cancel()">
 
     <ion-row *ngIf="form.debug" codeConfirmation>
       <ion-text color="primary"  class="ion-padding">
@@ -42,7 +42,9 @@
     </ion-row>
   </app-register-form>
 
+</ion-content>
 
+<ion-footer *ngIf="!mobile">
   <!-- buttons -->
   <ion-toolbar>
 
@@ -79,8 +81,5 @@
         </ion-button>
       </ion-col>
     </ion-row>
-
-
-
   </ion-toolbar>
-</ion-content>
+</ion-footer>

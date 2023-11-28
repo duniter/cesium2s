@@ -11,12 +11,12 @@ import { ModalController } from '@ionic/angular';
 import { RegisterModal } from '../register/register.modal';
 import { slideUpDownAnimation } from '@app/shared/animations';
 import { AppForm } from '@app/shared/form.class';
-import { AuthData } from '@app/account/auth/auth.model';
 import { SettingsService } from '@app/settings/settings.service';
 import { NetworkService } from '@app/network/network.service';
 import { environment } from '@environments/environment';
 import { FormUtils } from '@app/shared/forms';
 import { isNil } from '@app/shared/functions';
+import {AuthData} from "@app/account/account.model";
 
 @Component({
   selector: 'app-authv2-form',

@@ -1,5 +1,6 @@
 import { environment } from '@environments/environment';
 import { RxState } from '@rx-angular/state';
+import {EnvironmentInjector, inject, runInInjectionContext} from "@angular/core";
 
 declare type Constructor = new (...args: any[]) => any;
 const STATE_VAR_NAME_KEY = '__stateName';
@@ -20,36 +21,6 @@ export function RxStateRegister(): PropertyDecorator {
       enumerable: false,
       configurable: false
     });
-
-    // Create if not exists
-    if (!target[key]) {
-      console.debug(`${target.constructor?.name} @State() ${key} => getter()`);
-
-      // Add a createState() function
-      // This is a workaround to be able to create the state dynamically, without import in the getter function bellow
-      if (!target['createState']) {
-        Object.defineProperty(target, 'createState', {
-          value: () => new RxState<any>(),
-          writable: false,
-          enumerable: false,
-          configurable: false
-        });
-      }
-
-      const _key = '_' + key;
-
-      // DEBUG
-      const getMethodName = 'get' + key.charAt(0).toUpperCase() + key.slice(1);
-      const getter = new Function(`return function ${getMethodName}(){\n if (!this.${_key}) this.${_key} = this.createState();\n  return this.${_key};\n}`)();
-
-      target[getMethodName] = getter;
-
-      Object.defineProperty(target, key, {
-        get: getter,
-        enumerable: true,
-        configurable: true
-      });
-    }
   }
 }
 
@@ -63,15 +34,16 @@ export function RxStateProperty<T = any>(statePropertyName?: string|keyof T, opt
     //console.debug(`${target.constructor?.name} @StateProperty() ${key}`);
 
     statePropertyName = statePropertyName as string || key;
-    const state = target[STATE_VAR_NAME_KEY] || opts?.stateName || DEFAULT_STATE_VAR_NAME;
+    const state = (target instanceof RxState) ? null : (target[STATE_VAR_NAME_KEY] || opts?.stateName || DEFAULT_STATE_VAR_NAME);
+    const stateObj = state ? `this.${state}` : `this`;
 
     // property getter
     const getMethodName = 'get' + key.charAt(0).toUpperCase() + key.slice(1);
     const setMethodName = 'set' + key.charAt(0).toUpperCase() + key.slice(1);
 
-    const checkStateExists = !environment.production ? `  if (!this.${state}) throw new Error('Missing state! Please add a RxState in class: ' + this.constructor.name);\n` : "";
-    const getter = new Function(`return function ${getMethodName}(){\n  return this.${state}.get('${statePropertyName}');\n}`)();
-    const setter = new Function(`return function ${setMethodName}(value){\n${checkStateExists}  this.${state}.set('${statePropertyName}', _ => value);\n}`)()
+    const checkStateExists = (state && !environment.production) ? `  if (!this.${state}) throw new Error('Missing state! Please add a RxState in class: ' + this.constructor.name);\n` : '';
+    const getter = new Function(`return function ${getMethodName}(){\n  return ${stateObj}.get('${statePropertyName}');\n}`)();
+    const setter = new Function(`return function ${setMethodName}(value){\n${checkStateExists}  ${stateObj}.set('${statePropertyName}', _ => value);\n}`)()
 
     target[getMethodName] = getter;
     target[setMethodName] = setter;
@@ -87,23 +59,24 @@ export function RxStateProperty<T = any>(statePropertyName?: string|keyof T, opt
 
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-export function RxStateSelect<T = any>(statePropertyName?: string|keyof T, opts?: {stateName?: string}): PropertyDecorator {
+export function RxStateSelect<T = any>(statePropertyName?: string|keyof T|'$', opts?: {stateName?: string}): PropertyDecorator {
 
   // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
   return function(target: Constructor, key: string) {
     // DEBUG
     //console.debug(`${target.constructor?.name} @RxStateSelect() ${key}`);
 
-    const state = target[STATE_VAR_NAME_KEY] || opts?.stateName || DEFAULT_STATE_VAR_NAME;
-
     statePropertyName = statePropertyName as string || key.replace(/\$?$/, '');
+    const state = (target instanceof RxState) ? null : (target[STATE_VAR_NAME_KEY] || opts?.stateName || DEFAULT_STATE_VAR_NAME);
+    const stateObj = state ? `this.${state}` : `this`;
+
     const _key = '_' + key;
 
     // property getter
-    const getMethodName = 'get' + statePropertyName.charAt(0).toUpperCase() + statePropertyName.slice(1);
+    const getMethodName = 'get' + statePropertyName.charAt(0).toUpperCase() + (statePropertyName.length > 1 ? statePropertyName.slice(1) : '');
 
-    // DEBUG
-    const getter = new Function(`return function ${getMethodName}(){\n if (!this.${_key}) this.${_key} = this.${state}.select('${statePropertyName}');\n  return this.${_key};\n}`)();
+    const observableObj = statePropertyName === '$' ? `${stateObj}.$` : `${stateObj}.select('${statePropertyName.split('.').join('\', \'')}')`;
+    const getter = new Function(`return function ${getMethodName}(){\n if (!this.${_key}) this.${_key} = ${observableObj};\n  return this.${_key};\n}`)();
 
     target[getMethodName] = getter;
 

@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
 
-    <ion-title [innerHTML]="auth?'AUTH.TITLE': 'LOGIN.TITLE'|translate">
+    <ion-title [innerHTML]="(auth ? 'AUTH.TITLE': 'LOGIN.TITLE')|translate">
     </ion-title>
 
     <ion-buttons slot="end">
@@ -41,7 +41,7 @@
           [color]="auth ? 'danger' : 'tertiary'"
         >
           <ion-label
-            >{{auth?'AUTH.BTN_AUTH':'COMMON.BTN_LOGIN'|translate}}</ion-label
+            >{{(auth?'AUTH.BTN_AUTH':'COMMON.BTN_LOGIN')|translate}}</ion-label
           >
         </ion-button>
       </ion-col>

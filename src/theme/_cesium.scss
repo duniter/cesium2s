@@ -3,6 +3,10 @@
   width: #{$app-popover-width} !important;
 }
 
+.login-method-popover{
+  --width: #{$app-popover-width} !important;
+}
+
 .cdk-visually-hidden {
   display: none;
   visibility: hidden;
@@ -18,15 +22,9 @@ ion-item.error {
 
 /* -- QR code -- */
 qr-code {
-  --size: min(350px, 80vw);
   width: 100%;
-  height: var(--size);
   display: block;
   text-align: center;
-  img {
-    width: var(--size);
-    height: var(--size);
-  }
 }
 
 ion-toolbar ion-menu-button {

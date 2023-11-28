@@ -25,7 +25,7 @@
 <ion-content [fullscreen]="true">
   <ion-header>
     <ion-item color="secondary" >
-      <ion-avatar slot="start" (click)="avatarModal.present()">
+      <ion-avatar slot="start" (click)="avatarModal.present()" [style.background-color]="'white'">
         <ng-container *rxIf="account$; let account">
           <ion-img *ngIf="account.meta?.avatar; let avatar; else svgIcon"
                    [src]="avatar"></ion-img>
@@ -51,39 +51,43 @@
       </ion-item>
 
       <!-- pubkey -->
-      <ion-item (click)="copyAddress()" *ngIf="(account$ | async)?.publicKey; let publicKey">
+      <ion-item *ngIf="(account$ | async)?.meta.publicKeyV1; let pubkey"
+                (click)="copyToClipboard($event, pubkey)">
 
         <ion-icon name="key" slot="start"></ion-icon>
 
         <ion-label>
           <h2 translate>COMMON.PUBKEY</h2>
           <p class="ion-text-wrap">
-            <span>{{publicKey}}</span>
+            <span>{{pubkey}}</span>
           </p>
         </ion-label>
 
         <ion-button
           [disabled]="loading$|async"
-          (click)="qrCodeModal.present()" slot="end" fill="clear" shape="round">
+          (click)="showQrCode($event, pubkey, 'COMMON.PUBKEY')" slot="end" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-item>
 
       <!-- address -->
-      <ion-item (click)="copyAddress()">
+      <ion-item *rxIf="account$; let account"
+                (click)="copyToClipboard($event, account.address)">
 
-        <ion-icon name="key" slot="start"></ion-icon>
-
+        <ion-chip slot="start">
+          <ion-icon name="key" ></ion-icon>
+          <ion-text>v2</ion-text>
+        </ion-chip>
         <ion-label>
           <h2 translate>COMMON.ADDRESS</h2>
           <p class="ion-text-wrap">
-            <span *rxIf="account$; let account; else skeleton60">{{account.address}}</span>
+            <span>{{account.address}}</span>
           </p>
         </ion-label>
 
         <ion-button
           [disabled]="loading$|async"
-          (click)="qrCodeModal.present()" slot="end" fill="clear" shape="round">
+          (click)="showQrCode($event, account.address, 'COMMON.ADDRESS')" slot="end" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-item>
@@ -114,10 +118,6 @@
   </div>
 </ion-content>
 
-<ng-template #skeleton60>
-  <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
-</ng-template>
-
 <ion-modal
   #authModal
   [backdropDismiss]="false">
@@ -138,7 +138,7 @@
   <ng-template>
     <ion-header>
       <ion-toolbar color="secondary">
-        <ion-title translate>COMMON.PUBKEY</ion-title>
+        <ion-title translate>{{qrCodeTitle}}</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="qrCodeModal.dismiss()" translate>COMMON.BTN_CLOSE</ion-button>
         </ion-buttons>
@@ -147,21 +147,20 @@
 
     <ion-content [scrollY]="mobile">
 
-      <!-- QR code -->
-      <qr-code [value]="account.address" [size]="250"></qr-code>
-
-
-    </ion-content>
-
-    <ion-footer>
-      <!-- public key -->
       <ion-list>
-        <ion-item lines="none" (click)="copyAddress()" tappable>
+        <!-- QR code -->
+        <ion-item>
+          <qr-code [value]="qrCodeValue" [size]="250"></qr-code>
+        </ion-item>
+
+        <!-- public key -->
+        <ion-item lines="none" (click)="copyToClipboard($event, qrCodeValue)" tappable>
           <ion-icon slot="start" name="key"></ion-icon>
-          <ion-label class="ion-text-wrap">{{account?.address}}</ion-label>
+          <ion-label class="ion-text-wrap">{{qrCodeValue}}</ion-label>
         </ion-item>
       </ion-list>
-    </ion-footer>
+    </ion-content>
+
   </ng-template>
 </ion-modal>
 

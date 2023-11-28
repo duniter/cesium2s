@@ -60,3 +60,7 @@ import '@polkadot/api-augment'
 // Force moment-timezone to be loaded, otherwise moment().tz() will failed
 import 'moment';
 import 'moment-timezone';
+
+// Import swiper
+import {register} from 'swiper/element/bundle';
+register();

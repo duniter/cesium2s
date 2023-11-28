@@ -10,13 +10,14 @@ import * as momentImported from 'moment';
 import {StatusBar} from "@capacitor/status-bar";
 import {Keyboard} from "@capacitor/keyboard";
 import {CapacitorPlugins} from "@app/shared/capacitor/plugins";
+import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
 
 const moment = momentImported;
 
 @Injectable({
   providedIn: 'root'
 })
-export class PlatformService extends StartableService {
+export class PlatformService extends RxStartableService {
 
   private _mobile: boolean = null;
   private _touchUi: boolean = null;

@@ -25,5 +25,5 @@ export function getKeyringPairFromV1(data: {
     data.scryptParams || SCRYPT_PARAMS.DEFAULT
   );
   const seedHex = u8aToHex(result.password.slice(0, ED25519_SEED_LENGTH));
-  return keyring.createFromUri(seedHex, {}, 'ed25519');
+  return keyring.createFromUri(seedHex, data.meta || {}, 'ed25519');
 }

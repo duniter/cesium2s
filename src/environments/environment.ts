@@ -3,8 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 import {Environment} from "./environment.class";
-import {AuthData} from "@app/account/auth/auth.model";
 import {StorageDrivers} from "@app/shared/services/storage/storage.utils";
+import {AuthData} from "@app/account/account.model";
 
 export const environment = <Environment>{
   production: true,
@@ -32,6 +32,9 @@ export const environment = <Environment>{
       address: '5GAT6CJW8yVKwUuQc7sM5Kk9GZVTpbZYk9PfjNXtvnNgAJZ1',
       v1: {
         salt: 'test', password: 'test'
+      },
+      meta: {
+        name: 'Compte v1'
       }
     }
   },

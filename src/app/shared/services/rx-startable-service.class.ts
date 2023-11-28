@@ -1,36 +1,22 @@
 import {Optional} from '@angular/core';
-import {firstValueFrom, Observable, Subject, takeUntil} from 'rxjs';
-import {BaseService, IBaseServiceOptions} from "@app/shared/services/base-service.class";
-import {environment} from "@environments/environment";
-import {RxStateRegister} from "@app/shared/decorator/state.decorator";
-import {RxState} from "@rx-angular/state";
-import {ProjectValueFn} from "@rx-angular/state/lib/rx-state.service";
+import {firstValueFrom, Subject, takeUntil} from 'rxjs';
+import {RxBaseServiceOptions, RxBaseService} from "@app/shared/services/rx-service.class";
+import {IStartableService} from "@app/shared/services/service.model";
 
-export interface IStartableService<T = any> {
-  started: boolean;
-  start(): Promise<T>;
-  stop(): Promise<void>;
-  ready(): Promise<T>;
-}
 
-export interface IStartableServiceState {
+export interface RxStartableServiceOptions<T extends object = any>
+  extends RxBaseServiceOptions<T> {
 
 }
-export interface IStartableServiceOptions<T extends IStartableServiceState = IStartableServiceState>
-  extends IBaseServiceOptions {
 
-  initialState?: Partial<T>;
-}
-
-export abstract class RxStartableService<T extends  IStartableServiceState = IStartableServiceState,
-  O extends IStartableServiceOptions<T> = IStartableServiceOptions<T>>
-  extends BaseService<O>
+export abstract class RxStartableService<T extends  object = any,
+  O extends RxStartableServiceOptions<T> = RxStartableServiceOptions<T>>
+  extends RxBaseService<T, O>
   implements IStartableService<T> {
 
   startSubject = new Subject<T>();
   stopSubject = new Subject<void>();
 
-  @RxStateRegister() protected _state: RxState<T>;
   protected _startByReadyFunction = true; // should start when calling ready() ?
   protected _debug: boolean = false;
 
@@ -38,13 +24,12 @@ export abstract class RxStartableService<T extends  IStartableServiceState = ISt
   private _startPromise: Promise<T> = null;
   private _startPrerequisite: () => Promise<any> = null;
 
-  data$: Observable<T>;
-  get data(): T {
-    return this._state.get();
+  get started(): boolean {
+    return this._started;
   }
 
-  set data(value: T) {
-    this._state.set(value);
+  get starting(): boolean {
+    return !!this._startPromise;
   }
 
   protected constructor(
@@ -55,13 +40,6 @@ export abstract class RxStartableService<T extends  IStartableServiceState = ISt
     this._startPrerequisite = prerequisiteService
       ? () => prerequisiteService.ready()
       : () => Promise.resolve();
-
-    if (options?.initialState) {
-      this._state.set(options?.initialState);
-    }
-
-    this.data$ = this._state.$;
-    this._debug = !environment.production;
   }
 
   start(): Promise<T> {
@@ -75,7 +53,7 @@ export abstract class RxStartableService<T extends  IStartableServiceState = ISt
         this._started = true;
         this._startPromise = undefined;
 
-        this._state.set(data);
+        this.set(data||null as T);
         this.startSubject.next(data);
 
         return data;
@@ -99,7 +77,7 @@ export abstract class RxStartableService<T extends  IStartableServiceState = ISt
     }
     finally {
       this.stopSubject.next();
-      this._state.set(null);
+      this.set(null);
       this._started = false;
       this._startPromise = undefined;
     }
@@ -111,29 +89,13 @@ export abstract class RxStartableService<T extends  IStartableServiceState = ISt
     return this.start(); // Then start again
   }
 
-  get started(): boolean {
-    return this._started;
-  }
-
-  get starting(): boolean {
-    return !!this._startPromise;
-  }
-
   ready(): Promise<T> {
-    if (this._started) return Promise.resolve(this._state.get());
+    if (this._started) return Promise.resolve(this.get());
     if (this._startPromise) return this._startPromise;
     if (this._startByReadyFunction) return this.start();
     return firstValueFrom(this.startSubject
         .pipe(takeUntil(this.stopSubject))
       );
-  }
-
-  protected get<K extends keyof T>(key: K): T[K] {
-    return this._state.get(key);
-  }
-
-  protected set<K extends keyof T, O>(key: K, projectSlice: ProjectValueFn<T, K>): void {
-    this._state.set(key, projectSlice);
   }
 
   protected async ngOnStop(): Promise<void> {

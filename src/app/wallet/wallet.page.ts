@@ -1,19 +1,19 @@
-import {ChangeDetectionStrategy, Component, Injector, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 
 import {Clipboard} from "@capacitor/clipboard";
-import {BasePage, BasePageState} from "@app/shared/pages/base.page";
+import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
 import {Account} from "@app/account/account.model";
-import {isEmptyArray, isNil, isNotEmptyArray, isNotNil, isNotNilOrBlank} from "@app/shared/functions";
+import {isNil, isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
 import {NetworkService} from "@app/network/network.service";
 import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
 import {ActivatedRoute, Router} from "@angular/router";
 import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
-import {AuthController} from '@app/account/auth/auth.controller';
-import {catchError, filter, mergeMap} from "rxjs/operators";
+import {filter, mergeMap} from "rxjs/operators";
 import {AccountsService} from "@app/account/accounts.service";
 import {map, merge, Observable} from "rxjs";
+import {RxState} from "@rx-angular/state";
 
-export interface WalletState extends BasePageState {
+export interface WalletState extends AppPageState {
   accounts: Account[];
   account: Account;
   address: string;
@@ -25,13 +25,17 @@ export interface WalletState extends BasePageState {
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [RxState]
 })
-export class WalletPage extends BasePage<WalletState> implements OnInit {
+export class WalletPage extends AppPage<WalletState> implements OnInit {
 
   static NEW = Object.freeze(<Account>{
     address: ''
   });
+
+  protected qrCodeValue: string;
+  protected qrCodeTitle: string;
 
   @RxStateProperty() accounts: Account[];
   @RxStateProperty() account: Account;
@@ -64,14 +68,12 @@ export class WalletPage extends BasePage<WalletState> implements OnInit {
   @ViewChild('qrCodeModal') qrCodeModal: IonModal;
 
   constructor(
-    injector: Injector,
     protected router: Router,
     protected route: ActivatedRoute,
     protected networkService: NetworkService,
-    protected accountService: AccountsService,
-    protected authController: AuthController
+    protected accountService: AccountsService
   ) {
-    super(injector, {
+    super({
       name: 'wallet-page',
       loadDueTime: accountService.started ? 0 : 250
     })
@@ -87,23 +89,6 @@ export class WalletPage extends BasePage<WalletState> implements OnInit {
 
     // Watch accounts
     this._state.connect('accounts', this.accountService.watchAll());
-
-    // Open auth modal, if no account
-    this._state.connect('account', this.accounts$.pipe(
-      filter(accounts => isEmptyArray(accounts)),
-      mergeMap((_) => this.openAuthModal()
-        .catch((err) => {
-          if (err?.message === 'CANCELLED') {
-            console.error(this._logPrefix + 'User cancelled');
-            // Redirect to home
-            this.goHome();
-            return null;
-          }
-          throw err;
-        })
-      ),
-      filter(isNotNil)
-    ));
 
     // Add new wallet
     this._state.hold(this.account$.pipe(filter(account => account === WalletPage.NEW)),
@@ -141,33 +126,33 @@ export class WalletPage extends BasePage<WalletState> implements OnInit {
     super.ngOnInit();
   }
 
-  protected async goHome() {
-    return this.router.navigateByUrl('/home');
-  }
-
   protected async ngOnLoad(): Promise<WalletState> {
 
-    this.info('Loading wallet page...');
+    await this.accountService.ready();
 
     return <WalletState>{
-      accounts: this.accountService.accounts,
       account: null,
       address: this.activatedRoute.snapshot.paramMap.get('address'),
       currency: this.networkService.currencySymbol
     };
   }
 
-  async copyAddress() {
-    if (this.loading || !this.account?.address) return; // Skip
+  async copyToClipboard(event: Event, value: string) {
+    if (this.loading || !this.account?.address || event?.defaultPrevented) return; // Skip
 
     await Clipboard.write({
-      string: this.account.address
+      string: value
     });
     await this.showToast({message: 'INFO.COPY_TO_CLIPBOARD_DONE'});
   }
 
-  showQrCode() {
+  showQrCode(event: Event, value: string, title: string) {
     if (this.qrCodeModal.isOpen) return; // Skip
+
+    event?.preventDefault();
+    this.qrCodeValue = value;
+    this.qrCodeTitle = title;
+
     return this.qrCodeModal.present();
   }
 
@@ -176,7 +161,7 @@ export class WalletPage extends BasePage<WalletState> implements OnInit {
     event?.preventDefault();
     event?.stopPropagation();
 
-    const data = await this.authController.register();
+    const data = await this.accountService.createNew();
     if (!data) return null;
 
     this.account = data;
@@ -184,17 +169,4 @@ export class WalletPage extends BasePage<WalletState> implements OnInit {
     return data;
   }
 
-  async openAuthModal(event?: MouseEvent | TouchEvent | PointerEvent | CustomEvent): Promise<Account|null> {
-    event?.preventDefault();
-    event?.stopPropagation();
-    event?.stopImmediatePropagation();
-
-    const account = await this.authController.login(event, {});
-    if (!account?.address) {
-      // Stop if waiting
-      throw new Error('CANCELLED');
-    }
-
-    return account;
-  }
 }

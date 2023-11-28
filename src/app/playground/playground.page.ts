@@ -2,10 +2,10 @@ import {Component, Injector} from "@angular/core";
 import {RxState} from "@rx-angular/state";
 import {interval} from "rxjs";
 import {NetworkService} from "@app/network/network.service";
-import {BasePage, BasePageState} from "@app/shared/pages/base.page";
+import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
 
 
-export declare interface PlaygroundState extends BasePageState {
+export declare interface PlaygroundState extends AppPageState {
   bar: number;
   foo: string;
 }
@@ -15,13 +15,12 @@ export declare interface PlaygroundState extends BasePageState {
   templateUrl: './playground.page.html',
   //styleUrls: ['./playground.page.scss']
 })
-export class PlaygroundPage extends BasePage<PlaygroundState> {
+export class PlaygroundPage extends AppPage<PlaygroundState> {
 
   readonly state$ = this._state.select();
 
-  constructor(injector: Injector,
-              private network: NetworkService) {
-    super(injector);
+  constructor(private network: NetworkService) {
+    super();
     this._state.connect(
       interval(250),
       (state: PlaygroundState, slide: number) => <Partial<PlaygroundState>>{bar: state.bar + slide});

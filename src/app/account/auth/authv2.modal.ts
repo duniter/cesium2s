@@ -3,7 +3,8 @@ import {ModalController} from '@ionic/angular';
 import {AccountsService} from '@app/account/accounts.service';
 import {AuthV2Form} from './authv2.form';
 import {firstNotNilPromise} from '@app/shared/observables';
-import {AuthData} from '@app/account/auth/auth.model';
+
+import {AuthData} from "@app/account/account.model";
 
 export interface AuthV2ModalOptions {
   auth?: boolean;
@@ -60,7 +61,7 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
       // Disable the form
       this.form.disable();
 
-      const account = await this.accountService.login(data);
+      const account = await this.accountService.addAccount(data);
 
       return this.viewCtrl.dismiss(account);
     } catch (err) {

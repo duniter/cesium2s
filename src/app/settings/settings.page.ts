@@ -1,9 +1,9 @@
 import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {APP_LOCALES, LocaleConfig, Settings} from "@app/settings/settings.model";
-import {BasePage, BasePageState} from "@app/shared/pages/base.page";
+import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
 import {RxState} from "@rx-angular/state";
 
-export interface SettingsPageState extends Settings, BasePageState {
+export interface SettingsPageState extends Settings, AppPageState {
 
 }
 
@@ -12,7 +12,7 @@ export interface SettingsPageState extends Settings, BasePageState {
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
 })
-export class SettingsPage extends BasePage<SettingsPageState> implements OnInit {
+export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
 
   unauthOptions = [
     {
@@ -38,17 +38,12 @@ export class SettingsPage extends BasePage<SettingsPageState> implements OnInit 
   ];
 
   constructor(
-    injector: Injector,
     @Inject(APP_LOCALES) public locales: LocaleConfig[]
   ) {
-    super(injector, {name: 'settings'});
+    super({name: 'settings'});
   }
 
-  ngOnInit() {
-    super.ngOnInit()
-  }
-
-  protected async ngOnLoad(): Promise<Settings> {
+  protected async ngOnLoad() {
 
     await this.settings.ready()
     return this.settings.clone();

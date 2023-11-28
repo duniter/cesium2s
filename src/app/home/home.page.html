@@ -60,7 +60,7 @@
           </ion-button>
 
           <!-- disconnect button -->
-          <p [class.cdk-visually-hidden]="mobile">
+          <p [class.cdk-visually-hidden]="mobile" *rxIf="defaultAccount$; let defaultAccount">
             <ion-text [innerHTML]="'HOME.NOT_YOUR_ACCOUNT_QUESTION' | translate: {pubkey: (defaultAccount|accountName) }"></ion-text>
             <br/>
             <ion-text>

@@ -1,17 +1,21 @@
 import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {APP_LOCALES, LocaleConfig, Settings} from "@app/settings/settings.model";
-import {BasePage, BasePageState} from "@app/shared/pages/base.page";
+import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
 import {NetworkService} from "@app/network/network.service";
 import {AccountsService} from "@app/account/accounts.service";
 import {Account} from "@app/account/account.model";
 import {fadeInAnimation} from "@app/shared/animations";
 import {Router} from "@angular/router";
-import {AuthController} from "@app/account/auth/auth.controller";
+import {AuthController} from "@app/account/auth.controller";
 import {TransferController} from '@app/transfer/transfer.controller';
+import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
+import {Observable} from "rxjs";
+import {Currency} from "@app/network/currency.model";
+import {RxState} from "@rx-angular/state";
 
 
-export interface HomePageState extends BasePageState, Settings {
-
+export interface HomePageState extends AppPageState, Settings {
+  defaultAccount: Account;
 }
 
 @Component({
@@ -19,59 +23,61 @@ export interface HomePageState extends BasePageState, Settings {
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   animations: [fadeInAnimation],
+  providers: [RxState]
 })
-export class HomePage extends BasePage<HomePageState> implements OnInit {
+export class HomePage extends AppPage<HomePageState> implements OnInit {
 
-  defaultAccount: Account = null;
-  currency$ = this._state.select('currency');
+  @RxStateProperty() defaultAccount: Account;
+  @RxStateProperty() locale: string;
 
+  @RxStateSelect() currency$: Observable<Currency>;
+  @RxStateSelect() defaultAccount$: Observable<Account>;
 
   get isLogin(): boolean {
     return this.accountService.isLogin
   }
 
   constructor(
-    injector: Injector,
-    public networkService: NetworkService,
-    public accountService: AccountsService,
-    public authController: AuthController,
-    public transferController: TransferController,
-    public router: Router,
+    protected networkService: NetworkService,
+    protected accountService: AccountsService,
+    protected authController: AuthController,
+    protected transferController: TransferController,
+    protected router: Router,
     @Inject(APP_LOCALES) public locales: LocaleConfig[]
   ) {
-    super(injector, {name: 'home'})
+    super({name: 'home'})
   }
 
-  protected async ngOnLoad(): Promise<Settings> {
-    await this.settings.ready();
-    await this.networkService.ready();
+  protected async ngOnLoad() {
+    await Promise.all([
+      this.settings.ready(),
+      this.networkService.ready(),
+      this.accountService.ready()
+    ]);
 
     const currency = this.networkService.currency.displayName;
 
     // Load account
-    await this.accountService.ready();
-    if (this.accountService.isLogin) {
-      this.defaultAccount = await this.accountService.getDefault();
-    }
-    else {
-      this.defaultAccount = null;
-    }
+    const defaultAccount: Account = this.accountService.isLogin
+      ? await this.accountService.getDefault()
+      : null;
 
     return {
       ...this.settings.clone(),
-      currency
+      currency,
+      defaultAccount
     };
   }
 
   changeLocale(locale: string): boolean  {
     this.settings.patchValue({locale});
-    this._state.set('locale', (_) => locale);
+    this.locale = locale;
     this.markForCheck();
     return true;
   }
 
   async login(event: MouseEvent | TouchEvent | PointerEvent | CustomEvent) {
-    const data = await this.authController.login(event, {
+    const data = await this.accountService.login(event, {
       auth: true
     });
     if (data?.address) {
@@ -81,10 +87,11 @@ export class HomePage extends BasePage<HomePageState> implements OnInit {
   }
 
   async register() {
-    const data = await this.authController.register();
+    const data = await this.authController.createNew({
+      redirectToWalletPage: true
+    });
     if (data?.address) {
       this.defaultAccount = data;
-      setTimeout(() => this.router.navigate(['/wallet', data.address]));
     }
   }
 

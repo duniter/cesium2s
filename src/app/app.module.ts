@@ -20,8 +20,8 @@ import {APP_LOCALES} from "@app/settings/settings.model";
 import {APP_STORAGE} from "@app/shared/services/storage/storage.utils";
 import {StorageService} from "@app/shared/services/storage/storage.service";
 import {AppTransferModule} from "@app/transfer/transfer.module";
-import {AccountModule} from "@app/_test/account.module";
 import {AppAccountModule} from "@app/account/account.module";
+import {AccountsService} from "@app/account/accounts.service";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -34,10 +34,6 @@ export function createTranslateLoader(http: HttpClient) {
       BrowserAnimationsModule,
       HttpClientModule,
       IonicModule.forRoot(),
-      AppRoutingModule,
-      AppSharedModule,
-      AppAccountModule,
-      AppTransferModule,
       IonicStorageModule.forRoot({
         name: environment.name || 'cesium',
         ...environment.storage
@@ -52,11 +48,16 @@ export function createTranslateLoader(http: HttpClient) {
         }
       }),
 
-      AccountModule
+
+      AppRoutingModule,
+      AppSharedModule,
+      AppAccountModule.forRoot(),
+      AppTransferModule.forRoot()
     ],
     providers: [
       PlatformService,
       StorageService,
+      AccountsService,
 
       {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
       {provide: APP_STORAGE, useExisting: StorageService},

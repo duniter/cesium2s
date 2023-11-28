@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Account list</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+<ion-list>
+  <ion-item *rxFor="let account of accounts$; suspense: loadingSkeleton"
+            (click)="selectAccount(account)"
+            @listAnimation>
+    <ion-avatar slot="start">
+      <svg width="40" width="40" [data-jdenticon-value]="account.data?.randomId||account.address"></svg>
+    </ion-avatar>
+
+    <ion-label>{{ account|accountName }}</ion-label>
+
+    <!-- balance -->
+    <ion-badge *ngIf="showBalance && (account|balance); let balance" slot="end"
+               [color]="minBalance && balance < minBalance ? 'danger' : 'success'">
+      {{balance|amountFormat}}
+    </ion-badge>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+  <ng-template #loadingSkeleton>
+    <ion-item>
+      <ion-avatar slot="start"></ion-avatar>
+      <ion-label>
+        <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+      </ion-label>
+    </ion-item>
+  </ng-template>
+
+</ion-list>
+
+</ion-content>

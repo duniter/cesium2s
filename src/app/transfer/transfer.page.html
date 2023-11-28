@@ -14,8 +14,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-
+  <form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" (keyup.enter)="doSubmit($event)">
     <ion-list>
       <!-- error -->
       <ion-item *ngIf="error" lines="none" color="light" class="error">
@@ -26,7 +25,7 @@
       <!-- TO -->
       <ion-item>
         <ion-label color="medium" translate>TRANSFER.TO</ion-label>
-        <ion-textarea *rxIf="recipient$; let recipient; else inputSkeleton"
+        <ion-textarea *rxIf="recipient$; let recipient; else skeleton60"
                    [rows]="mobile ? 2 : 1"
                    class="ion-text-wrap ion-text-end"
                    [(ngModel)]="recipient.address" (ionFocus)="wotModal.present()">
@@ -48,39 +47,23 @@
       </ion-item>
 
       <!-- FROM -->
-      <ion-item tappable>
+      <ion-item tappable (click)="selectAccount($event)">
         <ion-label color="medium" translate>TRANSFER.FROM</ion-label>
-        <ng-container *rxIf="loadingSubject; else select">
-          <ng-container *ngTemplateOutlet="inputSkeleton"></ng-container>
+        <ng-container *rxIf="accounts$; let accounts; suspense: skeleton60">
+          <ion-input [value]="account|accountName" required></ion-input>
+
+          <ion-badge *ngIf="account|balance; let balance" slot="end"
+                     [color]="amount+fee>balance/100 ? 'danger' : 'success'">
+            {{balance|amountFormat}}
+          </ion-badge>
         </ng-container>
-        <ng-template #select>
-          <ng-container *rxIf="accounts$; let accounts; else inputSkeleton">
-            <ion-select [compareWith]="compareWith"
-                        [selectedText]="issuer|accountName"
-                        [(ngModel)]="issuer"
-                        [interface]="mobile ? 'action-sheet' : 'popover'"
-                        [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
-                        [okText]="'COMMON.BTN_OK'|translate"
-                        [cancelText]="'COMMON.BTN_CANCEL'|translate">
-              <ion-select-option *ngFor="let account of accounts"
-                                 [value]="account"
-                                 [disabled]="!(account|balance)">
-                {{account|accountName}}
-                <span *ngIf="account|balance; let balance">({{balance|amountFormat}})</span>
-              </ion-select-option>
-            </ion-select>
-            <ion-badge *ngIf="issuer|balance; let balance" slot="end"
-              [color]="amount+fee>balance/100 ? 'danger' : 'success'">
-              {{balance|amountFormat}}
-            </ion-badge>
-          </ng-container>
-        </ng-template>
+
       </ion-item>
 
       <!-- amount -->
       <ion-item>
         <ion-label color="medium"  translate>TRANSFER.AMOUNT</ion-label>
-        <ion-input type="number" [(ngModel)]="amount">
+        <ion-input type="number" formControlName="amount">
         </ion-input>
         <ion-label color="medium" slot="end" *ngIf="currency">{{currency.symbol}}</ion-label>
       </ion-item>
@@ -105,7 +88,7 @@
     <ion-toolbar class="ion-text-center" [color]="'transparent'">
       <ng-container *ngTemplateOutlet="buttons"></ng-container>
     </ion-toolbar>
-  </div>
+  </form>
 
   <ion-modal
     #wotModal
@@ -151,7 +134,7 @@
   </ion-button>
 </ng-template>
 
-<ng-template #inputSkeleton>
+<ng-template #skeleton60>
   <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
 </ng-template>
 

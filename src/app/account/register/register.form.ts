@@ -1,4 +1,4 @@
-import {Component, Injector, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Injector, Input, OnInit, ViewChild} from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -8,17 +8,18 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import {Observable, timer} from 'rxjs';
+import {fromEventPattern, Observable, Subscription, timer} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
 import {AccountsService} from "@app/account/accounts.service";
 import {SettingsService} from "@app/settings/settings.service";
 import {environment} from "@environments/environment";
-import {RegisterData} from "@app/account/register/register.model";
 import {AppForm} from "@app/shared/form.class";
-import {IonSlides} from "@ionic/angular";
 import {NetworkService} from "@app/network/network.service";
 import {Currency} from "@app/network/currency.model";
-import {AccountMeta} from "@app/account/account.model";
+import {AccountMeta, AuthData} from "@app/account/account.model";
+import {Swiper, SwiperOptions} from 'swiper/types';
+import {IonicSlides} from "@ionic/angular";
+import {SwiperDirective} from "@app/shared/swiper/app-swiper.directive";
 
 export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,
@@ -33,16 +34,22 @@ export const REGISTER_FORM_SLIDES = {
   templateUrl: 'register.form.html',
   styleUrls: ['./register.form.scss']
 })
-export class RegisterForm extends AppForm<RegisterData> implements OnInit {
+export class RegisterForm extends AppForm<AuthData> implements OnInit {
 
-  private readonly _isDevelopment: boolean;
-  slideOpts = {
+  protected _swiper: Swiper;
+  protected swiperModules = [IonicSlides];
+  protected _slidesSubscription: Subscription;
+
+  @Input() swiperOptions: SwiperOptions = {
     initialSlide: 0,
     speed: 400,
+    navigation: false,
+    allowTouchMove: false,
+    pagination: {clickable: false, dynamicBullets: true},
   };
 
   slideState = {
-    index: this.slideOpts.initialSlide,
+    index: this.swiperOptions.initialSlide,
     isBeginning: true,
     isEnd: false,
     canNext: true
@@ -50,11 +57,9 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
 
   @Input('class') classList: string;
 
-  get currency(): Currency {
-    return this.networkService.currency;
-  }
+  currency$: Observable<Currency> = this.networkService.currency$;
 
-  @ViewChild('slides') slides: IonSlides;
+  @ViewChild(SwiperDirective) swiperDir: SwiperDirective;
 
   constructor(
     injector: Injector,
@@ -75,12 +80,11 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     }));
 
     this.debug = !environment.production;
-    this._isDevelopment = !environment.production;
   }
 
   ngOnInit() {
     // For DEV only ------------------------
-    if (this._isDevelopment) {
+    if (!environment.production) {
       this.form.setValue({
         words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
         wordNumber: 1,
@@ -92,37 +96,56 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
     }
   }
 
-  get value(): RegisterData {
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    this._slidesSubscription?.unsubscribe();
+  }
+
+  protected getSwiper(): Swiper {
+    if (!this._swiper) {
+      this._swiper = this.swiperDir.swiper;
+      this._slidesSubscription?.unsubscribe();
+      this._slidesSubscription = fromEventPattern((handler) => this._swiper.on('slideChangeTransitionStart', handler))
+        .subscribe((arg) => this.updateState());
+    }
+    return this._swiper;
+  }
+
+  get value(): AuthData {
     const json = this.form.value;
-    const result: RegisterData = {
-      mnemonic: json.words.join(' '),
+    return {
       password: json.code,
+      v2: {
+        mnemonic: json.words.join(' '),
+      },
       meta: <AccountMeta>{
         name: json.name
       }
     };
-
-    return result;
   }
 
   get valid(): boolean {
     return this.form.valid;
   }
 
-  async slideNext() {
+  slideNext() {
+    const swiper = this.getSwiper();
     console.log("slideNext from slide #" + this.slideState.index);
-    return this.slides.slideNext()
-      .then(() => this.updateState());
+    swiper.slideNext();
+    setTimeout(() => this.updateState());
   }
 
   async slidePrev() {
-    return this.slides.slidePrev()
-      .then(() => this.updateState());
+    const swiper = this.getSwiper();
+    swiper.slidePrev()
+    setTimeout(() => this.updateState());
   }
 
   async slideTo(index: number) {
-    return this.slides.slideTo(index)
-      .then(() => this.updateState());
+    const swiper = this.getSwiper();
+    swiper.slideTo(index);
+    setTimeout(() => this.updateState());
   }
 
   isBeginning() {
@@ -165,9 +188,10 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
   }
 
   protected async updateState(){
-    this.slideState.index = await this.slides.getActiveIndex();
-    this.slideState.isBeginning = this.slideState.index === 0 || await this.slides.isBeginning();
-    this.slideState.isEnd = await this.slides.isEnd();
+    const swiper = this.getSwiper()
+    this.slideState.index = swiper.activeIndex;
+    this.slideState.isBeginning = this.slideState.index === 0 || swiper.isBeginning;
+    this.slideState.isEnd = swiper.isEnd;
     this.markForCheck();
 
     console.debug('[register-form] Slide #' + this.slideState.index);
@@ -199,7 +223,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
   }
 
   protected async generatePhrase() {
-    if (this._isDevelopment) return; // Keep existing mnemonic
+    if (!environment.production) return; // Keep existing mnemonic
 
     // Clear previous phrase
     this.form.get('words').reset(null);
@@ -271,7 +295,7 @@ export class RegisterForm extends AppForm<RegisterData> implements OnInit {
 
     setTimeout(async () => {
       const data = this.value;
-      const account = await this.accountService.createAddress(data);
+      const account = await this.accountService.createAddress(data, false);
       this.form.get('address').setValue(account.address);
 
       this.slideState.canNext = true;

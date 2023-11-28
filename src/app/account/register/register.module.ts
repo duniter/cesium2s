@@ -11,10 +11,6 @@ import {AppUnlockModule} from "@app/account/unlock/unlock.module";
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    TranslateModule,
     AppSharedModule,
     AppUnlockModule
   ],

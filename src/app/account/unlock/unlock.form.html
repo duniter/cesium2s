@@ -6,11 +6,13 @@
     </ion-item>
 
     <ion-item>
-      <ion-label color="medium">{{'AUTH.PASSPHRASE'|translate }}</ion-label>
       <ion-input [formControl]="control"
+                 [label]="'AUTH.PASSPHRASE'|translate"
                  [maxlength]="maxLength"
                  [minlength]="minLength"
                  (ionChange)="onChange($event)"
+                 [maskito]="codeMask"
+                 [maskitoElement]="maskPredicate"
                  required></ion-input>
       <ion-icon slot="end" name="checkmark" *ngIf="$valid|async"></ion-icon>
     </ion-item>

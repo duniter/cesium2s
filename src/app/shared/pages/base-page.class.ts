@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Directive, Injector, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Directive, inject, InjectFlags, Injector, OnDestroy, OnInit, Optional} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {SettingsService} from "@app/settings/settings.service";
 import {changeCaseToUnderscore, isNotNilOrBlank} from "@app/shared/functions";
@@ -10,40 +10,44 @@ import {TranslateService} from "@ngx-translate/core";
 import {map, Observable, Subscription} from "rxjs";
 import {RxState} from "@rx-angular/state";
 import {RxStateProperty, RxStateRegister, RxStateSelect} from "@app/shared/decorator/state.decorator";
+import {FormGroup} from "@angular/forms";
 
-export interface BasePageState {
+export interface AppPageState {
   error: string;
   loading: boolean;
+  form: FormGroup;
 }
 
-export interface BasePageOptions<T extends BasePageState = BasePageState> {
+export interface AppPageOptions<S extends AppPageState = AppPageState> {
   name: string;
   loadDueTime: number;
-  initialState?: Partial<T>
+  initialState?: Partial<S>
 }
 
 @Directive()
-export abstract class BasePage<
-  T extends BasePageState = BasePageState,
-  O extends BasePageOptions<T> = BasePageOptions<T>
+export abstract class AppPage<
+  S extends AppPageState = AppPageState,
+  O extends AppPageOptions<S> = AppPageOptions<S>
   >
   implements OnInit, OnDestroy {
 
-  protected _cd: ChangeDetectorRef;
-  protected _subscription: Subscription;
+  private _subscription = new Subscription();
+  private _form: FormGroup;
+  private _cd = inject(ChangeDetectorRef, {optional: true});
 
-  protected translate: TranslateService;
-  protected settings: SettingsService;
-  protected readonly routerOutlet: IonRouterOutlet | null;
-  protected readonly activatedRoute: ActivatedRoute;
-  protected toastController: ToastController;
-  @RxStateRegister() protected readonly _state: RxState<T>;
+  protected translate = inject(TranslateService);
+  protected settings = inject(SettingsService);
+  protected readonly routerOutlet = inject(IonRouterOutlet, {optional: true});
+  protected readonly activatedRoute = inject(ActivatedRoute);
+  protected toastController = inject(ToastController);
+  @RxStateRegister() protected readonly _state: RxState<S> = inject(RxState<S>, {optional: true});
+
   protected readonly _debug = !environment.production;
   protected readonly _logPrefix: string;
   protected readonly _options: O;
   protected _presentingElement: Element = null;
 
-  readonly mobile: boolean = null;
+  readonly mobile: boolean;
 
   @RxStateProperty() error: string;
   @RxStateProperty() loading: boolean
@@ -58,32 +62,44 @@ export abstract class BasePage<
     return this.loading$.pipe(map(value => value === false));
   }
 
-  get data(): T {
+  get data(): S {
     return this._state.get();
   }
-  set data(value: T) {
+  set data(value: S) {
     this._state.set(value);
   }
 
+  set form(value: FormGroup) {
+    this.setForm(value);
+  }
+  get form(): FormGroup {
+    return this._form;
+  }
+
   protected constructor(
-    injector: Injector,
-    options?: Partial<O>
+    options?: Partial<O>,
+    form?: FormGroup
   ) {
-    this._cd = injector.get(ChangeDetectorRef);
-    this.settings = injector.get(SettingsService);
-    this.translate = injector.get(TranslateService);
-    this.routerOutlet = injector.get(IonRouterOutlet, null);
-    this.activatedRoute = injector.get(ActivatedRoute);
-    this.toastController = injector.get(ToastController);
     this.mobile = this.settings.mobile;
     this._options = <O>{
       name: options?.name || changeCaseToUnderscore(this.constructor.name).replace(/_/g, '-'),
       loadDueTime: 0,
-      ...options
+      ...options,
+      initialState: {
+        ...options?.initialState,
+        loading: true,
+        error: null
+      }
     };
-    if (options?.initialState) {
-      this._state.set(options.initialState);
+
+    if (form) this.setForm(form);
+
+    // Init state
+    if (this._options?.initialState && this._state) {
+      this._state.set(this._options.initialState);
     }
+
+    // DEV
     this._logPrefix = `[${this._options.name}] `;
   }
 
@@ -91,6 +107,7 @@ export abstract class BasePage<
 
     // Get modal presenting element (iOS only)
     this._presentingElement = this.mobile ? document.querySelector('.ion-page') : null;
+
 
     // Load data
     setTimeout(() => this.load(), this._options.loadDueTime || 0);
@@ -121,7 +138,7 @@ export abstract class BasePage<
     }
   }
 
-  protected abstract ngOnLoad(): Promise<Partial<T>>;
+  protected abstract ngOnLoad(): Promise<Partial<S>>;
 
   protected async unload() {
     try {
@@ -130,19 +147,22 @@ export abstract class BasePage<
         this._state.set(initialState);
       }
     }
-
+    catch(err) {
+      console.error(this._logPrefix + "Unload page error", err);
+      // Continue
+    }
     finally {
       this.setError(undefined);
       this.markAsLoading();
     }
   }
 
-  protected ngOnUnload(): Promise<Partial<T>> {
-    const initialState: T = Object.keys(this._state.get())
+  protected ngOnUnload(): Promise<Partial<S>> {
+    const initialState: S = Object.keys(this._state.get())
       .reduce((res, key) => {
         res[key] = null;
         return res;
-      }, {}) as T;
+      }, {}) as S;
     return Promise.resolve(initialState);
   }
 
@@ -164,7 +184,7 @@ export abstract class BasePage<
   }
 
   protected markAsLoading(opts =  {emitEvent: true}) {
-    if (this.loaded) {
+    if (!this.loading) {
       this.loading = true;
       if (opts.emitEvent !== false) this.markForCheck();
     }
@@ -221,4 +241,11 @@ export abstract class BasePage<
     this._subscription?.remove(sub);
   }
 
+  setForm(form: FormGroup) {
+    if (this._form !== form) {
+      this._form = form;
+      this._subscription.add(
+        this._form.statusChanges.subscribe(status => this.markForCheck()));
+    }
+  }
 }

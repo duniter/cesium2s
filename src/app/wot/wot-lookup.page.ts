@@ -1,18 +1,17 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
-import {BasePage, BasePageState} from "@app/shared/pages/base.page";
+import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
 import {Account} from "@app/account/account.model";
 import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
 import {WotSearchFilter} from "@app/wot/wot.model";
 import {toBoolean} from "@app/shared/functions";
 import {debounceTime, mergeMap, Observable} from "rxjs";
-import {RxState} from "@rx-angular/state";
 import {PredefinedColors} from "@app/shared/colors/colors.utils";
 import {RxStateSelect} from "@app/shared/decorator/state.decorator";
 
 
-export interface WotLookupState extends BasePageState {
+export interface WotLookupState extends AppPageState {
   searchText: string;
   filter: WotSearchFilter;
   items: Account[];
@@ -24,7 +23,7 @@ export interface WotLookupState extends BasePageState {
   styleUrls: ['./wot-lookup.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WotLookupPage extends BasePage<WotLookupState> implements OnInit {
+export class WotLookupPage extends AppPage<WotLookupState> implements OnInit {
 
   @Input() debounceTime = 650;
   @Input() showToolbar = true;
@@ -37,11 +36,10 @@ export class WotLookupPage extends BasePage<WotLookupState> implements OnInit {
 
   @RxStateSelect() items$: Observable<Account[]>;
 
-  constructor(injector: Injector,
-              private router: Router,
+  constructor(private router: Router,
               private wotService: WotService
               ) {
-    super(injector, {name: 'wot-lookup-page'});
+    super({name: 'wot-lookup-page'});
 
     this._state.connect('filter',
       this._state.select('searchText')

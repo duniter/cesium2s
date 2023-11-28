@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component, EventEmitter, forwardRef,
+  Component,
+  EventEmitter,
   Injector,
   Input,
   OnInit,
@@ -11,24 +11,20 @@ import {
 import {
   AbstractControl,
   FormBuilder,
-  FormControl, FormControlName, FormGroup,
-  FormGroupDirective, NG_VALUE_ACCESSOR,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
   ValidationErrors,
   ValidatorFn,
   Validators
 } from '@angular/forms';
 import {SettingsService} from "@app/settings/settings.service";
 import {environment} from "@environments/environment";
-import {RegisterData} from "@app/account/register/register.model";
 import {AppForm} from "@app/shared/form.class";
 import {isNotNilOrBlank} from "@app/shared/functions";
 import {distinctUntilChanged, map, Subject} from "rxjs";
+import {MaskitoElementPredicateAsync, MaskitoOptions} from "@maskito/core";
 
-export const REGISTER_FORM_SLIDES = {
-  MNEMONIC: 5,
-  ASK_WORD: 6,
-  CODE: 9
-}
 
 @Component({
   selector: 'app-unlock-form',
@@ -50,6 +46,12 @@ export class UnlockForm extends AppForm<string> implements OnInit {
   @Output() change = new EventEmitter<string>();
 
   $valid = new Subject<boolean>()
+
+  readonly codeMask: MaskitoOptions = {
+    mask: [/[A-Z]/, /[A-Z]/, /[A-Z]/, /[A-Z]/, /[A-Z]/, /[A-Z]/],
+  };
+
+  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
   constructor(
     injector: Injector,

@@ -58,7 +58,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
       name: 'network-service',
     });
 
-    this._state.connect('currencySymbol', this.currency$.pipe(map(currency => currency?.symbol)));
+    this.connect('currencySymbol', this.currency$.pipe(map(currency => currency?.symbol)));
   }
 
   protected async ngOnStart(): Promise<any> {

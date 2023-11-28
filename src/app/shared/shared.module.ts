@@ -11,6 +11,8 @@ import {RxPush} from "@rx-angular/template/push";
 import {RxFor} from "@rx-angular/template/for";
 import {RxLet} from "@rx-angular/template/let";
 import {RxIf} from "@rx-angular/template/if";
+import {MaskitoModule} from "@maskito/angular";
+import {SwiperDirective} from "@app/shared/swiper/app-swiper.directive";
 
 @NgModule({
   imports: [
@@ -20,6 +22,7 @@ import {RxIf} from "@rx-angular/template/if";
     IonicModule,
     TranslateModule,
     QrCodeModule,
+    MaskitoModule,
 
     // RxState template
     RxPush,
@@ -29,7 +32,8 @@ import {RxIf} from "@rx-angular/template/if";
 
     // Sub modules
     SharedPipesModule,
-    ListPopoverModule
+    ListPopoverModule,
+    SwiperDirective
   ],
   exports: [
     CommonModule,
@@ -38,6 +42,7 @@ import {RxIf} from "@rx-angular/template/if";
     IonicModule,
     TranslateModule,
     QrCodeModule,
+    MaskitoModule,
 
     // RxState template
     RxPush,
@@ -47,7 +52,8 @@ import {RxIf} from "@rx-angular/template/if";
 
     // Sub modules
     SharedPipesModule,
-    ListPopoverModule
+    ListPopoverModule,
+    SwiperDirective
   ]
 })
 export class AppSharedModule {}

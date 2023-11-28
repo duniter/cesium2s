@@ -4,7 +4,7 @@
     "APP_VERSION": "v{{version}}",
     "APP_BUILD": "date : {{build}}",
     "PUBKEY": "Clé publique",
-    "ADDRESS": "Addresse",
+    "ADDRESS": "Addresse SS58",
     "MEMBER": "Membre",
     "BLOCK" : "Bloc",
     "BTN_OK": "OK",
@@ -453,7 +453,9 @@
       "SCRYPT_ADVANCED": "Salage avancé",
       "FILE": "Fichier de trousseau",
       "PUBKEY": "Clé publique ou pseudonyme",
-      "SCAN": "Scanner un QR code"
+      "ADDRESS": "Addresse SS58",
+      "SCAN": "Scanner un QR code",
+      "MNEMONIC": "Phrase de restauration"
     },
     "SCRYPT": {
       "SIMPLE": "Salage léger",

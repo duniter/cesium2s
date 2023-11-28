@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {REGISTER_FORM_SLIDES, RegisterForm} from "@app/account/register/register.form";
+import {RegisterForm} from "@app/account/register/register.form";
 import {AccountsService} from "@app/account/accounts.service";
 import {FormUtils} from "@app/shared/forms";
-import {RegisterData} from "@app/account/register/register.model";
 import {environment} from "@environments/environment";
+
 export interface RegisterModalOptions {
   scrollY?: boolean;
 }
@@ -77,7 +77,7 @@ export class RegisterModal implements OnInit, RegisterModalOptions {
     try {
       console.debug('[register] Saving new account...');
 
-      const registered = await this.accountService.register(data);
+      const registered = await this.accountService.addAccount(data);
 
       const address = registered && this.form.form.get('address').value;
       if (address) {

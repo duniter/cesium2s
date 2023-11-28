@@ -1,5 +1,5 @@
-import {AuthData} from "@app/account/auth/auth.model";
 import {StorageConfig} from '@ionic/storage';
+import {AuthData} from "@app/account/account.model";
 
 export interface Environment {
   name: string;

@@ -1,7 +1,7 @@
-ion-slides {
-  height: calc(100% - var(--app-toolbar-height));
+swiper-container {
+  height: 100%;
 
-  ion-slide {
+  swiper-slide {
     align-items: flex-start !important;
 
     ion-text, p {
@@ -14,10 +14,6 @@ ion-slides {
       }
     }
   }
-}
-
-.has-footer {
-  height: calc(100% - var(--app-toolbar-height) - var(--app-footer-height));
 }
 
 

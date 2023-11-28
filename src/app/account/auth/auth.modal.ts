@@ -3,7 +3,8 @@ import {ModalController} from '@ionic/angular';
 import {AccountsService} from '@app/account/accounts.service';
 import {AuthForm} from './auth.form';
 import {firstNotNilPromise} from '@app/shared/observables';
-import {AuthData} from "@app/account/auth/auth.model";
+
+import {AuthData} from "@app/account/account.model";
 
 export interface AuthModalOptions {
   auth?: boolean;
@@ -65,7 +66,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
       // Disable the form
       this.form.disable();
 
-      const account = await this.accountService.login(data);
+      const account = await this.accountService.addAccount(data);
 
       return this.viewCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
     }

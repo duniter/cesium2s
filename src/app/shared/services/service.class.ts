@@ -1,12 +1,16 @@
 import {Subscription} from 'rxjs';
 import {environment} from "@environments/environment";
 import {OnDestroy} from "@angular/core";
+import {RxState} from "@rx-angular/state";
 
-export interface IBaseServiceOptions {
+export interface BaseServiceOptions<T extends object = any> {
   name?: string;
 }
 
-export abstract class BaseService<O extends IBaseServiceOptions = IBaseServiceOptions> implements OnDestroy {
+export abstract class BaseService<
+  T extends object = any,
+  O extends BaseServiceOptions<T> = BaseServiceOptions<T>>
+  implements OnDestroy {
 
   private _subscription: Subscription = null;
 
@@ -36,18 +40,5 @@ export abstract class BaseService<O extends IBaseServiceOptions = IBaseServiceOp
   protected unsubscribe() {
     this._subscription?.unsubscribe();
     this._subscription = null;
-  }
-
-
-  protected debug(msg, ...params: any[]) {
-    if (!this._debug) return;
-    if (params?.length) console.debug(this._logPrefix + msg, ...params);
-    else console.debug(this._logPrefix + msg)
-  }
-
-  protected log(msg, ...params: any[]) {
-    if (!this._debug) return;
-    if (params?.length) console.log(this._logPrefix + msg, params);
-    else console.log(this._logPrefix + msg)
   }
 }

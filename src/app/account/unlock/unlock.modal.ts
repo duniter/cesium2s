@@ -3,13 +3,8 @@ import {ModalController} from '@ionic/angular';
 import {AccountsService} from '@app/account/accounts.service';
 import {firstNotNilPromise} from '@app/shared/observables';
 import {UnlockForm} from "@app/account/unlock/unlock.form";
+import {UnlockOptions} from "@app/account/account.model";
 
-export interface UnlockModalOptions {
-  title?: string;
-  expectedCode?: string;
-  minLength?: number;
-  maxLength?: number;
-}
 
 @Component({
   selector: 'app-unlock-modal',
@@ -17,7 +12,7 @@ export interface UnlockModalOptions {
   styleUrls: ['./unlock.modal.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UnlockModal implements OnInit, UnlockModalOptions{
+export class UnlockModal implements OnInit, UnlockOptions {
 
   get loading() {
     return this.form?.loading;

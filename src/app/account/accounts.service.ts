@@ -1,12 +1,19 @@
 import {Inject, Injectable} from "@angular/core";
 import {NetworkService} from "../network/network.service";
 import {ApiPromise} from "@polkadot/api";
-import {Account, AccountData, AccountMeta, AccountUtils} from "./account.model";
-import {AuthData} from "@app/account/auth/auth.model";
+import {
+  Account,
+  AccountMeta,
+  AccountUtils,
+  APP_AUTH_CONTROLLER, AuthData,
+  IAuthController,
+  LoginEvent,
+  LoginOptions,
+  SelectAccountOptions
+} from "./account.model";
 import {keyring} from "@polkadot/ui-keyring";
 import {environment} from "@environments/environment";
 import {KeyringStorage} from "@app/shared/services/storage/keyring-storage";
-import {RegisterData} from "@app/account/register/register.model";
 import {base58Encode, cryptoWaitReady, mnemonicGenerate} from '@polkadot/util-crypto';
 import {
   isEmptyArray,
@@ -19,20 +26,7 @@ import {
   sleep
 } from "@app/shared/functions";
 import {APP_STORAGE, IStorage} from "@app/shared/services/storage/storage.utils";
-import {
-  debounceTime,
-  firstValueFrom,
-  from,
-  map,
-  mergeMap,
-  Observable,
-  Subject,
-  Subscription,
-  switchMap,
-  timer
-} from "rxjs";
-import {ModalController} from "@ionic/angular";
-import {UnlockModal, UnlockModalOptions} from "@app/account/unlock/unlock.modal";
+import {debounceTime, firstValueFrom, from, map, Observable, Subscription, switchMap, timer} from "rxjs";
 import {Currency} from "@app/network/currency.model";
 import {SettingsService} from "@app/settings/settings.service";
 import {scryptEncode} from "@polkadot/util-crypto/scrypt/encode";
@@ -41,7 +35,6 @@ import {u8aToHex} from "@polkadot/util";
 import {formatAddress} from "@app/shared/currencies";
 import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
 import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
-import {getKeyringPairFromV1} from "@app/wallet/utils";
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -109,8 +102,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
   constructor(
     protected network: NetworkService,
     protected settings: SettingsService,
-    protected modalController: ModalController,
-    @Inject(APP_STORAGE) protected storage: IStorage
+    @Inject(APP_STORAGE) protected storage: IStorage,
+    @Inject(APP_AUTH_CONTROLLER) protected accountModalController: IAuthController
   ) {
     super(network, {
       name: 'account-service'
@@ -145,6 +138,36 @@ export class AccountsService extends RxStartableService<AccountsState> {
     return {
       accounts
     };
+  }
+
+  selectAccount(opts?: SelectAccountOptions): Promise<Account> {
+    return this.accountModalController.selectAccount(opts);
+  }
+
+  async createNew(opts?: {redirectToWalletPage?: boolean}): Promise<Account> {
+    const data = await this.accountModalController.createNew(opts);
+
+    if (!data?.address) return null; // User cancelled
+
+    // Make account exists
+    if (!(await this.existsByAddress(data.address))) {
+      throw {message: 'ERROR.UNKNOWN_WALLET_ID1'};
+    }
+
+    return data;
+  }
+
+  async login(event?: LoginEvent, opts?: LoginOptions): Promise<Account> {
+    const data = await this.accountModalController.login(event, opts);
+
+    if (!data?.address) return null; // User cancelled
+
+    // Make account exists
+    if (!(await this.existsByAddress(data.address))) {
+      throw {message: 'ERROR.UNKNOWN_WALLET_ID1'};
+    }
+
+    return data;
   }
 
   async restoreAccounts(currency?: Currency) {
@@ -187,7 +210,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
         await Promise.all(accounts.map(a => this.loadData(a)));
 
         // DEBUG
-        console.info(`Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
+        console.info(this._logPrefix + `Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
         accounts.forEach(a => {
           console.info(` - ${a.address} (${a.meta?.name}) - free=${a.data?.free} - reserved=${a.data?.reserved}`);
         });
@@ -221,7 +244,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     return undefined;
   }
 
-  async login(auth: AuthData): Promise<Account> {
+  async addAccount(auth: AuthData): Promise<Account> {
     if (!auth) return;
 
     await this.ready();
@@ -245,14 +268,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     console.debug(`${this._logPrefix}Not auth: opening unlock modal...`);
 
-    // const modal = await this.modalController.create({
-    //   component: UnlockModal,
-    //   componentProps: <UnlockModalOptions>{
-    //   }
-    // });
-    // await modal.present();
-    // const {data, role} = await modal.onWillDismiss();
-    const data = 'AAAAA';
+    const data = await this.accountModalController.unlock();
 
     // User cancelled
     if (isNilOrBlank(data)) {
@@ -292,39 +308,29 @@ export class AccountsService extends RxStartableService<AccountsState> {
     return mnemonic;
   }
 
-  async createAddress(data: RegisterData, save?: boolean): Promise<Account> {
-    // add the account, encrypt the stored JSON with an account-specific password
-    const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
-      name: data.meta?.name || 'default',
-      genesisHash: this.network.currency?.genesis
-    }, 'sr25519');
+  async createAddress(data: AuthData, save?: boolean): Promise<Account> {
+
+    let address: string;
+    if (data.v1) {
+      // TODO
+    }
+    else if (data.v2) {
+      const { pair, json } = keyring.addUri(data.v2.mnemonic, data.password || this._password, {
+        name: data.meta?.name || 'default',
+        genesisHash: this.network.currency?.genesis
+      }, 'sr25519');
+      address = json.address;
+      if (!save) {
+        keyring.forgetAddress(address)
+      }
+    }
 
     return {
-      address: json.address,
+      address,
       meta: {
-        name: data.meta?.name
+        name: data.meta?.name || 'default'
       }
     };
-  }
-
-  async register(data: RegisterData): Promise<boolean> {
-
-    // add the account, encrypt the stored JSON with an account-specific password
-    const { pair, json } = keyring.addUri(data.mnemonic, data.password, {
-      name: data.meta?.name || 'default',
-      genesisHash: this.network.currency?.genesis
-    }, 'sr25519');
-
-    //this.debug('check pair', pair, json);
-
-    await this.addAccount({
-      address: json.address,
-      meta: {
-        name: data.meta?.name
-      }
-    })
-
-    return true;
   }
 
   async addV2Account(data: {mnemonic: string; meta?: AccountMeta}): Promise<Account> {
@@ -332,7 +338,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
       name: data.meta?.name || 'default',
       genesisHash: this.network.currency?.genesis
     }, 'sr25519');
-    return this.addAccount({
+
+    return this.addAccount(<Account>{
       address: json.address,
       meta: {
         name: data.meta?.name
@@ -340,7 +347,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     });
   }
 
-  async addAccount(account: Account): Promise<Account> {
+  async saveAccount(account: Account): Promise<Account> {
     let accounts = this.accounts || [];
     const existingAccount = accounts.find(a => a.address === account.address);
     if (existingAccount) {
@@ -385,7 +392,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
         );
     }
 
-    return this._state.select('accounts')
+    return this.select('accounts')
       .pipe(
         map(accounts => {
 
@@ -442,6 +449,12 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     // Load
     return await this.loadData(account, opts);
+  }
+
+  async existsByAddress(address: string): Promise<boolean> {
+    if (!this.started) await this.ready();
+
+    return (this.accounts || []).some(a => a.address === address);
   }
 
   async getByAddress(address: string, opts?: LoadAccountDataOptions): Promise<Account> {
@@ -631,7 +644,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
   }
 
   private notifyChanged() {
-    this._state.set('accounts', (s) => s.accounts.slice() /*create a copy*/);
+    this.set('accounts', (s) => s.accounts.slice() /*create a copy*/);
   }
 
   async addV1Account(data: {salt: string, password: string; meta?: AccountMeta, scryptParams?: ScryptParams}): Promise<Account> {
@@ -653,17 +666,20 @@ export class AccountsService extends RxStartableService<AccountsState> {
     const isAuth = await this.auth();
     if (!isAuth) return; // Skip
 
-    const {pair, json} = keyring.addUri(seedHex, this._password, meta, 'ed25519');
-    const publicKey = base58Encode(getKeyringPairFromV1(data).publicKey);
+    const pair = keyring.createFromUri(seedHex, meta, 'ed25519');
+
+    const publicKey = base58Encode(pair.publicKey);
     if (isNilOrBlank(meta.name)) {
-      meta.name = publicKey.slice(0,8);
-      meta.publicKeyV1 = publicKey;
+      pair.meta.name = publicKey.slice(0,8);
+      pair.meta.publicKeyV1 = publicKey;
     }
 
-    return this.addAccount({
+    const { json} = keyring.addPair(pair, this._password);
+
+    return this.saveAccount(<Account>{
       address: json.address,
       type: pair.type,
-      meta
+      meta: {...meta, ...pair.meta}
     });
   }
 
