@@ -26,7 +26,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
   }
 
   get mobile(): boolean {
-    return this.form?.mobile;
+    return this.form.mobile;
   }
 
   @Input() auth = false; // false for login, true for auth

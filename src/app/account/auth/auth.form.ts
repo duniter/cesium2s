@@ -13,7 +13,6 @@ import {getKeyringPairFromV1} from "@app/account/crypto.utils"
 import {base58Encode} from '@polkadot/util-crypto';
 import {Account, AuthData} from "@app/account/account.model";
 import {RxState} from "@rx-angular/state";
-import {KeyringPair} from "@polkadot/keyring/types";
 import {RxStateProperty, RxStateRegister} from "@app/shared/decorator/state.decorator";
 import {debounceTime, map, mergeMap, Observable} from "rxjs";
 import {filter} from "rxjs/operators";
@@ -35,15 +34,14 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
 
   protected showSalt = false;
   protected showPwd = false;
-  @RxStateRegister() protected readonly state: RxState<AuthFormState> = inject(RxState)
-  @RxStateProperty() protected account$: Observable<Account>;
 
-  readonly mobile: boolean;
+  @RxStateRegister() protected state: RxState<AuthFormState> = inject(RxState)
+  @RxStateProperty() protected account$: Observable<Account>;
 
   @Input() canRegister: boolean;
 
   @Output() valueChanges = new EventEmitter<AuthData>();
-  @Output() onCancel = new EventEmitter<any>();
+  @Output() onCancel = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<AuthData>();
 
   disable(opts?: { onlySelf?: boolean; emitEvent?: boolean }) {
