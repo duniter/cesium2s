@@ -32,3 +32,9 @@ export function formatAddress(value: string): string {
   if (value.length < 12) return '?';
   return value.substring(0,6) + '\u2026' + value.substring(value.length - 6);
 }
+
+export function formatPubkey(value: string): string {
+  if (!value) return '';
+  if (value.length < 12) return '?';
+  return value.substring(0,4) + '\u2026' + value.substring(value.length - 4);
+}

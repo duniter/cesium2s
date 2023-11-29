@@ -20,6 +20,8 @@ import {AccountMeta, AuthData} from "@app/account/account.model";
 import {Swiper, SwiperOptions} from 'swiper/types';
 import {IonicSlides} from "@ionic/angular";
 import {SwiperDirective} from "@app/shared/swiper/app-swiper.directive";
+import {isNilOrBlank, isNotNilOrBlank} from "@app/shared/functions";
+import {formatAddress} from "@app/shared/currencies";
 
 export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,
@@ -36,9 +38,7 @@ export const REGISTER_FORM_SLIDES = {
 })
 export class RegisterForm extends AppForm<AuthData> implements OnInit {
 
-  protected _swiper: Swiper;
   protected swiperModules = [IonicSlides];
-  protected _slidesSubscription: Subscription;
 
   @Input() swiperOptions: SwiperOptions = {
     initialSlide: 0,
@@ -57,7 +57,9 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
 
   @Input('class') classList: string;
 
-  currency$: Observable<Currency> = this.networkService.currency$;
+  get currency(): Currency {
+    return this.networkService.currency;
+  }
 
   @ViewChild(SwiperDirective) swiperDir: SwiperDirective;
 
@@ -90,26 +92,14 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
         wordNumber: 1,
         code: 'AAAAA',
         codeConfirmation: null,
-        name: 'Nouveau portefeuille',
+        name: null,
         address: null
       });
     }
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-
-    this._slidesSubscription?.unsubscribe();
-  }
-
-  protected getSwiper(): Swiper {
-    if (!this._swiper) {
-      this._swiper = this.swiperDir.swiper;
-      this._slidesSubscription?.unsubscribe();
-      this._slidesSubscription = fromEventPattern((handler) => this._swiper.on('slideChangeTransitionStart', handler))
-        .subscribe((arg) => this.updateState());
-    }
-    return this._swiper;
+  protected get swiper(): Swiper {
+    return this.swiperDir.swiper;
   }
 
   get value(): AuthData {
@@ -130,21 +120,17 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   }
 
   slideNext() {
-    const swiper = this.getSwiper();
     console.log("slideNext from slide #" + this.slideState.index);
-    swiper.slideNext();
-    setTimeout(() => this.updateState());
+    this.swiper.slideNext();
   }
 
   async slidePrev() {
-    const swiper = this.getSwiper();
-    swiper.slidePrev()
+    this.swiper.slidePrev()
     setTimeout(() => this.updateState());
   }
 
   async slideTo(index: number) {
-    const swiper = this.getSwiper();
-    swiper.slideTo(index);
+    this.swiper.slideTo(index);
     setTimeout(() => this.updateState());
   }
 
@@ -171,27 +157,14 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     };
   }
 
-  emailAvailability(accountService: AccountsService): AsyncValidatorFn {
-    return function(control: AbstractControl): Observable<ValidationErrors | null> {
-
-      return timer(500).pipe(mergeMap(() => Promise.resolve(true)/* accountService.checkEmailAvailable(control.value)*/
-          .then(res => null)
-          .catch(err => {
-            console.error(err);
-            return { availability: true };
-          })));
-    };
-  }
-
   cancel() {
     this.onCancel.emit();
   }
 
   protected async updateState(){
-    const swiper = this.getSwiper()
-    this.slideState.index = swiper.activeIndex;
-    this.slideState.isBeginning = this.slideState.index === 0 || swiper.isBeginning;
-    this.slideState.isEnd = swiper.isEnd;
+    this.slideState.index = this.swiper.activeIndex;
+    this.slideState.isBeginning = this.slideState.index === 0 || this.swiper.isBeginning;
+    this.slideState.isEnd = this.swiper.isEnd;
     this.markForCheck();
 
     console.debug('[register-form] Slide #' + this.slideState.index);
@@ -243,9 +216,13 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   }
 
   protected generateWordNumber() {
-    const wordNumber = Math.min(Math.floor(Math.random() * 12 + 0.4) + 1, 12);
-    this.form.patchValue({wordNumber});
-    if (this.slideState.index === REGISTER_FORM_SLIDES.ASK_WORD) {
+    if (this.slideState.index !== REGISTER_FORM_SLIDES.ASK_WORD) return;
+    if (!environment.production) {
+      this.slideState.canNext = true;
+    }
+    else {
+      const wordNumber = Math.min(Math.floor(Math.random() * 12 + 0.4) + 1, 12);
+      this.form.patchValue({wordNumber});
       this.slideState.canNext = false;
     }
     this.markForCheck();
@@ -264,18 +241,19 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     this.markForCheck();
   }
 
-  generateCode() {
-    let code: string;
+  generateCode(force?: boolean) {
+    if (this.slideState.index !== REGISTER_FORM_SLIDES.CODE) return;
     if (!environment.production) {
-      code = 'AAAAA';
+      this.slideState.canNext = true;
     }
-    else {
-      code = Math.random().toString(36)
+    else if (force === true || isNilOrBlank(this.form.get('code').value)) {
+      const code = Math.random().toString(36)
         .replace(/[^a-z]+/g, '')
         .substring(0, 5)
         .toUpperCase();
+      this.form.patchValue({code});
     }
-    this.form.patchValue({code});
+    this.slideState.canNext = true;
     this.markForCheck();
   }
 
@@ -295,8 +273,16 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
 
     setTimeout(async () => {
       const data = this.value;
-      const account = await this.accountService.createAddress(data, false);
+      const {account} = await this.accountService.createAccount(this.value);
+
+      // Set address
       this.form.get('address').setValue(account.address);
+
+      // Set default name
+      if (!data.meta.name) {
+        const name = formatAddress(account.address);
+        this.form.get('name').setValue(name);
+      }
 
       this.slideState.canNext = true;
       this.markAsLoaded();

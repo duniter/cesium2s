@@ -5,9 +5,11 @@ import {AuthV2Form} from './authv2.form';
 import {firstNotNilPromise} from '@app/shared/observables';
 
 import {AuthData} from "@app/account/account.model";
+import {AuthModalRole} from "@app/account/auth/auth.modal";
 
 export interface AuthV2ModalOptions {
   auth?: boolean;
+  title?: string;
 }
 
 @Component({
@@ -16,7 +18,6 @@ export interface AuthV2ModalOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
-  title: string = null;
   get loading() {
     return this.form?.loading;
   }
@@ -25,7 +26,8 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
     return this.form?.mobile;
   }
 
-  @Input() auth = false;
+  @Input() auth = false;  // false for login, true for auth
+  @Input() title: string = null;
 
   @ViewChild('form', { static: true }) private form: AuthV2Form;
 
@@ -36,19 +38,17 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
   ) {}
 
   ngOnInit() {
-    this.title = this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE';
+    this.title = this.title || (this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE');
     this.form.markAsReady({ emitEvent: false });
     this.form.markAsLoaded();
   }
 
   cancel() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss(null, <AuthModalRole>'CANCEL');
   }
 
   async doSubmit(data?: AuthData): Promise<any> {
-    if (this.form.disabled) {
-      return;
-    }
+    if (this.form.disabled) return;
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
@@ -63,7 +63,7 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
 
       const account = await this.accountService.addAccount(data);
 
-      return this.viewCtrl.dismiss(account);
+      return this.viewCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
     } catch (err) {
       this.form.error = (err && err.message) || err;
       this.markAsLoaded();

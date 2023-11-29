@@ -109,10 +109,14 @@ export class UnlockForm extends AppForm<string> implements OnInit {
     this.onCancel.emit();
   }
 
-  onChange(event: CustomEvent<{ value: string; }>) {
-    let value = event.detail?.value;
-    value = value && value.toUpperCase() || null;
-    if (value && value.length > this.maxLength) {
+  onInput(event: Event) {
+    console.log(event);
+    let value = event.target['value'] || '';
+
+    // Removes non alphanumeric characters
+    value = value.toUpperCase().replace(/[^A-Z]+/g, '');
+
+    if (value.length > this.maxLength) {
       event.preventDefault();
       event.stopPropagation();
       return;

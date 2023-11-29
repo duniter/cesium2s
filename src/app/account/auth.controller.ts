@@ -147,8 +147,9 @@ export class AuthController implements IAuthController {
     const modal = await this.modalCtrl.create({
       component: RegisterModal,
       componentProps: <RegisterModalOptions>{
-        scrollY: false // TODO remove this !
-      }
+
+      },
+      backdropDismiss: false
     });
 
     await modal.present();

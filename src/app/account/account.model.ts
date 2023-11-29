@@ -2,19 +2,23 @@ import {KeypairType} from "@polkadot/util-crypto/types";
 import {HexString} from "@polkadot/util/types";
 import {InjectionToken} from "@angular/core";
 import {ListItem} from "@app/shared/popover/list.popover";
+import {Params} from "@polkadot/util-crypto/scrypt/types";
+import {ScryptParams} from "@app/account/crypto.utils";
 
 export interface Account {
   address: string;
-  default?: boolean;
-  type?: KeypairType;
+  publicKey: Uint8Array;
   meta: AccountMeta;
   data?: AccountData;
 }
 export interface AccountMeta {
+  // Polkadot properties
   name: string;
   genesisHash?: HexString | null;
+  isTesting?: boolean;
 
-  // Extends meta
+  // Cesium properties
+  default?: boolean;
   publicKeyV1?: string;
   uid?: string;
   avatar?: string;
@@ -43,6 +47,7 @@ export class AccountUtils {
     return (account.data.free || 0) + (account.data.reserved || 0);
   }
 }
+
 
 export interface UnlockOptions {
   title?: string;
@@ -92,6 +97,7 @@ export interface AuthData {
   v1?: {
     salt: string;
     password: string;
+    scryptParams?: ScryptParams
   };
 
   v2?: {

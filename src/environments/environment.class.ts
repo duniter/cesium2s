@@ -24,6 +24,9 @@ export interface Environment {
     // Default peer
     peer?: string;
 
+    // Load polkadot default account (alice, etc.)
+    testingAccounts?: boolean;
+
     // Default authentication
     auth?: AuthData;
   }

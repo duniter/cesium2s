@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, inject, Injector, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {RegisterModal} from '../register/register.modal';
@@ -8,27 +8,41 @@ import {SettingsService} from "@app/settings/settings.service";
 import {NetworkService} from "@app/network/network.service";
 import {environment} from "@environments/environment";
 import {FormUtils} from "@app/shared/forms";
-import {isNil, toBoolean} from '@app/shared/functions';
-import {getKeyringPairFromV1} from "@app/account/utils"
+import {isNil, isNotNilOrBlank, toBoolean} from '@app/shared/functions';
+import {getKeyringPairFromV1} from "@app/account/crypto.utils"
 import {base58Encode} from '@polkadot/util-crypto';
-import {AuthData} from "@app/account/account.model";
+import {Account, AuthData} from "@app/account/account.model";
+import {RxState} from "@rx-angular/state";
+import {KeyringPair} from "@polkadot/keyring/types";
+import {RxStateProperty, RxStateRegister} from "@app/shared/decorator/state.decorator";
+import {debounceTime, map, mergeMap, Observable} from "rxjs";
+import {filter} from "rxjs/operators";
+import {AccountsService} from "@app/account/accounts.service";
+
+export interface AuthFormState {
+  account: Account;
+}
 
 @Component({
   selector: 'app-auth-form',
   templateUrl: 'auth.form.html',
   styleUrls: ['./auth.form.scss'],
   animations: [slideUpDownAnimation],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [RxState]
 })
 export class AuthForm extends AppForm<AuthData> implements OnInit {
 
   protected showSalt = false;
   protected showPwd = false;
+  @RxStateRegister() protected readonly state: RxState<AuthFormState> = inject(RxState)
+  @RxStateProperty() protected account$: Observable<Account>;
 
   readonly mobile: boolean;
 
   @Input() canRegister: boolean;
 
+  @Output() valueChanges = new EventEmitter<AuthData>();
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<AuthData>();
 
@@ -42,6 +56,7 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     settings: SettingsService,
     formBuilder: FormBuilder,
     private modalCtrl: ModalController,
+    private accountService: AccountsService,
     public network: NetworkService
   ) {
     super(injector,
@@ -53,12 +68,25 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     this.mobile = settings.mobile;
     this._enable = true;
 
+    this.registerSubscription(
+      this.form.valueChanges
+        .pipe(debounceTime(500))
+        .subscribe(_ => this.valueChanges.emit(this.value))
+    );
+
   }
 
   ngOnInit() {
     super.ngOnInit();
 
     this.canRegister = toBoolean(this.canRegister, true);
+
+    this.state.connect('account', this.valueChanges.asObservable()
+      .pipe(
+        filter(data  => isNotNilOrBlank(data.v1.salt) && isNotNilOrBlank(data.v1.password)),
+        mergeMap(data => this.accountService.createAccount(data)),
+        map(({account}) => account)
+      ));
 
     // For DEV only: set the default user, for testing
     if (!environment.production && environment.dev?.auth) {
@@ -110,8 +138,8 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     const data = this.form.value;
     return {
       v1: {
-        salt: data.salt,
-        password: data.password
+        salt: data?.salt,
+        password: data?.password
       }
     };
   }

@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Injector,
+  Injector, Input,
   OnInit,
   Output,
 } from '@angular/core';
@@ -15,7 +15,7 @@ import { SettingsService } from '@app/settings/settings.service';
 import { NetworkService } from '@app/network/network.service';
 import { environment } from '@environments/environment';
 import { FormUtils } from '@app/shared/forms';
-import { isNil } from '@app/shared/functions';
+import {isNil, toBoolean} from '@app/shared/functions';
 import {AuthData} from "@app/account/account.model";
 
 @Component({
@@ -25,7 +25,11 @@ import {AuthData} from "@app/account/account.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthV2Form extends AppForm<AuthData> implements OnInit {
+
   readonly mobile: boolean;
+  protected showMnemonic = false;
+
+  @Input() canRegister: boolean;
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<AuthData>();
@@ -54,6 +58,8 @@ export class AuthV2Form extends AppForm<AuthData> implements OnInit {
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.canRegister = toBoolean(this.canRegister, true)
 
     // For DEV only: set the default user, for testing
     if (!environment.production && environment.dev?.auth) {
@@ -121,6 +127,23 @@ export class AuthV2Form extends AppForm<AuthData> implements OnInit {
   }
 
   /* -- protected functions -- */
+
+
+  protected toggleShowMnemonic(event?: Event) {
+    event?.preventDefault();
+    this.showMnemonic = !this.showMnemonic;
+    this.markForCheck();
+
+    // Auto hide
+    if (this.showMnemonic) {
+      setTimeout(() => {
+        if (this.showMnemonic) {
+          this.showMnemonic = false;
+          this.markForCheck();
+        }
+      }, 2000);
+    }
+  }
 
   protected markForCheck() {
     this._cd.markForCheck();

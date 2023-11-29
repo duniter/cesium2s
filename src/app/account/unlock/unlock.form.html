@@ -5,14 +5,14 @@
 
     </ion-item>
 
-    <ion-item>
+    <ion-item lines="none" class="ion-padding-top">
       <ion-input [formControl]="control"
                  [label]="'AUTH.PASSPHRASE'|translate"
+                 labelPlacement="floating"
                  [maxlength]="maxLength"
                  [minlength]="minLength"
-                 (ionChange)="onChange($event)"
-                 [maskito]="codeMask"
-                 [maskitoElement]="maskPredicate"
+                 [counter]="maxLength > 0"
+                 (ionInput)="onInput($event)"
                  required></ion-input>
       <ion-icon slot="end" name="checkmark" *ngIf="$valid|async"></ion-icon>
     </ion-item>

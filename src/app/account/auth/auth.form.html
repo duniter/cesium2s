@@ -59,28 +59,29 @@
     </ion-item>
 
     <!-- Pubkey v1 -->
-    <ion-item *ngIf="pubkey; let pubkey" @slideUpDownAnimation>
-      <ion-textarea [value]="pubkey"
-                 [label]="'COMMON.PUBKEY'|translate"
-                 labelPlacement="floating"
-                 [disabled]="true">
-      </ion-textarea>
-    </ion-item>
+    <ng-container *rxIf="account$; let account">
+      <ion-item *ngIf="account.meta?.publicKeyV1" @slideUpDownAnimation>
+        <ion-textarea [value]="account.meta.publicKeyV1"
+                      [label]="'COMMON.PUBKEY'|translate"
+                      labelPlacement="floating"
+                      [disabled]="true">
+        </ion-textarea>
+      </ion-item>
 
-    <!-- Address -->
-    <ion-item *ngIf="address; let address" @slideUpDownAnimation>
-      <ion-textarea [value]="address"
-                 class="ion-text-wrap"
-                 [label]="'COMMON.ADDRESS'|translate"
-                 labelPlacement="floating"
-                 [disabled]="true">
-      </ion-textarea>
-    </ion-item>
+      <!-- Address -->
+      <ion-item *ngIf="account.address" @slideUpDownAnimation>
+        <ion-textarea [value]="account.address"
+                   [label]="'COMMON.ADDRESS'|translate"
+                   labelPlacement="floating"
+                   [disabled]="true">
+        </ion-textarea>
+      </ion-item>
+    </ng-container>
 
   </ion-list>
 
   <!-- Not register yet ? -->
-  <p *ngIf="canRegister" class="padding" style="text-align: center;">
+  <p *ngIf="canRegister" class="ion-padding ion-text-center">
     <span translate>LOGIN.NO_ACCOUNT_QUESTION</span>
     <br/>
     <a (click)="register()">

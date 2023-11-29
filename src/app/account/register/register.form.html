@@ -1,14 +1,15 @@
 <swiper-container #swiper
                   [config]="swiperOptions"
                   [modules]="swiperModules"
-                  [class]="classList" >
+                  [class]="classList"
+                  (slideChangeTransitionStart)="updateState()">
   <!-- intro step -->
   <swiper-slide class="ion-padding">
     <ion-grid>
       <ion-row>
         <ion-col size="12">
           <ion-text>
-            <p *ngIf="currency$|async; let currency">
+            <p>
               {{'ACCOUNT.NEW.INTRO_WARNING_TIME'|translate:{name: currency?.displayName} }}
             </p>
           </ion-text>
@@ -31,29 +32,35 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-
-
   </swiper-slide>
 
   <!-- explanation 1 -->
   <swiper-slide class="ion-padding">
-    <p [innerHTML]="'ACCOUNT.NEW.STEP_1_HELP'|translate"></p>
-<!--    <img src="assets/account-step-1.png">-->
+    <ion-text>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_1_HELP'|translate"></p>
+    <!--    <img src="assets/account-step-1.png">-->
+    </ion-text>
   </swiper-slide>
 
   <!-- explanation 2 -->
   <swiper-slide class="ion-padding">
-    <p [innerHTML]="'ACCOUNT.NEW.STEP_2_HELP'|translate"></p>
+    <ion-text>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_2_HELP'|translate"></p>
+    </ion-text>
   </swiper-slide>
 
   <!-- explanation 3 -->
   <swiper-slide class="ion-padding">
-    <p [innerHTML]="'ACCOUNT.NEW.STEP_3_HELP'|translate: {currency: currency?.displayName}"></p>
+    <ion-text>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_3_HELP'|translate: {currency: currency?.displayName}"></p>
+    </ion-text>
   </swiper-slide>
 
   <!-- explanation 4 -->
   <swiper-slide class="ion-padding">
-    <p [innerHTML]="'ACCOUNT.NEW.STEP_4_HELP'|translate"></p>
+    <ion-text>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_4_HELP'|translate"></p>
+    </ion-text>
   </swiper-slide>
 
   <!-- generate mnemonic -->
@@ -111,14 +118,14 @@
   </swiper-slide>
 
   <!-- Explain code #1 -->
-  <swiper-slide>
+  <swiper-slide class="ion-padding">
     <ion-text>
       <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_1_HELP'|translate"></p>
     </ion-text>
   </swiper-slide>
 
   <!-- Explain code #2 -->
-  <swiper-slide>
+  <swiper-slide class="ion-padding">
     <ion-text>
       <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_2_HELP'|translate"></p>
     </ion-text>
@@ -147,7 +154,7 @@
       <ion-row>
         <ion-col class="ion-text-center">
           <!-- generate new -->
-          <ion-button color="light" (click)="generateCode()" translate>
+          <ion-button color="light" (click)="generateCode(true)" translate>
             ACCOUNT.NEW.BTN_GENERATE_NEW_CODE
           </ion-button>
         </ion-col>

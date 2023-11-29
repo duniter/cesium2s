@@ -20,14 +20,16 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="height: 100%" [scrollY]="scrollY">
+<ion-content>
   <app-auth-form #form
+                 [canRegister]="!auth"
                  (onSubmit)="doSubmit($event)"
                  (onCancel)="cancel()">
   </app-auth-form>
+</ion-content>
 
-  <ion-toolbar *ngIf="!mobile">
-
+<ion-footer *ngIf="!mobile">
+  <ion-toolbar>
     <ion-row class="ion-no-padding" nowrap>
       <ion-col></ion-col>
 
@@ -46,7 +48,5 @@
         </ion-button>
       </ion-col>
     </ion-row>
-
-
   </ion-toolbar>
-</ion-content>
+</ion-footer>

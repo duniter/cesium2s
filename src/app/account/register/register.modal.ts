@@ -6,7 +6,6 @@ import {FormUtils} from "@app/shared/forms";
 import {environment} from "@environments/environment";
 
 export interface RegisterModalOptions {
-  scrollY?: boolean;
 }
 @Component({
   selector: 'app-register-modal',

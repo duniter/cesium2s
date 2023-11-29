@@ -18,29 +18,46 @@
 
     <!-- Mnemonic -->
     <ion-item>
-      <ion-label color="medium">Mnemonic</ion-label>
-      <ion-input
-        formControlName="mnemonic"
-        type="password"
-        autocomplete="off"
-        required
-      >
-      </ion-input>
+      <ion-textarea *ngIf="showMnemonic; else hideMnemonic"
+                 formControlName="mnemonic"
+                 [label]="'LOGIN.MNEMONIC'|translate"
+                 labelPlacement="floating"
+                 autocomplete="off"
+                 required>
+      </ion-textarea>
+      <ng-template #hideMnemonic>
+        <ion-textarea  formControlName="mnemonic" type="password"
+                    [label]="'LOGIN.MNEMONIC'|translate"
+                    labelPlacement="floating"
+                    autocomplete="off"
+                    required>
+        </ion-textarea>
+      </ng-template>
+
+      <!-- show/hide button -->
+      <ion-button slot="end" (click)="toggleShowMnemonic($event)"
+                  fill="clear" color="medium"
+                  [tabindex]="-1">
+        <ion-icon slot="icon-only" [name]="showMnemonic ? 'eye-off': 'eye'" ></ion-icon>
+      </ion-button>
     </ion-item>
 
     <!-- Address -->
-    <ion-item>
-      <ion-label color="medium" translate>COMMON.ADDRESS</ion-label>
-      <ion-item>{{address}}</ion-item>
+    <ion-item *ngIf="address; let address" @slideUpDownAnimation>
+      <ion-textarea [value]="address"
+                    [label]="'COMMON.ADDRESS'|translate"
+                    labelPlacement="floating"
+                    [disabled]="true">
+      </ion-textarea>
     </ion-item>
   </ion-list>
 
   <!-- Not register yet ? -->
-  <p *ngIf="canRegister" class="padding" style="text-align: center">
-    <span translate>AUTH.NO_ACCOUNT_QUESTION</span>
+  <p *ngIf="canRegister" class="ion-padding ion-text-center">
+    <span translate>LOGIN.NO_ACCOUNT_QUESTION</span>
     <br />
     <a (click)="register()">
-      <span translate>AUTH.BTN_REGISTER</span>
+      <span translate>LOGIN.CREATE_ACCOUNT</span>
     </a>
   </p>
 </form>

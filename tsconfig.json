@@ -38,7 +38,6 @@
       "@polkadot/types": ["./node_modules/@polkadot/types"],
 
       // Node JS lib
-      "crypto": ["node_modules/crypto-browserify"],
       "stream": ["node_modules/stream-browserify"],
       "assert": ["node_modules/assert"],
       "http": ["node_modules/stream-http"],

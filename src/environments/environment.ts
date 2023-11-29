@@ -7,7 +7,7 @@ import {StorageDrivers} from "@app/shared/services/storage/storage.utils";
 import {AuthData} from "@app/account/account.model";
 
 export const environment = <Environment>{
-  production: true,
+  production: false,
 
   name: 'Cesium&sup2;',
 
@@ -29,12 +29,12 @@ export const environment = <Environment>{
     // peer: 'wss://gdev.librelois.fr/ws',
 
     auth: <AuthData>{
-      address: '5GAT6CJW8yVKwUuQc7sM5Kk9GZVTpbZYk9PfjNXtvnNgAJZ1',
       v1: {
         salt: 'test', password: 'test'
       },
       meta: {
-        name: 'Compte v1'
+        name: 'Compte test v1',
+        default: false
       }
     }
   },

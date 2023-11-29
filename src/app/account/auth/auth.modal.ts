@@ -8,10 +8,11 @@ import {AuthData} from "@app/account/account.model";
 
 export interface AuthModalOptions {
   auth?: boolean;
-  scrollY?: boolean;
   title?: string;
 }
+
 export declare type AuthModalRole = 'CANCEL'|'VALIDATE';
+
 @Component({
   selector: 'app-auth-modal',
   templateUrl: 'auth.modal.html',
@@ -29,7 +30,6 @@ export class AuthModal implements OnInit, AuthModalOptions {
   }
 
   @Input() auth = false; // false for login, true for auth
-  @Input() scrollY = false;
   @Input() title: string = null;
 
   @ViewChild('form', { static: true }) private form: AuthForm;
@@ -71,7 +71,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
       return this.viewCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
     }
     catch (err) {
-      this.form.error = err && err.message || err;
+      this.form.error = (err && err.message) || err;
       this.markAsLoaded();
 
       // Enable the form
