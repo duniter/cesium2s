@@ -101,8 +101,7 @@ export class AuthController implements IAuthController {
         modal = await this.modalCtrl.create({
           component: AuthModal,
           componentProps: <AuthModalOptions>{
-            auth: opts?.auth,
-            scrollY: false // TODO remove this !
+            auth: opts?.auth
           }
         });
         break;
@@ -110,8 +109,7 @@ export class AuthController implements IAuthController {
         modal = await this.modalCtrl.create({
           component: AuthV2Modal,
           componentProps: <AuthModalOptions>{
-            auth: opts?.auth,
-            scrollY: false // TODO remove this !
+            auth: opts?.auth
           }
         });
         break;
