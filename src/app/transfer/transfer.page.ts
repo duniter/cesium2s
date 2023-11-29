@@ -1,18 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Injector,
-  Input,
-  OnDestroy, OnInit,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
 import {Account} from "@app/account/account.model";
-import {ActionSheetOptions, IonModal, IonTextarea, ModalController, Platform, PopoverOptions} from "@ionic/angular";
+import {ActionSheetOptions, IonModal, ModalController, Platform, PopoverOptions} from "@ionic/angular";
 import {mergeMap, Observable, tap} from "rxjs";
 import {isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
-import {filter, first} from "rxjs/operators";
+import {filter} from "rxjs/operators";
 import {NetworkService} from "@app/network/network.service";
 import {Currency} from "@app/network/currency.model";
 import {NavigationEnd, Router} from "@angular/router";
@@ -22,7 +14,7 @@ import {Capacitor} from "@capacitor/core";
 import {CapacitorPlugins} from "@app/shared/capacitor/plugins";
 import {RxState} from "@rx-angular/state";
 import {AccountsService} from "@app/account/accounts.service";
-import {FormBuilder, Validators} from "@angular/forms";
+import {WotController} from "@app/wot/wot.controller";
 
 export interface TransferState extends AppPageState {
   currency: Currency;
@@ -77,7 +69,6 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   @Input() dismissOnSubmit: boolean = false; // True is modal
   @Input() showToastOnSubmit: boolean = true;
 
-  @ViewChild('wotModal') wotModal: IonModal;
   @ViewChild('qrCodeModal') qrCodeModal: IonModal;
 
   get valid(): boolean {
@@ -99,21 +90,15 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     protected accountService: AccountsService,
     protected networkService: NetworkService,
     protected modalCtrl: ModalController,
-    protected router: Router,
-    formBuilder: FormBuilder
+    protected wotCtrl: WotController,
+    protected router: Router
   ) {
     super({name: 'transfer',
       loadDueTime: 250,
       initialState: {
         recipient: {address: null, meta: null}
       }
-    },
-      formBuilder.group({
-        'account': [null, Validators.required],
-        'recipient': [null, Validators.required],
-        'amount': [null, Validators.required],
-        //'comment': [null, Validators.maxLength(255)],
-      }));
+    });
 
     this._state.connect('accounts', this.accountService.watchAll({positiveBalanceFirst: true})
       // DEBUG
@@ -162,7 +147,6 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
 
   async ngOnDestroy() {
     super.ngOnDestroy();
-    await this.wotModal?.dismiss();
     await this.qrCodeModal?.dismiss();
   }
 
@@ -171,11 +155,10 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
 
     this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
 
-    return {
-    };
+    return {};
   }
 
-  async selectAccount(event?: Event) {
+  async selectAccount() {
     const account = await this.accountService.selectAccount({
       minBalance: this.amount || 0,
       positiveBalanceFirst: true,
@@ -186,63 +169,21 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     }
   }
 
-
-  protected async focusFrom(event: UIEvent, textarea?: IonTextarea) {
-
-    if (this._autoOpenWotModal) {
-      await this.showWotModal(event);
-
-      if (textarea) {
-        const el = await textarea.getInputElement();
-        setTimeout( () => el.focus(), 250);
-      }
-    }
-
-  }
-
-
-  protected async showWotModal(event: UIEvent, breakpoint?: number) {
-    breakpoint = breakpoint || 0.25;
-
-    this._initialWotModalBreakpoint = breakpoint;
-
-    if (!this.wotModal.isCmpOpen) {
-      await this.wotModal.present();
-    }
-
-    // Set breakpoint
-    if (breakpoint > 0.25){
-      const currentBreakpoint = await this.wotModal.getCurrentBreakpoint();
-      if (breakpoint > currentBreakpoint) {
-        await this.wotModal.setCurrentBreakpoint(breakpoint);
-      }
-    }
-  }
-
-  protected async hideWotModal(event?: UIEvent) {
-    if (this.wotModal && this.wotModal.isCmpOpen) {
-      this._autoOpenWotModal = false;
-      await this.wotModal.dismiss();
-    }
-  }
-
-
-  setRecipient(recipient: string|Account): boolean {
+  setRecipient(recipient: string|Account) {
+    console.log(this._logPrefix + 'Selected recipient: ', recipient)
     if (typeof recipient === 'object') {
       this.recipient = recipient;
     }
     else {
       this.recipient = {address: recipient, meta: null};
     }
-    this.markForCheck();
-    return true;
   }
 
-  cancel(event?: UIEvent) {
+  cancel() {
     this.close();
   }
 
-  async submit(event?: UIEvent) {
+  async submit() {
     // Check valid
     if (!this.recipient || !this.account) return; // Skip
 
@@ -265,7 +206,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     }
   }
 
-  async close(data?: any) {
+  async close(data?: string) {
     // As a page
     if (this.routerOutlet) {
       console.debug('[transfer] Closing page with result: ', data);
@@ -278,9 +219,6 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     }
     // As a modal
     else {
-      // First close wot modal (if opened)
-      await this.hideWotModal();
-
       const modal = await this.modalCtrl.getTop();
       const hasModal = !!modal;
       if (hasModal) {
@@ -291,8 +229,24 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     return this.unload();
   }
 
-  async scanRecipient(event: UIEvent) {
+  async openWotModal(event: Event) {
+    event.preventDefault();
+
+    const searchText = this.recipient?.address;
+    const data = await this.wotCtrl.select({searchText});
+
+    if (!data) {
+      console.log('TODO cancelled')
+      return; // User cancelled
+    }
+
+    this.recipient = data;
+  }
+
+  async scanRecipient(event: Event) {
     if (!this._enableScan) return; // SKip
+
+    event.preventDefault();
 
     await BarcodeScanner.hideBackground(); // make background of WebView transparent
 
@@ -310,7 +264,6 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
 
   protected async ngOnUnload() {
     this.showComment = false;
-    await this.wotModal?.dismiss();
     await this.qrCodeModal?.dismiss();
     return {
       ...(await super.ngOnUnload()),

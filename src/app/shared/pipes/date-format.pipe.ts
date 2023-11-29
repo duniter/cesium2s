@@ -1,10 +1,7 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import {isMoment, Moment} from 'moment';
-import {DATE_ISO_PATTERN, fromDateISOString} from '../dates';
+import {fromDateISOString} from '../dates';
 import {TranslateService} from '@ngx-translate/core';
-import * as momentImported from 'moment';
-
-const moment = momentImported;
 
 @Pipe({
     name: 'dateFormat'
@@ -15,7 +12,7 @@ export class DateFormatPipe implements PipeTransform {
   private readonly dateTimePattern: string;
 
   constructor(
-      private translate: TranslateService
+      translate: TranslateService
     ) {
     const translations = translate.instant(['COMMON.DATE_PATTERN', 'COMMON.DATE_SHORT_PATTERN']);
     this.dateTimePattern = translations['COMMON.DATE_PATTERN'];

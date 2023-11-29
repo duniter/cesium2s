@@ -1,21 +1,8 @@
-import {
-  ActionSheetButton,
-  ActionSheetController,
-  ActionSheetOptions,
-  IonModal,
-  ModalController,
-  PopoverController
-} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {Injectable} from "@angular/core";
 import {PlatformService} from "@app/shared/services/platform.service";
-import {PopoverOptions} from "@ionic/core";
-import {ListItem, ListPopover, ListPopoverOptions} from "@app/shared/popover/list.popover";
-import {TranslateService} from "@ngx-translate/core";
-import {AuthModal, AuthModalOptions} from "@app/account/auth/auth.modal";
 import {Router} from "@angular/router";
-import {RegisterModal, RegisterModalOptions} from "@app/account/register/register.modal";
 import {TransferPage, TransferPageOptions} from "@app/transfer/transfer.page";
-import {Account} from "@app/account/account.model";
 
 @Injectable()
 export class TransferController {
@@ -24,17 +11,17 @@ export class TransferController {
 
   constructor(
     private platform: PlatformService,
-    private translate: TranslateService,
     private modalCtrl: ModalController,
     private router: Router
   ) {
   }
 
-  async transfer(event: UIEvent, opts?: TransferPageOptions): Promise<string|undefined> {
+  async transfer(opts?: TransferPageOptions): Promise<string> {
 
     if (this._mobile) {
       console.info('[transfer] Opening transfer page');
-      this.router.navigateByUrl('/transfer');
+      await this.router.navigateByUrl('/transfer');
+      return undefined;
     }
     else {
       console.info('[transfer] Opening transfer modal');

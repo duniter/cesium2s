@@ -7,11 +7,11 @@ import {StartableService} from "@app/shared/services/startable-service.class";
 @Injectable({
   providedIn: 'root'
 })
-export class StorageService extends StartableService<Storage> implements IStorage {
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class StorageService<T = any> extends StartableService<Storage> implements IStorage<T> {
 
   get driver(): string | undefined {
-    return this._data?.driver;
+    return this.storage?.driver;
   }
 
   constructor(private platform: Platform,
@@ -24,44 +24,41 @@ export class StorageService extends StartableService<Storage> implements IStorag
     await this.platform.ready();
     const storage = await this.storage.create();
     console.info(`[storage-service] Started using driver=${this.driver}`);
-
     return storage;
   }
 
-  async set(key: string, value: any) {
+  async set(key: string, value: T) {
     //if (this._debug) console.debug(`[storage-service] Set ${key} = `, value);
 
     if (!this.started) await this.ready();
-    return this._data.set(key, value);
+    return this.storage.set(key, value);
   }
 
-  async get(key: string): Promise<any> {
+  async get(key: string): Promise<T> {
     //if (this._debug) console.debug(`[storage-service] Get ${key}`);
     if (!this.started) await this.ready();
-    return this._data.get(key);
+    return this.storage.get(key);
   }
 
   async remove(key: string) {
     if (!this.started) await this.ready();
     //if (this._debug) console.debug(`[storage-service] Remove key ${key}`);
-    return this._data.remove(key);
+    return this.storage.remove(key);
   }
 
   async keys(): Promise<string[]> {
     //if (this._debug) console.debug(`[storage-service] Get keys`);
     if (!this.started) await this.ready();
-    const keys = await this._data.keys();
-    //if (this._debug) console.debug(`[storage-service] ${keys.length} keys found: `, keys);
-    return keys;
+    return await this.storage.keys();
   }
 
   async clear() {
     if (!this.started) await this.ready();
-    await this._data.clear();
+    await this.storage.clear();
   }
 
-  async forEach(iteratorCallback: (value: any, key: string, iterationNumber: Number) => any): Promise<void> {
+  async forEach(iteratorCallback: (value: T, key: string, iterationNumber: Number) => T): Promise<void> {
     if (!this.started) await this.ready();
-    return this._data.forEach(iteratorCallback);
+    return this.storage.forEach(iteratorCallback);
   }
 }

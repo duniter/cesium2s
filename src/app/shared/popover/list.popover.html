@@ -1,11 +1,8 @@
 <ion-content>
   <ion-list>
-    <ion-list-header *ngIf="title">{{title|translate}}</ion-list-header>
-    <ion-item *ngFor="let item of items"
-              [disabled]="item.disabled"
-              (click)="click(item.value)"
-              tappable>
-      {{item.label|translate}}
+    <ion-list-header *ngIf="title">{{ title | translate }}</ion-list-header>
+    <ion-item *ngFor="let item of items" [disabled]="item.disabled" (click)="click(item.value)" tappable>
+      {{ item.label | translate }}
     </ion-item>
   </ion-list>
 </ion-content>

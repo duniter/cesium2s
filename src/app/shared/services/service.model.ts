@@ -1,10 +1,14 @@
 import {getPropertyByPathAsString, isNotNil, isNotNilOrBlank, matchUpperCase, startsWithUpperCase} from "../functions";
 
-export declare type EmptyObject = {
-  [key: string]: any;
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export declare type ReadyAsyncFunction<T = any> = () => Promise<T>;
 
-export declare type FetchMoreFn<R, V = EmptyObject> = (variables?: V) => Promise<R>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export declare interface IWithReadyService<T = any> {
+  ready: ReadyAsyncFunction<T>;
+}
+
+export declare type FetchMoreFn<R, V = object> = (variables?: V) => Promise<R>;
 
 export declare interface LoadResult<T> {
   data: T[];
@@ -13,6 +17,7 @@ export declare interface LoadResult<T> {
   fetchMore?: FetchMoreFn<LoadResult<T>>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function suggestFromArray<T = any>(values: T[], searchText: any, opts?: {
   offset?: 0;
   size?: 0;
@@ -28,7 +33,6 @@ export function suggestFromArray<T = any>(values: T[], searchText: any, opts?: {
     const keys = opts && (opts.searchAttribute && [opts.searchAttribute] || opts.searchAttributes) || ['label'];
 
     // If wildcard, search using regexp
-    let filteredItems: T[];
     if ((searchText as string).indexOf('*') !== -1) {
       searchText = (searchText as string).replace('*', '.*');
       values = values.filter(v => keys.findIndex(key => matchUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1);

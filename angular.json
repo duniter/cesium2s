@@ -34,7 +34,8 @@
               "qrcode",
               "localforage",
               "localforage-cordovasqlitedriver",
-              "moment-timezone"
+              "moment-timezone",
+              "tweetnacl"
             ],
             "assets": [
               {

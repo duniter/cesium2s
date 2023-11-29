@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-import { WotLookupPage } from './wallet.page';
+import { WotLookupPage } from './wot-lookup.page';
 
-describe('FolderPage', () => {
+describe('WotLookupPage', () => {
   let component: WotLookupPage;
   let fixture: ComponentFixture<WotLookupPage>;
 

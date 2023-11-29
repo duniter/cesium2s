@@ -37,7 +37,7 @@ export class AppComponent {
     },
 
     { title: 'COMMON.BTN_SEND_MONEY', icon: 'paper-plane',
-      handle: (event) => this.transferController.transfer(event),
+      handle: () => this.transferController.transfer(),
       visible: () => !this.platform.mobile
     },
 

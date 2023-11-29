@@ -20,6 +20,7 @@ export class MapGetPipe implements PipeTransform {
 @Injectable({providedIn: 'root'})
 export class MapKeysPipe implements PipeTransform {
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transform(map: any): any[] {
     if (!map) return null;
     return Object.keys(map);
@@ -32,6 +33,7 @@ export class MapKeysPipe implements PipeTransform {
 @Injectable({providedIn: 'root'})
 export class MapValuesPipe implements PipeTransform {
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transform(map: any): any[] {
     if (!map) return null;
     return Object.values(map);

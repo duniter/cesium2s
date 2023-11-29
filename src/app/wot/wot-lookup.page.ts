@@ -4,11 +4,15 @@ import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
 import {Account} from "@app/account/account.model";
 import {Router} from "@angular/router";
 import {WotService} from "@app/wot/wot.service";
-import {WotSearchFilter} from "@app/wot/wot.model";
-import {toBoolean} from "@app/shared/functions";
-import {debounceTime, mergeMap, Observable} from "rxjs";
+import {WotSearchFilter, WotSearchFilterUtils} from "@app/wot/wot.model";
+import {isNilOrBlank, isNotNilOrBlank, toBoolean} from "@app/shared/functions";
+import {Observable} from "rxjs";
+import {filter, switchMap, tap, debounceTime, distinctUntilChanged, mergeMap} from "rxjs/operators";
+
 import {PredefinedColors} from "@app/shared/colors/colors.utils";
-import {RxStateSelect} from "@app/shared/decorator/state.decorator";
+import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
+import {RxState} from "@rx-angular/state";
+import {ModalController} from "@ionic/angular";
 
 
 export interface WotLookupState extends AppPageState {
@@ -17,41 +21,65 @@ export interface WotLookupState extends AppPageState {
   items: Account[];
 }
 
+export interface WotLookupOptions {
+  debounceTime?: number;
+  showToolbar?: boolean;
+  showSearchBar?: boolean;
+  showItemActions?: boolean;
+  toolbarColor?: PredefinedColors;
+  searchText?: string;
+  filter?: WotSearchFilter;
+}
+
 @Component({
   selector: 'app-wot-lookup',
   templateUrl: './wot-lookup.page.html',
   styleUrls: ['./wot-lookup.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [RxState]
 })
-export class WotLookupPage extends AppPage<WotLookupState> implements OnInit {
+export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, WotLookupOptions {
 
+  @RxStateSelect() protected items$: Observable<Account[]>;
+
+  @Input() modal = false;
   @Input() debounceTime = 650;
   @Input() showToolbar = true;
   @Input() showSearchBar = true;
-  @Output() searchClick = new EventEmitter<Event>();
-  @Output() itemClick = new EventEmitter<Account>();
-
   @Input() showItemActions: boolean;
   @Input() toolbarColor: PredefinedColors = 'primary';
+  @Input() @RxStateProperty() filter: WotSearchFilter;
+  @Input() @RxStateProperty() searchText: string;
 
-  @RxStateSelect() items$: Observable<Account[]>;
+  @Output() searchClick = new EventEmitter<Event>();
+  @Output() itemClick = new EventEmitter<Account>();
+  @Output() closeClick = new EventEmitter<Account>();
+
 
   constructor(private router: Router,
-              private wotService: WotService
+              private wotService: WotService,
+              private modalCtrl: ModalController
               ) {
     super({name: 'wot-lookup-page'});
 
     this._state.connect('filter',
-      this._state.select('searchText')
-        .pipe(debounceTime(this.debounceTime)),
+      this._state.select('loading').pipe(
+        filter(loading => loading === false),
+        switchMap(() => this._state.select('searchText')),
+        distinctUntilChanged(),
+        tap(() => this.markAsLoading()),
+        debounceTime(this.debounceTime),
+      ),
       (s, text) => {
-          return {
-            ...s.filter,
-            text
-          }
-        });
+        return {
+          ...s.filter,
+          text: isNilOrBlank(text) ? undefined : text,
+          last: isNilOrBlank(text) ? s.filter?.last : undefined
+        }
+      });
     this._state.connect('items',
       this._state.select('filter').pipe(
+        distinctUntilChanged(WotSearchFilterUtils.isEquals),
         mergeMap(filter => this.search(filter))
       ));
   }
@@ -59,25 +87,31 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit {
   ngOnInit() {
     super.ngOnInit();
     this.showItemActions = toBoolean(this.showItemActions, !this.itemClick.observed);
+
+    if (this.modal) {
+      this.registerSubscription(
+        this.itemClick.subscribe(item => this.modalCtrl.dismiss(item))
+      )
+
+      this.registerSubscription(
+        this.closeClick.subscribe(() => this.modalCtrl.dismiss())
+      )
+    }
   }
 
   protected async ngOnLoad(): Promise<WotLookupState> {
 
     await this.wotService.ready();
 
-    const items = await this.search({last: true})
+    const filter = !WotSearchFilterUtils.isEmpty(this.filter) && this.filter
+      || (isNotNilOrBlank(this.searchText) && {text:this.searchText})
+      || {last: true};
 
-    return <WotLookupState>{
-      searchText: null,
-      filter: {},
-      items
-    };
+    return <WotLookupState>{ filter };
   }
 
   async search(filter?: WotSearchFilter): Promise<Account[]> {
-    this.log('search:', arguments);
-
-    this.markAsLoading();
+    this.log('search:', filter);
 
     try {
       return await this.wotService.search(filter);
@@ -87,7 +121,6 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit {
     }
     finally {
       this.markAsLoaded();
-      this.markForCheck();
     }
   }
 
@@ -111,11 +144,11 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit {
     super.markAsLoading();
   }
 
-  async searchChanged(event: CustomEvent<any>, value: string) {
+  async searchChanged(event: CustomEvent, value: string) {
     if (!event || event.defaultPrevented) return;
     event.preventDefault();
     event.stopPropagation();
 
-    this._state.set('searchText', (_) => value);
+    this.searchText = value;
   }
 }

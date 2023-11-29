@@ -9,46 +9,44 @@
     <!-- error -->
     <ion-item lines="none" *ngIf="error && !loading" @slideUpDownAnimation>
       <ion-icon color="danger" slot="start" name="alert-circle"></ion-icon>
-      <ion-label
-        color="danger"
-        class="error"
-        [innerHTML]="error|translate"
-      ></ion-label>
+      <ion-label color="danger" class="error" [innerHTML]="error | translate"></ion-label>
     </ion-item>
 
     <!-- Mnemonic -->
     <ion-item>
-      <ion-textarea *ngIf="showMnemonic; else hideMnemonic"
-                 formControlName="mnemonic"
-                 [label]="'LOGIN.MNEMONIC'|translate"
-                 labelPlacement="floating"
-                 autocomplete="off"
-                 required>
-      </ion-textarea>
+      <ion-textarea
+        *ngIf="showMnemonic; else hideMnemonic"
+        formControlName="mnemonic"
+        [label]="'LOGIN.MNEMONIC' | translate"
+        labelPlacement="floating"
+        autocomplete="off"
+        required
+      ></ion-textarea>
       <ng-template #hideMnemonic>
-        <ion-textarea  formControlName="mnemonic" type="password"
-                    [label]="'LOGIN.MNEMONIC'|translate"
-                    labelPlacement="floating"
-                    autocomplete="off"
-                    required>
-        </ion-textarea>
+        <ion-textarea
+          formControlName="mnemonic"
+          type="password"
+          [label]="'LOGIN.MNEMONIC' | translate"
+          labelPlacement="floating"
+          autocomplete="off"
+          required
+        ></ion-textarea>
       </ng-template>
 
       <!-- show/hide button -->
-      <ion-button slot="end" (click)="toggleShowMnemonic($event)"
-                  fill="clear" color="medium"
-                  [tabindex]="-1">
-        <ion-icon slot="icon-only" [name]="showMnemonic ? 'eye-off': 'eye'" ></ion-icon>
+      <ion-button slot="end" (click)="toggleShowMnemonic($event)" fill="clear" color="medium" [tabindex]="-1">
+        <ion-icon slot="icon-only" [name]="showMnemonic ? 'eye-off' : 'eye'"></ion-icon>
       </ion-button>
     </ion-item>
 
     <!-- Address -->
     <ion-item *ngIf="address; let address" @slideUpDownAnimation>
-      <ion-textarea [value]="address"
-                    [label]="'COMMON.ADDRESS'|translate"
-                    labelPlacement="floating"
-                    [disabled]="true">
-      </ion-textarea>
+      <ion-textarea
+        [value]="address"
+        [label]="'COMMON.ADDRESS' | translate"
+        labelPlacement="floating"
+        [disabled]="true"
+      ></ion-textarea>
     </ion-item>
   </ion-list>
 

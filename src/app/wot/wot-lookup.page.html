@@ -1,11 +1,16 @@
 <ion-header [translucent]="true" *ngIf="showToolbar">
   <ion-toolbar [color]="toolbarColor">
-    <ion-buttons slot="start">
+    <ion-buttons slot="start" *ngIf="!modal">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title translate>MENU.WOT</ion-title>
     <ion-buttons slot="end">
       <ng-content select="[toolbar-end]"></ng-content>
+
+      <!-- close -->
+      <ion-button fill="clear" *ngIf="closeClick.observed" (click)="closeClick.emit($event)" translate>
+        COMMON.BTN_CLOSE
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -18,26 +23,24 @@
   </ion-header>
 
   <div id="container">
-
-    <ion-searchbar *ngIf="showSearchBar"
-                   #searchBar
-                   inputmode="search"
-                   autocomplete="off"
-                   animated="true"
-                   showClearButton="true"
-                   [debounce]="debounceTime"
-                   (ionClear)="markAsLoading()"
-                   (ionInput)="markAsLoading()"
-                   (ionChange)="searchChanged($event, $event.detail.value)"
-                   (search)="searchChanged($event, searchBar.value)"
-                   [placeholder]="'WOT.SEARCH_HELP'|translate"
-                   (click)="searchClick.emit($event)">
-    </ion-searchbar>
+    <ion-searchbar
+      *ngIf="showSearchBar"
+      #searchBar
+      inputmode="search"
+      autocomplete="off"
+      animated="true"
+      showClearButton="true"
+      [debounce]="debounceTime"
+      (ionClear)="markAsLoading()"
+      (ionInput)="markAsLoading()"
+      (ionChange)="searchChanged($event, $event.detail.value)"
+      (search)="searchChanged($event, searchBar.value)"
+      [placeholder]="'WOT.SEARCH_HELP' | translate"
+      (click)="searchClick.emit($event)"
+    ></ion-searchbar>
 
     <ion-list>
-
       <ng-container *ngIf="loading; else items">
-
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
@@ -51,37 +54,40 @@
             </ion-avatar>
             <ng-template #iconPerson>
               <ion-avatar slot="start">
-                <svg width="40" width="40" [data-jdenticon-value]="item.data?.randomId||item.address"></svg>
+                <svg width="40" width="40" [data-jdenticon-value]="item.data?.randomId || item.address"></svg>
               </ion-avatar>
             </ng-template>
             <ion-label>
-              <h2>{{item.meta?.name}}</h2>
-              <p>{{item.address|addressFormat}}</p>
+              <h2>{{ item.meta?.name }}</h2>
+              <p>{{ item.address | addressFormat }}</p>
             </ion-label>
-            <ion-button slot="end" *ngIf="showItemActions && !mobile" (click)="transfer(item)" [title]="'BTN_SEND_MONEY'|translate">
+            <ion-button
+              slot="end"
+              *ngIf="showItemActions && !mobile"
+              (click)="transfer(item)"
+              [title]="'BTN_SEND_MONEY' | translate"
+            >
               <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
             </ion-button>
           </ion-item>
 
           <ion-item-options *ngIf="mobile && showItemActions">
-            <ion-item-option (click)="transfer(item)" [title]="'BTN_SEND_MONEY'|translate">
+            <ion-item-option (click)="transfer(item)" [title]="'BTN_SEND_MONEY' | translate">
               <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
       </ng-template>
-
     </ion-list>
   </div>
 </ion-content>
-
 
 <ng-template #itemSkeleton>
   <ion-item>
     <ion-icon slot="start" name="person"></ion-icon>
     <ion-label>
-      <h2><ion-skeleton-text animated style="width: 20%;"></ion-skeleton-text></h2>
-      <p><ion-skeleton-text animated style="width: 50%;"></ion-skeleton-text></p>
+      <h2><ion-skeleton-text animated style="width: 20%"></ion-skeleton-text></h2>
+      <p><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></p>
     </ion-label>
   </ion-item>
 </ng-template>

@@ -17,7 +17,7 @@ export class DateDiffDurationPipe implements PipeTransform {
     private translate: TranslateService) {
   }
 
-  transform(value: { startValue: string | Moment; endValue: string | Moment }, args?: any): string | Promise<string> {
+  transform(value: { startValue: string | Moment; endValue: string | Moment }): string | Promise<string> {
     if (!value.startValue || !value.endValue) return '';
 
     const startDate = fromDateISOString(value.startValue);

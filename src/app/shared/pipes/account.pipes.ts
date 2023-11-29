@@ -1,9 +1,6 @@
-import {ChangeDetectorRef, Directive, inject, Pipe, PipeTransform} from '@angular/core';
-import {NumberFormatPipe} from "@app/shared/pipes/number-format.pipe";
-import {NetworkService} from "@app/network/network.service";
-import {Account, AccountData, AccountUtils} from "@app/account/account.model";
-import {equals, getPropertyByPath, isNotNilOrBlank} from "@app/shared/functions";
-import {AddressFormatPipe} from "@app/shared/pipes/address.pipes";
+import {ChangeDetectorRef, inject, Pipe, PipeTransform} from '@angular/core';
+import {Account, AccountUtils} from "@app/account/account.model";
+import {equals, getPropertyByPath} from "@app/shared/functions";
 import {Subscription} from "rxjs";
 import {formatAddress} from "@app/shared/currencies";
 import {AccountsService} from "@app/account/accounts.service";
@@ -86,7 +83,9 @@ export declare type AccountPropertyPipeOptions<T> = string | {key?: string; defa
   name: 'accountProperty',
   pure: false
 })
-export class AccountPropertyPipe<T = any, O extends AccountPropertyPipeOptions<T> = AccountPropertyPipeOptions<T>> extends AccountAbstractPipe<T, O> {
+export class AccountPropertyPipe<T = any, O extends AccountPropertyPipeOptions<T> = AccountPropertyPipeOptions<T>>
+  extends AccountAbstractPipe<T, O>
+  implements PipeTransform {
 
   constructor(_ref: ChangeDetectorRef) {
     super(_ref);
@@ -105,7 +104,7 @@ export class AccountPropertyPipe<T = any, O extends AccountPropertyPipeOptions<T
   name: 'balance',
   pure: false
 })
-export class AccountBalancePipe extends AccountAbstractPipe<number, void> {
+export class AccountBalancePipe extends AccountAbstractPipe<number, void>  implements PipeTransform {
 
   constructor(_ref: ChangeDetectorRef) {
     super(_ref);
@@ -120,7 +119,7 @@ export class AccountBalancePipe extends AccountAbstractPipe<number, void> {
   name: 'accountName',
   pure: false
 })
-export class AccountNamePipe extends AccountAbstractPipe<string, void> {
+export class AccountNamePipe extends AccountAbstractPipe<string, void>  implements PipeTransform{
 
   constructor(cd: ChangeDetectorRef) {
     super(cd);

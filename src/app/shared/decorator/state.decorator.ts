@@ -13,7 +13,7 @@ export function RxStateRegister(): PropertyDecorator {
     // DEBUG
     //console.debug(`${target.constructor?.name} @State() ${key}`);
 
-    if (!!target[STATE_VAR_NAME_KEY]) throw new Error('Cannot define more than one @State() in class hierarchy');
+    if (target[STATE_VAR_NAME_KEY]) throw new Error('Cannot define more than one @State() in class hierarchy');
 
     Object.defineProperty(target, STATE_VAR_NAME_KEY, {
       value: key,

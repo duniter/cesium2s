@@ -7,7 +7,7 @@ export function abbreviate(currency: string): string {
     const sepChars = ['-', '_', ' '];
     let unit = '';
     for (let i = 0; i < currency.length; i++) {
-      var c = currency[i];
+      const c = currency[i];
       if (i === 0) {
         unit = (c === 'g' || c === 'G') ? 'Ğ' : c ;
       }

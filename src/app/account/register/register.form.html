@@ -1,8 +1,10 @@
-<swiper-container #swiper
-                  [config]="swiperOptions"
-                  [modules]="swiperModules"
-                  [class]="classList"
-                  (slideChangeTransitionStart)="updateState()">
+<swiper-container
+  #swiper
+  [config]="swiperOptions"
+  [modules]="swiperModules"
+  [class]="classList"
+  (slideChangeTransitionStart)="updateState()"
+>
   <!-- intro step -->
   <swiper-slide class="ion-padding">
     <ion-grid>
@@ -10,7 +12,7 @@
         <ion-col size="12">
           <ion-text>
             <p>
-              {{'ACCOUNT.NEW.INTRO_WARNING_TIME'|translate:{name: currency?.displayName} }}
+              {{ 'ACCOUNT.NEW.INTRO_WARNING_TIME' | translate : { name: currency?.displayName } }}
             </p>
           </ion-text>
         </ion-col>
@@ -19,16 +21,16 @@
         <ion-col>
           <ion-card color="light">
             <ion-card-content>
-              <ion-text  [innerHTML]="'ACCOUNT.NEW.INTRO_WARNING_SECURITY'|translate"></ion-text><br/>
-              <ion-text color="medium" [innerHTML]="'ACCOUNT.NEW.INTRO_WARNING_SECURITY_HELP'|translate"></ion-text>
+              <ion-text [innerHTML]="'ACCOUNT.NEW.INTRO_WARNING_SECURITY' | translate"></ion-text>
+              <br />
+              <ion-text color="medium" [innerHTML]="'ACCOUNT.NEW.INTRO_WARNING_SECURITY_HELP' | translate"></ion-text>
             </ion-card-content>
           </ion-card>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-text [innerHTML]="'ACCOUNT.NEW.INTRO_HELP'|translate">
-          </ion-text>
+          <ion-text [innerHTML]="'ACCOUNT.NEW.INTRO_HELP' | translate"></ion-text>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -37,49 +39,47 @@
   <!-- explanation 1 -->
   <swiper-slide class="ion-padding">
     <ion-text>
-      <p [innerHTML]="'ACCOUNT.NEW.STEP_1_HELP'|translate"></p>
-    <!--    <img src="assets/account-step-1.png">-->
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_1_HELP' | translate"></p>
+      <!--    <img src="assets/account-step-1.png">-->
     </ion-text>
   </swiper-slide>
 
   <!-- explanation 2 -->
   <swiper-slide class="ion-padding">
     <ion-text>
-      <p [innerHTML]="'ACCOUNT.NEW.STEP_2_HELP'|translate"></p>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_2_HELP' | translate"></p>
     </ion-text>
   </swiper-slide>
 
   <!-- explanation 3 -->
   <swiper-slide class="ion-padding">
     <ion-text>
-      <p [innerHTML]="'ACCOUNT.NEW.STEP_3_HELP'|translate: {currency: currency?.displayName}"></p>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_3_HELP' | translate : { currency: currency?.displayName }"></p>
     </ion-text>
   </swiper-slide>
 
   <!-- explanation 4 -->
   <swiper-slide class="ion-padding">
     <ion-text>
-      <p [innerHTML]="'ACCOUNT.NEW.STEP_4_HELP'|translate"></p>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_4_HELP' | translate"></p>
     </ion-text>
   </swiper-slide>
 
   <!-- generate mnemonic -->
   <swiper-slide>
-    <ion-grid *ngIf="form|formGetValue:'words'; let words; else wordsSkeleton" class="words">
+    <ion-grid *ngIf="form | formGetValue : 'words'; let words; else: wordsSkeleton" class="words">
       <ion-row>
         <ion-col size="12">
-          <p [innerHTML]="'ACCOUNT.NEW.STEP_MNEMONIC_HELP'|translate"></p>
+          <p [innerHTML]="'ACCOUNT.NEW.STEP_MNEMONIC_HELP' | translate"></p>
         </ion-col>
       </ion-row>
 
       <!-- words -->
       <ion-row class="words">
-        <ion-col *ngFor="let word of words; index as index"
-                 size="3"
-                 class="ion-text-center">
+        <ion-col *ngFor="let word of words; index as index" size="3" class="ion-text-center">
           <ion-text>
-            <ion-text color="medium">{{index+1}}</ion-text>
-            <h4>{{word}}</h4>
+            <ion-text color="medium">{{ index + 1 }}</ion-text>
+            <h4>{{ word }}</h4>
           </ion-text>
         </ion-col>
       </ion-row>
@@ -92,9 +92,7 @@
           </ion-button>
 
           <!-- ok -->
-          <ion-button color="primary" (click)="toggleCanNext()" translate>
-            ACCOUNT.NEW.BTN_WROTE_MY_PHRASE
-          </ion-button>
+          <ion-button color="primary" (click)="toggleCanNext()" translate>ACCOUNT.NEW.BTN_WROTE_MY_PHRASE</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -102,15 +100,15 @@
 
   <!-- check word -->
   <swiper-slide>
-    <ion-list *ngIf="form|formGetValue:'wordNumber' as wordNumber">
+    <ion-list *ngIf="form | formGetValue : 'wordNumber' as wordNumber">
       <ion-item lines="none">
         <ion-text>
-          <p [innerHTML]="'ACCOUNT.NEW.STEP_CHECK_WORD_HELP'|translate: {number: wordNumber}"></p>
+          <p [innerHTML]="'ACCOUNT.NEW.STEP_CHECK_WORD_HELP' | translate : { number: wordNumber }"></p>
         </ion-text>
       </ion-item>
 
       <ion-item>
-        <ion-label color="medium">{{'ACCOUNT.NEW.INPUT_WORD'|translate: {number: wordNumber} }}</ion-label>
+        <ion-label color="medium">{{ 'ACCOUNT.NEW.INPUT_WORD' | translate : { number: wordNumber } }}</ion-label>
         <ion-input (ionChange)="checkWord($event.detail.value)"></ion-input>
         <ion-icon slot="end" name="checkmark" *ngIf="slideState.canNext"></ion-icon>
       </ion-item>
@@ -120,24 +118,23 @@
   <!-- Explain code #1 -->
   <swiper-slide class="ion-padding">
     <ion-text>
-      <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_1_HELP'|translate"></p>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_1_HELP' | translate"></p>
     </ion-text>
   </swiper-slide>
 
   <!-- Explain code #2 -->
   <swiper-slide class="ion-padding">
     <ion-text>
-      <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_2_HELP'|translate"></p>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_2_HELP' | translate"></p>
     </ion-text>
   </swiper-slide>
 
   <!-- Secret code -->
   <swiper-slide>
-
     <ion-grid>
       <ion-row>
         <ion-col size="12">
-          <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_3_HELP'|translate"></p>
+          <p [innerHTML]="'ACCOUNT.NEW.STEP_CODE_3_HELP' | translate"></p>
         </ion-col>
         <ion-col size="12">
           <ion-label color="medium" translate>ACCOUNT.NEW.YOUR_SECRET_CODE</ion-label>
@@ -145,7 +142,7 @@
         <ion-col size="12" class="ion-padding-top">
           <ion-item>
             <ion-text class="ion-text-center" style="width: 100%">
-              <h2>{{form|formGetValue: 'code'}}</h2>
+              <h2>{{ form | formGetValue : 'code' }}</h2>
             </ion-text>
           </ion-item>
         </ion-col>
@@ -160,48 +157,45 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-
   </swiper-slide>
 
   <!-- check code -->
   <swiper-slide>
-    <app-unlock-form [control]="form|formGetControl: 'codeConfirmation'"
-                     helpMessage="ACCOUNT.NEW.STEP_CHECK_CODE_HELP"
-      (change)="checkCodeConfirmation()">
-
-    </app-unlock-form>
+    <app-unlock-form
+      [control]="form | formGetControl : 'codeConfirmation'"
+      helpMessage="ACCOUNT.NEW.STEP_CHECK_CODE_HELP"
+      (change)="checkCodeConfirmation()"
+    ></app-unlock-form>
   </swiper-slide>
 
   <!-- congratulation ! -->
   <swiper-slide>
     <ion-row>
       <ion-col size="12">
-        <p [innerHTML]="'ACCOUNT.NEW.STEP_CONGRATULATION_1_HELP'|translate"></p>
+        <p [innerHTML]="'ACCOUNT.NEW.STEP_CONGRATULATION_1_HELP' | translate"></p>
       </ion-col>
       <ion-col size="12" class="ion-padding-top">
         <ion-item>
           <ion-text class="ion-text-center" style="width: 100%">
-            {{form|formGetValue: 'address'}}
+            {{ form | formGetValue : 'address' }}
           </ion-text>
         </ion-item>
       </ion-col>
       <ion-col size="12" class="ion-padding-top">
-        <p [innerHTML]="'ACCOUNT.NEW.STEP_CONGRATULATION_2_HELP'|translate"></p>
+        <p [innerHTML]="'ACCOUNT.NEW.STEP_CONGRATULATION_2_HELP' | translate"></p>
       </ion-col>
       <ion-col size="12" class="ion-padding-top">
         <ion-item>
           <ion-text class="ion-text-center" style="width: 100%">
-            <h2>{{form|formGetValue: 'address'|addressFormat}}</h2>
+            <h2>{{ form | formGetValue : 'address' | addressFormat }}</h2>
           </ion-text>
         </ion-item>
-
       </ion-col>
     </ion-row>
 
     <ng-content select="[last]"></ng-content>
   </swiper-slide>
 </swiper-container>
-
 
 <ng-template #wordsSkeleton>
   <ion-grid>
@@ -223,15 +217,16 @@
     <ng-container [ngTemplateOutlet]="wordSkeleton"></ng-container>
     <ng-container [ngTemplateOutlet]="wordSkeleton"></ng-container>
   </ion-row>
-
 </ng-template>
 
 <ng-template #wordSkeleton>
   <ion-col size="3">
     <ion-text class="ion-text-center">
       <span><ion-skeleton-text style="width: 5%"></ion-skeleton-text></span>
-      <h4>&nbsp;<ion-skeleton-text animated style="width: 40%"></ion-skeleton-text></h4>
+      <h4>
+        &nbsp;
+        <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
+      </h4>
     </ion-text>
   </ion-col>
-
 </ng-template>

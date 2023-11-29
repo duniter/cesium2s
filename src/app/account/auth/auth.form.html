@@ -1,89 +1,92 @@
 <form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" (keyup.enter)="doSubmit($event)">
-
   <ion-list>
     <!-- error -->
     <ion-item lines="none" *ngIf="error && !loading" @slideUpDownAnimation>
       <ion-icon color="danger" slot="start" name="alert-circle"></ion-icon>
-      <ion-label color="danger" class="error" [innerHTML]="error|translate"></ion-label>
+      <ion-label color="danger" class="error" [innerHTML]="error | translate"></ion-label>
     </ion-item>
 
     <!-- Salt -->
     <ion-item>
-      <ion-input *ngIf="showSalt; else hideSalt" formControlName="salt"
-                 [label]="'LOGIN.SALT'|translate"
-                 labelPlacement="floating"
-                 autocomplete="off"
-                 required>
-      </ion-input>
+      <ion-input
+        *ngIf="showSalt; else hideSalt"
+        formControlName="salt"
+        [label]="'LOGIN.SALT' | translate"
+        labelPlacement="floating"
+        autocomplete="off"
+        required
+      ></ion-input>
       <ng-template #hideSalt>
-        <ion-input  formControlName="salt" type="password"
-                   [label]="'LOGIN.SALT'|translate"
-                   labelPlacement="floating"
-                   autocomplete="off"
-                   required>
-        </ion-input>
+        <ion-input
+          formControlName="salt"
+          type="password"
+          [label]="'LOGIN.SALT' | translate"
+          labelPlacement="floating"
+          autocomplete="off"
+          required
+        ></ion-input>
       </ng-template>
 
       <!-- show/hide button -->
-      <ion-button slot="end" (click)="toggleShowSalt($event)"
-                  fill="clear" color="medium"
-                  [tabindex]="-1">
-        <ion-icon slot="icon-only" [name]="showSalt ? 'eye-off': 'eye'" ></ion-icon>
+      <ion-button slot="end" (click)="toggleShowSalt($event)" fill="clear" color="medium" [tabindex]="-1">
+        <ion-icon slot="icon-only" [name]="showSalt ? 'eye-off' : 'eye'"></ion-icon>
       </ion-button>
     </ion-item>
 
     <!-- Password -->
     <ion-item>
-      <ion-input *ngIf="showPwd; else hidePwd"
-                 formControlName="password"
-                 [label]="'LOGIN.PASSWORD'|translate"
-                 labelPlacement="floating"
-                 autocomplete="off"
-                 required>
-      </ion-input>
+      <ion-input
+        *ngIf="showPwd; else hidePwd"
+        formControlName="password"
+        [label]="'LOGIN.PASSWORD' | translate"
+        labelPlacement="floating"
+        autocomplete="off"
+        required
+      ></ion-input>
       <ng-template #hidePwd>
-        <ion-input formControlName="password" type="password"
-                   [label]="'LOGIN.PASSWORD'|translate"
-                   labelPlacement="floating"
-                   autocomplete="off"
-                   required>
-        </ion-input>
+        <ion-input
+          formControlName="password"
+          type="password"
+          [label]="'LOGIN.PASSWORD' | translate"
+          labelPlacement="floating"
+          autocomplete="off"
+          required
+        ></ion-input>
       </ng-template>
 
       <!-- show/hide button -->
-      <ion-button slot="end" (click)="toggleShowPwd($event)"
-                  fill="clear" color="medium"
-                  [tabindex]="-1">
-        <ion-icon slot="icon-only" [name]="showPwd ? 'eye-off': 'eye'" ></ion-icon>
+      <ion-button slot="end" (click)="toggleShowPwd($event)" fill="clear" color="medium" [tabindex]="-1">
+        <ion-icon slot="icon-only" [name]="showPwd ? 'eye-off' : 'eye'"></ion-icon>
       </ion-button>
     </ion-item>
 
     <!-- Pubkey v1 -->
     <ng-container *rxIf="account$; let account">
       <ion-item *ngIf="account.meta?.publicKeyV1" @slideUpDownAnimation>
-        <ion-textarea [value]="account.meta.publicKeyV1"
-                      [label]="'COMMON.PUBKEY'|translate"
-                      labelPlacement="floating"
-                      [disabled]="true">
-        </ion-textarea>
+        <ion-textarea
+          [value]="account.meta.publicKeyV1"
+          [label]="'COMMON.PUBKEY' | translate"
+          labelPlacement="floating"
+          [disabled]="true"
+        ></ion-textarea>
       </ion-item>
 
       <!-- Address -->
       <ion-item *ngIf="account.address" @slideUpDownAnimation>
-        <ion-textarea [value]="account.address"
-                   [label]="'COMMON.ADDRESS'|translate"
-                   labelPlacement="floating"
-                   [disabled]="true">
-        </ion-textarea>
+        <ion-textarea
+          [value]="account.address"
+          [label]="'COMMON.ADDRESS' | translate"
+          labelPlacement="floating"
+          [disabled]="true"
+        ></ion-textarea>
       </ion-item>
     </ng-container>
-
   </ion-list>
 
   <!-- Not register yet ? -->
   <p *ngIf="canRegister" class="ion-padding ion-text-center">
     <span translate>LOGIN.NO_ACCOUNT_QUESTION</span>
-    <br/>
+    <br />
     <a (click)="register()">
       <span translate>LOGIN.CREATE_ACCOUNT</span>
     </a>

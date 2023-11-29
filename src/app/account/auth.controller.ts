@@ -16,7 +16,6 @@ import {RegisterModal, RegisterModalOptions} from "@app/account/register/registe
 import {
   Account,
   IAuthController,
-  LoginEvent,
   LoginMethods,
   LoginOptions,
   SelectAccountOptions,
@@ -25,6 +24,7 @@ import {
 import {AuthV2Modal} from "@app/account/auth/authv2.modal";
 import {UnlockModal} from "@app/account/unlock/unlock.modal";
 import {AccountListComponent, AccountListComponentInputs} from "@app/account/list/account-list.component";
+import {AppEvent} from "@app/shared/types";
 
 @Injectable()
 export class AuthController implements IAuthController {
@@ -51,7 +51,7 @@ export class AuthController implements IAuthController {
   ) {
   }
 
-  async login(event?: LoginEvent, opts?: LoginOptions): Promise<Account> {
+  async login(event?: AppEvent, opts?: LoginOptions): Promise<Account> {
 
     let loginMethod = opts?.loginMethod;
 

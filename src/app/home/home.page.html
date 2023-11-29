@@ -3,16 +3,13 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-buttons slot="end" >
+    <ion-buttons slot="end">
       <ng-container [ngTemplateOutlet]="localeButton"></ng-container>
     </ion-buttons>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content [fullscreen]="true" class="circle-bg-dark">
-
-
   <!-- Desktop: translucent top toolbar -->
   <div *ngIf="!mobile">
     <ion-toolbar translucent>
@@ -25,27 +22,24 @@
       </ion-buttons>
 
       <ion-buttons slot="end">
-        <ng-container *ngTemplateOutlet="localeButton; context: {$implicit: 'light'}"></ng-container>
+        <ng-container *ngTemplateOutlet="localeButton; context: { $implicit: 'light' }"></ng-container>
       </ion-buttons>
     </ion-toolbar>
   </div>
 
   <div id="container">
-
-    <ion-card  class="main welcome ion-padding ion-text-center ion-align-self-center">
+    <ion-card class="main welcome ion-padding ion-text-center ion-align-self-center">
       <ion-card-header>
         <div class="logo"></div>
-        <ion-card-subtitle [innerHTML]="'HOME.WELCOME'|translate">
-        </ion-card-subtitle>
+        <ion-card-subtitle [innerHTML]="'HOME.WELCOME' | translate"></ion-card-subtitle>
         <ion-card-title class="ion-text-center">
           <ion-spinner *rxIf="loading; else message"></ion-spinner>
           <ng-template #message>
-            {{'HOME.MESSAGE'|translate:{currency: currency$|async} }}
+            {{ 'HOME.MESSAGE' | translate : { currency: currency$ | async } }}
           </ng-template>
         </ion-card-title>
       </ion-card-header>
       <ion-card-content *ngIf="!loading" @fadeInAnimation>
-
         <ng-container *ngIf="isLogin; else noAccount">
           <!-- my account -->
           <ion-button expand="block" [routerLink]="'/wallet'">
@@ -61,8 +55,10 @@
 
           <!-- disconnect button -->
           <p [class.cdk-visually-hidden]="mobile" *rxIf="defaultAccount$; let defaultAccount">
-            <ion-text [innerHTML]="'HOME.NOT_YOUR_ACCOUNT_QUESTION' | translate: {pubkey: (defaultAccount|accountName) }"></ion-text>
-            <br/>
+            <ion-text
+              [innerHTML]="'HOME.NOT_YOUR_ACCOUNT_QUESTION' | translate : { pubkey: (defaultAccount | accountName) }"
+            ></ion-text>
+            <br />
             <ion-text>
               <a href="#" (click)="logout($event)">
                 <span translate>HOME.BTN_CHANGE_ACCOUNT</span>
@@ -73,7 +69,7 @@
 
         <ng-template #noAccount>
           <!-- register -->
-          <ion-button expand="block"  (click)="register($event)">
+          <ion-button expand="block" (click)="register($event)">
             <ion-label translate>LOGIN.CREATE_FREE_ACCOUNT</ion-label>
           </ion-button>
 
@@ -86,16 +82,12 @@
         </ng-template>
       </ion-card-content>
     </ion-card>
-
   </div>
 </ion-content>
 
 <ng-template #localeButton let-buttonColor>
-
   <!-- locale button -->
-  <ion-button id="locale-menu-trigger"
-              [color]="buttonColor"
-              [title]="'COMMON.LANGUAGE'|translate">
+  <ion-button id="locale-menu-trigger" [color]="buttonColor" [title]="'COMMON.LANGUAGE' | translate">
     <ion-icon slot="icon-only" name="language"></ion-icon>
   </ion-button>
 
@@ -104,11 +96,9 @@
     <ng-template>
       <ion-content>
         <ion-list>
-          <ion-item *ngFor="let item of locales"
-                    (click)="changeLocale(item.key) && popover.dismiss()"
-                    tappable>
-            <ion-label>{{item.value}}</ion-label>
-            <ion-icon slot="end" name="checkmark" *ngIf="data.locale===item.key"></ion-icon>
+          <ion-item *ngFor="let item of locales" (click)="changeLocale(item.key) && popover.dismiss()" tappable>
+            <ion-label>{{ item.value }}</ion-label>
+            <ion-icon slot="end" name="checkmark" *ngIf="data.locale === item.key"></ion-icon>
           </ion-item>
         </ion-list>
       </ion-content>

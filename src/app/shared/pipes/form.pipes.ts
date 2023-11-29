@@ -96,7 +96,7 @@ export class FormGetValuePipe implements PipeTransform, OnDestroy {
 
       // subscribe to statusChanges event
       if (listenStatusChanges) {
-        this._onControlStatusChanges = control.statusChanges.subscribe((status) => {
+        this._onControlStatusChanges = control.statusChanges.subscribe(() => {
           const value = control.value;
           if (value !== this.value) {
             this.value = value;

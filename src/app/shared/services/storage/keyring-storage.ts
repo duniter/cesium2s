@@ -28,7 +28,7 @@ export class KeyringStorage implements KeyringStore {
   }
 
   all(cb: (key: string, value: KeyringJson) => void) {
-    this.storage.forEach((value, key, counter) => {
+    this.storage.forEach((value, key) => {
       //console.debug("Reading key=" + key, value);
       if (key.startsWith(this.storagePrefix)) {
         const shortKey = key.substring(this.storagePrefix.length);

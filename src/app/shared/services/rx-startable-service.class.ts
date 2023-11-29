@@ -1,15 +1,15 @@
 import {Optional} from '@angular/core';
 import {firstValueFrom, Subject, takeUntil} from 'rxjs';
 import {RxBaseServiceOptions, RxBaseService} from "@app/shared/services/rx-service.class";
-import {IStartableService} from "@app/shared/services/service.model";
+import {ReadyAsyncFunction, IStartableService, IWithReadyService} from "@app/shared/services/service.model";
 
 
-export interface RxStartableServiceOptions<T extends object = any>
+export interface RxStartableServiceOptions<T extends object = {}>
   extends RxBaseServiceOptions<T> {
 
 }
 
-export abstract class RxStartableService<T extends  object = any,
+export abstract class RxStartableService<T extends  object = {},
   O extends RxStartableServiceOptions<T> = RxStartableServiceOptions<T>>
   extends RxBaseService<T, O>
   implements IStartableService<T> {
@@ -22,7 +22,7 @@ export abstract class RxStartableService<T extends  object = any,
 
   private _started = false;
   private _startPromise: Promise<T> = null;
-  private _startPrerequisite: () => Promise<any> = null;
+  private _startPrerequisite: ReadyAsyncFunction;
 
   get started(): boolean {
     return this._started;
@@ -33,7 +33,7 @@ export abstract class RxStartableService<T extends  object = any,
   }
 
   protected constructor(
-    @Optional() prerequisiteService?: { ready: () => Promise<any> },
+    @Optional() prerequisiteService?: IWithReadyService,
     options?: O
   ) {
     super(options);

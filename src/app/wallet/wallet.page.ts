@@ -92,7 +92,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
 
     // Add new wallet
     this._state.hold(this.account$.pipe(filter(account => account === WalletPage.NEW)),
-      _ => this.addNewWallet());
+      () => this.addNewWallet());
 
     // Load by address
     this._state.connect('account', this._state.$.pipe(

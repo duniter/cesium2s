@@ -6,14 +6,12 @@
       </ion-button>
     </ion-buttons>
 
-    <ion-title [innerHTML]="'AUTH.TITLE'|translate">
-    </ion-title>
+    <ion-title [innerHTML]="'AUTH.TITLE' | translate"></ion-title>
 
     <ion-buttons slot="end">
       <ion-spinner *ngIf="loading"></ion-spinner>
 
-      <ion-button
-        (click)="doSubmit()" *ngIf="!loading && mobile">
+      <ion-button (click)="doSubmit()" *ngIf="!loading && mobile">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -21,13 +19,9 @@
 </ion-header>
 
 <ion-content style="height: 100%">
-  <app-unlock-form #form
-                   (onSubmit)="doSubmit($event)"
-                   (onCancel)="cancel()">
-  </app-unlock-form>
+  <app-unlock-form #form (onSubmit)="doSubmit($event)" (onCancel)="cancel()"></app-unlock-form>
 
   <ion-toolbar *ngIf="!mobile">
-
     <ion-row class="ion-no-padding" nowrap>
       <ion-col></ion-col>
 
@@ -37,16 +31,16 @@
           <ion-label translate>COMMON.BTN_CANCEL</ion-label>
         </ion-button>
 
-        <ion-button [fill]="form.invalid ? 'clear' : 'solid'"
-                    [disabled]="loading || form.invalid"
-                    (click)="doSubmit()"
-                    (keyup.enter)="doSubmit()"
-                    color="danger">
+        <ion-button
+          [fill]="form.invalid ? 'clear' : 'solid'"
+          [disabled]="loading || form.invalid"
+          (click)="doSubmit()"
+          (keyup.enter)="doSubmit()"
+          color="danger"
+        >
           <ion-label translate>AUTH.BTN_AUTH</ion-label>
         </ion-button>
       </ion-col>
     </ion-row>
-
-
   </ion-toolbar>
 </ion-content>

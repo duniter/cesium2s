@@ -14,11 +14,11 @@ import {NgxJdenticonModule} from "ngx-jdenticon";
     NgxJdenticonModule,
     WotRoutingModule
   ],
-  exports: [
+  declarations: [
     WotLookupPage,
     WotDetailsPage
   ],
-  declarations: [
+  exports: [
     WotLookupPage,
     WotDetailsPage
   ]

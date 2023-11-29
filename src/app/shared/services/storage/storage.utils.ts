@@ -4,14 +4,15 @@ import * as LocalForage from "localforage";
 
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 
-export interface IStorage {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface IStorage<V = any> {
   readonly driver: string;
-  set(key: string, value: any): Promise<void>;
-  get(key: string): Promise<any>;
+  set(key: string, value: V): Promise<void>;
+  get(key: string): Promise<V>;
   remove(key: string): Promise<void>
   keys(): Promise<string[]>;
   clear(): Promise<void>;
-  forEach(iteratorCallback: (value: any, key: string, iterationNumber: Number) => any): Promise<void>;
+  forEach(iteratorCallback: (value: V, key: string, iterationNumber: Number) => V): Promise<void>;
 }
 
 export const StorageDrivers = {

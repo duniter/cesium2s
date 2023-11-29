@@ -1,25 +1,26 @@
 <form [formGroup]="form">
   <ion-list>
     <ion-item lines="none">
-      <p [innerHTML]="helpMessage|translate"></p>
-
+      <p [innerHTML]="helpMessage | translate"></p>
     </ion-item>
 
     <ion-item lines="none" class="ion-padding-top">
-      <ion-input [formControl]="control"
-                 [label]="'AUTH.PASSPHRASE'|translate"
-                 labelPlacement="floating"
-                 [maxlength]="maxLength"
-                 [minlength]="minLength"
-                 [counter]="maxLength > 0"
-                 (ionInput)="onInput($event)"
-                 required></ion-input>
-      <ion-icon slot="end" name="checkmark" *ngIf="$valid|async"></ion-icon>
+      <ion-input
+        [formControl]="control"
+        [label]="'AUTH.PASSPHRASE' | translate"
+        labelPlacement="floating"
+        [maxlength]="maxLength"
+        [minlength]="minLength"
+        [counter]="maxLength > 0"
+        (ionInput)="onInput($event)"
+        required
+      ></ion-input>
+      <ion-icon slot="end" name="checkmark" *ngIf="$valid | async"></ion-icon>
     </ion-item>
 
     <ion-item *ngIf="debug && expectedCode" lines="none">
       <ion-text color="primary">
-        <small>expected: {{expectedCode}}</small>
+        <small>expected: {{ expectedCode }}</small>
       </ion-text>
     </ion-item>
   </ion-list>

@@ -1,9 +1,8 @@
-import {KeypairType} from "@polkadot/util-crypto/types";
 import {HexString} from "@polkadot/util/types";
 import {InjectionToken} from "@angular/core";
 import {ListItem} from "@app/shared/popover/list.popover";
-import {Params} from "@polkadot/util-crypto/scrypt/types";
 import {ScryptParams} from "@app/account/crypto.utils";
+import {AppEvent} from "@app/shared/types";
 
 export interface Account {
   address: string;
@@ -61,7 +60,6 @@ export interface SelectAccountOptions {
   showBalance?: boolean;
   positiveBalanceFirst?: boolean;
 }
-export declare type LoginEvent = MouseEvent | TouchEvent | PointerEvent | CustomEvent;
 
 export declare type LoginMethodType = 'v1' | 'v2' | 'keyfile-v1';
 export const LoginMethods: ListItem[] = [
@@ -79,7 +77,7 @@ export interface LoginOptions {
 }
 
 export interface IAuthController {
-  login(event?: LoginEvent, opts?: LoginOptions): Promise<Account>;
+  login(event?: AppEvent, opts?: LoginOptions): Promise<Account>;
   createNew(opts?: {redirectToWalletPage?: boolean}): Promise<Account>;
   unlock(opts?: UnlockOptions): Promise<string>;
   selectAccount(opts?: SelectAccountOptions): Promise<Account>;

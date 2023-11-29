@@ -1,19 +1,17 @@
 <ion-header>
-  <ion-toolbar [color]="auth ? 'danger': 'primary'">
+  <ion-toolbar [color]="auth ? 'danger' : 'primary'">
     <ion-buttons slot="start">
       <ion-button (click)="cancel()" *ngIf="mobile">
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
 
-    <ion-title [innerHTML]="title|translate">
-    </ion-title>
+    <ion-title [innerHTML]="title | translate"></ion-title>
 
     <ion-buttons slot="end">
       <ion-spinner *ngIf="loading"></ion-spinner>
 
-      <ion-button
-        (click)="doSubmit()" *ngIf="!loading && mobile">
+      <ion-button (click)="doSubmit()" *ngIf="!loading && mobile">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -21,11 +19,7 @@
 </ion-header>
 
 <ion-content>
-  <app-auth-form #form
-                 [canRegister]="!auth"
-                 (onSubmit)="doSubmit($event)"
-                 (onCancel)="cancel()">
-  </app-auth-form>
+  <app-auth-form #form [canRegister]="!auth" (onSubmit)="doSubmit($event)" (onCancel)="cancel()"></app-auth-form>
 </ion-content>
 
 <ion-footer *ngIf="!mobile">
@@ -39,12 +33,14 @@
           <ion-label translate>COMMON.BTN_CANCEL</ion-label>
         </ion-button>
 
-        <ion-button [fill]="form.invalid ? 'clear' : 'solid'"
-                    [disabled]="loading || form.invalid"
-                    (click)="doSubmit()"
-                    (keyup.enter)="doSubmit()"
-                    [color]="auth ? 'danger' : 'tertiary'">
-          <ion-label translate>{{auth?'AUTH.BTN_AUTH':'COMMON.BTN_LOGIN'}}</ion-label>
+        <ion-button
+          [fill]="form.invalid ? 'clear' : 'solid'"
+          [disabled]="loading || form.invalid"
+          (click)="doSubmit()"
+          (keyup.enter)="doSubmit()"
+          [color]="auth ? 'danger' : 'tertiary'"
+        >
+          <ion-label translate>{{ auth ? 'AUTH.BTN_AUTH' : 'COMMON.BTN_LOGIN' }}</ion-label>
         </ion-button>
       </ion-col>
     </ion-row>

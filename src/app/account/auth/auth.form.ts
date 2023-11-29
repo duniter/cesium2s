@@ -145,19 +145,19 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
   }
 
   get pubkey(): string {
-    let data = this.form.value;
+    const data = this.form.value;
     // prevent displaying for empty credentials
     if(isNil(data.salt) || isNil(data.password)) {
       return ""
     }
-    let pair = getKeyringPairFromV1(data);
-    let pubkey = pair.publicKey;
+    const pair = getKeyringPairFromV1(data);
+    const pubkey = pair.publicKey;
     return base58Encode(pubkey);
   }
 
   // get address corresponding to form input
   get address(): string {
-    let data = this.form.value;
+    const data = this.form.value;
     // prevent displaying for empty credentials
     if(isNil(data.salt) || isNil(data.password)) {
       return ""

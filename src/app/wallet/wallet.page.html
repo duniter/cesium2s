@@ -5,18 +5,18 @@
     </ion-buttons>
     <ion-title translate>ACCOUNT.TITLE</ion-title>
 
-    <ion-select slot="end"
-                [(ngModel)]="account"
-                [interface]="mobile ? 'action-sheet' : 'popover'"
-                [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
-                [okText]="'COMMON.BTN_OK'|translate"
-                [cancelText]="'COMMON.BTN_CANCEL'|translate">
-      <ion-select-option *rxFor="let account of accounts$"
-                         [value]="account">
-        {{account|accountName}}
+    <ion-select
+      slot="end"
+      [(ngModel)]="account"
+      [interface]="mobile ? 'action-sheet' : 'popover'"
+      [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
+      [okText]="'COMMON.BTN_OK' | translate"
+      [cancelText]="'COMMON.BTN_CANCEL' | translate"
+    >
+      <ion-select-option *rxFor="let account of accounts$" [value]="account">
+        {{ account | accountName }}
       </ion-select-option>
-      <ion-select-option [value]="new"
-                         translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
+      <ion-select-option [value]="new" translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
     </ion-select>
   </ion-toolbar>
   <ion-progress-bar type="indeterminate" *rxIf="loading$"></ion-progress-bar>
@@ -24,93 +24,94 @@
 
 <ion-content [fullscreen]="true">
   <ion-header>
-    <ion-item color="secondary" >
+    <ion-item color="secondary">
       <ion-avatar slot="start" (click)="avatarModal.present()" [style.background-color]="'white'">
         <ng-container *rxIf="account$; let account">
-          <ion-img *ngIf="account.meta?.avatar; let avatar; else svgIcon"
-                   [src]="avatar"></ion-img>
+          <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
           <ng-template #svgIcon>
-            <svg width="40" width="40"
-               [data-jdenticon-value]="account.data?.randomId||account.address"></svg>
+            <svg width="40" width="40" [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
           </ng-template>
         </ng-container>
       </ion-avatar>
       <ion-label class="ion-text-center ion-margin-end">
         <h2 translate>ACCOUNT.BALANCE</h2>
-        <p><b *rxIf="account$; let account">{{ account | balance | amountFormat }}</b></p>
+        <p>
+          <b *rxIf="account$; let account">{{ account | balance | amountFormat }}</b>
+        </p>
       </ion-label>
     </ion-item>
   </ion-header>
 
   <div id="container">
-
     <ion-list>
       <ion-item *rxIf="error$; let error" lines="none" color="light">
         <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
-        <ion-label color="danger">{{error|translate}}</ion-label>
+        <ion-label color="danger">{{ error | translate }}</ion-label>
       </ion-item>
 
       <!-- pubkey -->
-      <ion-item *ngIf="(account$ | async)?.meta.publicKeyV1; let pubkey"
-                (click)="copyToClipboard($event, pubkey)">
-
+      <ion-item *ngIf="(account$ | async)?.meta.publicKeyV1; let pubkey" (click)="copyToClipboard($event, pubkey)">
         <ion-icon name="key" slot="start"></ion-icon>
 
         <ion-label>
           <h2 translate>COMMON.PUBKEY</h2>
           <p class="ion-text-wrap">
-            <span>{{pubkey}}</span>
+            <span>{{ pubkey }}</span>
           </p>
         </ion-label>
 
         <ion-button
-          [disabled]="loading$|async"
-          (click)="showQrCode($event, pubkey, 'COMMON.PUBKEY')" slot="end" fill="clear" shape="round">
+          [disabled]="loading$ | async"
+          (click)="showQrCode($event, pubkey, 'COMMON.PUBKEY')"
+          slot="end"
+          fill="clear"
+          shape="round"
+        >
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-item>
 
       <!-- address -->
-      <ion-item *rxIf="account$; let account"
-                (click)="copyToClipboard($event, account.address)">
-
+      <ion-item *rxIf="account$; let account" (click)="copyToClipboard($event, account.address)">
         <ion-chip slot="start">
-          <ion-icon name="key" ></ion-icon>
+          <ion-icon name="key"></ion-icon>
           <ion-text>v2</ion-text>
         </ion-chip>
         <ion-label>
           <h2 translate>COMMON.ADDRESS</h2>
           <p class="ion-text-wrap">
-            <span>{{account.address}}</span>
+            <span>{{ account.address }}</span>
           </p>
         </ion-label>
 
         <ion-button
-          [disabled]="loading$|async"
-          (click)="showQrCode($event, account.address, 'COMMON.ADDRESS')" slot="end" fill="clear" shape="round">
+          [disabled]="loading$ | async"
+          (click)="showQrCode($event, account.address, 'COMMON.ADDRESS')"
+          slot="end"
+          fill="clear"
+          shape="round"
+        >
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-item>
 
-<!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->
-<!--        <ion-icon slot="start" name="ribbon"></ion-icon>-->
-<!--        <ion-label translate>ACCOUNT.BALANCE_ACCOUNT</ion-label>-->
-<!--        <ion-badge color="success">{{(data?.data.free || 0) | amountFormat}} {{currency}}</ion-badge>-->
-<!--      </ion-item>-->
+      <!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->
+      <!--        <ion-icon slot="start" name="ribbon"></ion-icon>-->
+      <!--        <ion-label translate>ACCOUNT.BALANCE_ACCOUNT</ion-label>-->
+      <!--        <ion-badge color="success">{{(data?.data.free || 0) | amountFormat}} {{currency}}</ion-badge>-->
+      <!--      </ion-item>-->
 
-<!--      <ion-item detail  -->
-<!--                 [routerLink]="['/wot/cert/', data?.address]">-->
+      <!--      <ion-item detail  -->
+      <!--                 [routerLink]="['/wot/cert/', data?.address]">-->
       <ion-item detail (click)="notImplementedModal.present()">
-          <ion-icon slot="start" name="ribbon"></ion-icon>
-          <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
+        <ion-icon slot="start" name="ribbon"></ion-icon>
+        <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
         <ion-badge color="success">0</ion-badge>
       </ion-item>
-
     </ion-list>
 
     <div class="ion-text-center ion-padding-top">
-      <ion-button [routerLink]="['/transfer', 'from', (account$|push)?.address]"
-                  [disabled]="loading">
+      <ion-button [routerLink]="['/transfer', 'from', (account$ | push)?.address]" [disabled]="loading">
         <ion-icon slot="start" name="paper-plane"></ion-icon>
         <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
       </ion-button>
@@ -118,9 +119,7 @@
   </div>
 </ion-content>
 
-<ion-modal
-  #authModal
-  [backdropDismiss]="false">
+<ion-modal #authModal [backdropDismiss]="false">
   <ng-template>
     <ion-content scrollY="false">
       <app-auth-modal></app-auth-modal>
@@ -128,17 +127,11 @@
   </ng-template>
 </ion-modal>
 
-
-<ion-modal
-  #qrCodeModal
-  [backdropDismiss]="true"
-  [presentingElement]="_presentingElement"
-  [canDismiss]="true"
->
+<ion-modal #qrCodeModal [backdropDismiss]="true" [presentingElement]="_presentingElement" [canDismiss]="true">
   <ng-template>
     <ion-header>
       <ion-toolbar color="secondary">
-        <ion-title translate>{{qrCodeTitle}}</ion-title>
+        <ion-title translate>{{ qrCodeTitle }}</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="qrCodeModal.dismiss()" translate>COMMON.BTN_CLOSE</ion-button>
         </ion-buttons>
@@ -146,7 +139,6 @@
     </ion-header>
 
     <ion-content [scrollY]="mobile">
-
       <ion-list>
         <!-- QR code -->
         <ion-item>
@@ -156,21 +148,14 @@
         <!-- public key -->
         <ion-item lines="none" (click)="copyToClipboard($event, qrCodeValue)" tappable>
           <ion-icon slot="start" name="key"></ion-icon>
-          <ion-label class="ion-text-wrap">{{qrCodeValue}}</ion-label>
+          <ion-label class="ion-text-wrap">{{ qrCodeValue }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-content>
-
   </ng-template>
 </ion-modal>
 
-
-<ion-modal
-  #avatarModal
-  [backdropDismiss]="true"
-  [presentingElement]="_presentingElement"
-  [canDismiss]="true"
->
+<ion-modal #avatarModal [backdropDismiss]="true" [presentingElement]="_presentingElement" [canDismiss]="true">
   <ng-template>
     <ion-content [scrollY]="mobile">
       <ion-header>
@@ -184,20 +169,13 @@
 
       <ion-item>
         <ion-icon slot="start" name="warning" color="danger" lines="none"></ion-icon>
-        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED'|translate"></ion-label>
+        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-label>
       </ion-item>
     </ion-content>
   </ng-template>
 </ion-modal>
 
-
-
-<ion-modal
-  #notImplementedModal
-  [backdropDismiss]="true"
-  [presentingElement]="_presentingElement"
-  [canDismiss]="true"
->
+<ion-modal #notImplementedModal [backdropDismiss]="true" [presentingElement]="_presentingElement" [canDismiss]="true">
   <ng-template>
     <ion-content>
       <ion-header>
@@ -209,7 +187,7 @@
       </ion-header>
       <ion-item>
         <ion-icon slot="start" name="warning" color="danger" lines="none"></ion-icon>
-        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED'|translate"></ion-label>
+        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-label>
       </ion-item>
     </ion-content>
   </ng-template>

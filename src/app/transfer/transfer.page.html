@@ -14,103 +14,89 @@
     </ion-toolbar>
   </ion-header>
 
-  <form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" (keyup.enter)="doSubmit($event)">
-    <ion-list>
-      <!-- error -->
-      <ion-item *ngIf="error" lines="none" color="light" class="error">
-        <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
-        <ion-label color="danger">{{error|translate}}</ion-label>
-      </ion-item>
+  <ion-list>
+    <!-- error -->
+    <ion-item *rxIf="error$; let error" lines="none" color="light" class="error">
+      <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
+      <ion-label color="danger">{{ error | translate }}</ion-label>
+    </ion-item>
 
-      <!-- TO -->
-      <ion-item>
-        <ion-label color="medium" translate>TRANSFER.TO</ion-label>
-        <ion-textarea *rxIf="recipient$; let recipient; else skeleton60"
-                   [rows]="mobile ? 2 : 1"
-                   class="ion-text-wrap ion-text-end"
-                   [(ngModel)]="recipient.address" (ionFocus)="wotModal.present()">
-        </ion-textarea>
-        <ion-button slot="end" fill="clear" id="open-modal-trigger"
-                    [class.cdk-visually-hidden]="loading || mobile"
-                    [disabled]="loading"
-                    [title]="'COMMON.BTN_SEARCH'|translate">
-          <ion-icon slot="icon-only" name="search"></ion-icon>
-        </ion-button>
+    <!-- TO -->
+    <ion-item>
+      <ion-label color="medium" translate>TRANSFER.TO</ion-label>
+      <ion-textarea
+        *rxIf="recipient$; let recipient; else: skeleton60"
+        [rows]="mobile ? 2 : 1"
+        [tabIndex]="mobile ? -1 : 1"
+        class="ion-text-wrap ion-text-end"
+        [(ngModel)]="recipient.address"
+      ></ion-textarea>
+      <ion-button
+        slot="end"
+        fill="clear"
+        [disabled]="loading"
+        [title]="'COMMON.BTN_SEARCH' | translate"
+        (click)="openWotModal($event)"
+      >
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
 
-        <!-- Scan QR code-->
-        <ion-button slot="end" fill="clear" color="dark"
-                    *ngIf="_enableScan"
-                    (click)="scanRecipient($event)"
-                    [disabled]="loading">
-          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
-        </ion-button>
-      </ion-item>
+      <!-- Scan QR code-->
+      <ion-button
+        slot="end"
+        fill="clear"
+        color="dark"
+        *ngIf="_enableScan"
+        (click)="scanRecipient($event)"
+        [disabled]="loading"
+      >
+        <ion-icon slot="icon-only" name="qr-code"></ion-icon>
+      </ion-button>
+    </ion-item>
 
-      <!-- FROM -->
-      <ion-item tappable (click)="selectAccount($event)">
-        <ion-label color="medium" translate>TRANSFER.FROM</ion-label>
-        <ng-container *rxIf="accounts$; let accounts; suspense: skeleton60">
-          <ion-input [value]="account|accountName" required></ion-input>
+    <!-- FROM -->
+    <ion-item tappable (click)="selectAccount()">
+      <ion-label color="medium" translate>TRANSFER.FROM</ion-label>
+      <ng-container *rxIf="accounts$; let accounts; suspense: skeleton60">
+        <ion-input [value]="account$ | push | accountName" required></ion-input>
 
-          <ion-badge *ngIf="account|balance; let balance" slot="end"
-                     [color]="amount+fee>balance/100 ? 'danger' : 'success'">
-            {{balance|amountFormat}}
-          </ion-badge>
-        </ng-container>
+        <ion-badge
+          *ngIf="account$ | push | balance; let balance"
+          slot="end"
+          [color]="amount + fee > balance / 100 ? 'danger' : 'success'"
+        >
+          {{ balance | amountFormat }}
+        </ion-badge>
+      </ng-container>
+    </ion-item>
 
-      </ion-item>
+    <!-- amount -->
+    <ion-item>
+      <ion-label color="medium" translate>TRANSFER.AMOUNT</ion-label>
+      <ion-input type="number" [(ngModel)]="amount"></ion-input>
+      <ion-label color="medium" slot="end" *rxIf="currency$; let currency">{{ currency.symbol }}</ion-label>
+    </ion-item>
 
-      <!-- amount -->
-      <ion-item>
-        <ion-label color="medium"  translate>TRANSFER.AMOUNT</ion-label>
-        <ion-input type="number" formControlName="amount">
-        </ion-input>
-        <ion-label color="medium" slot="end" *ngIf="currency">{{currency.symbol}}</ion-label>
-      </ion-item>
+    <ion-item lines="none">
+      <!--        <ion-toggle [(ngModel)]="showComment">-->
+      <!--        </ion-toggle>-->
+      <!--        <ion-label class="ion-text-start" color="medium" translate>TRANSFER.BTN_ADD_COMMENT</ion-label>-->
+      <ion-badge slot="end" *ngIf="amount && fee">
+        {{ 'TRANSFER.FEE' | translate : { fee: fee, currency: currency.symbol } }}
+      </ion-badge>
+    </ion-item>
 
-      <ion-item lines="none">
-<!--        <ion-toggle [(ngModel)]="showComment">-->
-<!--        </ion-toggle>-->
-<!--        <ion-label class="ion-text-start" color="medium" translate>TRANSFER.BTN_ADD_COMMENT</ion-label>-->
-        <ion-badge slot="end" *ngIf="amount && fee">{{'TRANSFER.FEE'|translate:{fee: fee, currency: currency.symbol} }}</ion-badge>
-      </ion-item>
+    <ion-item *ngIf="showComment">
+      <ion-textarea [placeholder]="'TRANSFER.COMMENT_HELP' | translate" rows="5"></ion-textarea>
+    </ion-item>
+  </ion-list>
 
-      <ion-item  *ngIf="showComment">
-        <ion-textarea [placeholder]="'TRANSFER.COMMENT_HELP'|translate" rows="5">
-
-        </ion-textarea>
-      </ion-item>
-    </ion-list>
-
-<!--    <div class="ion-text-center" *ngIf="!mobile">-->
-<!--      <ng-container *ngTemplateOutlet="buttons"></ng-container>-->
-<!--    </div>-->
-    <ion-toolbar class="ion-text-center" [color]="'transparent'">
-      <ng-container *ngTemplateOutlet="buttons"></ng-container>
-    </ion-toolbar>
-  </form>
-
-  <ion-modal
-    #wotModal
-    [initialBreakpoint]="_initialWotModalBreakpoint"
-    [breakpoints]="[0.25, 0.5, 0.75]"
-    [backdropDismiss]="true"
-    [backdropBreakpoint]="0.5"
-  >
-    <ng-template>
-      <app-wot-lookup
-        showToolbar="true"
-        toolbarColor="secondary"
-        [showSearchBar]="true"
-        [showItemActions]="false"
-        (itemClick)="setRecipient($event) && hideWotModal()"
-        (searchClick)="wotModal.setCurrentBreakpoint(0.75)">
-
-        <ion-button toolbar-end fill="clear" (click)="hideWotModal($event)" translate>COMMON.BTN_CLOSE</ion-button>
-
-      </app-wot-lookup>
-    </ng-template>
-  </ion-modal>
+  <!--    <div class="ion-text-center" *ngIf="!mobile">-->
+  <!--      <ng-container *ngTemplateOutlet="buttons"></ng-container>-->
+  <!--    </div>-->
+  <ion-toolbar class="ion-text-center" [color]="'transparent'">
+    <ng-container *ngTemplateOutlet="buttons"></ng-container>
+  </ion-toolbar>
 </ion-content>
 
 <!--<ion-footer *ngIf="mobile" class="ion-text-center">-->
@@ -118,17 +104,14 @@
 <!--</ion-footer>-->
 
 <ng-template #buttons>
-  <ion-button (click)="cancel($event)" color="light"
-              [disabled]="loading" *ngIf="!mobile">
+  <ion-button (click)="cancel()" color="light" [disabled]="loading" *ngIf="!mobile">
     <ion-label translate>COMMON.BTN_CANCEL</ion-label>
   </ion-button>
-  <ion-button (click)="qrCodeModal.present()"
-              [disabled]="loading||invalid">
+  <ion-button (click)="qrCodeModal.present()" [disabled]="loading || invalid">
     <ion-icon slot="start" name="qr-code"></ion-icon>
     <ion-label translate>TRANSFER.BTN_QR_CODE</ion-label>
   </ion-button>
-  <ion-button (click)="submit($event)" [disabled]="loading||invalid"
-              color="tertiary">
+  <ion-button (click)="submit()" [disabled]="loading || invalid" color="tertiary">
     <ion-icon slot="start" name="paper-plane"></ion-icon>
     <ion-label translate>TRANSFER.BTN_SEND</ion-label>
   </ion-button>
@@ -138,12 +121,7 @@
   <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
 </ng-template>
 
-<ion-modal
-  #qrCodeModal
-  [backdropDismiss]="true"
-  [presentingElement]="_presentingElement"
-  [canDismiss]="true"
->
+<ion-modal #qrCodeModal [backdropDismiss]="true" [presentingElement]="_presentingElement" [canDismiss]="true">
   <ng-template>
     <ion-content>
       <ion-header>
@@ -160,19 +138,13 @@
       </ion-item>
       <ion-item>
         <ion-icon slot="start" name="warning" color="danger" lines="none"></ion-icon>
-        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED'|translate"></ion-label>
+        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-label>
       </ion-item>
     </ion-content>
   </ng-template>
 </ion-modal>
 
-
-<ion-modal
-  #notImplementedModal
-  [backdropDismiss]="true"
-  [presentingElement]="_presentingElement"
-  [canDismiss]="true"
->
+<ion-modal #notImplementedModal [backdropDismiss]="true" [presentingElement]="_presentingElement" [canDismiss]="true">
   <ng-template>
     <ion-content>
       <ion-header>
@@ -184,7 +156,7 @@
       </ion-header>
       <ion-item>
         <ion-icon slot="start" name="warning" color="danger" lines="none"></ion-icon>
-        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED'|translate"></ion-label>
+        <ion-label class="ion-text-wrap" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-label>
       </ion-item>
     </ion-content>
   </ng-template>

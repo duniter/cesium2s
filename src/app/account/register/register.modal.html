@@ -14,9 +14,7 @@
     <ion-buttons slot="end">
       <ion-spinner *ngIf="loading"></ion-spinner>
 
-      <ion-button *ngIf="mobile && !form.isEnd()"
-                  [disabled]="loading || !form.canNext()"
-                  (click)="form.slideNext()">
+      <ion-button *ngIf="mobile && !form.isEnd()" [disabled]="loading || !form.canNext()" (click)="form.slideNext()">
         <ion-label translate>COMMON.BTN_NEXT</ion-label>
         <ion-icon slot="end" name="arrow-forward"></ion-icon>
       </ion-button>
@@ -29,25 +27,25 @@
 </ion-header>
 
 <ion-content>
-
   <app-register-form #form (onSubmit)="doSubmit()" (onCancel)="cancel()">
-
     <ion-row *ngIf="form.debug" codeConfirmation>
-      <ion-text color="primary"  class="ion-padding">
-        <small>loading: {{loading}}<br/>
-          canNext: {{form.canNext()}}<br/>
-          isEnd: {{form.isEnd()}}<br/>
+      <ion-text color="primary" class="ion-padding">
+        <small>
+          loading: {{ loading }}
+          <br />
+          canNext: {{ form.canNext() }}
+          <br />
+          isEnd: {{ form.isEnd() }}
+          <br />
         </small>
       </ion-text>
     </ion-row>
   </app-register-form>
-
 </ion-content>
 
 <ion-footer *ngIf="!mobile">
   <!-- buttons -->
   <ion-toolbar>
-
     <ion-row>
       <ion-col></ion-col>
       <ion-col size="auto">
@@ -55,27 +53,40 @@
           <ion-label translate>COMMON.BTN_CANCEL</ion-label>
         </ion-button>
 
-        <ion-button *ngIf="!form.isBeginning()" fill="clear" color="dark" (click)="form.slidePrev()" [disabled]="loading">
+        <ion-button
+          *ngIf="!form.isBeginning()"
+          fill="clear"
+          color="dark"
+          (click)="form.slidePrev()"
+          [disabled]="loading"
+        >
           <ion-icon slot="start" name="arrow-back"></ion-icon>
           <ion-label translate>COMMON.BTN_BACK</ion-label>
         </ion-button>
-
 
         <ion-button *ngIf="form.isBeginning()" (click)="form.slideNext()" fill="solid" color="tertiary">
           <ion-label translate>COMMON.BTN_START</ion-label>
           <ion-icon slot="end" name="arrow-forward"></ion-icon>
         </ion-button>
 
-        <ion-button *ngIf="!form.isBeginning() && !form.isEnd()"
-                    (click)="form.slideNext()" fill="solid" color="tertiary"
-                    [disabled]="loading || !form.canNext()">
+        <ion-button
+          *ngIf="!form.isBeginning() && !form.isEnd()"
+          (click)="form.slideNext()"
+          fill="solid"
+          color="tertiary"
+          [disabled]="loading || !form.canNext()"
+        >
           <ion-label translate>COMMON.BTN_NEXT</ion-label>
           <ion-icon slot="end" name="arrow-forward"></ion-icon>
         </ion-button>
 
-        <ion-button *ngIf="form.isEnd()"
-                    (click)="doSubmit()" fill="solid"
-                    [disabled]="loading || !form.canNext()" color="tertiary">
+        <ion-button
+          *ngIf="form.isEnd()"
+          (click)="doSubmit()"
+          fill="solid"
+          [disabled]="loading || !form.canNext()"
+          color="tertiary"
+        >
           <span translate>COMMON.BTN_SAVE</span>
           <ion-icon slot="end" name="save"></ion-icon>
         </ion-button>

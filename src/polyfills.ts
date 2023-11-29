@@ -55,6 +55,7 @@ import 'zone.js';  // Included with Angular CLI.
  */
 // Polkadot API augment
 import '@polkadot/api-augment'
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).global = window;
 
 // Force moment-timezone to be loaded, otherwise moment().tz() will failed

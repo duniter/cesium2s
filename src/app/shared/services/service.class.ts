@@ -1,15 +1,12 @@
 import {Subscription} from 'rxjs';
 import {environment} from "@environments/environment";
 import {OnDestroy} from "@angular/core";
-import {RxState} from "@rx-angular/state";
 
-export interface BaseServiceOptions<T extends object = any> {
+export interface BaseServiceOptions {
   name?: string;
 }
 
-export abstract class BaseService<
-  T extends object = any,
-  O extends BaseServiceOptions<T> = BaseServiceOptions<T>>
+export abstract class BaseService<O extends BaseServiceOptions = BaseServiceOptions>
   implements OnDestroy {
 
   private _subscription: Subscription = null;

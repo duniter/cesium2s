@@ -7,7 +7,6 @@ import {
   APP_AUTH_CONTROLLER,
   AuthData,
   IAuthController,
-  LoginEvent,
   LoginOptions,
   SelectAccountOptions
 } from "./account.model";
@@ -36,6 +35,7 @@ import {RxStartableService} from "@app/shared/services/rx-startable-service.clas
 import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
 import {ED25519_SEED_LENGTH, SCRYPT_PARAMS} from "@app/account/crypto.utils";
 import {KeyringPair} from "@polkadot/keyring/types";
+import {AppEvent} from "@app/shared/types";
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -75,7 +75,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     protected network: NetworkService,
     protected settings: SettingsService,
     @Inject(APP_STORAGE) protected storage: IStorage,
-    @Inject(APP_AUTH_CONTROLLER) protected accountModalController: IAuthController
+    @Inject(APP_AUTH_CONTROLLER) protected authController: IAuthController
   ) {
     super(network, {
       name: 'account-service'
@@ -95,7 +95,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     keyring.setSS58Format(currency.prefix || 42 /* = dev format */);
 
     // Restoring accounts
-    let accounts = await this.restoreAccounts(currency);
+    const accounts = await this.restoreAccounts(currency);
 
     return {
       accounts
@@ -108,11 +108,11 @@ export class AccountsService extends RxStartableService<AccountsState> {
   }
 
   selectAccount(opts?: SelectAccountOptions): Promise<Account> {
-    return this.accountModalController.selectAccount(opts);
+    return this.authController.selectAccount(opts);
   }
 
   async createNew(opts?: {redirectToWalletPage?: boolean}): Promise<Account> {
-    const data = await this.accountModalController.createNew(opts);
+    const data = await this.authController.createNew(opts);
 
     if (!data?.address) return null; // User cancelled
 
@@ -124,8 +124,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
     return data;
   }
 
-  async login(event?: LoginEvent, opts?: LoginOptions): Promise<Account> {
-    const data = await this.accountModalController.login(event, opts);
+  async login(event?: AppEvent, opts?: LoginOptions): Promise<Account> {
+    const data = await this.authController.login(event, opts);
 
     if (!data?.address) return null; // User cancelled
 
@@ -162,7 +162,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
       console.info('[account-service] Loading all accounts [OK] No account found');
     }
     else {
-      let accounts = keyringAddresses.map(ka => {
+      const accounts = keyringAddresses.map(ka => {
         return <Account>{
           address: ka.address,
           publicKey: ka.publicKey,
@@ -261,7 +261,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     console.debug(`${this._logPrefix}Not auth: opening unlock modal...`);
 
-    const data = await this.accountModalController.unlock();
+    const data = await this.authController.unlock();
 
     // User cancelled
     if (isNilOrBlank(data)) {
@@ -336,7 +336,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
   }
 
   async saveAccount(account: Account): Promise<Account> {
-    let accounts = this.accounts || [];
+    const accounts = this.accounts || [];
 
     // Define as default
     if (account.meta?.default || accounts.length === 1) this.setDefaultAccount(account, accounts);
@@ -518,7 +518,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
               if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
 
-              let outdatedAccounts = [issuerAccount];
+              const outdatedAccounts = [issuerAccount];
 
               // Update receiver account
               if (await this.isAvailable(to.address)) {

@@ -95,13 +95,13 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
     }
   }
 
-  logout(even?: Event) {
+  logout(event?: Event) {
     event?.preventDefault();
     this.accountService.forgetAll();
     this.defaultAccount = null;
   }
 
-  transfer(event?: UIEvent) {
-    return this.transferController.transfer(event);
+  transfer() {
+    return this.transferController.transfer();
   }
 }

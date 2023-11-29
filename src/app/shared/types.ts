@@ -3,11 +3,11 @@ export declare type KeyValueType<T> = {[key in KeyType]: T};
 
 export declare type KeysEnum<T> = { [P in keyof Required<T>]: boolean };
 
-export declare interface ObjectMap<O = any> {
+export declare interface ObjectMap<O> {
   [key: string]: O;
 }
 
-export declare interface ObjectMapEntry<O = any> {
+export declare interface ObjectMapEntry<O> {
   key: string;
   value?: O;
 }
@@ -23,3 +23,5 @@ export declare interface IconRef {
   matIcon?: string; // A mat icon
   matSvgIcon?: string; // A mat SVG icon
 }
+
+export declare type AppEvent = MouseEvent | TouchEvent | PointerEvent | CustomEvent;

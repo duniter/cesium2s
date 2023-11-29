@@ -65,6 +65,7 @@ export class ArrayFirstPipe implements PipeTransform {
 })
 export class ArrayPluckPipe implements PipeTransform {
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transform<T>(val: T[], opts: string | { property: string; omitNil?: boolean }): any[] {
     const property = typeof opts === 'string' ? opts : opts?.property;
     const omitNil = typeof opts === 'string' ? false : opts?.omitNil;
@@ -73,6 +74,7 @@ export class ArrayPluckPipe implements PipeTransform {
       (val || []).map(value => value && value[property]).filter(isNotNil);
   }
 }
+
 @Pipe({
   name: 'arrayJoin'
 })
@@ -91,9 +93,8 @@ export class ArrayJoinPipe implements PipeTransform {
   name: 'arrayIncludes'
 })
 export class ArrayIncludesPipe implements PipeTransform {
-
-  transform<T>(val: T[], args): boolean {
-    return val && val.includes(args) || false;
+  transform<T>(val: T[], searchElement: T): boolean {
+    return val && val.includes(searchElement) || false;
   }
 }
 

@@ -9,12 +9,16 @@ import {fromEventPattern, Subscription} from "rxjs";
 export class SwiperDirective implements AfterViewInit, OnDestroy {
 
   private _subscription = new Subscription();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly swiperElement: any;
 
-  @Input('config') config?: SwiperOptions;
-  @Input('modules') modules?: ((opts?: any) => void)[];
+  @Input() config?: SwiperOptions;
 
-  @Output() slideChangeTransitionStart = new EventEmitter<any>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  @Input() modules?: ((opts?: any) => void)[];
+
+  @Output() slideChangeTransitionStart = new EventEmitter<void>();
 
   constructor(private el: ElementRef) {
     this.swiperElement = el.nativeElement;
@@ -32,7 +36,7 @@ export class SwiperDirective implements AfterViewInit, OnDestroy {
     this.swiperElement.initialize();
 
     this._subscription.add(fromEventPattern((handler) => this.swiper.on('slideChangeTransitionStart', handler))
-      .subscribe((value) => this.slideChangeTransitionStart.emit(value))
+      .subscribe(() => this.slideChangeTransitionStart.emit())
     );
   }
 

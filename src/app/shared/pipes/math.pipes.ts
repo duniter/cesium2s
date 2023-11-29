@@ -6,7 +6,7 @@ import {Injectable, Pipe, PipeTransform} from '@angular/core';
 @Injectable({providedIn: 'root'})
 export class MathAbsPipe implements PipeTransform {
 
-    transform(val: number): any {
+    transform(val: number): number {
       if (val !== undefined && val !== null) {
         return Math.abs(val);
       } else {
@@ -21,7 +21,7 @@ export class MathAbsPipe implements PipeTransform {
 @Injectable({providedIn: 'root'})
 export class EvenPipe implements PipeTransform {
 
-  transform(val: number): any {
+  transform(val: number): boolean {
     return val % 2 === 0;
   }
 }
@@ -32,7 +32,7 @@ export class EvenPipe implements PipeTransform {
 @Injectable({providedIn: 'root'})
 export class OddPipe implements PipeTransform {
 
-  transform(val: number): any {
+  transform(val: number): boolean {
     return val % 2 !== 0;
   }
 }
