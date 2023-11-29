@@ -63,9 +63,9 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     super({name: 'wot-lookup-page'});
 
     this._state.connect('filter',
-      this._state.select('loading').pipe(
-        filter(loading => loading === false),
-        switchMap(() => this._state.select('searchText')),
+      this._state.select('searchText').pipe(
+        //filter(loading => loading === false),
+        //switchMap(() => this._state.select('searchText')),
         distinctUntilChanged(),
         tap(() => this.markAsLoading()),
         debounceTime(this.debounceTime),
