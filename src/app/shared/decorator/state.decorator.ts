@@ -38,8 +38,8 @@ export function RxStateProperty<T = any>(statePropertyName?: string|keyof T, opt
     const stateObj = state ? `this.${state}` : `this`;
 
     // property getter
-    const getMethodName = 'get' + key.charAt(0).toUpperCase() + key.slice(1);
-    const setMethodName = 'set' + key.charAt(0).toUpperCase() + key.slice(1);
+    const getMethodName = '_get' + key.charAt(0).toUpperCase() + key.slice(1);
+    const setMethodName = '_set' + key.charAt(0).toUpperCase() + key.slice(1);
 
     const checkStateExists = (state && !environment.production) ? `  if (!this.${state}) throw new Error('Missing state! Please add a RxState in class: ' + this.constructor.name);\n` : '';
     const getter = new Function(`return function ${getMethodName}(){\n  return ${stateObj}.get('${statePropertyName}');\n}`)();
@@ -73,7 +73,7 @@ export function RxStateSelect<T = any>(statePropertyName?: string|keyof T|'$', o
     const _key = '_' + key;
 
     // property getter
-    const getMethodName = 'get' + statePropertyName.charAt(0).toUpperCase() + (statePropertyName.length > 1 ? statePropertyName.slice(1) : '');
+    const getMethodName = '_get' + statePropertyName.charAt(0).toUpperCase() + (statePropertyName.length > 1 ? statePropertyName.slice(1) : '') + '$';
 
     const observableObj = statePropertyName === '$' ? `${stateObj}.$` : `${stateObj}.select('${statePropertyName.split('.').join('\', \'')}')`;
     const getter = new Function(`return function ${getMethodName}(){\n if (!this.${_key}) this.${_key} = ${observableObj};\n  return this.${_key};\n}`)();
