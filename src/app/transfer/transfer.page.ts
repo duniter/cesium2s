@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
-import {Account, AccountUtils} from '@app/account/account.model';
+import { Account, AccountUtils } from '@app/account/account.model';
 import { ActionSheetOptions, IonModal, ModalController, Platform, PopoverOptions } from '@ionic/angular';
 import { mergeMap, Observable, tap } from 'rxjs';
 import { isNotEmptyArray, isNotNilOrBlank } from '@app/shared/functions';
@@ -15,7 +15,6 @@ import { CapacitorPlugins } from '@app/shared/capacitor/plugins';
 import { RxState } from '@rx-angular/state';
 import { AccountsService } from '@app/account/accounts.service';
 import { WotController } from '@app/wot/wot.controller';
-import {formatAddress} from "@app/shared/currencies";
 
 export interface TransferState extends AppPageState {
   currency: Currency;
@@ -72,8 +71,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     return AccountUtils.getDisplayName(this.account);
   }
   set accountName(value: string) {
-    this.accountService.getByName(value)
-      .then(account => this.account = account);
+    this.accountService.getByName(value).then((account) => (this.account = account));
   }
 
   @ViewChild('qrCodeModal') qrCodeModal: IonModal;

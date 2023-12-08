@@ -28,7 +28,7 @@
   "lint-staged": {
     "**/*.ts": [
       "prettier --write",
-      "ng lint --fix"
+      "eslint --fix"
     ],
     "*.{css,html,json,md,scss}": "prettier --write"
   },

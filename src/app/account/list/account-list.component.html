@@ -6,7 +6,6 @@
 <ion-content>
   <ion-list *rxIf="accounts$; let accounts; suspense: listSkeleton">
     <ion-item *rxFor="let account of accounts; trackBy: 'address'" (click)="selectAccount(account)">
-
       <ion-avatar slot="start">
         <svg width="40" width="40" [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
       </ion-avatar>
@@ -23,7 +22,6 @@
       </ion-badge>
       <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
     </ion-item>
-
   </ion-list>
 
   <ng-template #listSkeleton>

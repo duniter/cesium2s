@@ -3,7 +3,7 @@ import { InjectionToken } from '@angular/core';
 import { ListItem } from '@app/shared/popover/list.popover';
 import { ScryptParams } from '@app/account/crypto.utils';
 import { AppEvent } from '@app/shared/types';
-import {formatAddress} from "@app/shared/currencies";
+import { formatAddress } from '@app/shared/currencies';
 
 export interface Account {
   address: string;

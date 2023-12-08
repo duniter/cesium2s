@@ -15,7 +15,7 @@ zoneConfig.events.disable.UNPATCHED_EVENTS([
   'mousemove',
   'mouseover',
   // TODO: check if can disabled this events:
-  'scroll'
+  'scroll',
 ]);
 
 // FIXME disable zone in .then() functions

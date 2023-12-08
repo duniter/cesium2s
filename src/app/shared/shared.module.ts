@@ -13,7 +13,7 @@ import { RxLet } from '@rx-angular/template/let';
 import { RxIf } from '@rx-angular/template/if';
 import { MaskitoModule } from '@maskito/angular';
 import { SwiperDirective } from '@app/shared/swiper/app-swiper.directive';
-import {AppSkeletonListComponent} from "@app/shared/loading/skeleton.list/skeleton.list.component";
+import { AppSkeletonListComponent } from '@app/shared/loading/skeleton.list/skeleton.list.component';
 
 @NgModule({
   imports: [

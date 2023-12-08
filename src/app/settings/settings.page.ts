@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { APP_LOCALES, LocaleConfig, Settings } from '@app/settings/settings.model';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
-import {RxState} from "@rx-angular/state";
+import { RxState } from '@rx-angular/state';
 
 export interface SettingsPageState extends Settings, AppPageState {}
 
@@ -9,7 +9,7 @@ export interface SettingsPageState extends Settings, AppPageState {}
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
-  providers: [RxState]
+  providers: [RxState],
 })
 export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
   unauthOptions = [

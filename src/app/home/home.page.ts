@@ -24,7 +24,7 @@ export interface HomePageState extends AppPageState, Settings {
   styleUrls: ['./home.page.scss'],
   animations: [fadeInAnimation],
   providers: [RxState],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage extends AppPage<HomePageState> implements OnInit {
   @RxStateProperty() defaultAccount: Account;
