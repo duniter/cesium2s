@@ -35,7 +35,8 @@
               "localforage",
               "localforage-cordovasqlitedriver",
               "moment-timezone",
-              "tweetnacl"
+              "tweetnacl",
+              "moment"
             ],
             "assets": [
               {
