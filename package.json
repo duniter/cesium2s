@@ -26,11 +26,11 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "**/*.ts": [
+    "src/**/*.{ts,html}": [
       "prettier --write",
       "eslint --fix"
     ],
-    "*.{css,html,json,md,scss}": "prettier --write"
+    "src/**/*.{css,json,md,scss}": "prettier --write"
   },
   "peerDependencies": {
     "localforage": "~1.10.0",
