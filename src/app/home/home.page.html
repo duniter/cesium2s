@@ -12,7 +12,7 @@
 <ion-content [fullscreen]="true" class="circle-bg-dark">
   <!-- Desktop: translucent top toolbar -->
   <div *ngIf="!mobile">
-    <ion-toolbar translucent>
+    <ion-toolbar color="transparent">
       <ion-buttons slot="start">
         <ion-menu-toggle>
           <ion-button color="light" fill="clear">
@@ -33,13 +33,13 @@
         <div class="logo"></div>
         <ion-card-subtitle [innerHTML]="'HOME.WELCOME' | translate"></ion-card-subtitle>
         <ion-card-title class="ion-text-center">
-          <ion-spinner *rxIf="loading; else message"></ion-spinner>
+          <ion-spinner *rxIf="loading$; else message"></ion-spinner>
           <ng-template #message>
             {{ 'HOME.MESSAGE' | translate : { currency: currency$ | async } }}
           </ng-template>
         </ion-card-title>
       </ion-card-header>
-      <ion-card-content *ngIf="!loading" @fadeInAnimation>
+      <ion-card-content *rxIf="loaded$" @fadeInAnimation>
         <ng-container *ngIf="isLogin; else noAccount">
           <!-- my account -->
           <ion-button expand="block" [routerLink]="'/wallet'">

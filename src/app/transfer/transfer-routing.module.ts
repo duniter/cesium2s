@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
-import {TransferPage} from './transfer.page';
-import {AuthGuardService} from "@app/account/auth-guard.service";
+import { TransferPage } from './transfer.page';
+import { AuthGuardService } from '@app/account/auth-guard.service';
 
 const routes: Routes = [
   {
@@ -22,7 +22,7 @@ const routes: Routes = [
     pathMatch: 'full',
     component: TransferPage,
     canActivate: [AuthGuardService],
-  }
+  },
 ];
 
 @NgModule({

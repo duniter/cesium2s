@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {ApiPromise, WsProvider} from '@polkadot/api';
-import {SettingsService} from '../settings/settings.service';
-import {Peer, Peers} from './peer.model';
-import {abbreviate} from '@app/shared/currencies';
-import {Currency} from '@app/network/currency.model';
-import {RxStartableService} from "@app/shared/services/rx-startable-service.class";
-import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { SettingsService } from '../settings/settings.service';
+import { Peer, Peers } from './peer.model';
+import { abbreviate } from '@app/shared/currencies';
+import { Currency } from '@app/network/currency.model';
+import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
+import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
   Ğdev: <Partial<Currency>>{
@@ -15,8 +15,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     displayName: 'Ğdev',
     symbol: 'GD',
     prefix: 42,
-    genesis:
-      '0x9f956a87b5568f12c757bb3426897bba6123a1ef311fcd0945bd669fd0e612f8',
+    genesis: '0x9f956a87b5568f12c757bb3426897bba6123a1ef311fcd0945bd669fd0e612f8',
     fees: {
       identity: 300, // = 3 Gdev
       tx: 1, // = 0.01 Gdev
@@ -40,28 +39,26 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
 export interface NetworkState {
   currency: Currency;
   currencySymbol: string;
-  api: ApiPromise
+  api: ApiPromise;
 }
 
 @Injectable({ providedIn: 'root' })
 export class NetworkService extends RxStartableService<NetworkState> {
-
   @RxStateProperty() currency: Currency;
   @RxStateProperty() currencySymbol: string;
   @RxStateProperty() api: ApiPromise;
 
   @RxStateSelect() currency$: Observable<Currency>;
-  //@RxStateProperty<NetworkState>('currency', 'symbol') currencySymbol: string;
 
   constructor(private settings: SettingsService) {
     super(settings, {
       name: 'network-service',
     });
 
-    this.connect('currencySymbol', this.currency$.pipe(map(currency => currency?.symbol)));
+    this.connect('currencySymbol', this.currency$.pipe(map((currency) => currency?.symbol)));
   }
 
-  protected async ngOnStart(): Promise<any> {
+  protected async ngOnStart(): Promise<NetworkState> {
     const settings = await this.settings.ready();
 
     const peers = await this.filterAliveNodes(settings.preferredPeers);
@@ -94,10 +91,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     const chain = '' + (await api.rpc.system.chain()).toHuman().split(' ')?.[0];
     const genesis = api.genesisHash.toHex();
 
-    console.info(
-      `${this._logPrefix}Connecting to chain {${chain}}: ` +
-      JSON.stringify(chainInfo.toHuman())
-    );
+    console.info(`${this._logPrefix}Connecting to chain {${chain}}: ` + JSON.stringify(chainInfo.toHuman()));
 
     let currency: Currency;
     // Check is well known currency
@@ -109,13 +103,13 @@ export class NetworkService extends RxStartableService<NetworkState> {
         );
       }
       currency = { ...wellKnownCurrency };
-    }
-    else {
+    } else {
       console.warn(`${this._logPrefix}Not a well known currency: ${chain}!`);
     }
     currency = currency || <Currency>{};
     currency.displayName = currency?.displayName || chain;
-    currency.symbol = currency?.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
+    currency.symbol =
+      currency?.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
     currency.decimals = currency?.decimals || +chainInfo.tokenDecimals.value?.[0].toHuman() || 0;
     currency.genesis = genesis;
 
@@ -126,18 +120,18 @@ export class NetworkService extends RxStartableService<NetworkState> {
 
     // Retrieve the latest header
     const lastHeader = await api.rpc.chain.getHeader();
-    console.info(
-      `${this._logPrefix}Last block: #${lastHeader.number} - hash ${lastHeader.hash}`
-    );
+    console.info(`${this._logPrefix}Last block: #${lastHeader.number} - hash ${lastHeader.hash}`);
 
     return {
       currency,
-      api
+      currencySymbol: currency?.symbol,
+      api,
     };
   }
 
   async filterAliveNodes(
     peers: string[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     opts?: {
       timeout?: number;
     }
@@ -157,7 +151,9 @@ export class NetworkService extends RxStartableService<NetworkState> {
   }
 
   async isPeerAlive(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     peer: Peer,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     opts?: {
       timeout?: number;
     }

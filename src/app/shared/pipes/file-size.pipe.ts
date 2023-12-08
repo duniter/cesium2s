@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {Pipe, PipeTransform} from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 /*
  * Convert bytes into largest possible unit.
@@ -30,29 +30,21 @@ import {Pipe, PipeTransform} from '@angular/core';
  * Example:
  *   {{ 1024 |  fileSize}}
  *   formats to: 1 KB
-*/
-@Pipe({name: 'fileSize'})
+ */
+@Pipe({ name: 'fileSize' })
 export class FileSizePipe implements PipeTransform {
+  private units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
-  private units = [
-    'bytes',
-    'KB',
-    'MB',
-    'GB',
-    'TB',
-    'PB'
-  ];
-
-  transform(bytes: number = 0, precision: number = 2 ): string {
-    if ( isNaN( parseFloat( String(bytes) )) || ! isFinite( bytes ) ) return '?';
+  transform(bytes: number = 0, precision: number = 2): string {
+    if (isNaN(parseFloat(String(bytes))) || !isFinite(bytes)) return '?';
 
     let unit = 0;
 
-    while ( bytes >= 1024 ) {
+    while (bytes >= 1024) {
       bytes /= 1024;
-      unit ++;
+      unit++;
     }
 
-    return bytes.toFixed( + precision ) + ' ' + this.units[ unit ];
+    return bytes.toFixed(+precision) + ' ' + this.units[unit];
   }
 }

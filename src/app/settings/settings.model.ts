@@ -1,6 +1,5 @@
-import {PropertiesMap, Property} from '../shared/types';
-import {InjectionToken} from '@angular/core';
-import {Peer} from "@app/network/peer.model";
+import { PropertiesMap, Property } from '../shared/types';
+import { InjectionToken } from '@angular/core';
 
 export declare interface LocaleConfig extends Property {
   country?: string;
@@ -18,4 +17,3 @@ export declare interface Settings {
   properties?: PropertiesMap;
   unAuthDelayMs?: number;
 }
-

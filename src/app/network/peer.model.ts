@@ -1,4 +1,4 @@
-import {isNil, isNilOrNaN, isNotNil, isNotNilOrBlank} from "@app/shared/functions";
+import { isNil, isNilOrNaN } from '@app/shared/functions';
 
 export interface Peer {
   host: string;
@@ -8,7 +8,6 @@ export interface Peer {
 }
 
 export abstract class Peers {
-
   static fromUri(peerUri: string): Peer {
     try {
       const url = new URL(peerUri);
@@ -19,14 +18,16 @@ export abstract class Peers {
       return {
         host: url.hostname,
         port,
-        path: url.pathname
+        path: url.pathname,
       };
-    } catch(err) {
+    } catch (err) {
       throw new Error('Invalid URI: ' + peerUri);
     }
   }
 
   static getWsUri(peer: Peer) {
-    return `${peer.useSsl || peer.port === 443 ? 'wss' : 'ws'}://${peer.host}${isNil(peer.port) ? '' : ':' + peer.port}${peer.path||'/ws'}`
+    return `${peer.useSsl || peer.port === 443 ? 'wss' : 'ws'}://${peer.host}${
+      isNil(peer.port) ? '' : ':' + peer.port
+    }${peer.path || '/ws'}`;
   }
 }

@@ -1,20 +1,21 @@
-import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
-import {Account} from "@app/account/account.model";
-import {ActionSheetOptions, IonModal, ModalController, Platform, PopoverOptions} from "@ionic/angular";
-import {mergeMap, Observable, tap} from "rxjs";
-import {isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
-import {filter} from "rxjs/operators";
-import {NetworkService} from "@app/network/network.service";
-import {Currency} from "@app/network/currency.model";
-import {NavigationEnd, Router} from "@angular/router";
-import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
-import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
-import {Capacitor} from "@capacitor/core";
-import {CapacitorPlugins} from "@app/shared/capacitor/plugins";
-import {RxState} from "@rx-angular/state";
-import {AccountsService} from "@app/account/accounts.service";
-import {WotController} from "@app/wot/wot.controller";
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
+import {Account, AccountUtils} from '@app/account/account.model';
+import { ActionSheetOptions, IonModal, ModalController, Platform, PopoverOptions } from '@ionic/angular';
+import { mergeMap, Observable, tap } from 'rxjs';
+import { isNotEmptyArray, isNotNilOrBlank } from '@app/shared/functions';
+import { filter } from 'rxjs/operators';
+import { NetworkService } from '@app/network/network.service';
+import { Currency } from '@app/network/currency.model';
+import { NavigationEnd, Router } from '@angular/router';
+import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { Capacitor } from '@capacitor/core';
+import { CapacitorPlugins } from '@app/shared/capacitor/plugins';
+import { RxState } from '@rx-angular/state';
+import { AccountsService } from '@app/account/accounts.service';
+import { WotController } from '@app/wot/wot.controller';
+import {formatAddress} from "@app/shared/currencies";
 
 export interface TransferState extends AppPageState {
   currency: Currency;
@@ -37,21 +38,19 @@ export interface TransferPageOptions {
   templateUrl: './transfer.page.html',
   styleUrls: ['./transfer.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RxState]
+  providers: [RxState],
 })
 export class TransferPage extends AppPage<TransferState> implements OnInit, OnDestroy {
-
   protected _enableScan: boolean = false;
   protected _autoOpenWotModal = true;
-  protected _initialWotModalBreakpoint = 0.25
-
+  protected _initialWotModalBreakpoint = 0.25;
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
-    cssClass: 'select-account-action-sheet'
+    cssClass: 'select-account-action-sheet',
   };
   protected popoverOptions: Partial<PopoverOptions> = {
     cssClass: 'select-account-popover',
-    reference: 'event'
+    reference: 'event',
   };
 
   @RxStateSelect() protected currency$: Observable<Currency>;
@@ -69,12 +68,18 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   @Input() dismissOnSubmit: boolean = false; // True is modal
   @Input() showToastOnSubmit: boolean = true;
 
+  get accountName(): string {
+    return AccountUtils.getDisplayName(this.account);
+  }
+  set accountName(value: string) {
+    this.accountService.getByName(value)
+      .then(account => this.account = account);
+  }
+
   @ViewChild('qrCodeModal') qrCodeModal: IonModal;
 
   get valid(): boolean {
-    return this.amount > 0
-      && isNotNilOrBlank(this.account?.address)
-      && isNotNilOrBlank(this.recipient?.address);
+    return this.amount > 0 && isNotNilOrBlank(this.account?.address) && isNotNilOrBlank(this.recipient?.address);
   }
 
   get invalid(): boolean {
@@ -93,36 +98,40 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     protected wotCtrl: WotController,
     protected router: Router
   ) {
-    super({name: 'transfer',
+    super({
+      name: 'transfer',
       loadDueTime: 250,
       initialState: {
-        recipient: {address: null, meta: null}
-      }
+        recipient: { address: null, meta: null },
+      },
     });
 
-    this._state.connect('accounts', this.accountService.watchAll({positiveBalanceFirst: true})
-      // DEBUG
-      .pipe(
-        tap(accounts => console.debug(this._logPrefix + 'Accounts loaded:', accounts)),
-        mergeMap(async (accounts) => {
-          // Load account
-          const fromAddress = this.activatedRoute.snapshot.paramMap.get('from');
-          if (isNotNilOrBlank(fromAddress)) {
-            this.account = await this.accountService.getByAddress(fromAddress);
-          }
-          // Get default
-          else if (isNotEmptyArray(accounts)) {
-            this.account = await this.accountService.getDefault();
-          }
+    this._state.connect(
+      'accounts',
+      this.accountService
+        .watchAll({ positiveBalanceFirst: true })
+        // DEBUG
+        .pipe(
+          tap((accounts) => console.debug(this._logPrefix + 'Accounts loaded:', accounts)),
+          mergeMap(async (accounts) => {
+            // Load account
+            const fromAddress = this.activatedRoute.snapshot.paramMap.get('from');
+            if (isNotNilOrBlank(fromAddress)) {
+              this.account = await this.accountService.getByAddress(fromAddress);
+            }
+            // Get default
+            else if (isNotEmptyArray(accounts)) {
+              this.account = await this.accountService.getDefault();
+            }
 
-          // Load recipient
-          const toAddress = this.activatedRoute.snapshot.paramMap.get('to');
-          if (isNotNilOrBlank(toAddress)) {
-            this.recipient = <Account>{address: toAddress};
-          }
-          return accounts;
-        })
-      )
+            // Load recipient
+            const toAddress = this.activatedRoute.snapshot.paramMap.get('to');
+            if (isNotNilOrBlank(toAddress)) {
+              this.recipient = <Account>{ address: toAddress };
+            }
+            return accounts;
+          })
+        )
     );
 
     this._state.connect('currency', this.networkService.currency$);
@@ -139,10 +148,11 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     this.registerSubscription(
       this.router.events
         .pipe(
-          filter(e => this.loaded && e instanceof NavigationEnd),
+          filter((e) => this.loaded && e instanceof NavigationEnd),
           tap(() => console.debug(this._logPrefix + 'Resetting page...'))
-        ).subscribe(() => this.unload())
-    )
+        )
+        .subscribe(() => this.unload())
+    );
   }
 
   async ngOnDestroy() {
@@ -153,7 +163,8 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   protected async ngOnLoad() {
     await this.accountService.ready();
 
-    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
+    this._enableScan =
+      this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
 
     return {};
   }
@@ -162,20 +173,19 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     const account = await this.accountService.selectAccount({
       minBalance: this.amount || 0,
       positiveBalanceFirst: true,
-      showBalance: true
+      showBalance: true,
     });
     if (account) {
       this.account = account;
     }
   }
 
-  setRecipient(recipient: string|Account) {
-    console.log(this._logPrefix + 'Selected recipient: ', recipient)
+  setRecipient(recipient: string | Account) {
+    console.log(this._logPrefix + 'Selected recipient: ', recipient);
     if (typeof recipient === 'object') {
       this.recipient = recipient;
-    }
-    else {
-      this.recipient = {address: recipient, meta: null};
+    } else {
+      this.recipient = { address: recipient, meta: null };
     }
   }
 
@@ -194,13 +204,11 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
       const hash = await this.accountService.transfer(this.account, this.recipient, this.amount);
 
       if (this.showToastOnSubmit) {
-        await this.showToast({message: 'INFO.TRANSFER_SENT'});
+        await this.showToast({ message: 'INFO.TRANSFER_SENT' });
       }
 
       this.close(hash);
-
-    }
-    catch (err) {
+    } catch (err) {
       this.setError(err);
       this.markAsLoaded();
     }
@@ -212,8 +220,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
       console.debug('[transfer] Closing page with result: ', data);
       if (this.routerOutlet?.canGoBack()) {
         this.routerOutlet.pop();
-      }
-      else {
+      } else {
         await this.router.navigateByUrl('/wallet');
       }
     }
@@ -233,10 +240,10 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     event.preventDefault();
 
     const searchText = this.recipient?.address;
-    const data = await this.wotCtrl.select({searchText});
+    const data = await this.wotCtrl.select({ searchText });
 
     if (!data) {
-      console.log('TODO cancelled')
+      console.log('TODO cancelled');
       return; // User cancelled
     }
 
@@ -267,7 +274,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     await this.qrCodeModal?.dismiss();
     return {
       ...(await super.ngOnUnload()),
-      recipient: {address: null, meta: null}
+      recipient: { address: null, meta: null },
     };
   }
 }

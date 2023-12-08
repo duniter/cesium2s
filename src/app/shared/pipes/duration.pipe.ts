@@ -1,22 +1,18 @@
-import {Pipe, Injectable, PipeTransform} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {toDuration} from '../dates';
+import { Pipe, PipeTransform } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { toDuration } from '../dates';
 
 @Pipe({
-  name: 'duration'
+  name: 'duration',
 })
 export class DurationPipe implements PipeTransform {
-
   protected dayUnit = this.translate.instant('COMMON.DAY_UNIT');
 
-  constructor(
-    private translate: TranslateService
-  ) {
-  }
+  constructor(private translate: TranslateService) {}
 
   transform(value: number, args?: any): string {
     if (!value) return '';
-    const unit = args && args.unit || 'hours';
+    const unit = (args && args.unit) || 'hours';
 
     // try with moment
     const duration = toDuration(value, unit);
@@ -26,6 +22,5 @@ export class DurationPipe implements PipeTransform {
     const minute = duration.minutes().toString().padStart(2, '0');
 
     return (days > 0 ? days.toString() + (this.dayUnit + ' ') : '') + hour + ':' + minute;
-
   }
 }

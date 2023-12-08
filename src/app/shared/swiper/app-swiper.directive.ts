@@ -1,13 +1,12 @@
-import {AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
-import {Swiper, SwiperOptions} from 'swiper/types';
-import {fromEventPattern, Subscription} from "rxjs";
+import { AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { Swiper, SwiperOptions } from 'swiper/types';
+import { fromEventPattern, Subscription } from 'rxjs';
 
 @Directive({
   selector: 'swiper-container',
   standalone: true,
 })
 export class SwiperDirective implements AfterViewInit, OnDestroy {
-
   private _subscription = new Subscription();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,14 +28,16 @@ export class SwiperDirective implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     if (this.config) {
-      console.debug('[swiper] Applying config', this.config, {modules: this.modules});
+      console.debug('[swiper] Applying config', this.config, { modules: this.modules });
       Object.assign(this.swiperElement, this.config);
     }
 
     this.swiperElement.initialize();
 
-    this._subscription.add(fromEventPattern((handler) => this.swiper.on('slideChangeTransitionStart', handler))
-      .subscribe(() => this.slideChangeTransitionStart.emit())
+    this._subscription.add(
+      fromEventPattern((handler) => this.swiper.on('slideChangeTransitionStart', handler)).subscribe(() =>
+        this.slideChangeTransitionStart.emit()
+      )
     );
   }
 

@@ -1,22 +1,32 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, inject, Injector, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
-import {ModalController} from '@ionic/angular';
-import {RegisterModal} from '../register/register.modal';
-import {slideUpDownAnimation} from "@app/shared/animations";
-import {AppForm} from "@app/shared/form.class";
-import {SettingsService} from "@app/settings/settings.service";
-import {NetworkService} from "@app/network/network.service";
-import {environment} from "@environments/environment";
-import {FormUtils} from "@app/shared/forms";
-import {isNil, isNotNilOrBlank, toBoolean} from '@app/shared/functions';
-import {getKeyringPairFromV1} from "@app/account/crypto.utils"
-import {base58Encode} from '@polkadot/util-crypto';
-import {Account, AuthData} from "@app/account/account.model";
-import {RxState} from "@rx-angular/state";
-import {RxStateProperty, RxStateRegister} from "@app/shared/decorator/state.decorator";
-import {debounceTime, map, mergeMap, Observable} from "rxjs";
-import {filter} from "rxjs/operators";
-import {AccountsService} from "@app/account/accounts.service";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  Injector,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ModalController } from '@ionic/angular';
+import { RegisterModal } from '../register/register.modal';
+import { slideUpDownAnimation } from '@app/shared/animations';
+import { AppForm } from '@app/shared/form.class';
+import { SettingsService } from '@app/settings/settings.service';
+import { NetworkService } from '@app/network/network.service';
+import { environment } from '@environments/environment';
+import { FormUtils } from '@app/shared/forms';
+import { isNil, isNotNilOrBlank, toBoolean } from '@app/shared/functions';
+import { getKeyringPairFromV1 } from '@app/account/crypto.utils';
+import { base58Encode } from '@polkadot/util-crypto';
+import { Account, AuthData } from '@app/account/account.model';
+import { RxState } from '@rx-angular/state';
+import { RxStateProperty, RxStateRegister } from '@app/shared/decorator/state.decorator';
+import { debounceTime, map, mergeMap, Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { AccountsService } from '@app/account/accounts.service';
+import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 
 export interface AuthFormState {
   account: Account;
@@ -28,14 +38,13 @@ export interface AuthFormState {
   styleUrls: ['./auth.form.scss'],
   animations: [slideUpDownAnimation],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RxState]
+  providers: [RxState],
 })
 export class AuthForm extends AppForm<AuthData> implements OnInit {
-
   protected showSalt = false;
   protected showPwd = false;
 
-  @RxStateRegister() protected state: RxState<AuthFormState> = inject(RxState)
+  @RxStateRegister() protected state: RxState<AuthFormState> = inject(RxState);
   @RxStateProperty() protected account$: Observable<Account>;
 
   @Input() canRegister: boolean;
@@ -57,34 +66,35 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     private accountService: AccountsService,
     public network: NetworkService
   ) {
-    super(injector,
+    super(
+      injector,
       formBuilder.group({
         salt: [null, Validators.required],
-        password: [null, Validators.required]
-      }));
+        password: [null, Validators.required],
+      })
+    );
 
     this.mobile = settings.mobile;
     this._enable = true;
 
     this.registerSubscription(
-      this.form.valueChanges
-        .pipe(debounceTime(500))
-        .subscribe(_ => this.valueChanges.emit(this.value))
+      this.form.valueChanges.pipe(debounceTime(500)).subscribe(() => this.valueChanges.emit(this.value))
     );
 
+    this.state.connect(
+      'account',
+      this.valueChanges.asObservable().pipe(
+        filter((data) => isNotNilOrBlank(data.v1.salt) && isNotNilOrBlank(data.v1.password)),
+        mergeMap((data) => this.accountService.createAccount(data)),
+        map(({ account }) => account)
+      )
+    );
   }
 
   ngOnInit() {
     super.ngOnInit();
 
     this.canRegister = toBoolean(this.canRegister, true);
-
-    this.state.connect('account', this.valueChanges.asObservable()
-      .pipe(
-        filter(data  => isNotNilOrBlank(data.v1.salt) && isNotNilOrBlank(data.v1.password)),
-        mergeMap(data => this.accountService.createAccount(data)),
-        map(({account}) => account)
-      ));
 
     // For DEV only: set the default user, for testing
     if (!environment.production && environment.dev?.auth) {
@@ -126,7 +136,7 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     setTimeout(async () => {
       const modal = await this.modalCtrl.create({
         component: RegisterModal,
-        backdropDismiss: false
+        backdropDismiss: false,
       });
       return modal.present();
     }, 200);
@@ -137,16 +147,16 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     return {
       v1: {
         salt: data?.salt,
-        password: data?.password
-      }
+        password: data?.password,
+      },
     };
   }
 
   get pubkey(): string {
     const data = this.form.value;
     // prevent displaying for empty credentials
-    if(isNil(data.salt) || isNil(data.password)) {
-      return ""
+    if (isNil(data.salt) || isNil(data.password)) {
+      return '';
     }
     const pair = getKeyringPairFromV1(data);
     const pubkey = pair.publicKey;
@@ -157,8 +167,8 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
   get address(): string {
     const data = this.form.value;
     // prevent displaying for empty credentials
-    if(isNil(data.salt) || isNil(data.password)) {
-      return ""
+    if (isNil(data.salt) || isNil(data.password)) {
+      return '';
     }
     return getKeyringPairFromV1(data).address;
   }

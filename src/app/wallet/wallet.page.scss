@@ -2,5 +2,6 @@
 ion-toolbar {
   ion-buttons[slot="end"] {
     padding-inline-end: var(--ion-padding);
+    color: var(--ion-text-color, #000);
   }
 }

@@ -1,9 +1,9 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core';
-import {changeCaseToUnderscore, isNilOrBlank, isNotNilOrBlank} from '../functions';
-import {abbreviate} from "@app/shared/currencies";
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { changeCaseToUnderscore, isNilOrBlank, isNotNilOrBlank } from '../functions';
+import { abbreviate } from '@app/shared/currencies';
 
 @Pipe({
-  name: 'isNotNilOrBlank'
+  name: 'isNotNilOrBlank',
 })
 export class IsNotNilOrBlankPipe implements PipeTransform {
   transform(value: string): boolean {
@@ -12,7 +12,7 @@ export class IsNotNilOrBlankPipe implements PipeTransform {
 }
 
 @Pipe({
-  name: 'isNilOrBlank'
+  name: 'isNilOrBlank',
 })
 export class IsNilOrBlankPipe implements PipeTransform {
   transform(value: string): boolean {
@@ -21,28 +21,26 @@ export class IsNilOrBlankPipe implements PipeTransform {
 }
 
 @Pipe({
-  name: 'toString'
+  name: 'toString',
 })
 export class ToStringPipe implements PipeTransform {
   transform(value: number): string {
-    return (value !== null && value !== undefined) ? value.toString() : '';
+    return value !== null && value !== undefined ? value.toString() : '';
   }
 }
 
-
 @Pipe({
-  name: 'strLength'
+  name: 'strLength',
 })
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class StrLengthPipe implements PipeTransform {
   transform(value: string): number {
-    return value && value.length || 0;
+    return (value && value.length) || 0;
   }
 }
 
-
 @Pipe({
-  name: 'strIncludes'
+  name: 'strIncludes',
 })
 export class StrIncludesPipe implements PipeTransform {
   transform(value: string, searchString: string, position?: number): boolean {
@@ -57,9 +55,9 @@ export class StrIncludesPipe implements PipeTransform {
  * Example:
  *   {{ 'myPropertyName' | translatable}}
  *   formats to: MY_PROPERTY_PATH
-*/
+ */
 @Pipe({
-  name: 'translatable'
+  name: 'translatable',
 })
 export class TranslatablePipe implements PipeTransform {
   transform(value: string): string {
@@ -68,10 +66,9 @@ export class TranslatablePipe implements PipeTransform {
 }
 
 @Pipe({
-  name: 'abbreviate'
+  name: 'abbreviate',
 })
 export class AbbreviatePipe implements PipeTransform {
-
   transform(currencyName: string): string {
     return abbreviate(currencyName);
   }

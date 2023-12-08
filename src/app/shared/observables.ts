@@ -1,8 +1,7 @@
-import {firstValueFrom, map, merge, Observable, switchMap, takeUntil, timer} from 'rxjs';
-import {filter, first} from 'rxjs/operators';
-import {isNotNil} from './functions';
-import {Predicate} from "@angular/core";
-
+import { firstValueFrom, map, merge, Observable, switchMap, takeUntil, timer } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+import { isNotNil } from './functions';
+import { Predicate } from '@angular/core';
 
 export function filterNotNil<T = any>(obs: Observable<T>): Observable<T> {
   return obs.pipe(filter(isNotNil));
@@ -29,22 +28,25 @@ export function chainPromises<T = any>(defers: (() => Promise<any>)[]): Promise<
   return (defers || []).reduce((previous: Promise<any> | null, defer) => {
     // First job
     if (!previous) {
-      return defer()
-        // Init the final result array, with the first result
-        .then(jobRes => [jobRes]);
+      return (
+        defer()
+          // Init the final result array, with the first result
+          .then((jobRes) => [jobRes])
+      );
     }
     // Other jobs
-    return previous
-      .then((finalResult) => defer()
+    return previous.then((finalResult) =>
+      defer()
         // Add job result to final result array
-        .then(jobRes => finalResult.concat(jobRes)));
+        .then((jobRes) => finalResult.concat(jobRes))
+    );
   }, null);
 }
 
 export function firstTrue(obs: Observable<boolean>): Observable<void> {
   return obs.pipe(
     first((v) => v === true),
-    map(_ => {}) // Convert to void
+    map(() => {}) // Convert to void
   );
 }
 
@@ -62,59 +64,59 @@ export declare interface WaitForOptions {
 export async function waitFor(predicate: Predicate<void>, opts?: WaitForOptions): Promise<void> {
   if (predicate()) return Promise.resolve();
 
-  const period = opts && opts.checkPeriod || 300;
-  const dueTime = opts && opts.dueTime || period;
-  let wait$: Observable<boolean> = timer(dueTime, period)
-    .pipe(
-      // For DEBUG :
-      //tap(() => console.debug("Waiting form idle...", form)),
-      filter(_ => predicate()),
-      map(_ => true)
-    );
+  const period = (opts && opts.checkPeriod) || 300;
+  const dueTime = (opts && opts.dueTime) || period;
+  // eslint-disable-next-line @rx-angular/no-zone-critical-rxjs-creation-apis
+  let wait$: Observable<boolean> = timer(dueTime, period).pipe(
+    // For DEBUG :
+    //tap(() => console.debug("Waiting form idle...", form)),
+    filter(() => predicate()),
+    map(() => true)
+  );
 
   // Add timeout
   if (opts && opts.timeout) {
+    // eslint-disable-next-line @rx-angular/no-zone-critical-rxjs-creation-apis
     const $timeout = timer(opts.timeout);
     wait$ = merge(
-      wait$.pipe(
-        takeUntil($timeout)
-      ),
-      $timeout
-        .pipe(map(() => {
+      wait$.pipe(takeUntil($timeout)),
+      $timeout.pipe(
+        map(() => {
           throw new Error(`Timeout waitIdle() - after ${opts.timeout}ms`);
-        }))
+        })
+      )
     );
   }
 
   await firstNotNilPromise(wait$);
 }
 
-
 export async function waitForTrue(observable: Observable<boolean>, opts?: WaitForOptions): Promise<void> {
   const firstTrueObservable = firstTrue(observable);
 
   // Timeout (+ dueTime)
   if (opts && opts.timeout > 0) {
+    // eslint-disable-next-line @rx-angular/no-zone-critical-rxjs-creation-apis
     const $timeout = timer(opts.timeout);
     return firstValueFrom(
       merge(
-        timer(opts.dueTime || 0)
-          .pipe(
-            switchMap(() => firstTrueObservable),
-            takeUntil($timeout)
-          ),
-        $timeout
-          .pipe(map(() => {
+        // eslint-disable-next-line @rx-angular/no-zone-critical-rxjs-creation-apis
+        timer(opts.dueTime || 0).pipe(
+          switchMap(() => firstTrueObservable),
+          takeUntil($timeout)
+        ),
+        $timeout.pipe(
+          map(() => {
             throw new Error(`Timeout ready() - after ${opts.timeout}ms`);
-          }))
-      ));
+          })
+        )
+      )
+    );
   }
   // dueTime (without timeout)
   if (opts && opts.dueTime > 0) {
-    return firstValueFrom(
-      timer(opts.dueTime)
-        .pipe(switchMap(() => firstTrueObservable))
-    );
+    // eslint-disable-next-line @rx-angular/no-zone-critical-rxjs-creation-apis
+    return firstValueFrom(timer(opts.dueTime).pipe(switchMap(() => firstTrueObservable)));
   }
-  return firstTrueObservable.toPromise();
+  return firstValueFrom(firstTrueObservable);
 }

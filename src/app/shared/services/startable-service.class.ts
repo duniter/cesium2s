@@ -1,20 +1,20 @@
-import {Optional} from '@angular/core';
-import {firstValueFrom, Subject, takeUntil} from 'rxjs';
-import {RxBaseServiceOptions} from "@app/shared/services/rx-service.class";
-import {ReadyAsyncFunction, IStartableService, IWithReadyService} from "@app/shared/services/service.model";
-import {BaseService} from "@app/shared/services/service.class";
+import { Optional } from '@angular/core';
+import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { IStartableService, IWithReadyService, ReadyAsyncFunction } from '@app/shared/services/service.model';
+import { BaseService } from '@app/shared/services/service.class';
 
-
-export interface StartableServiceOptions<T extends object = {}>
-  extends RxBaseServiceOptions<T> {
-
+export interface StartableServiceOptions<T> {
+  name?: string;
+  initialState?: T;
 }
 
-export abstract class StartableService<T extends object = {},
-  O extends StartableServiceOptions<T> = StartableServiceOptions<T>>
+export abstract class StartableService<
+    T extends object | void = void,
+    O extends StartableServiceOptions<T> = StartableServiceOptions<T>
+  >
   extends BaseService<O>
-  implements IStartableService<T>, IWithReadyService<T> {
-
+  implements IStartableService<T>, IWithReadyService<T>
+{
   startSubject = new Subject<T>();
   stopSubject = new Subject<void>();
 
@@ -38,14 +38,9 @@ export abstract class StartableService<T extends object = {},
     return this._data;
   }
 
-  protected constructor(
-    @Optional() prerequisiteService?: IWithReadyService<any>,
-    options?: O
-  ) {
+  protected constructor(@Optional() prerequisiteService?: IWithReadyService, options?: O) {
     super(options);
-    this._startPrerequisite = prerequisiteService
-      ? () => prerequisiteService.ready()
-      : () => Promise.resolve();
+    this._startPrerequisite = prerequisiteService ? () => prerequisiteService.ready() : () => Promise.resolve();
   }
 
   start(): Promise<T> {
@@ -54,7 +49,7 @@ export abstract class StartableService<T extends object = {},
 
     this._startPromise = this._startPrerequisite()
       .then(() => this.ngOnStart())
-      .then(data => {
+      .then((data) => {
         this._data = data;
 
         this._started = true;
@@ -64,8 +59,8 @@ export abstract class StartableService<T extends object = {},
 
         return data;
       })
-      .catch(err => {
-        console.error('Failed to start a service: ' + (err && err.message || err), err);
+      .catch((err) => {
+        console.error('Failed to start a service: ' + ((err && err.message) || err), err);
         this._started = false;
         this._startPromise = null;
         return null;
@@ -77,11 +72,9 @@ export abstract class StartableService<T extends object = {},
     try {
       this.unsubscribe();
       await this.ngOnStop();
-    }
-    catch (err) {
-      console.error('Failed to stop a service: ' + (err && err.message || err), err);
-    }
-    finally {
+    } catch (err) {
+      console.error('Failed to stop a service: ' + ((err && err.message) || err), err);
+    } finally {
       this.stopSubject.next();
       this._data = null;
       this._started = false;
@@ -99,9 +92,7 @@ export abstract class StartableService<T extends object = {},
     if (this._started) return Promise.resolve(this._data);
     if (this._startPromise) return this._startPromise;
     if (this._startByReadyFunction) return this.start();
-    return firstValueFrom(this.startSubject
-        .pipe(takeUntil(this.stopSubject))
-      );
+    return firstValueFrom(this.startSubject.pipe(takeUntil(this.stopSubject)));
   }
 
   protected async ngOnStop(): Promise<void> {
@@ -109,5 +100,4 @@ export abstract class StartableService<T extends object = {},
   }
 
   protected abstract ngOnStart(): Promise<T>;
-
 }

@@ -1,4 +1,4 @@
-import {isNilOrBlank} from "@app/shared/functions";
+import { isNilOrBlank } from '@app/shared/functions';
 
 export function abbreviate(currency: string): string {
   if (isNilOrBlank(currency)) return '';
@@ -9,9 +9,8 @@ export function abbreviate(currency: string): string {
     for (let i = 0; i < currency.length; i++) {
       const c = currency[i];
       if (i === 0) {
-        unit = (c === 'g' || c === 'G') ? 'Ğ' : c ;
-      }
-      else if (i > 0 && sepChars.indexOf(currency[i-1]) != -1) {
+        unit = c === 'g' || c === 'G' ? 'Ğ' : c;
+      } else if (i > 0 && sepChars.indexOf(currency[i - 1]) != -1) {
         unit += c;
       }
     }
@@ -30,11 +29,11 @@ export function abbreviate(currency: string): string {
 export function formatAddress(value: string): string {
   if (!value) return '';
   if (value.length < 12) return '?';
-  return value.substring(0,6) + '\u2026' + value.substring(value.length - 6);
+  return value.substring(0, 6) + '\u2026' + value.substring(value.length - 6);
 }
 
 export function formatPubkey(value: string): string {
   if (!value) return '';
   if (value.length < 12) return '?';
-  return value.substring(0,4) + '\u2026' + value.substring(value.length - 4);
+  return value.substring(0, 4) + '\u2026' + value.substring(value.length - 4);
 }

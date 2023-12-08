@@ -1,4 +1,10 @@
-import {getPropertyByPathAsString, isNotNil, isNotNilOrBlank, matchUpperCase, startsWithUpperCase} from "../functions";
+import {
+  getPropertyByPathAsString,
+  isNotNil,
+  isNotNilOrBlank,
+  matchUpperCase,
+  startsWithUpperCase,
+} from '../functions';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export declare type ReadyAsyncFunction<T = any> = () => Promise<T>;
@@ -13,32 +19,41 @@ export declare type FetchMoreFn<R, V = object> = (variables?: V) => Promise<R>;
 export declare interface LoadResult<T> {
   data: T[];
   total?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors?: any[];
   fetchMore?: FetchMoreFn<LoadResult<T>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function suggestFromArray<T = any>(values: T[], searchText: any, opts?: {
-  offset?: 0;
-  size?: 0;
-  searchAttribute?: string;
-  searchAttributes?: string[];
-}): LoadResult<T> {
-  if (isNotNil(searchText) && typeof searchText === 'object') return {data: [searchText]};
+export function suggestFromArray<T = any>(
+  values: T[],
+  input: string | T,
+  opts?: {
+    offset?: 0;
+    size?: 0;
+    searchAttribute?: string;
+    searchAttributes?: string[];
+  }
+): LoadResult<T> {
+  if (isNotNil(input) && typeof input === 'object') return { data: [input] };
 
-  searchText = (typeof searchText === 'string' && searchText !== '*') && searchText.toUpperCase() || undefined;
+  let searchText = (typeof input === 'string' && input !== '*' && input.toUpperCase()) || undefined;
 
   // Filter items
   if (isNotNilOrBlank(searchText) && values) {
-    const keys = opts && (opts.searchAttribute && [opts.searchAttribute] || opts.searchAttributes) || ['label'];
+    const keys = (opts && ((opts.searchAttribute && [opts.searchAttribute]) || opts.searchAttributes)) || ['label'];
 
     // If wildcard, search using regexp
     if ((searchText as string).indexOf('*') !== -1) {
       searchText = (searchText as string).replace('*', '.*');
-      values = values.filter(v => keys.findIndex(key => matchUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1);
+      values = values.filter(
+        (v) => keys.findIndex((key) => matchUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1
+      );
     } else {
       // If wildcard, search using startsWith
-      values = values.filter(v => keys.findIndex(key => startsWithUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1);
+      values = values.filter(
+        (v) => keys.findIndex((key) => startsWithUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1
+      );
     }
   }
 
@@ -55,13 +70,11 @@ export function suggestFromArray<T = any>(values: T[], searchText: any, opts?: {
 
   return {
     data: values,
-    total
+    total,
   };
-
-
 }
 
-export interface IStartableService<T = any> {
+export interface IStartableService<T> {
   started: boolean;
 
   start(): Promise<T>;

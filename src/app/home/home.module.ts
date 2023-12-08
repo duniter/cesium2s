@@ -1,11 +1,11 @@
-import {NgModule} from '@angular/core';
+import { NgModule } from '@angular/core';
 
-import {HomePage} from './home.page';
-import {AppSharedModule} from "@app/shared/shared.module";
-import {TranslateModule} from "@ngx-translate/core";
-import {HomePageRoutingModule} from "@app/home/home-routing.module";
-import {AppAuthModule} from "@app/account/auth/auth.module";
-import {AppRegisterModule} from "@app/account/register/register.module";
+import { HomePage } from './home.page';
+import { AppSharedModule } from '@app/shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { HomePageRoutingModule } from '@app/home/home-routing.module';
+import { AppAuthModule } from '@app/account/auth/auth.module';
+import { AppRegisterModule } from '@app/account/register/register.module';
 import { AppTransferModule } from '@app/transfer/transfer.module';
 
 @NgModule({
@@ -15,8 +15,8 @@ import { AppTransferModule } from '@app/transfer/transfer.module';
     HomePageRoutingModule,
     AppAuthModule,
     AppRegisterModule,
-    AppTransferModule
+    AppTransferModule,
   ],
-  declarations: [HomePage]
+  declarations: [HomePage],
 })
 export class HomeModule {}

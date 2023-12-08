@@ -1,30 +1,24 @@
-import {KeyringJson, KeyringStore} from "@polkadot/ui-keyring/types";
-import {Directive} from '@angular/core';
-import {IStorage} from "@app/shared/services/storage/storage.utils";
+import { KeyringJson, KeyringStore } from '@polkadot/ui-keyring/types';
+import { Directive } from '@angular/core';
+import { IStorage } from '@app/shared/services/storage/storage.utils';
 
 // @dynamic
 @Directive()
 export class KeyringStorage implements KeyringStore {
-  constructor(
-    protected storage: IStorage,
-    protected storagePrefix?: string
-  ) {
+  constructor(protected storage: IStorage, protected storagePrefix?: string) {
     this.storagePrefix = this.storagePrefix || 'keyring-';
   }
 
   get(key: string, cb: (value: KeyringJson) => void) {
-    this.storage.get(this.storagePrefix + key)
-      .then(json => cb(json as unknown as KeyringJson));
+    this.storage.get(this.storagePrefix + key).then((json) => cb(json as unknown as KeyringJson));
   }
 
   set(key: string, value: KeyringJson, cb?: () => void) {
-    this.storage.set(this.storagePrefix + key, value)
-      .then(() => cb && cb());
+    this.storage.set(this.storagePrefix + key, value).then(() => cb && cb());
   }
 
   remove(key: string, cb?: () => void) {
-    this.storage.remove(this.storagePrefix + key)
-      .then(() => cb && cb());
+    this.storage.remove(this.storagePrefix + key).then(() => cb && cb());
   }
 
   all(cb: (key: string, value: KeyringJson) => void) {

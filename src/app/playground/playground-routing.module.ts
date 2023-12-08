@@ -1,14 +1,13 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {HomePage} from "@app/home/home.page";
-import {PlaygroundPage} from "@app/playground/playground.page";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { PlaygroundPage } from '@app/playground/playground.page';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: PlaygroundPage
-  }
+    component: PlaygroundPage,
+  },
 ];
 
 @NgModule({

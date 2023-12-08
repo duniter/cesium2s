@@ -2,9 +2,9 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import {Environment} from "./environment.class";
-import {StorageDrivers} from "@app/shared/services/storage/storage.utils";
-import {AuthData} from "@app/account/account.model";
+import { Environment } from './environment.class';
+import { StorageDrivers } from '@app/shared/services/storage/storage.utils';
+import { AuthData } from '@app/account/account.model';
 
 export const environment = <Environment>{
   production: false,
@@ -16,11 +16,11 @@ export const environment = <Environment>{
   // Storage
   storage: {
     name: 'cesium',
-    driverOrder: [StorageDrivers.IndexedDB, StorageDrivers.WebSQL, StorageDrivers.LocalStorage]
+    driverOrder: [StorageDrivers.IndexedDB, StorageDrivers.WebSQL, StorageDrivers.LocalStorage],
   },
 
   keyring: {
-    ss58Format: 42 // dev
+    ss58Format: 42, // dev
   },
 
   dev: {
@@ -30,13 +30,14 @@ export const environment = <Environment>{
 
     auth: <AuthData>{
       v1: {
-        salt: 'test', password: 'test'
+        salt: 'test',
+        password: 'test',
       },
       meta: {
         name: 'Compte test v1',
-        default: false
-      }
-    }
+        default: false,
+      },
+    },
   },
 
   defaultPeers: [
@@ -45,5 +46,5 @@ export const environment = <Environment>{
     //'wss://gdev.librelois.fr/ws',
     //'wss://gdev.komun.org/ws',
     //'wss://1000i100.fr/ws'
-  ]
+  ],
 };

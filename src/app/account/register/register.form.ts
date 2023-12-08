@@ -1,43 +1,33 @@
-import {Component, ElementRef, Injector, Input, OnInit, ViewChild} from '@angular/core';
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  FormBuilder,
-  FormControl,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
-import {fromEventPattern, Observable, Subscription, timer} from 'rxjs';
-import {mergeMap} from 'rxjs/operators';
-import {AccountsService} from "@app/account/accounts.service";
-import {SettingsService} from "@app/settings/settings.service";
-import {environment} from "@environments/environment";
-import {AppForm} from "@app/shared/form.class";
-import {NetworkService} from "@app/network/network.service";
-import {Currency} from "@app/network/currency.model";
-import {AccountMeta, AuthData} from "@app/account/account.model";
-import {Swiper, SwiperOptions} from 'swiper/types';
-import {IonicSlides} from "@ionic/angular";
-import {SwiperDirective} from "@app/shared/swiper/app-swiper.directive";
-import {isNilOrBlank, isNotNilOrBlank} from "@app/shared/functions";
-import {formatAddress} from "@app/shared/currencies";
+import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AccountsService } from '@app/account/accounts.service';
+import { SettingsService } from '@app/settings/settings.service';
+import { environment } from '@environments/environment';
+import { AppForm } from '@app/shared/form.class';
+import { NetworkService } from '@app/network/network.service';
+import { Currency } from '@app/network/currency.model';
+import { AccountMeta, AuthData } from '@app/account/account.model';
+import { Swiper, SwiperOptions } from 'swiper/types';
+import { IonicSlides } from '@ionic/angular';
+import { SwiperDirective } from '@app/shared/swiper/app-swiper.directive';
+import { isNilOrBlank } from '@app/shared/functions';
+import { formatAddress } from '@app/shared/currencies';
+import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 
 export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,
   ASK_WORD: 6,
   CODE: 9,
   CODE_CONFIRMATION: 10,
-  CONGRATULATION: 11
-}
+  CONGRATULATION: 11,
+};
 
 @Component({
   selector: 'app-register-form',
   templateUrl: 'register.form.html',
-  styleUrls: ['./register.form.scss']
+  styleUrls: ['./register.form.scss'],
 })
 export class RegisterForm extends AppForm<AuthData> implements OnInit {
-
   protected swiperModules = [IonicSlides];
 
   @Input() swiperOptions: SwiperOptions = {
@@ -45,16 +35,17 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     speed: 400,
     navigation: false,
     allowTouchMove: false,
-    pagination: {clickable: false, dynamicBullets: true},
+    pagination: { clickable: false, dynamicBullets: true },
   };
 
   slideState = {
     index: this.swiperOptions.initialSlide,
     isBeginning: true,
     isEnd: false,
-    canNext: true
+    canNext: true,
   };
 
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('class') classList: string;
 
   get currency(): Currency {
@@ -72,14 +63,19 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   ) {
     super(injector);
 
-    this.setForm(formBuilder.group({
-      words: new FormControl(null, Validators.required),
-      wordNumber: new FormControl(null, Validators.required),
-      code: new FormControl(null, Validators.required),
-      codeConfirmation: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('code')])),
-      name: new FormControl(null),
-      address: new FormControl(null)
-    }));
+    this.setForm(
+      formBuilder.group({
+        words: new FormControl(null, Validators.required),
+        wordNumber: new FormControl(null, Validators.required),
+        code: new FormControl(null, Validators.required),
+        codeConfirmation: new FormControl(
+          null,
+          Validators.compose([Validators.required, this.equalsValidator('code')])
+        ),
+        name: new FormControl(null),
+        address: new FormControl(null),
+      })
+    );
 
     this.debug = !environment.production;
   }
@@ -93,7 +89,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
         code: 'AAAAA',
         codeConfirmation: null,
         name: null,
-        address: null
+        address: null,
       });
     }
   }
@@ -110,8 +106,8 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
         mnemonic: json.words.join(' '),
       },
       meta: <AccountMeta>{
-        name: json.name
-      }
+        name: json.name,
+      },
     };
   }
 
@@ -120,12 +116,12 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   }
 
   slideNext() {
-    console.log("slideNext from slide #" + this.slideState.index);
+    console.log('slideNext from slide #' + this.slideState.index);
     this.swiper.slideNext();
   }
 
   async slidePrev() {
-    this.swiper.slidePrev()
+    this.swiper.slidePrev();
     setTimeout(() => this.updateState());
   }
 
@@ -147,10 +143,10 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   }
 
   equalsValidator(otherControlName: string): ValidatorFn {
-    return function(c: AbstractControl): ValidationErrors | null {
+    return function (c: AbstractControl): ValidationErrors | null {
       if (c.parent && c.value !== c.parent.value[otherControlName]) {
         return {
-          equals: true
+          equals: true,
         };
       }
       return null;
@@ -161,7 +157,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     this.onCancel.emit();
   }
 
-  protected async updateState(){
+  protected async updateState() {
     this.slideState.index = this.swiper.activeIndex;
     this.slideState.isBeginning = this.slideState.index === 0 || this.swiper.isBeginning;
     this.slideState.isEnd = this.swiper.isEnd;
@@ -173,8 +169,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
       case REGISTER_FORM_SLIDES.MNEMONIC:
         if (!this.form.get('words').valid) {
           await this.generatePhrase();
-        }
-        else {
+        } else {
           this.slideState.canNext = false;
         }
         break;
@@ -206,7 +201,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     setTimeout(async () => {
       const mnemonic = await this.accountService.generateMnemonic();
       this.form.patchValue({
-        words: mnemonic.split(' ')
+        words: mnemonic.split(' '),
       });
     }, 250 * Math.random());
   }
@@ -219,10 +214,9 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     if (this.slideState.index !== REGISTER_FORM_SLIDES.ASK_WORD) return;
     if (!environment.production) {
       this.slideState.canNext = true;
-    }
-    else {
+    } else {
       const wordNumber = Math.min(Math.floor(Math.random() * 12 + 0.4) + 1, 12);
-      this.form.patchValue({wordNumber});
+      this.form.patchValue({ wordNumber });
       this.slideState.canNext = false;
     }
     this.markForCheck();
@@ -231,8 +225,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   checkWord(word: string) {
     if (!environment.production) {
       this.slideState.canNext = true;
-    }
-    else {
+    } else {
       const words = this.form.get('words').value;
       const wordNumber = this.form.get('wordNumber').value;
       const expectedWord = words[wordNumber - 1];
@@ -245,13 +238,13 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     if (this.slideState.index !== REGISTER_FORM_SLIDES.CODE) return;
     if (!environment.production) {
       this.slideState.canNext = true;
-    }
-    else if (force === true || isNilOrBlank(this.form.get('code').value)) {
-      const code = Math.random().toString(36)
+    } else if (force === true || isNilOrBlank(this.form.get('code').value)) {
+      const code = Math.random()
+        .toString(36)
         .replace(/[^a-z]+/g, '')
         .substring(0, 5)
         .toUpperCase();
-      this.form.patchValue({code});
+      this.form.patchValue({ code });
     }
     this.slideState.canNext = true;
     this.markForCheck();
@@ -273,7 +266,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
 
     setTimeout(async () => {
       const data = this.value;
-      const {account} = await this.accountService.createAccount(this.value);
+      const { account } = await this.accountService.createAccount(this.value);
 
       // Set address
       this.form.get('address').setValue(account.address);

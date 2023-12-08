@@ -1,6 +1,6 @@
-import {Capacitor} from "@capacitor/core";
+import { Capacitor } from '@capacitor/core';
 
-export declare type CapacitorPluginType = 'Camera'|'StatusBar'|'Keyboard'|'BarcodeScanner';
+export declare type CapacitorPluginType = 'Camera' | 'StatusBar' | 'Keyboard' | 'BarcodeScanner';
 
 export class CapacitorPlugins {
   static readonly Camera = 'Camera';

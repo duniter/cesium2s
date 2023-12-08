@@ -1,18 +1,18 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
-import {APP_LOCALES, LocaleConfig, Settings} from "@app/settings/settings.model";
-import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
-import {NetworkService} from "@app/network/network.service";
-import {AccountsService} from "@app/account/accounts.service";
-import {Account} from "@app/account/account.model";
-import {fadeInAnimation} from "@app/shared/animations";
-import {Router} from "@angular/router";
-import {AuthController} from "@app/account/auth.controller";
-import {TransferController} from '@app/transfer/transfer.controller';
-import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
-import {Observable} from "rxjs";
-import {Currency} from "@app/network/currency.model";
-import {RxState} from "@rx-angular/state";
-
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { APP_LOCALES, LocaleConfig, Settings } from '@app/settings/settings.model';
+import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
+import { NetworkService } from '@app/network/network.service';
+import { AccountsService } from '@app/account/accounts.service';
+import { Account } from '@app/account/account.model';
+import { fadeInAnimation } from '@app/shared/animations';
+import { Router } from '@angular/router';
+import { AuthController } from '@app/account/auth.controller';
+import { TransferController } from '@app/transfer/transfer.controller';
+import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { Observable } from 'rxjs';
+import { Currency } from '@app/network/currency.model';
+import { RxState } from '@rx-angular/state';
+import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 
 export interface HomePageState extends AppPageState, Settings {
   defaultAccount: Account;
@@ -23,10 +23,10 @@ export interface HomePageState extends AppPageState, Settings {
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   animations: [fadeInAnimation],
-  providers: [RxState]
+  providers: [RxState],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePage extends AppPage<HomePageState> implements OnInit {
-
   @RxStateProperty() defaultAccount: Account;
   @RxStateProperty() locale: string;
 
@@ -34,7 +34,7 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
   @RxStateSelect() defaultAccount$: Observable<Account>;
 
   get isLogin(): boolean {
-    return this.accountService.isLogin
+    return this.accountService.isLogin;
   }
 
   constructor(
@@ -45,32 +45,26 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
     protected router: Router,
     @Inject(APP_LOCALES) public locales: LocaleConfig[]
   ) {
-    super({name: 'home'})
+    super({ name: 'home' });
   }
 
   protected async ngOnLoad() {
-    await Promise.all([
-      this.settings.ready(),
-      this.networkService.ready(),
-      this.accountService.ready()
-    ]);
+    await Promise.all([this.settings.ready(), this.networkService.ready(), this.accountService.ready()]);
 
     const currency = this.networkService.currency.displayName;
 
     // Load account
-    const defaultAccount: Account = this.accountService.isLogin
-      ? await this.accountService.getDefault()
-      : null;
+    const defaultAccount: Account = this.accountService.isLogin ? await this.accountService.getDefault() : null;
 
     return {
       ...this.settings.clone(),
       currency,
-      defaultAccount
+      defaultAccount,
     };
   }
 
-  changeLocale(locale: string): boolean  {
-    this.settings.patchValue({locale});
+  changeLocale(locale: string): boolean {
+    this.settings.patchValue({ locale });
     this.locale = locale;
     this.markForCheck();
     return true;
@@ -78,7 +72,7 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
 
   async login(event: MouseEvent | TouchEvent | PointerEvent | CustomEvent) {
     const data = await this.accountService.login(event, {
-      auth: true
+      auth: true,
     });
     if (data?.address) {
       this.defaultAccount = data;
@@ -88,7 +82,7 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
 
   async register() {
     const data = await this.authController.createNew({
-      redirectToWalletPage: true
+      redirectToWalletPage: true,
     });
     if (data?.address) {
       this.defaultAccount = data;

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { WotLookupPage } from './wot-lookup.page';
-import {WotDetailsPage} from "@app/wot/wot-details.page";
+import { WotDetailsPage } from '@app/wot/wot-details.page';
 
 const routes: Routes = [
   {
@@ -13,9 +13,8 @@ const routes: Routes = [
   {
     path: ':address',
     pathMatch: 'full',
-    component: WotDetailsPage
-  }
-
+    component: WotDetailsPage,
+  },
 ];
 
 @NgModule({

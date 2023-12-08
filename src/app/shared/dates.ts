@@ -1,7 +1,5 @@
-import {Duration, isMoment, Moment, unitOfTime} from 'moment';
 import * as momentImported from 'moment';
-
-import * as momentTZImported from 'moment-timezone';
+import { Duration, isMoment, Moment, unitOfTime } from 'moment';
 
 const moment = momentImported;
 
@@ -39,7 +37,7 @@ export class DateUtils {
    * @param timezone a timezone (see https://momentjs.com/timezone/)
    * @param keepLocalTime if true, only the timezone (and offset) is updated, keeping the local time same. Consequently, it will now point to a different point in time if the offset has changed.
    */
-  static resetTime(value: Moment|string, timezone?: string, keepLocalTime?: boolean): Moment | undefined {
+  static resetTime(value: Moment | string, timezone?: string, keepLocalTime?: boolean): Moment | undefined {
     if (!value) return undefined;
     const date = fromDateISOString(value);
     // No timezone
@@ -47,7 +45,8 @@ export class DateUtils {
       return date.clone().startOf('day');
     }
     // Use timezone
-    return date.clone() // clone the original date
+    return date
+      .clone() // clone the original date
       .tz(timezone, keepLocalTime)
       .startOf('day');
   }
@@ -58,7 +57,7 @@ export class DateUtils {
    * @param weekday
    * @param timezone
    */
-  static isAtDay(date: string|Moment, weekday: number, timezone?: string): boolean {
+  static isAtDay(date: string | Moment, weekday: number, timezone?: string): boolean {
     date = date && fromDateISOString(date);
     if (!date) return null;
     if (timezone) date = date.clone().tz(timezone).startOf('day');
@@ -70,15 +69,12 @@ export function toDateISOString(value: any): string | undefined {
   if (!value) return undefined;
 
   // Already a valid ISO date time string (without timezone): use it
-  if (typeof value === 'string'
-    && value.indexOf('+') === -1
-    && value.lastIndexOf('Z') === value.length - 1) {
-
+  if (typeof value === 'string' && value.indexOf('+') === -1 && value.lastIndexOf('Z') === value.length - 1) {
     return value;
   }
   // Make sure to have a Moment object
   value = fromDateISOString(value);
-  return value && value.toISOString() || undefined;
+  return (value && value.toISOString()) || undefined;
 }
 
 export function fromDateISOString(value: any): Moment | undefined {
@@ -94,8 +90,7 @@ export function fromDateISOString(value: any): Moment | undefined {
     console.warn('Wrong date format - Trying to convert from local time: ' + value);
     if (value.length === 10) {
       return moment(value, DATE_UNIX_TIMESTAMP);
-    }
-    else if (value.length === 13) {
+    } else if (value.length === 13) {
       return moment(value, DATE_UNIX_MS_TIMESTAMP);
     }
   }
@@ -132,5 +127,3 @@ export function toDuration(value: number, unit?: moment.unitOfTime.DurationConst
 
   return duration;
 }
-
-

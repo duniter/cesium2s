@@ -15,7 +15,7 @@
   </ion-header>
 
   <div id="container">
-    <ion-list *ngIf="!loading">
+    <ion-list *rxIf="loaded$; else listSkeleton">
       <ion-item>
         <ion-icon slot="start" name="language"></ion-icon>
         <ion-label color="dark" translate>COMMON.LANGUAGE</ion-label>
@@ -72,3 +72,7 @@
     </div>
   </div>
 </ion-content>
+
+<ng-template #listSkeleton>
+  <app-skeleton-list [avatar]="true" size="5"></app-skeleton-list>
+</ng-template>

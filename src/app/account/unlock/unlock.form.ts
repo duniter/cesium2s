@@ -6,7 +6,7 @@ import {
   Input,
   OnInit,
   Optional,
-  Output
+  Output,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -16,24 +16,23 @@ import {
   FormGroupDirective,
   ValidationErrors,
   ValidatorFn,
-  Validators
+  Validators,
 } from '@angular/forms';
-import {SettingsService} from "@app/settings/settings.service";
-import {environment} from "@environments/environment";
-import {AppForm} from "@app/shared/form.class";
-import {isNotNilOrBlank} from "@app/shared/functions";
-import {distinctUntilChanged, map, Subject} from "rxjs";
-import {MaskitoElementPredicateAsync, MaskitoOptions} from "@maskito/core";
-
+import { SettingsService } from '@app/settings/settings.service';
+import { environment } from '@environments/environment';
+import { AppForm } from '@app/shared/form.class';
+import { isNotNilOrBlank } from '@app/shared/functions';
+import { distinctUntilChanged, map, Subject } from 'rxjs';
+import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 
 @Component({
   selector: 'app-unlock-form',
   templateUrl: 'unlock.form.html',
   styleUrls: ['./unlock.form.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnlockForm extends AppForm<string> implements OnInit {
-
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('class') classList: string = null;
 
   @Input() helpMessage = 'AUTH.PASSPHRASE_HELP';
@@ -43,9 +42,9 @@ export class UnlockForm extends AppForm<string> implements OnInit {
   @Input() control: FormControl = null;
   @Input() controlName: string = null;
 
-  @Output() change = new EventEmitter<string>();
+  @Output() codeChange = new EventEmitter<string>();
 
-  $valid = new Subject<boolean>()
+  $valid = new Subject<boolean>();
 
   readonly codeMask: MaskitoOptions = {
     mask: [/[A-Z]/, /[A-Z]/, /[A-Z]/, /[A-Z]/, /[A-Z]/, /[A-Z]/],
@@ -66,7 +65,9 @@ export class UnlockForm extends AppForm<string> implements OnInit {
 
   ngOnInit() {
     if (!this.control && this.formGroupDir && this.controlName) {
-      const formControlName = (this.formGroupDir.directives || []).find(d => this.controlName && d.name === this.controlName);
+      const formControlName = (this.formGroupDir.directives || []).find(
+        (d) => this.controlName && d.name === this.controlName
+      );
       this.control = formControlName && formControlName.control;
       if (this.formGroupDir && this.control) {
         this.setForm(this.formGroupDir.form);
@@ -75,26 +76,28 @@ export class UnlockForm extends AppForm<string> implements OnInit {
     if (!this.form) {
       if (this.control) {
         this.setForm(this.control.parent as FormGroup);
-      }
-      else {
-        this.setForm(this.formBuilder.group({
-          code: new FormControl(null, this.createValidator())
-        }));
+      } else {
+        this.setForm(
+          this.formBuilder.group({
+            code: new FormControl(null, this.createValidator()),
+          })
+        );
         this.control = this.form.get('code') as FormControl;
       }
     }
     this.registerSubscription(
-      this.control.statusChanges.pipe(
-        map(state => state === 'VALID'),
-        distinctUntilChanged()
-      ).subscribe(valid => this.$valid.next(valid))
+      this.control.statusChanges
+        .pipe(
+          map((state) => state === 'VALID'),
+          distinctUntilChanged()
+        )
+        .subscribe((valid) => this.$valid.next(valid))
     );
 
     // For DEV only ------------------------
     if (!environment.production) {
       this.control.setValue(this.expectedCode);
     }
-
   }
 
   get value(): string {
@@ -122,11 +125,15 @@ export class UnlockForm extends AppForm<string> implements OnInit {
       return;
     }
     this.control.setValue(value || null);
-    this.change.emit(value);
+    this.codeChange.emit(value);
   }
 
   private createValidator(): ValidatorFn {
-    const validators = [Validators.required, Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)];
+    const validators = [
+      Validators.required,
+      Validators.minLength(this.minLength),
+      Validators.maxLength(this.maxLength),
+    ];
 
     // Add equals to expected code
     if (isNotNilOrBlank(this.expectedCode)) {
@@ -137,10 +144,10 @@ export class UnlockForm extends AppForm<string> implements OnInit {
   }
 
   private equalsValidator(expectedCode: string): ValidatorFn {
-    return function(c: AbstractControl): ValidationErrors | null {
+    return function (c: AbstractControl): ValidationErrors | null {
       if (c.value !== expectedCode) {
         return {
-          equals: true
+          equals: true,
         };
       }
       return null;

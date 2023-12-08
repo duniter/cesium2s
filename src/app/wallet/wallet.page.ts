@@ -1,17 +1,17 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 
-import {Clipboard} from "@capacitor/clipboard";
-import {AppPage, AppPageState} from "@app/shared/pages/base-page.class";
-import {Account} from "@app/account/account.model";
-import {isNil, isNotEmptyArray, isNotNilOrBlank} from "@app/shared/functions";
-import {NetworkService} from "@app/network/network.service";
-import {ActionSheetOptions, IonModal, PopoverOptions} from "@ionic/angular";
-import {ActivatedRoute, Router} from "@angular/router";
-import {RxStateProperty, RxStateSelect} from "@app/shared/decorator/state.decorator";
-import {filter, mergeMap} from "rxjs/operators";
-import {AccountsService} from "@app/account/accounts.service";
-import {map, merge, Observable} from "rxjs";
-import {RxState} from "@rx-angular/state";
+import { Clipboard } from '@capacitor/clipboard';
+import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
+import { Account } from '@app/account/account.model';
+import { isNil, isNotEmptyArray, isNotNilOrBlank } from '@app/shared/functions';
+import { NetworkService } from '@app/network/network.service';
+import { ActionSheetOptions, IonModal, PopoverOptions } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { filter, mergeMap } from 'rxjs/operators';
+import { AccountsService } from '@app/account/accounts.service';
+import { map, merge, Observable } from 'rxjs';
+import { RxState } from '@rx-angular/state';
 
 export interface WalletState extends AppPageState {
   accounts: Account[];
@@ -26,12 +26,11 @@ export interface WalletState extends AppPageState {
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RxState]
+  providers: [RxState],
 })
 export class WalletPage extends AppPage<WalletState> implements OnInit {
-
   static NEW = Object.freeze(<Account>{
-    address: ''
+    address: '',
   });
 
   protected qrCodeValue: string;
@@ -51,14 +50,12 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
   }
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
-    cssClass: 'select-account-action-sheet'
+    cssClass: 'select-account-action-sheet',
   };
   protected popoverOptions: Partial<PopoverOptions> = {
     cssClass: 'select-account-popover',
-    reference: 'event'
+    reference: 'event',
   };
-
-
 
   get new(): Account {
     return WalletPage.NEW;
@@ -75,35 +72,42 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
   ) {
     super({
       name: 'wallet-page',
-      loadDueTime: accountService.started ? 0 : 250
-    })
+      loadDueTime: accountService.started ? 0 : 250,
+    });
 
     // Watch address from route or account
-    this._state.connect('address',
+    this._state.connect(
+      'address',
       merge(
-        this.route.paramMap.pipe(map(paramMap => paramMap.get('address'))),
-        this.account$.pipe(map(a => a?.address))
-      ).pipe(
-        filter(address => isNotNilOrBlank(address) && address !== this.address)
-      ));
+        this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))),
+        this.account$.pipe(map((a) => a?.address))
+      ).pipe(filter((address) => isNotNilOrBlank(address) && address !== this.address))
+    );
 
     // Watch accounts
     this._state.connect('accounts', this.accountService.watchAll());
 
     // Add new wallet
-    this._state.hold(this.account$.pipe(filter(account => account === WalletPage.NEW)),
-      () => this.addNewWallet());
+    this._state.hold(this.account$.pipe(filter((account) => account === WalletPage.NEW)), () => this.addNewWallet());
 
     // Load by address
-    this._state.connect('account', this._state.$.pipe(
-        filter(s => isNotEmptyArray(s.accounts) && isNil(s.account) && isNotNilOrBlank(s.address) && s.account !== WalletPage.NEW),
+    this._state.connect(
+      'account',
+      this._state.$.pipe(
+        filter(
+          (s) =>
+            isNotEmptyArray(s.accounts) &&
+            isNil(s.account) &&
+            isNotNilOrBlank(s.address) &&
+            s.account !== WalletPage.NEW
+        ),
         mergeMap(async (s) => {
           console.debug(this._logPrefix + 'Loading account from address: ' + s.address);
 
           let account: Account;
           if (s.address === 'default') {
             account = await this.accountService.getDefault();
-            return account
+            return account;
           }
 
           // Load by address
@@ -118,7 +122,6 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
         })
       )
     );
-
   }
 
   async ngOnInit() {
@@ -127,13 +130,12 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
   }
 
   protected async ngOnLoad(): Promise<WalletState> {
-
     await this.accountService.ready();
 
     return <WalletState>{
       account: null,
       address: this.activatedRoute.snapshot.paramMap.get('address'),
-      currency: this.networkService.currencySymbol
+      currency: this.networkService.currencySymbol,
     };
   }
 
@@ -141,9 +143,9 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     if (this.loading || !this.account?.address || event?.defaultPrevented) return; // Skip
 
     await Clipboard.write({
-      string: value
+      string: value,
     });
-    await this.showToast({message: 'INFO.COPY_TO_CLIPBOARD_DONE'});
+    await this.showToast({ message: 'INFO.COPY_TO_CLIPBOARD_DONE' });
   }
 
   showQrCode(event: Event, value: string, title: string) {
@@ -156,7 +158,6 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     return this.qrCodeModal.present();
   }
 
-
   async addNewWallet(event?: Event): Promise<Account> {
     event?.preventDefault();
     event?.stopPropagation();
@@ -168,5 +169,4 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
 
     return data;
   }
-
 }

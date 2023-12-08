@@ -1,12 +1,11 @@
-import {Directive, OnInit, Output, EventEmitter} from '@angular/core';
+import { Directive, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Directive({
-  selector: '[ngInit]'
+  selector: '[ngInit]',
 })
 export class NgInitDirective implements OnInit {
-
-  @Output()
-  ngInit = new EventEmitter<any>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  @Output() ngInit = new EventEmitter<any>();
 
   ngOnInit() {
     this.ngInit.emit();

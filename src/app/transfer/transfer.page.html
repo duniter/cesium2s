@@ -30,7 +30,10 @@
         [tabIndex]="mobile ? -1 : 1"
         class="ion-text-wrap ion-text-end"
         [(ngModel)]="recipient.address"
+        required
       ></ion-textarea>
+      <ion-note slot="error" translate>ERROR.FIELD_REQUIRED</ion-note>
+
       <ion-button
         slot="end"
         fill="clear"
@@ -55,10 +58,10 @@
     </ion-item>
 
     <!-- FROM -->
-    <ion-item tappable (click)="selectAccount()">
+    <ion-item>
       <ion-label color="medium" translate>TRANSFER.FROM</ion-label>
       <ng-container *rxIf="accounts$; let accounts; suspense: skeleton60">
-        <ion-input [value]="account$ | push | accountName" required></ion-input>
+        <ion-input [(ngModel)]="accountName" [debounce]="450" required></ion-input>
 
         <ion-badge
           *ngIf="account$ | push | balance; let balance"
@@ -67,21 +70,34 @@
         >
           {{ balance | amountFormat }}
         </ion-badge>
+
+        <ion-button
+          slot="end"
+          fill="clear"
+          [disabled]="loading"
+          [title]="'COMMON.BTN_SEARCH' | translate"
+          (click)="selectAccount()"
+        >
+          <ion-icon slot="icon-only" name="search"></ion-icon>
+        </ion-button>
+
+        <ion-note slot="error" translate>ERROR.FIELD_REQUIRED</ion-note>
       </ng-container>
     </ion-item>
 
     <!-- amount -->
     <ion-item>
       <ion-label color="medium" translate>TRANSFER.AMOUNT</ion-label>
-      <ion-input type="number" [(ngModel)]="amount"></ion-input>
+      <ion-input type="number" [(ngModel)]="amount" required></ion-input>
       <ion-label color="medium" slot="end" *rxIf="currency$; let currency">{{ currency.symbol }}</ion-label>
+      <ion-note slot="error" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>
 
     <ion-item lines="none">
       <!--        <ion-toggle [(ngModel)]="showComment">-->
       <!--        </ion-toggle>-->
       <!--        <ion-label class="ion-text-start" color="medium" translate>TRANSFER.BTN_ADD_COMMENT</ion-label>-->
-      <ion-badge slot="end" *ngIf="amount && fee">
+      <ion-badge slot="end" *ngIf="amount && fee" color="medium">
         {{ 'TRANSFER.FEE' | translate : { fee: fee, currency: currency.symbol } }}
       </ion-badge>
     </ion-item>
@@ -104,7 +120,7 @@
 <!--</ion-footer>-->
 
 <ng-template #buttons>
-  <ion-button (click)="cancel()" color="light" [disabled]="loading" *ngIf="!mobile">
+  <ion-button (click)="cancel()" color="light" *ngIf="!mobile">
     <ion-label translate>COMMON.BTN_CANCEL</ion-label>
   </ion-button>
   <ion-button (click)="qrCodeModal.present()" [disabled]="loading || invalid">

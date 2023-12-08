@@ -1,5 +1,5 @@
 export declare type KeyType = string | number;
-export declare type KeyValueType<T> = {[key in KeyType]: T};
+export declare type KeyValueType<T> = { [key in KeyType]: T };
 
 export declare type KeysEnum<T> = { [P in keyof Required<T>]: boolean };
 

@@ -1,11 +1,11 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild,} from '@angular/core';
-import {ModalController} from '@ionic/angular';
-import {AccountsService} from '@app/account/accounts.service';
-import {AuthV2Form} from './authv2.form';
-import {firstNotNilPromise} from '@app/shared/observables';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { AccountsService } from '@app/account/accounts.service';
+import { AuthV2Form } from './authv2.form';
+import { firstNotNilPromise } from '@app/shared/observables';
 
-import {AuthData} from "@app/account/account.model";
-import {AuthModalRole} from "@app/account/auth/auth.modal";
+import { AuthData } from '@app/account/account.model';
+import { AuthModalRole } from '@app/account/auth/auth.modal';
 
 export interface AuthV2ModalOptions {
   auth?: boolean;
@@ -26,7 +26,7 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
     return this.form?.mobile;
   }
 
-  @Input() auth = false;  // false for login, true for auth
+  @Input() auth = false; // false for login, true for auth
   @Input() title: string = null;
 
   @ViewChild('form', { static: true }) private form: AuthV2Form;
@@ -47,7 +47,7 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
     this.viewCtrl.dismiss(null, <AuthModalRole>'CANCEL');
   }
 
-  async doSubmit(data?: AuthData): Promise<any> {
+  async doSubmit(data?: AuthData): Promise<boolean | undefined> {
     if (this.form.disabled) return;
     if (!this.form.valid) {
       this.form.markAllAsTouched();

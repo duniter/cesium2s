@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Injector, Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { RegisterModal } from '../register/register.modal';
@@ -15,8 +8,9 @@ import { SettingsService } from '@app/settings/settings.service';
 import { NetworkService } from '@app/network/network.service';
 import { environment } from '@environments/environment';
 import { FormUtils } from '@app/shared/forms';
-import {isNil, toBoolean} from '@app/shared/functions';
-import {AuthData} from "@app/account/account.model";
+import { isNil, toBoolean } from '@app/shared/functions';
+import { AuthData } from '@app/account/account.model';
+import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 
 @Component({
   selector: 'app-authv2-form',
@@ -25,7 +19,6 @@ import {AuthData} from "@app/account/account.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthV2Form extends AppForm<AuthData> implements OnInit {
-
   readonly mobile: boolean;
   protected showMnemonic = false;
 
@@ -59,7 +52,7 @@ export class AuthV2Form extends AppForm<AuthData> implements OnInit {
   ngOnInit() {
     super.ngOnInit();
 
-    this.canRegister = toBoolean(this.canRegister, true)
+    this.canRegister = toBoolean(this.canRegister, true);
 
     // For DEV only: set the default user, for testing
     if (!environment.production && environment.dev?.auth) {
@@ -127,7 +120,6 @@ export class AuthV2Form extends AppForm<AuthData> implements OnInit {
   }
 
   /* -- protected functions -- */
-
 
   protected toggleShowMnemonic(event?: Event) {
     event?.preventDefault();

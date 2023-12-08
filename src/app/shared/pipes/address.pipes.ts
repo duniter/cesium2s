@@ -1,11 +1,10 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {formatAddress} from "@app/shared/currencies";
+import { Pipe, PipeTransform } from '@angular/core';
+import { formatAddress } from '@app/shared/currencies';
 
 @Pipe({
-  name: 'addressFormat'
+  name: 'addressFormat',
 })
 export class AddressFormatPipe implements PipeTransform {
-
   transform(value: string): string {
     return formatAddress(value);
   }

@@ -1,5 +1,5 @@
-import {StorageConfig} from '@ionic/storage';
-import {AuthData} from "@app/account/account.model";
+import { StorageConfig } from '@ionic/storage';
+import { AuthData } from '@app/account/account.model';
 
 export interface Environment {
   name: string;
@@ -17,7 +17,7 @@ export interface Environment {
   keyring: {
     // default address format (e.g. 42 for development)
     ss58Format: number;
-  },
+  };
 
   // /!\ For DEV only
   dev: {
@@ -29,5 +29,5 @@ export interface Environment {
 
     // Default authentication
     auth?: AuthData;
-  }
+  };
 }

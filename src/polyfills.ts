@@ -47,14 +47,20 @@ import './zone-flags';
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'zone.js';  // Included with Angular CLI.
+import 'zone.js'; // Included with Angular CLI.
 
+// Workaround - patch Zone to mute startup error message, when Promise unpatched
+// Disable check on Promise
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+if ((window as any).__Zone_disable_ZoneAwarePromise === true) {
+  window['Zone'].assertZonePatched = () => {};
+}
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
 // Polkadot API augment
-import '@polkadot/api-augment'
+import '@polkadot/api-augment';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).global = window;
 
@@ -63,5 +69,5 @@ import 'moment';
 import 'moment-timezone';
 
 // Import swiper
-import {register} from 'swiper/element/bundle';
+import { register } from 'swiper/element/bundle';
 register();

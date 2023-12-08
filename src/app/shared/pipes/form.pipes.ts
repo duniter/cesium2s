@@ -1,54 +1,50 @@
-import {ChangeDetectorRef, OnDestroy, Pipe, PipeTransform} from '@angular/core';
-import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms';
-import {Subscription} from 'rxjs';
-import {equals} from '../functions';
+import { ChangeDetectorRef, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { equals } from '../functions';
 
 @Pipe({
-  name: 'formGet'
+  name: 'formGet',
 })
 export class FormGetPipe implements PipeTransform {
-
-  transform(form: AbstractControl, path: Array<string | number> | string ): AbstractControl {
+  transform(form: AbstractControl, path: Array<string | number> | string): AbstractControl {
     return form.get(path);
   }
 }
 
 @Pipe({
-  name: 'formGetControl'
+  name: 'formGetControl',
 })
 export class FormGetControlPipe implements PipeTransform {
-
-  transform(form: AbstractControl, path?: Array<string | number> | string ): FormControl {
-    return (form && path && form.get(path) || form) as FormControl;
+  transform(form: AbstractControl, path?: Array<string | number> | string): FormControl {
+    return ((form && path && form.get(path)) || form) as FormControl;
   }
 }
 
 @Pipe({
-  name: 'formGetArray'
+  name: 'formGetArray',
 })
 export class FormGetArrayPipe implements PipeTransform {
-
-  transform(form: AbstractControl, path?: Array<string | number> | string ): FormArray {
-    return (form && path && form.get(path) || form) as FormArray;
+  transform(form: AbstractControl, path?: Array<string | number> | string): FormArray {
+    return ((form && path && form.get(path)) || form) as FormArray;
   }
 }
 
 @Pipe({
-  name: 'formGetGroup'
+  name: 'formGetGroup',
 })
 export class FormGetGroupPipe implements PipeTransform {
-
-  transform(form: AbstractControl, path?: Array<string | number> | string ): FormGroup {
-    return (form && path && form.get(path) || form) as FormGroup;
+  transform(form: AbstractControl, path?: Array<string | number> | string): FormGroup {
+    return ((form && path && form.get(path)) || form) as FormGroup;
   }
 }
 
 @Pipe({
   name: 'formGetValue',
-  pure: false
+  pure: false,
 })
 export class FormGetValuePipe implements PipeTransform, OnDestroy {
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any = undefined;
 
   private _lastControl: AbstractControl | null = null;
@@ -56,12 +52,9 @@ export class FormGetValuePipe implements PipeTransform, OnDestroy {
   private _onControlValueChanges: Subscription | undefined;
   private _onControlStatusChanges: Subscription | undefined;
 
-  constructor(
-    private _ref: ChangeDetectorRef
-  ) {
-  }
+  constructor(private _ref: ChangeDetectorRef) {}
 
-  transform(form: AbstractControl, path?: Array<string | number> | string, listenStatusChanges = false): any {
+  transform<T>(form: AbstractControl, path?: Array<string | number> | string, listenStatusChanges = false): T {
     if (!form) {
       this._dispose();
       return undefined;
@@ -106,8 +99,6 @@ export class FormGetValuePipe implements PipeTransform, OnDestroy {
       }
     }
 
-
-
     return this.value;
   }
 
@@ -124,5 +115,4 @@ export class FormGetValuePipe implements PipeTransform, OnDestroy {
     this._onControlStatusChanges?.unsubscribe();
     this._onControlStatusChanges = undefined;
   }
-
 }

@@ -1,21 +1,19 @@
-import {Injectable} from '@angular/core';
-import {Storage} from '@ionic/storage-angular';
-import {IStorage} from "@app/shared/services/storage/storage.utils";
-import {Platform} from '@ionic/angular';
-import {StartableService} from "@app/shared/services/startable-service.class";
+import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
+import { IStorage } from '@app/shared/services/storage/storage.utils';
+import { Platform } from '@ionic/angular';
+import { StartableService } from '@app/shared/services/startable-service.class';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class StorageService<T = any> extends StartableService<Storage> implements IStorage<T> {
-
   get driver(): string | undefined {
     return this.storage?.driver;
   }
 
-  constructor(private platform: Platform,
-              private storage: Storage) {
+  constructor(private platform: Platform, private storage: Storage) {
     super(platform);
     this.start();
   }

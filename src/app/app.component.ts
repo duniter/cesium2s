@@ -1,12 +1,12 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {PlatformService} from "./shared/services/platform.service";
-import {AccountsService} from "@app/account/accounts.service";
-import {Router} from "@angular/router";
-import {App} from "@capacitor/app";
-import {isNotNilOrBlank} from "@app/shared/functions";
-import {TransferController} from "@app/transfer/transfer.controller";
-import {PredefinedColors} from "@app/shared/colors/colors.utils";
-import {fadeInAnimation} from "@app/shared/animations";
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { PlatformService } from './shared/services/platform.service';
+import { AccountsService } from '@app/account/accounts.service';
+import { Router } from '@angular/router';
+import { App } from '@capacitor/app';
+import { isNotNilOrBlank } from '@app/shared/functions';
+import { TransferController } from '@app/transfer/transfer.controller';
+import { PredefinedColors } from '@app/shared/colors/colors.utils';
+import { fadeInAnimation } from '@app/shared/animations';
 
 export interface IMenuItem {
   title: string;
@@ -23,22 +23,20 @@ export interface IMenuItem {
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   animations: [fadeInAnimation],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-
   appName = 'COMMON.APP_NAME';
   appPages: IMenuItem[] = [
-
     { title: 'MENU.HOME', url: '/home', icon: 'home' },
     { title: 'MENU.ACCOUNT', url: '/wallet', icon: 'card' },
-    { title: 'COMMON.BTN_SEND_MONEY', url: '/transfer', icon: 'paper-plane',
-      visible: () => this.platform.mobile
-    },
+    { title: 'COMMON.BTN_SEND_MONEY', url: '/transfer', icon: 'paper-plane', visible: () => this.platform.mobile },
 
-    { title: 'COMMON.BTN_SEND_MONEY', icon: 'paper-plane',
+    {
+      title: 'COMMON.BTN_SEND_MONEY',
+      icon: 'paper-plane',
       handle: () => this.transferController.transfer(),
-      visible: () => !this.platform.mobile
+      visible: () => !this.platform.mobile,
     },
 
     // { title: 'Messages', url: '/message/inbox', icon: 'mail' },
@@ -47,17 +45,22 @@ export class AppComponent {
 
     { title: 'MENU.SETTINGS', url: '/settings', icon: 'settings' },
 
-    { title: 'COMMON.BTN_LOGOUT', icon: 'log-out', color: 'danger',
+    {
+      title: 'COMMON.BTN_LOGOUT',
+      icon: 'log-out',
+      color: 'danger',
 
-      handle: (event) => this.logout(event),
-      visible: () => this.accountService.isLogin && this.platform.mobile
+      handle: () => this.logout(),
+      visible: () => this.accountService.isLogin && this.platform.mobile,
     },
   ];
 
-  constructor(private platform: PlatformService,
-              private accountService: AccountsService,
-              private transferController: TransferController,
-              private router: Router) {
+  constructor(
+    private platform: PlatformService,
+    private accountService: AccountsService,
+    private transferController: TransferController,
+    private router: Router
+  ) {
     this.start();
   }
 
@@ -68,39 +71,38 @@ export class AppComponent {
     // Start all stuff (services, plugins, etc.)
     await this.platform.start();
 
-    console.info(`[app] Starting [OK] in ${Date.now()-now}ms`);
+    console.info(`[app] Starting [OK] in ${Date.now() - now}ms`);
 
     // Detecting deep link
     await this.detectDeepLink();
   }
 
-  async logout(event) {
+  async logout() {
     this.accountService.forgetAll();
     await this.router.navigateByUrl('/home', {
-      replaceUrl: true
+      replaceUrl: true,
     });
   }
 
-  async detectDeepLink(){
+  async detectDeepLink() {
     try {
-      const {url} = await App.getLaunchUrl();
+      const { url } = await App.getLaunchUrl();
       if (isNotNilOrBlank(url)) {
-
         const slashIndex = url.indexOf('/');
         if (slashIndex !== -1) {
-          const relativeUrl = url.substring(slashIndex+1);
+          const relativeUrl = url.substring(slashIndex + 1);
           console.info('[app] Detected a deep link: ' + relativeUrl);
 
           // TODO: call the router ?
           await this.router.navigateByUrl(relativeUrl);
-        }
-        else {
+        } else {
           console.warn(`[app] Detected a INVALID deep link: ${url} - missing slash`);
         }
       }
-    }
-    catch(err) {
-      console.error(`[platform] Cannot get launch URL: ${err.message||err}\n${err?.originalStack || JSON.stringify(err)}`);
+    } catch (err) {
+      console.error(
+        `[platform] Cannot get launch URL: ${err.message || err}\n${err?.originalStack || JSON.stringify(err)}`
+      );
       // Continue
     }
   }

@@ -1,26 +1,25 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ModalController} from '@ionic/angular';
-import {AccountsService} from '@app/account/accounts.service';
-import {AuthForm} from './auth.form';
-import {firstNotNilPromise} from '@app/shared/observables';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { AccountsService } from '@app/account/accounts.service';
+import { AuthForm } from './auth.form';
+import { firstNotNilPromise } from '@app/shared/observables';
 
-import {AuthData} from "@app/account/account.model";
+import { AuthData } from '@app/account/account.model';
 
 export interface AuthModalOptions {
   auth?: boolean;
   title?: string;
 }
 
-export declare type AuthModalRole = 'CANCEL'|'VALIDATE';
+export declare type AuthModalRole = 'CANCEL' | 'VALIDATE';
 
 @Component({
   selector: 'app-auth-modal',
   templateUrl: 'auth.modal.html',
   styleUrls: ['./auth.modal.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthModal implements OnInit, AuthModalOptions {
-
   get loading() {
     return this.form?.loading;
   }
@@ -34,17 +33,16 @@ export class AuthModal implements OnInit, AuthModalOptions {
 
   @ViewChild('form', { static: true }) private form: AuthForm;
 
-  constructor(private accountService: AccountsService,
-              private viewCtrl: ModalController,
-              private cd: ChangeDetectorRef
-              ) {
-  }
+  constructor(
+    private accountService: AccountsService,
+    private viewCtrl: ModalController,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-
     this.title = this.title || (this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE');
 
-    this.form.markAsReady({emitEvent: false});
+    this.form.markAsReady({ emitEvent: false });
     this.form.markAsLoaded();
   }
 
@@ -52,7 +50,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
     this.viewCtrl.dismiss(null, <AuthModalRole>'CANCEL');
   }
 
-  async doSubmit(data?: AuthData): Promise<any> {
+  async doSubmit(data?: AuthData): Promise<boolean | undefined> {
     if (this.form.disabled) return;
     if (!this.form.valid) {
       this.form.markAllAsTouched();
@@ -69,8 +67,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
       const account = await this.accountService.addAccount(data);
 
       return this.viewCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
-    }
-    catch (err) {
+    } catch (err) {
       this.form.error = (err && err.message) || err;
       this.markAsLoaded();
 
@@ -91,12 +88,12 @@ export class AuthModal implements OnInit, AuthModalOptions {
     this.cd.markForCheck();
   }
 
-  protected markAsLoading(opts?: {emitEvent?: boolean}) {
+  protected markAsLoading(opts?: { emitEvent?: boolean }) {
     this.form.markAsLoading(opts);
     this.markForCheck();
   }
 
-  protected markAsLoaded(opts?: {emitEvent?: boolean}) {
+  protected markAsLoaded(opts?: { emitEvent?: boolean }) {
     this.form.markAsLoaded(opts);
     this.markForCheck();
   }

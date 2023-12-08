@@ -30,11 +30,26 @@ qr-code {
 ion-toolbar ion-menu-button {
   color: var(--ion-color-base-contrast);
 }
+.ios {
+  ion-toolbar ion-menu-button {
+    color: var(--ion-color-base-contrast, #000);
+  }
+}
 
 ion-toolbar {
   user-select: none;
 
-  ion-title.balance {
-    font-weight: bold;
+
+}
+
+/* -- list -- */
+
+@media screen and (min-width: $screen-md) {
+  ion-list ion-item.ion-activatable {
+    cursor: pointer !important;
+
+    ion-input {
+      cursor: pointer !important;
+    }
   }
 }

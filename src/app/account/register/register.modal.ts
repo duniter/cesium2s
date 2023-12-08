@@ -1,21 +1,18 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ModalController} from '@ionic/angular';
-import {RegisterForm} from "@app/account/register/register.form";
-import {AccountsService} from "@app/account/accounts.service";
-import {FormUtils} from "@app/shared/forms";
-import {environment} from "@environments/environment";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { RegisterForm } from '@app/account/register/register.form';
+import { AccountsService } from '@app/account/accounts.service';
+import { FormUtils } from '@app/shared/forms';
+import { environment } from '@environments/environment';
 
-export interface RegisterModalOptions {
-}
+export interface RegisterModalOptions {}
 @Component({
   selector: 'app-register-modal',
   templateUrl: 'register.modal.html',
   styleUrls: ['./register.modal.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterModal implements OnInit, RegisterModalOptions {
-
-
   get loading() {
     return this.form.loading;
   }
@@ -31,8 +28,7 @@ export class RegisterModal implements OnInit, RegisterModalOptions {
     private accountService: AccountsService,
     public viewCtrl: ModalController,
     private _cd: ChangeDetectorRef
-    ) {
-  }
+  ) {}
 
   async ngOnInit() {
     await this.accountService.ready();
@@ -49,13 +45,12 @@ export class RegisterModal implements OnInit, RegisterModalOptions {
     }
   }
 
-
   cancel() {
     console.debug('[register] cancelled');
     this.viewCtrl.dismiss();
   }
 
-  async doSubmit(event?: any) {
+  async doSubmit() {
     console.debug('[register-modal] Submit...');
     if (this.form.disabled) return; // Skip
 
@@ -84,9 +79,8 @@ export class RegisterModal implements OnInit, RegisterModalOptions {
         const account = await this.accountService.getByAddress(address);
         await this.viewCtrl.dismiss(account);
       }
-    }
-    catch (err) {
-      this.form.error = err && err.message || err;
+    } catch (err) {
+      this.form.error = (err && err.message) || err;
       this.form.enable();
       this.form.markAsLoaded();
     }

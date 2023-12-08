@@ -164,7 +164,7 @@
     <app-unlock-form
       [control]="form | formGetControl : 'codeConfirmation'"
       helpMessage="ACCOUNT.NEW.STEP_CHECK_CODE_HELP"
-      (change)="checkCodeConfirmation()"
+      (codeChange)="checkCodeConfirmation()"
     ></app-unlock-form>
   </swiper-slide>
 

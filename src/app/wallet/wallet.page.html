@@ -4,41 +4,47 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title translate>ACCOUNT.TITLE</ion-title>
-
-    <ion-select
-      slot="end"
-      [(ngModel)]="account"
-      [interface]="mobile ? 'action-sheet' : 'popover'"
-      [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
-      [okText]="'COMMON.BTN_OK' | translate"
-      [cancelText]="'COMMON.BTN_CANCEL' | translate"
-    >
-      <ion-select-option *rxFor="let account of accounts$" [value]="account">
-        {{ account | accountName }}
-      </ion-select-option>
-      <ion-select-option [value]="new" translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
-    </ion-select>
   </ion-toolbar>
   <ion-progress-bar type="indeterminate" *rxIf="loading$"></ion-progress-bar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header>
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large" translate>ACCOUNT.TITLE</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-header [translucent]="true">
     <ion-item color="secondary">
       <ion-avatar slot="start" (click)="avatarModal.present()" [style.background-color]="'white'">
         <ng-container *rxIf="account$; let account">
           <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
           <ng-template #svgIcon>
-            <svg width="40" width="40" [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
+            <svg [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
           </ng-template>
         </ng-container>
       </ion-avatar>
       <ion-label class="ion-text-center ion-margin-end">
-        <h2 translate>ACCOUNT.BALANCE</h2>
-        <p>
+        <p translate>ACCOUNT.BALANCE</p>
+        <h2>
           <b *rxIf="account$; let account">{{ account | balance | amountFormat }}</b>
-        </p>
+        </h2>
       </ion-label>
+
+      <ion-select
+        slot="end"
+        [(ngModel)]="account"
+        [interface]="mobile ? 'action-sheet' : 'popover'"
+        [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
+        [okText]="'COMMON.BTN_OK' | translate"
+        [cancelText]="'COMMON.BTN_CANCEL' | translate"
+      >
+        <ion-select-option *rxFor="let account of accounts$" [value]="account">
+          {{ account | accountName }}
+        </ion-select-option>
+        <ion-select-option [value]="new" translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
+      </ion-select>
     </ion-item>
   </ion-header>
 
