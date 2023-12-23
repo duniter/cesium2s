@@ -1,0 +1,12 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: node:18
+  script:
+    - npm install -g @angular/cli
+    # - npm install -g @ionic/cli @angular/cli @capacitor/cli
+    - npm install
+    - npm run build
+    - npm run lint
