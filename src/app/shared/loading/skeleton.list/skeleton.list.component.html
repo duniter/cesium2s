@@ -1,0 +1,8 @@
+<ion-list>
+  <ion-item *ngFor="let i of items">
+    <ion-avatar *ngIf="avatar" slot="start"></ion-avatar>
+    <ion-label>
+      <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+    </ion-label>
+  </ion-item>
+</ion-list>
