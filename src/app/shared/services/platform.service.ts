@@ -10,6 +10,7 @@ import { Keyboard } from '@capacitor/keyboard';
 import { CapacitorPlugins } from '@app/shared/capacitor/plugins';
 import { StartableService } from '@app/shared/services/startable-service.class';
 import { DateUtils } from '@app/shared/dates';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 @Injectable({
   providedIn: 'root',
@@ -64,6 +65,12 @@ export class PlatformService extends StartableService {
     await this.configureTranslate();
 
     await Promise.all([this.storage.ready(), this.settings.ready(), this.network.ready()]);
+
+    if (this._mobile && this._capacitor) {
+      // Hide the splashscreen (if mobile) - after 1s
+      // eslint-disable-next-line @rx-angular/no-zone-critical-browser-apis
+      setTimeout(() => SplashScreen.hide(), 1000);
+    }
   }
 
   toggleDarkTheme(enable: boolean) {

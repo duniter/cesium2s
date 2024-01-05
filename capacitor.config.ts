@@ -8,18 +8,18 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       showSpinner: true,
-      androidSpinnerStyle: "horizontal",
-      launchAutoHide: false
-    }
+      androidSpinnerStyle: 'horizontal',
+      launchAutoHide: false,
+    },
   },
   android: {
     buildOptions: {
-      releaseType: 'APK'
-    }
+      releaseType: 'APK',
+    },
   },
   server: {
-    cleartext: true
-  }
+    cleartext: true,
+  },
 };
 
 export default config;
