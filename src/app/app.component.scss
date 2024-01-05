@@ -12,7 +12,17 @@ ion-menu ion-content {
 
   &.dark {
     --background: transparent;
-    --background-color: var(--ion-color-primary500) !important;
+    --background-color: rgba(var(--ion-color-primary900-rgb), 0.4) !important;
+
+    ion-list-header.title {
+      color: yellow;
+      text-shadow:
+        0 0 10px var(--background-color),
+        0 0 20px var(--background-color),
+        0 0 30px var(--background-color),
+        0 0 40px var(--background-color);
+      overflow: visible;
+    }
   }
 }
 
