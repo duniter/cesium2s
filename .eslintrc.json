@@ -22,7 +22,6 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
-        // FIXME enable this
         "plugin:@rx-angular/recommended",
         "plugin:@rx-angular/zoneless",
         "plugin:@angular-eslint/template/process-inline-templates",
