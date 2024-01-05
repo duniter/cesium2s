@@ -8,6 +8,7 @@ export const DATE_UNIX_TIMESTAMP = 'X';
 export const DATE_UNIX_MS_TIMESTAMP = 'x';
 
 export class DateUtils {
+  static moment = moment;
   static toDateISOString = toDateISOString;
   static fromDateISOString = fromDateISOString;
   static toDuration = toDuration;
@@ -65,7 +66,7 @@ export class DateUtils {
   }
 }
 
-export function toDateISOString(value: any): string | undefined {
+export function toDateISOString(value: string | Moment): string | undefined {
   if (!value) return undefined;
 
   // Already a valid ISO date time string (without timezone): use it
@@ -77,9 +78,10 @@ export function toDateISOString(value: any): string | undefined {
   return (value && value.toISOString()) || undefined;
 }
 
-export function fromDateISOString(value: any): Moment | undefined {
+export function fromDateISOString(value: string | Moment | Date): Moment | undefined {
+  if (!value) return undefined;
   // Already a moment object: use it
-  if (!value || isMoment(value)) return value;
+  if (isMoment(value)) return value as Moment;
 
   // Parse the input value, as a ISO date time
   const date: Moment = moment(value, DATE_ISO_PATTERN);
@@ -106,7 +108,7 @@ export function fromUnixMsTimestamp(timeInMs: number) {
   return moment(timeInMs, DATE_UNIX_MS_TIMESTAMP);
 }
 
-export function fromDateString(value: string, pattern: any): Moment {
+export function fromDateString(value: string, pattern: moment.MomentFormatSpecification): Moment {
   if (!value) return undefined;
   return isMoment(value) ? value : moment(value, pattern || DATE_ISO_PATTERN);
 }

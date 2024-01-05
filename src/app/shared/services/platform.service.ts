@@ -3,15 +3,13 @@ import { Platform } from '@ionic/angular';
 import { NetworkService } from '@app/network/network.service';
 import { SettingsService } from '@app/settings/settings.service';
 import { StorageService } from '@app/shared/services/storage/storage.service';
-import { environment } from '@environments/environment.prod';
+import { environment } from '@environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-import * as momentImported from 'moment';
 import { StatusBar } from '@capacitor/status-bar';
 import { Keyboard } from '@capacitor/keyboard';
 import { CapacitorPlugins } from '@app/shared/capacitor/plugins';
 import { StartableService } from '@app/shared/services/startable-service.class';
-
-const moment = momentImported;
+import { DateUtils } from '@app/shared/dates';
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +54,9 @@ export class PlatformService extends StartableService {
     this._cordova = this.cordova;
     this._capacitor = this.capacitor;
 
+    // Configure theme
+    await this.configureTheme();
+
     // Configure Capacitor plugins
     await this.configureCapacitorPlugins();
 
@@ -63,6 +64,18 @@ export class PlatformService extends StartableService {
     await this.configureTranslate();
 
     await Promise.all([this.storage.ready(), this.settings.ready(), this.network.ready()]);
+  }
+
+  toggleDarkTheme(enable: boolean) {
+    if (enable && !document.body.classList.contains('dark')) {
+      console.debug('[platform] Enable dark mode...');
+    }
+    document.body.classList.toggle('dark', enable);
+  }
+
+  protected async configureTheme() {
+    // Listen for changes to settings dark mode
+    this.registerSubscription(this.settings.darkMode$.subscribe((darkMode) => this.toggleDarkTheme(darkMode)));
   }
 
   protected async configureCapacitorPlugins() {
@@ -82,7 +95,7 @@ export class PlatformService extends StartableService {
     }
   }
 
-  protected configureTranslate() {
+  protected async configureTranslate() {
     console.info('[platform] Configuring i18n ...');
 
     // this language will be used as a fallback when a translation isn't found in the current language
@@ -93,11 +106,11 @@ export class PlatformService extends StartableService {
       if (event && event.lang) {
         // config moment lib
         try {
-          moment.locale(event.lang);
+          DateUtils.moment.locale(event.lang);
           console.debug('[platform] Use locale {' + event.lang + '}');
         } catch (err) {
           // If error, fallback to en
-          moment.locale('en');
+          DateUtils.moment.locale('en');
           console.warn('[platform] Unknown local for moment lib. Using default [en]');
         }
 
@@ -110,11 +123,11 @@ export class PlatformService extends StartableService {
       if (data?.locale) {
         if (data.locale !== this.translate.currentLang) {
           this.translate.use(data.locale);
-        } else {
-          // Applying default, when settings has no locale property (hotfix - ludovic.pecquot@e-is.pro - 14/11/2021 - since v1.20.42)
-          console.warn('[platform] No locale found in settings: applying defaultLocale: ', environment.defaultLocale);
-          this.translate.use(environment.defaultLocale);
         }
+      } else {
+        // Applying default, when settings has no locale property (hotfix - ludovic.pecquot@e-is.pro - 14/11/2021 - since v1.20.42)
+        console.warn('[platform] No locale found in settings: applying defaultLocale: ', environment.defaultLocale);
+        this.translate.use(environment.defaultLocale);
       }
     });
   }

@@ -7,6 +7,7 @@ import { isNotNilOrBlank } from '@app/shared/functions';
 import { TransferController } from '@app/transfer/transfer.controller';
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { fadeInAnimation } from '@app/shared/animations';
+import { SettingsService } from '@app/settings/settings.service';
 
 export interface IMenuItem {
   title: string;
@@ -57,6 +58,7 @@ export class AppComponent {
 
   constructor(
     private platform: PlatformService,
+    protected settings: SettingsService,
     private accountService: AccountsService,
     private transferController: TransferController,
     private router: Router

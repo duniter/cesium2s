@@ -16,4 +16,5 @@ export declare interface Settings {
   mobile?: boolean;
   properties?: PropertiesMap;
   unAuthDelayMs?: number;
+  darkMode: boolean;
 }

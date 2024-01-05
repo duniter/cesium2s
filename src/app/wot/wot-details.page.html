@@ -4,53 +4,88 @@
       <ion-menu-button></ion-menu-button>
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title size="large">{{ data | accountName }}</ion-title>
+    <ion-title translate>MENU.WOT</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense" *ngIf="showToolbar">
     <ion-toolbar>
-      <ion-title size="large">{{ data | accountName }}</ion-title>
+      <ion-title size="large">{{ account$ | push | accountName }}</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <ion-header>
-      <ion-toolbar class="ion-text-end" color="secondary">
-        <ion-avatar slot="start" *ngIf="data?.meta?.avatar">
-          <ion-img [src]="data.meta.avatar"></ion-img>
-        </ion-avatar>
-        <ion-title size="large" *ngIf="loaded; else loadingText" class="balance">
-          {{ data | balance | amountFormat }}
-        </ion-title>
-        <ng-template #loadingText>
-          <ion-title translate>COMMON.LOADING</ion-title>
+  <ion-header [translucent]="true">
+    <ion-item color="secondary" lines="none">
+      <ion-avatar slot="start" *ngIf="account$ | push; let account" [style.background-color]="'white'">
+        <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
+        <ng-template #svgIcon>
+          <svg [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
         </ng-template>
-      </ion-toolbar>
-    </ion-header>
+      </ion-avatar>
 
-    <ion-list>
-      <ion-item>
+      <ion-label>{{ account$ | push | accountName }}</ion-label>
+
+      <div slot="end">
+        <ion-label class="ion-text-end">
+          <p translate>ACCOUNT.BALANCE</p>
+          <h2 *rxIf="loaded$; else loadingText">
+            <b>{{ account$ | push | balance | amountFormat }}</b>
+          </h2>
+          <ng-template #loadingText>
+            <p translate>COMMON.LOADING</p>
+          </ng-template>
+        </ion-label>
+      </div>
+    </ion-item>
+  </ion-header>
+
+  <ion-list>
+    <ng-container *rxIf="account$; let account; suspense: skeletons">
+      <!-- pubkey -->
+      <ion-item *ngIf="account?.meta?.publicKeyV1; let pubkey">
         <ion-icon slot="start" name="key"></ion-icon>
-        <ion-label color="medium" translate>COMMON.PUBKEY</ion-label>
-        <ion-input *ngIf="loaded; else skeleton60" class="ion-text-end" [value]="data?.address" readonly></ion-input>
 
-        <ion-button slot="end" (click)="copyAddress()" [disabled]="loading" fill="clear" [title]="'COMMON.COPY' | translate">
+        <ion-label>
+          <h2 translate>COMMON.PUBKEY</h2>
+          <p class="ion-text-wrap">{{ pubkey }}</p>
+        </ion-label>
+
+        <ion-button slot="end" (click)="copyPubkey()" fill="clear" [title]="'COMMON.COPY' | translate">
           <ion-icon slot="icon-only" name="copy"></ion-icon>
         </ion-button>
       </ion-item>
-    </ion-list>
 
-    <div class="ion-text-center">
-      <ion-button [routerLink]="['/transfer', 'to', data?.address]" [disabled]="loading">
-        <ion-icon slot="start" name="paper-plane"></ion-icon>
-        <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
-      </ion-button>
-    </div>
+      <!-- address -->
+      <ion-item>
+        <ion-icon slot="start" name="key"></ion-icon>
+
+        <ion-label>
+          <h2 translate>COMMON.ADDRESS</h2>
+          <p class="ion-text-wrap">
+            <span>{{ account.address }}</span>
+          </p>
+        </ion-label>
+        <ion-button slot="end" (click)="copyAddress()" fill="clear" [title]="'COMMON.COPY' | translate">
+          <ion-icon slot="icon-only" name="copy"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ng-container>
+  </ion-list>
+
+  <div class="ion-text-center">
+    <ion-button [routerLink]="['/transfer', 'to', account?.address]" [disabled]="loading">
+      <ion-icon slot="start" name="paper-plane"></ion-icon>
+      <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
+    </ion-button>
   </div>
 </ion-content>
 
-<ng-template #skeleton60>
-  <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+<ng-template #skeletons>
+  <ion-item>
+    <ion-icon slot="start" name="key"></ion-icon>
+    <ion-label>
+      <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+    </ion-label>
+  </ion-item>
 </ng-template>

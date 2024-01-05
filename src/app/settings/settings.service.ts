@@ -7,7 +7,8 @@ import { APP_STORAGE, IStorage } from '@app/shared/services/storage/storage.util
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 import { arrayDistinct } from '@app/shared/functions';
-import { RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { isMobile } from '@app/shared/platforms';
 
 const SETTINGS_STORAGE_KEY = 'settings';
 
@@ -20,6 +21,9 @@ export class SettingsService extends RxStartableService<Settings> {
   }
 
   @RxStateSelect() peer$: Observable<string>;
+  @RxStateSelect() darkMode$: Observable<boolean>;
+
+  @RxStateProperty() darkMode: boolean;
 
   constructor(
     protected ionicPlatform: Platform,
@@ -27,6 +31,9 @@ export class SettingsService extends RxStartableService<Settings> {
   ) {
     super(ionicPlatform, {
       name: 'settings-service',
+      initialState: {
+        mobile: isMobile(window),
+      },
     });
 
     // Emit changes event
@@ -60,7 +67,8 @@ export class SettingsService extends RxStartableService<Settings> {
     return <Settings>{
       // Default values
       preferredPeers: arrayDistinct([...environment.defaultPeers, ...(data?.preferredPeers || [])]),
-      unAuthDelayMs: 15 * 60_000, // 15min
+      unAuthDelayMs: 15 * 60_000, //
+      darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
       // Restored data
       ...data,
     };

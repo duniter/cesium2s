@@ -54,7 +54,6 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
   };
   protected popoverOptions: Partial<PopoverOptions> = {
     cssClass: 'select-account-popover',
-    reference: 'event',
   };
 
   get new(): Account {

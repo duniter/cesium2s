@@ -4,6 +4,11 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title translate>SETTINGS.TITLE</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleDarkMode()" [title]="'SETTINGS.BTN_DARK_MODE' | translate">
+        <ion-icon slot="icon-only" [name]="darkMode ? 'sunny' : 'moon'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -16,6 +21,8 @@
 
   <div id="container">
     <ion-list *rxIf="loaded$; else listSkeleton">
+      <ion-item-divider translate>SETTINGS.DISPLAY_DIVIDER</ion-item-divider>
+
       <ion-item>
         <ion-icon slot="start" name="language"></ion-icon>
         <ion-label color="dark" translate>COMMON.LANGUAGE</ion-label>
@@ -62,7 +69,8 @@
       </ion-item>
     </ion-list>
 
-    <div class="ion-text-center">
+    <!-- buttons -->
+    <div class="ion-text-center" *ngIf="!mobile">
       <ion-button (click)="cancel()" color="light">
         <ion-label translate>COMMON.BTN_CANCEL</ion-label>
       </ion-button>

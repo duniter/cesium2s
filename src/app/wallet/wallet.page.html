@@ -16,7 +16,7 @@
   </ion-header>
 
   <ion-header [translucent]="true">
-    <ion-item color="secondary">
+    <ion-item color="secondary" lines="none">
       <ion-avatar slot="start" (click)="avatarModal.present()" [style.background-color]="'white'">
         <ng-container *rxIf="account$; let account">
           <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
@@ -25,15 +25,7 @@
           </ng-template>
         </ng-container>
       </ion-avatar>
-      <ion-label class="ion-text-center ion-margin-end">
-        <p translate>ACCOUNT.BALANCE</p>
-        <h2>
-          <b *rxIf="account$; let account">{{ account | balance | amountFormat }}</b>
-        </h2>
-      </ion-label>
-
       <ion-select
-        slot="end"
         [(ngModel)]="account"
         [interface]="mobile ? 'action-sheet' : 'popover'"
         [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
@@ -45,6 +37,15 @@
         </ion-select-option>
         <ion-select-option [value]="new" translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
       </ion-select>
+
+      <div slot="end">
+        <ion-label class="ion-text-end">
+          <p translate>ACCOUNT.BALANCE</p>
+          <h2>
+            <b *rxIf="account$; let account">{{ account | balance | amountFormat }}</b>
+          </h2>
+        </ion-label>
+      </div>
     </ion-item>
   </ion-header>
 
@@ -56,7 +57,7 @@
       </ion-item>
 
       <!-- pubkey -->
-      <ion-item *ngIf="(account$ | async)?.meta.publicKeyV1; let pubkey" (click)="copyToClipboard($event, pubkey)">
+      <ion-item *ngIf="(account$ | async)?.meta?.publicKeyV1; let pubkey" (click)="copyToClipboard($event, pubkey)">
         <ion-icon name="key" slot="start"></ion-icon>
 
         <ion-label>
@@ -66,17 +67,14 @@
           </p>
         </ion-label>
 
-        <ion-button [disabled]="loading$ | async" (click)="showQrCode($event, pubkey, 'COMMON.PUBKEY')" slot="end" fill="clear" shape="round">
+        <ion-button slot="end" [disabled]="loading$ | async" (click)="showQrCode($event, pubkey, 'COMMON.PUBKEY')" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-item>
 
       <!-- address -->
       <ion-item *rxIf="account$; let account" (click)="copyToClipboard($event, account.address)">
-        <ion-chip slot="start">
-          <ion-icon name="key"></ion-icon>
-          <ion-text>v2</ion-text>
-        </ion-chip>
+        <ion-icon slot="start" name="key"></ion-icon>
         <ion-label>
           <h2 translate>COMMON.ADDRESS</h2>
           <p class="ion-text-wrap">

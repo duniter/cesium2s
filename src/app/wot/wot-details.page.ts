@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
-import { Router } from '@angular/router';
 import { WotService } from '@app/wot/wot.service';
 import { AccountsService } from '@app/account/accounts.service';
 import { Clipboard } from '@capacitor/clipboard';
@@ -30,7 +29,6 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
   @RxStateSelect() account$: Observable<Account>;
 
   constructor(
-    private router: Router,
     private accountService: AccountsService,
     private wotService: WotService
   ) {
@@ -64,6 +62,15 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
   protected async ngOnLoad(): Promise<WotDetailsPageState> {
     const account = await firstValueFrom(this.account$);
     return <WotDetailsPageState>{ account };
+  }
+
+  async copyPubkey() {
+    if (this.loading || !this.data?.account?.meta?.publicKeyV1) return; // Skip
+
+    await Clipboard.write({
+      string: this.account.meta.publicKeyV1,
+    });
+    await this.showToast({ message: 'INFO.COPY_TO_CLIPBOARD_DONE' });
   }
 
   async copyAddress() {

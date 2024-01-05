@@ -1,16 +1,16 @@
-@import "theme";
+@import 'theme';
+@import 'variables';
 
 * {
   @include font-roboto();
 }
 
-// --------------------------------------------------
-// Inject theme colors (as CSS variables)
-// --------------------------------------------------
-:root {
-  @include css-variables-to-root();
+body {
+  background-color: var(--ion-background-color);
+}
 
-  // Extra small device
+// Extra small device
+:host {
   @media screen and (max-width: #{$screen-xs-max}) {
     --mat-toolbar-height: mat.$toolbar-height-mobile;
   }

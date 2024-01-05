@@ -8,16 +8,23 @@ ion-menu {
 
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
+  --background-color: var(--background);
+
+  &.dark {
+    --background: transparent;
+    --background-color: var(--ion-color-primary500) !important;
+  }
 }
 
 @media screen and (min-width: $screen-md) {
   ion-menu ion-content {
     --background: transparent;
+    --background-color: whitesmoke;
     background-image: url('/assets/img/logo.large.empty.transparent.svg');
     background-repeat: no-repeat;
     background-position: -500px -100px;
     background-size: 1024px 1024px;
-    background-color: whitesmoke;
+    background-color: var(--background-color);
     height: 100%;
     --ion-item-background: transparent;
   }

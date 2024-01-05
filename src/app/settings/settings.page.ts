@@ -46,6 +46,7 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
 
   @RxStateProperty() peer: string;
   @RxStateProperty() locale: string;
+  @RxStateProperty() darkMode: boolean;
   @RxStateProperty() unAuthDelayMs: number;
   @RxStateProperty() dirty: boolean;
 
@@ -58,7 +59,13 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
     super({ name: 'settings' });
 
     // Detect changes
-    this._state.hold(this._state.select(['peer', 'locale', 'unAuthDelayMs'], (s) => s).pipe(skip(1)), () => this.markAsDirty());
+    this._state.hold(this._state.select(['peer', 'locale', 'unAuthDelayMs'], (s) => s).pipe(skip(1)), () => {
+      if (this.mobile) {
+        this.save();
+      } else {
+        this.markAsDirty();
+      }
+    });
   }
 
   protected async ngOnLoad() {
@@ -76,6 +83,7 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
 
   save() {
     this.settings.patchValue(this.data);
+    this.dirty = false;
   }
 
   selectPeer(peer: string) {
@@ -85,5 +93,10 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
 
   markAsDirty() {
     this.dirty = true;
+  }
+
+  toggleDarkMode() {
+    this.darkMode = !this.darkMode;
+    this.save();
   }
 }

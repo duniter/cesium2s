@@ -5,7 +5,7 @@ import { RxState } from '@rx-angular/state';
 
 export interface RxBaseServiceOptions<T extends object> {
   name?: string;
-  initialState?: T;
+  initialState?: Partial<T>;
 }
 
 export abstract class RxBaseService<T extends object = Object, O extends RxBaseServiceOptions<T> = RxBaseServiceOptions<T>>
