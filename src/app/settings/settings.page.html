@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -20,7 +20,7 @@
         <ion-icon slot="start" name="language"></ion-icon>
         <ion-label color="dark" translate>COMMON.LANGUAGE</ion-label>
         <ion-select
-          [(ngModel)]="data.locale"
+          [(ngModel)]="locale"
           [interface]="mobile ? 'action-sheet' : 'popover'"
           [okText]="'COMMON.BTN_OK' | translate"
           [cancelText]="'COMMON.BTN_CANCEL' | translate"
@@ -37,8 +37,8 @@
         <ion-icon slot="start" name="cloud-done"></ion-icon>
         <ion-label color="dark" translate>SETTINGS.PEER</ion-label>
 
-        <ion-input [(ngModel)]="data.peer" class="ion-text-end"></ion-input>
-        <ion-button slot="end" (click)="selectPeer()">
+        <ion-input [(ngModel)]="peer" class="ion-text-end"></ion-input>
+        <ion-button slot="end" (click)="peerModal.present()" [title]="'SETTINGS.POPUP_PEER.BTN_SHOW_LIST' | translate">
           <ion-label>...</ion-label>
         </ion-button>
       </ion-item>
@@ -50,13 +50,13 @@
         <ion-label color="dark" translate>SETTINGS.KEEP_AUTH</ion-label>
 
         <ion-select
-          [(ngModel)]="data.unAuthDelayMs"
+          [(ngModel)]="unAuthDelayMs"
           [interface]="mobile ? 'action-sheet' : 'popover'"
           [okText]="'COMMON.BTN_OK' | translate"
           [cancelText]="'COMMON.BTN_CANCEL' | translate"
         >
           <ion-select-option *ngFor="let item of unauthOptions" [value]="item.value">
-            {{ item.label | translate : { value: item.labelParam } }}
+            {{ item.label | translate: { value: item.labelParam } }}
           </ion-select-option>
         </ion-select>
       </ion-item>
@@ -66,7 +66,7 @@
       <ion-button (click)="cancel()" color="light">
         <ion-label translate>COMMON.BTN_CANCEL</ion-label>
       </ion-button>
-      <ion-button (click)="save()" color="danger">
+      <ion-button (click)="save()" *rxLet="dirty$; let dirty" [color]="dirty ? 'danger' : 'light'" [disabled]="!dirty">
         <ion-label translate="COMMON.BTN_SAVE"></ion-label>
       </ion-button>
     </div>
@@ -76,3 +76,26 @@
 <ng-template #listSkeleton>
   <app-skeleton-list [avatar]="true" size="5"></app-skeleton-list>
 </ng-template>
+
+<ion-modal #peerModal [backdropDismiss]="true">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="secondary">
+        <ion-buttons slot="start">
+          <ion-button (click)="peerModal.dismiss()" *ngIf="mobile">
+            <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <ion-title translate>SETTINGS.POPUP_PEER.BTN_SHOW_LIST</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item *rxFor="let peer of preferredPeers$" tappable (click)="selectPeer(peer)">
+          <ion-label>{{ peer }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>

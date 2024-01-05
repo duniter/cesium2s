@@ -78,7 +78,7 @@ export declare type AccountPropertyPipeOptions<T> = string | { key?: string; def
   name: 'accountProperty',
   pure: false,
 })
-export class AccountPropertyPipe<T = any, O extends AccountPropertyPipeOptions<T> = AccountPropertyPipeOptions<T>>
+export class AccountPropertyPipe<T = never, O extends AccountPropertyPipeOptions<T> = AccountPropertyPipeOptions<T>>
   extends AccountAbstractPipe<T, O>
   implements PipeTransform
 {

@@ -19,7 +19,7 @@
 </ion-header>
 
 <ion-content style="height: 100%">
-  <app-unlock-form #form (onSubmit)="doSubmit($event)" (onCancel)="cancel()"></app-unlock-form>
+  <app-unlock-form #form (validate)="doSubmit($event)" (cancel)="cancel()"></app-unlock-form>
 
   <ion-toolbar *ngIf="!mobile">
     <ion-row class="ion-no-padding" nowrap>

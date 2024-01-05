@@ -8,10 +8,7 @@ export interface StartableServiceOptions<T> {
   initialState?: T;
 }
 
-export abstract class StartableService<
-    T extends object | void = void,
-    O extends StartableServiceOptions<T> = StartableServiceOptions<T>
-  >
+export abstract class StartableService<T extends object | void = void, O extends StartableServiceOptions<T> = StartableServiceOptions<T>>
   extends BaseService<O>
   implements IStartableService<T>, IWithReadyService<T>
 {

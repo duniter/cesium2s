@@ -19,7 +19,7 @@
 </ion-header>
 
 <ion-content>
-  <app-auth-form #form [canRegister]="!auth" (onSubmit)="doSubmit($event)" (onCancel)="cancel()"></app-auth-form>
+  <app-auth-form #form [canRegister]="!auth" (validate)="doSubmit($event)" (cancel)="cancel()"></app-auth-form>
 </ion-content>
 
 <ion-footer *ngIf="!mobile">

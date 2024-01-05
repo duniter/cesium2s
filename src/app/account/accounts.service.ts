@@ -1,29 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
 import { NetworkService } from '../network/network.service';
 import { ApiPromise } from '@polkadot/api';
-import {
-  Account,
-  AccountUtils,
-  APP_AUTH_CONTROLLER,
-  AuthData,
-  IAuthController,
-  LoginOptions,
-  SelectAccountOptions,
-} from './account.model';
+import { Account, AccountUtils, APP_AUTH_CONTROLLER, AuthData, IAuthController, LoginOptions, SelectAccountOptions } from './account.model';
 import { keyring } from '@polkadot/ui-keyring';
 import { environment } from '@environments/environment';
 import { KeyringStorage } from '@app/shared/services/storage/keyring-storage';
 import { base58Encode, cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
-import {
-  isEmptyArray,
-  isNil,
-  isNilOrBlank,
-  isNilOrNaN,
-  isNotEmptyArray,
-  isNotNil,
-  isNotNilOrBlank,
-  sleep,
-} from '@app/shared/functions';
+import { isEmptyArray, isNil, isNilOrBlank, isNilOrNaN, isNotEmptyArray, isNotNil, isNotNilOrBlank, sleep } from '@app/shared/functions';
 import { APP_STORAGE, IStorage } from '@app/shared/services/storage/storage.utils';
 import { debounceTime, firstValueFrom, from, map, Observable, Subscription, switchMap, timer } from 'rxjs';
 import { Currency } from '@app/network/currency.model';
@@ -178,15 +161,9 @@ export class AccountsService extends RxStartableService<AccountsState> {
         await Promise.all(accounts.map((a) => this.loadData(a)));
 
         // DEBUG
-        console.info(
-          this._logPrefix + `Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`
-        );
+        console.info(this._logPrefix + `Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
         accounts.forEach((a) => {
-          console.info(
-            ` - ${a.meta?.name || formatAddress(a.address)} {free: ${a.data?.free / 100}, reserved: ${
-              a.data?.reserved / 100
-            }}`
-          );
+          console.info(` - ${a.meta?.name || formatAddress(a.address)} {free: ${a.data?.free / 100}, reserved: ${a.data?.reserved / 100}}`);
         });
 
         return accounts;
@@ -499,28 +476,26 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     try {
       // Sign and send a transfer from Alice to Bob
-      const txHash = await this.api.tx.balances
-        .transfer(to.address, totalAmount)
-        .signAndSend(issuerPair, async ({ status, events }) => {
-          if (status.isInBlock) {
-            console.info(`${this._logPrefix}Completed at block hash #${status.hash.toHuman()}`);
+      const txHash = await this.api.tx.balances.transfer(to.address, totalAmount).signAndSend(issuerPair, async ({ status, events }) => {
+        if (status.isInBlock) {
+          console.info(`${this._logPrefix}Completed at block hash #${status.hash.toHuman()}`);
 
-            if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
+          if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
 
-            const outdatedAccounts = [issuerAccount];
+          const outdatedAccounts = [issuerAccount];
 
-            // Update receiver account
-            if (await this.isAvailable(to.address)) {
-              const toAccount = await this.getByAddress(to.address);
-              outdatedAccounts.push(toAccount);
-            }
-
-            await sleep(200);
-            await this.refreshData(outdatedAccounts, { reload: true });
-          } else {
-            console.info(`Current status`, status.toHuman());
+          // Update receiver account
+          if (await this.isAvailable(to.address)) {
+            const toAccount = await this.getByAddress(to.address);
+            outdatedAccounts.push(toAccount);
           }
-        });
+
+          await sleep(200);
+          await this.refreshData(outdatedAccounts, { reload: true });
+        } else {
+          console.info(`Current status`, status.toHuman());
+        }
+      });
 
       // Show the hash
       console.info(`Submitted with hash ${txHash}`);
@@ -581,10 +556,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
       // Emit change event
       if (changed && this.accounts) {
-        console.debug(
-          `${this._logPrefix} Loading ${formatAddress(account.address)} data [OK] in ${Date.now() - now}ms`,
-          account.data
-        );
+        console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} data [OK] in ${Date.now() - now}ms`, account.data);
       }
     } catch (err) {
       console.error(`${this._logPrefix}Failed to load ${formatAddress(account.address)} data:`, err);

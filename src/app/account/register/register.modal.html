@@ -27,7 +27,7 @@
 </ion-header>
 
 <ion-content>
-  <app-register-form #form (onSubmit)="doSubmit()" (onCancel)="cancel()">
+  <app-register-form #form (validate)="doSubmit()" (cancel)="cancel()">
     <ion-row *ngIf="form.debug" codeConfirmation>
       <ion-text color="primary" class="ion-padding">
         <small>
@@ -53,13 +53,7 @@
           <ion-label translate>COMMON.BTN_CANCEL</ion-label>
         </ion-button>
 
-        <ion-button
-          *ngIf="!form.isBeginning()"
-          fill="clear"
-          color="dark"
-          (click)="form.slidePrev()"
-          [disabled]="loading"
-        >
+        <ion-button *ngIf="!form.isBeginning()" fill="clear" color="dark" (click)="form.slidePrev()" [disabled]="loading">
           <ion-icon slot="start" name="arrow-back"></ion-icon>
           <ion-label translate>COMMON.BTN_BACK</ion-label>
         </ion-button>
@@ -80,13 +74,7 @@
           <ion-icon slot="end" name="arrow-forward"></ion-icon>
         </ion-button>
 
-        <ion-button
-          *ngIf="form.isEnd()"
-          (click)="doSubmit()"
-          fill="solid"
-          [disabled]="loading || !form.canNext()"
-          color="tertiary"
-        >
+        <ion-button *ngIf="form.isEnd()" (click)="doSubmit()" fill="solid" [disabled]="loading || !form.canNext()" color="tertiary">
           <span translate>COMMON.BTN_SAVE</span>
           <ion-icon slot="end" name="save"></ion-icon>
         </ion-button>

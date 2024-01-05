@@ -1,12 +1,114 @@
+# ---------------------------------------------------------------
+# Global
+# ---------------------------------------------------------------
+
+# default image
+image: node:18-slim
+
 stages:
+  - environment
   - build
 
-build:
-  stage: build
-  image: node:18
+# ---------------------------------------------------------------
+# Global variables
+# ---------------------------------------------------------------
+
+variables:
+  CI_BUILD_IMAGE: $CI_REGISTRY_IMAGE/build:develop
+  BUILD_CACHE_DIR: /tmp/.build-cache
+  BUILD_ENVIRONMENT: prod
+  ENV_FILE: variables.env
+  IONIC_CLI_VERSION: 7.1.1
+  ANGULAR_CLI_VERSION: 7.1.5
+
+# ---------------------------------------------------------------
+# Jobs templates
+# ---------------------------------------------------------------
+.configure-git-template: &git-setup
+  tags: [redshift]
+  before_script:
+    - echo "fetch origin"
+    - git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
+    - git config --global user.email "${GITLAB_USER_EMAIL}"
+    - git config --global user.name "${GITLAB_USER_NAME}"
+    - git fetch origin
+
+.docker:
+  image: docker:latest
+  tags: [redshift]
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+  after_script:
+    - docker logout ${CI_REGISTRY}
+  allow_failure: false
+
+# ---------------------------------------------------------------
+# Environment jobs : Create docker image for builds/release, this
+# offers possibility to cache project dependencies so we don't
+# have to download them every time.
+# ---------------------------------------------------------------
+build:env:
+  extends: .docker
+  stage: environment
   script:
-    - npm install -g @angular/cli
-    # - npm install -g @ionic/cli @angular/cli @capacitor/cli
-    - npm install
-    - npm run build
-    - npm run lint
+    # Create the target directory
+    - mkdir -p target/docker
+    - cp -rf scripts/docker/build/* target/docker
+    # Build and push the CI image
+    - docker build --cache-from ${CI_BUILD_IMAGE} -t ${CI_BUILD_IMAGE} --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg="CACHE_DIR=${BUILD_CACHE_DIR}" --build-arg="IMAGE_REGISTRY=${DOCKER_IMAGE_REGISTRY}" --build-arg="IONIC_CLI_VERSION=${IONIC_CLI_VERSION}" --build-arg="ANGULAR_CLI_VERSION=${ANGULAR_CLI_VERSION}" -f target/docker/Dockerfile .
+    - docker push ${CI_BUILD_IMAGE}
+  except:
+    - tags
+    - master
+  only:
+    - develop
+    - /^feature\/.*/
+    - /^features\/.*/
+
+
+# ---------------------------------------------------------------
+# Build jobs
+# ---------------------------------------------------------------
+.build:
+  stage: build
+  tags: [redshift]
+  needs: ["build:env"]
+  before_script:
+    # Get project dependencies
+    - ls -artl ${BUILD_CACHE_DIR}
+    - cp -R ${BUILD_CACHE_DIR}/node_modules .
+    # Show version
+    #- ng version
+    - npm version
+  after_script:
+    # Remember version
+    - APP_VERSION=$(node -e "console.log(require('./package.json').version)")
+    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
+  artifacts:
+    paths:
+      - www
+    reports:
+      dotenv: ${ENV_FILE}
+    expire_in: 72 hours
+
+build:
+  extends: .build
+  image: ${CI_BUILD_IMAGE}
+  script:
+    # Build
+    - npm run build:${BUILD_ENVIRONMENT}
+  only:
+    - develop
+
+build:feature:
+  extends: .build
+  image: ${CI_BUILD_IMAGE}
+  script:
+    # Build
+    - npm run build:${BUILD_ENVIRONMENT}
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+  when: manual

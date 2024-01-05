@@ -100,9 +100,7 @@ export class AppComponent {
         }
       }
     } catch (err) {
-      console.error(
-        `[platform] Cannot get launch URL: ${err.message || err}\n${err?.originalStack || JSON.stringify(err)}`
-      );
+      console.error(`[platform] Cannot get launch URL: ${err.message || err}\n${err?.originalStack || JSON.stringify(err)}`);
       // Continue
     }
   }

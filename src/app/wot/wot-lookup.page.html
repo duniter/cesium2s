@@ -8,9 +8,7 @@
       <ng-content select="[toolbar-end]"></ng-content>
 
       <!-- close -->
-      <ion-button fill="clear" *ngIf="closeClick.observed" (click)="closeClick.emit($event)" translate>
-        COMMON.BTN_CLOSE
-      </ion-button>
+      <ion-button fill="clear" *ngIf="closeClick.observed" (click)="closeClick.emit($event)" translate>COMMON.BTN_CLOSE</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -61,12 +59,7 @@
               <h2>{{ item.meta?.name }}</h2>
               <p>{{ item.address | addressFormat }}</p>
             </ion-label>
-            <ion-button
-              slot="end"
-              *ngIf="showItemActions && !mobile"
-              (click)="transfer(item)"
-              [title]="'BTN_SEND_MONEY' | translate"
-            >
+            <ion-button slot="end" *ngIf="showItemActions && !mobile" (click)="transfer(item)" [title]="'BTN_SEND_MONEY' | translate">
               <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
             </ion-button>
           </ion-item>

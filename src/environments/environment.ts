@@ -24,9 +24,9 @@ export const environment = <Environment>{
   },
 
   dev: {
-    peer: 'ws://127.0.0.1:9944',
-    //peer: 'wss://gdev.komun.org/ws',
-    // peer: 'wss://gdev.librelois.fr/ws',
+    //peer: 'ws://127.0.0.1:9944',
+    peer: 'wss://gdev.coinduf.eu/ws',
+    //peer: 'wss://gdev.cgeek.fr/ws',
 
     auth: <AuthData>{
       v1: {
@@ -43,8 +43,11 @@ export const environment = <Environment>{
   defaultPeers: [
     'ws://127.0.0.1:9944',
     /* GDev endpoints */
-    //'wss://gdev.librelois.fr/ws',
-    //'wss://gdev.komun.org/ws',
-    //'wss://1000i100.fr/ws'
+    'wss://gdev.coinduf.eu/ws',
+    'wss://vit.fdn.org/ws',
+    'wss://gdev.pini.fr/ws',
+    'wss://gdev.cgeek.fr/ws',
+    'wss://gdev.p2p.legal/ws',
+    //'wss://1000i100.fr/ws',
   ],
 };

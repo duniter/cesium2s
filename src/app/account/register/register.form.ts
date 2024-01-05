@@ -68,10 +68,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
         words: new FormControl(null, Validators.required),
         wordNumber: new FormControl(null, Validators.required),
         code: new FormControl(null, Validators.required),
-        codeConfirmation: new FormControl(
-          null,
-          Validators.compose([Validators.required, this.equalsValidator('code')])
-        ),
+        codeConfirmation: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('code')])),
         name: new FormControl(null),
         address: new FormControl(null),
       })
@@ -153,8 +150,8 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     };
   }
 
-  cancel() {
-    this.onCancel.emit();
+  doCancel() {
+    this.cancel.emit();
   }
 
   protected async updateState() {

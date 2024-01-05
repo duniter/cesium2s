@@ -35,7 +35,7 @@
         <ion-card-title class="ion-text-center">
           <ion-spinner *rxIf="loading$; else message"></ion-spinner>
           <ng-template #message>
-            {{ 'HOME.MESSAGE' | translate : { currency: currency$ | async } }}
+            {{ 'HOME.MESSAGE' | translate: { currency: currency$ | async } }}
           </ng-template>
         </ion-card-title>
       </ion-card-header>
@@ -55,9 +55,7 @@
 
           <!-- disconnect button -->
           <p [class.cdk-visually-hidden]="mobile" *rxIf="defaultAccount$; let defaultAccount">
-            <ion-text
-              [innerHTML]="'HOME.NOT_YOUR_ACCOUNT_QUESTION' | translate : { pubkey: (defaultAccount | accountName) }"
-            ></ion-text>
+            <ion-text [innerHTML]="'HOME.NOT_YOUR_ACCOUNT_QUESTION' | translate: { pubkey: (defaultAccount | accountName) }"></ion-text>
             <br />
             <ion-text>
               <a href="#" (click)="logout($event)">

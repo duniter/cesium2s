@@ -1,10 +1,4 @@
-<form
-  [formGroup]="form"
-  novalidate
-  (ngSubmit)="doSubmit($event)"
-  class="form-container ion-padding"
-  (keyup.enter)="doSubmit($event)"
->
+<form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" class="form-container ion-padding" (keyup.enter)="doSubmit($event)">
   <ion-list>
     <!-- error -->
     <ion-item lines="none" *ngIf="error && !loading" @slideUpDownAnimation>
@@ -41,12 +35,7 @@
 
     <!-- Address -->
     <ion-item *ngIf="address; let address" @slideUpDownAnimation>
-      <ion-textarea
-        [value]="address"
-        [label]="'COMMON.ADDRESS' | translate"
-        labelPlacement="floating"
-        [disabled]="true"
-      ></ion-textarea>
+      <ion-textarea [value]="address" [label]="'COMMON.ADDRESS' | translate" labelPlacement="floating" [disabled]="true"></ion-textarea>
     </ion-item>
   </ion-list>
 

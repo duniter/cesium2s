@@ -36,12 +36,7 @@ export const SCRYPT_PARAMS = {
   },
 };
 
-export function getKeyringPairFromV1(data: {
-  salt: string;
-  password: string;
-  meta?: AccountMeta;
-  scryptParams?: ScryptParams;
-}): KeyringPair {
+export function getKeyringPairFromV1(data: { salt: string; password: string; meta?: AccountMeta; scryptParams?: ScryptParams }): KeyringPair {
   const ED25519_SEED_LENGTH = 32;
   const passwordU8a = Uint8Array.from(data.password.split('').map((x) => x.charCodeAt(0)));
   const saltU8a = Uint8Array.from(data.salt.split('').map((x) => x.charCodeAt(0)));

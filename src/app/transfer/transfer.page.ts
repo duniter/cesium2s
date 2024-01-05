@@ -161,8 +161,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   protected async ngOnLoad() {
     await this.accountService.ready();
 
-    this._enableScan =
-      this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
+    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
 
     return {};
   }

@@ -78,10 +78,9 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     // Watch address from route or account
     this._state.connect(
       'address',
-      merge(
-        this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))),
-        this.account$.pipe(map((a) => a?.address))
-      ).pipe(filter((address) => isNotNilOrBlank(address) && address !== this.address))
+      merge(this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))), this.account$.pipe(map((a) => a?.address))).pipe(
+        filter((address) => isNotNilOrBlank(address) && address !== this.address)
+      )
     );
 
     // Watch accounts
@@ -94,13 +93,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     this._state.connect(
       'account',
       this._state.$.pipe(
-        filter(
-          (s) =>
-            isNotEmptyArray(s.accounts) &&
-            isNil(s.account) &&
-            isNotNilOrBlank(s.address) &&
-            s.account !== WalletPage.NEW
-        ),
+        filter((s) => isNotEmptyArray(s.accounts) && isNil(s.account) && isNotNilOrBlank(s.address) && s.account !== WalletPage.NEW),
         mergeMap(async (s) => {
           console.debug(this._logPrefix + 'Loading account from address: ' + s.address);
 

@@ -25,9 +25,7 @@ export interface AppPageOptions<S extends AppPageState = AppPageState> {
 }
 
 @Directive()
-export abstract class AppPage<S extends AppPageState = AppPageState, O extends AppPageOptions<S> = AppPageOptions<S>>
-  implements OnInit, OnDestroy
-{
+export abstract class AppPage<S extends AppPageState = AppPageState, O extends AppPageOptions<S> = AppPageOptions<S>> implements OnInit, OnDestroy {
   private _subscription = new Subscription();
   private _form: FormGroup;
   private _cd = inject(ChangeDetectorRef, { optional: true });
@@ -152,8 +150,8 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
     return Promise.resolve(initialState);
   }
 
-  protected setError(err: any, opts = { emitEvent: true }) {
-    let message = err?.message || err || 'ERROR.UNKNOWN_ERROR';
+  protected setError(err: string | { message: string }, opts = { emitEvent: true }) {
+    let message = (typeof err === 'object' ? err.message : err) || 'ERROR.UNKNOWN_ERROR';
     if (!message) {
       console.error(err);
       message = 'ERROR.UNKNOWN_ERROR';
@@ -192,9 +190,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   }
 
   protected async showToast(opts: ToastOptions & { messageParams?: Object }) {
-    const message = isNotNilOrBlank(opts?.message)
-      ? this.translate.instant(opts.message as string, opts.messageParams)
-      : undefined;
+    const message = isNotNilOrBlank(opts?.message) ? this.translate.instant(opts.message as string, opts.messageParams) : undefined;
     const toast = await this.toastController.create({
       duration: 2000,
       ...opts,

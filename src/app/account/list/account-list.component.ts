@@ -43,16 +43,16 @@ export class AccountListComponent extends AppPage<AccountListComponentState> imp
 
   @RxStateSelect() accounts$: Observable<Account[]>;
 
-  constructor(protected accountsService: AccountsService, protected modalController: ModalController) {
+  constructor(
+    protected accountsService: AccountsService,
+    protected modalController: ModalController
+  ) {
     super();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this._state.connect(
-      'accounts',
-      this.accountsService.watchAll({ positiveBalanceFirst: this.positiveBalanceFirst }).pipe(debounceTime(2000))
-    );
+    this._state.connect('accounts', this.accountsService.watchAll({ positiveBalanceFirst: this.positiveBalanceFirst }).pipe(debounceTime(2000)));
   }
 
   protected async ngOnLoad(): Promise<Partial<AccountListComponentState>> {

@@ -24,7 +24,11 @@ import { AppAccountModule } from '@app/account/account.module';
 import { AccountsService } from '@app/account/accounts.service';
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  if (environment.production) {
+    // This is need to force a reload, after an app update
+    return new TranslateHttpLoader(http, './assets/i18n/', `-${environment.version}.json`);
+  }
+  return new TranslateHttpLoader(http, './assets/i18n/', `.json`);
 }
 
 @NgModule({

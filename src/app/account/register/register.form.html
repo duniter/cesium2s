@@ -1,10 +1,4 @@
-<swiper-container
-  #swiper
-  [config]="swiperOptions"
-  [modules]="swiperModules"
-  [class]="classList"
-  (slideChangeTransitionStart)="updateState()"
->
+<swiper-container #swiper [config]="swiperOptions" [modules]="swiperModules" [class]="classList" (slideChangeTransitionStart)="updateState()">
   <!-- intro step -->
   <swiper-slide class="ion-padding" cdkTrapFocus>
     <ion-grid>
@@ -12,7 +6,7 @@
         <ion-col size="12">
           <ion-text>
             <p>
-              {{ 'ACCOUNT.NEW.INTRO_WARNING_TIME' | translate : { name: currency?.displayName } }}
+              {{ 'ACCOUNT.NEW.INTRO_WARNING_TIME' | translate: { name: currency?.displayName } }}
             </p>
           </ion-text>
         </ion-col>
@@ -54,7 +48,7 @@
   <!-- explanation 3 -->
   <swiper-slide class="ion-padding" cdkTrapFocus>
     <ion-text>
-      <p [innerHTML]="'ACCOUNT.NEW.STEP_3_HELP' | translate : { currency: currency?.displayName }"></p>
+      <p [innerHTML]="'ACCOUNT.NEW.STEP_3_HELP' | translate: { currency: currency?.displayName }"></p>
     </ion-text>
   </swiper-slide>
 
@@ -67,7 +61,7 @@
 
   <!-- generate mnemonic -->
   <swiper-slide cdkTrapFocus>
-    <ion-grid *ngIf="form | formGetValue : 'words'; let words; else: wordsSkeleton" class="words">
+    <ion-grid *ngIf="form | formGetValue: 'words'; let words; else: wordsSkeleton" class="words">
       <ion-row>
         <ion-col size="12">
           <p [innerHTML]="'ACCOUNT.NEW.STEP_MNEMONIC_HELP' | translate"></p>
@@ -87,9 +81,7 @@
       <ion-row>
         <ion-col class="ion-text-center">
           <!-- generate new -->
-          <ion-button color="light" (click)="generatePhrase()" translate>
-            ACCOUNT.NEW.BTN_GENERATE_NEW_PHRASE
-          </ion-button>
+          <ion-button color="light" (click)="generatePhrase()" translate>ACCOUNT.NEW.BTN_GENERATE_NEW_PHRASE</ion-button>
 
           <!-- ok -->
           <ion-button color="primary" (click)="toggleCanNext()" translate>ACCOUNT.NEW.BTN_WROTE_MY_PHRASE</ion-button>
@@ -100,15 +92,15 @@
 
   <!-- check word -->
   <swiper-slide cdkTrapFocus>
-    <ion-list *ngIf="form | formGetValue : 'wordNumber' as wordNumber">
+    <ion-list *ngIf="form | formGetValue: 'wordNumber' as wordNumber">
       <ion-item lines="none">
         <ion-text>
-          <p [innerHTML]="'ACCOUNT.NEW.STEP_CHECK_WORD_HELP' | translate : { number: wordNumber }"></p>
+          <p [innerHTML]="'ACCOUNT.NEW.STEP_CHECK_WORD_HELP' | translate: { number: wordNumber }"></p>
         </ion-text>
       </ion-item>
 
       <ion-item>
-        <ion-label color="medium">{{ 'ACCOUNT.NEW.INPUT_WORD' | translate : { number: wordNumber } }}</ion-label>
+        <ion-label color="medium">{{ 'ACCOUNT.NEW.INPUT_WORD' | translate: { number: wordNumber } }}</ion-label>
         <ion-input (ionChange)="checkWord($event.detail.value)"></ion-input>
         <ion-icon slot="end" name="checkmark" *ngIf="slideState.canNext"></ion-icon>
       </ion-item>
@@ -142,7 +134,7 @@
         <ion-col size="12" class="ion-padding-top">
           <ion-item>
             <ion-text class="ion-text-center" style="width: 100%">
-              <h2>{{ form | formGetValue : 'code' }}</h2>
+              <h2>{{ form | formGetValue: 'code' }}</h2>
             </ion-text>
           </ion-item>
         </ion-col>
@@ -151,9 +143,7 @@
       <ion-row>
         <ion-col class="ion-text-center">
           <!-- generate new -->
-          <ion-button color="light" (click)="generateCode(true)" translate>
-            ACCOUNT.NEW.BTN_GENERATE_NEW_CODE
-          </ion-button>
+          <ion-button color="light" (click)="generateCode(true)" translate>ACCOUNT.NEW.BTN_GENERATE_NEW_CODE</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -162,7 +152,7 @@
   <!-- check code -->
   <swiper-slide cdkTrapFocus>
     <app-unlock-form
-      [control]="form | formGetControl : 'codeConfirmation'"
+      [control]="form | formGetControl: 'codeConfirmation'"
       helpMessage="ACCOUNT.NEW.STEP_CHECK_CODE_HELP"
       (codeChange)="checkCodeConfirmation()"
     ></app-unlock-form>
@@ -177,7 +167,7 @@
       <ion-col size="12" class="ion-padding-top">
         <ion-item>
           <ion-text class="ion-text-center" style="width: 100%">
-            {{ form | formGetValue : 'address' }}
+            {{ form | formGetValue: 'address' }}
           </ion-text>
         </ion-item>
       </ion-col>
@@ -187,7 +177,7 @@
       <ion-col size="12" class="ion-padding-top">
         <ion-item>
           <ion-text class="ion-text-center" style="width: 100%">
-            <h2>{{ form | formGetValue : 'address' | addressFormat }}</h2>
+            <h2>{{ form | formGetValue: 'address' | addressFormat }}</h2>
           </ion-text>
         </ion-item>
       </ion-col>

@@ -8,7 +8,11 @@ import { TransferPage, TransferPageOptions } from '@app/transfer/transfer.page';
 export class TransferController {
   private _mobile = this.platform.mobile;
 
-  constructor(private platform: PlatformService, private modalCtrl: ModalController, private router: Router) {}
+  constructor(
+    private platform: PlatformService,
+    private modalCtrl: ModalController,
+    private router: Router
+  ) {}
 
   async transfer(opts?: TransferPageOptions): Promise<string> {
     if (this._mobile) {

@@ -34,25 +34,12 @@
       ></ion-textarea>
       <ion-note slot="error" translate>ERROR.FIELD_REQUIRED</ion-note>
 
-      <ion-button
-        slot="end"
-        fill="clear"
-        [disabled]="loading"
-        [title]="'COMMON.BTN_SEARCH' | translate"
-        (click)="openWotModal($event)"
-      >
+      <ion-button slot="end" fill="clear" [disabled]="loading" [title]="'COMMON.BTN_SEARCH' | translate" (click)="openWotModal($event)">
         <ion-icon slot="icon-only" name="search"></ion-icon>
       </ion-button>
 
       <!-- Scan QR code-->
-      <ion-button
-        slot="end"
-        fill="clear"
-        color="dark"
-        *ngIf="_enableScan"
-        (click)="scanRecipient($event)"
-        [disabled]="loading"
-      >
+      <ion-button slot="end" fill="clear" color="dark" *ngIf="_enableScan" (click)="scanRecipient($event)" [disabled]="loading">
         <ion-icon slot="icon-only" name="qr-code"></ion-icon>
       </ion-button>
     </ion-item>
@@ -63,21 +50,11 @@
       <ng-container *rxIf="accounts$; let accounts; suspense: skeleton60">
         <ion-input [(ngModel)]="accountName" [debounce]="450" required></ion-input>
 
-        <ion-badge
-          *ngIf="account$ | push | balance; let balance"
-          slot="end"
-          [color]="amount + fee > balance / 100 ? 'danger' : 'success'"
-        >
+        <ion-badge *ngIf="account$ | push | balance; let balance" slot="end" [color]="amount + fee > balance / 100 ? 'danger' : 'success'">
           {{ balance | amountFormat }}
         </ion-badge>
 
-        <ion-button
-          slot="end"
-          fill="clear"
-          [disabled]="loading"
-          [title]="'COMMON.BTN_SEARCH' | translate"
-          (click)="selectAccount()"
-        >
+        <ion-button slot="end" fill="clear" [disabled]="loading" [title]="'COMMON.BTN_SEARCH' | translate" (click)="selectAccount()">
           <ion-icon slot="icon-only" name="search"></ion-icon>
         </ion-button>
 
@@ -98,7 +75,7 @@
       <!--        </ion-toggle>-->
       <!--        <ion-label class="ion-text-start" color="medium" translate>TRANSFER.BTN_ADD_COMMENT</ion-label>-->
       <ion-badge slot="end" *ngIf="amount && fee" color="medium">
-        {{ 'TRANSFER.FEE' | translate : { fee: fee, currency: currency.symbol } }}
+        {{ 'TRANSFER.FEE' | translate: { fee: fee, currency: currency.symbol } }}
       </ion-badge>
     </ion-item>
 

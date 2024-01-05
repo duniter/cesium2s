@@ -150,11 +150,7 @@ export function joinPropertiesPath<T>(obj: T, properties: string[], separator?: 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function joinProperties<T = any, K extends keyof T = any>(
-  obj: T,
-  keys: K[],
-  separator?: string
-): string | undefined {
+export function joinProperties<T = any, K extends keyof T = any>(obj: T, keys: K[], separator?: string): string | undefined {
   if (!obj) throw new Error('Could not display an undefined entity.');
   return keys
     .map((key) => getProperty(obj, key))
@@ -171,10 +167,7 @@ export function propertyPathComparator<T = any>(path: string): (a: T, b: T) => n
   };
 }
 
-export function propertyComparator<T = any, K extends keyof T = any>(
-  key: K,
-  defaultValue?: any
-): (a: T, b: T) => number {
+export function propertyComparator<T = any, K extends keyof T = any>(key: K, defaultValue?: any): (a: T, b: T) => number {
   return (a: T, b: T) => {
     const valueA = a[key] !== undefined ? a[key] : defaultValue;
     const valueB = b[key] ? b[key] : defaultValue;
@@ -310,10 +303,7 @@ export function uncapitalizeFirstLetter(value: string) {
   return value.substr(0, 1).toLowerCase() + value.substr(1);
 }
 
-export function splitByProperty<T, M extends KeyValueType<T> = KeyValueType<T>>(
-  array: T[] | readonly T[],
-  propertyName: keyof T | string
-): M {
+export function splitByProperty<T, M extends KeyValueType<T> = KeyValueType<T>>(array: T[] | readonly T[], propertyName: keyof T | string): M {
   return (array || []).reduce((res, value) => {
     const key = (value as unknown as any)?.[propertyName];
     if (isNotNil(key)) {
@@ -324,13 +314,16 @@ export function splitByProperty<T, M extends KeyValueType<T> = KeyValueType<T>>(
 }
 
 export function splitById<T, M extends KeyValueType<T> = KeyValueType<T>>(array: T[] | readonly T[]): M {
-  return (array || []).reduce((res, value) => {
-    const key = value?.['id'];
-    if (isNotNil(key)) {
-      res[key] = value;
-    }
-    return res;
-  }, <M>{});
+  return (array || []).reduce(
+    (res, value) => {
+      const key = value?.['id'];
+      if (isNotNil(key)) {
+        res[key] = value;
+      }
+      return res;
+    },
+    <M>{}
+  );
 }
 
 /**

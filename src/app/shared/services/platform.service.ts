@@ -27,9 +27,7 @@ export class PlatformService extends StartableService {
   }
 
   get touchUi(): boolean {
-    return this._touchUi != null
-      ? this._touchUi
-      : this.mobile || this.ionicPlatform.is('tablet') || this.ionicPlatform.is('phablet');
+    return this._touchUi != null ? this._touchUi : this.mobile || this.ionicPlatform.is('tablet') || this.ionicPlatform.is('phablet');
   }
 
   get capacitor(): boolean {
@@ -80,9 +78,7 @@ export class PlatformService extends StartableService {
       plugin = CapacitorPlugins.Keyboard;
       await Keyboard.setAccessoryBarVisible({ isVisible: false });
     } catch (err) {
-      console.error(
-        `[platform] Error while configuring ${plugin} plugin: ${err?.originalStack || JSON.stringify(err)}`
-      );
+      console.error(`[platform] Error while configuring ${plugin} plugin: ${err?.originalStack || JSON.stringify(err)}`);
     }
   }
 
@@ -95,11 +91,6 @@ export class PlatformService extends StartableService {
     // When locale changes, apply to date adapter
     this.translate.onLangChange.subscribe((event) => {
       if (event && event.lang) {
-        // force 'en' as 'en_GB'
-        if (event.lang === 'en') {
-          event.lang = 'en_GB';
-        }
-
         // config moment lib
         try {
           moment.locale(event.lang);
@@ -116,8 +107,14 @@ export class PlatformService extends StartableService {
     });
 
     this.settings.changes.subscribe((data) => {
-      if (data?.locale && data.locale !== this.translate.currentLang) {
-        this.translate.use(data.locale);
+      if (data?.locale) {
+        if (data.locale !== this.translate.currentLang) {
+          this.translate.use(data.locale);
+        } else {
+          // Applying default, when settings has no locale property (hotfix - ludovic.pecquot@e-is.pro - 14/11/2021 - since v1.20.42)
+          console.warn('[platform] No locale found in settings: applying defaultLocale: ', environment.defaultLocale);
+          this.translate.use(environment.defaultLocale);
+        }
       }
     });
   }

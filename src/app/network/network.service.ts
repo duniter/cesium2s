@@ -7,7 +7,8 @@ import { Currency } from '@app/network/currency.model';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
+import { isNotNilOrBlank } from '@app/shared/functions';
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
   Ğdev: <Partial<Currency>>{
@@ -37,6 +38,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
 });
 
 export interface NetworkState {
+  peer: Peer;
   currency: Currency;
   currencySymbol: string;
   api: ApiPromise;
@@ -44,10 +46,12 @@ export interface NetworkState {
 
 @Injectable({ providedIn: 'root' })
 export class NetworkService extends RxStartableService<NetworkState> {
+  @RxStateProperty() peer: Peer;
   @RxStateProperty() currency: Currency;
   @RxStateProperty() currencySymbol: string;
   @RxStateProperty() api: ApiPromise;
 
+  @RxStateSelect() peer$: Observable<Peer>;
   @RxStateSelect() currency$: Observable<Currency>;
 
   constructor(private settings: SettingsService) {
@@ -56,17 +60,30 @@ export class NetworkService extends RxStartableService<NetworkState> {
     });
 
     this.connect('currencySymbol', this.currency$.pipe(map((currency) => currency?.symbol)));
+
+    // Restart when settings peer changed
+    this.hold(
+      this.settings.peer$.pipe(
+        filter((peer) => isNotNilOrBlank(peer) && this.started),
+        map(Peers.fromUri),
+        filter((peer) => !Peers.equals(this.peer, peer))
+      ),
+      () => this.restart()
+    );
   }
 
   protected async ngOnStart(): Promise<NetworkState> {
     const settings = await this.settings.ready();
 
-    const peers = await this.filterAliveNodes(settings.preferredPeers);
-    if (!peers.length) {
-      throw { message: 'ERROR.CHECK_NETWORK_CONNECTION' };
+    let peer = Peers.fromUri(settings.peer);
+    if (!peer) {
+      const peers = await this.filterAliveNodes(settings.preferredPeers);
+      if (!peers.length) {
+        throw { message: 'ERROR.CHECK_NETWORK_CONNECTION' };
+      }
+      peer = this.selectRandomPeer(peers);
     }
 
-    const peer = this.selectRandomPeer(peers);
     const wsUri = Peers.getWsUri(peer);
     console.info(`${this._logPrefix}Connecting to peer {${wsUri}}...`);
 
@@ -98,9 +115,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     if (WELL_KNOWN_CURRENCIES[chain]) {
       const wellKnownCurrency = WELL_KNOWN_CURRENCIES[chain];
       if (wellKnownCurrency.genesis && wellKnownCurrency.genesis !== genesis) {
-        console.warn(
-          `${this._logPrefix}Invalid genesis for ${chain}! Expected ${wellKnownCurrency.genesis} but peer return ${genesis}`
-        );
+        console.warn(`${this._logPrefix}Invalid genesis for ${chain}! Expected ${wellKnownCurrency.genesis} but peer return ${genesis}`);
       }
       currency = { ...wellKnownCurrency };
     } else {
@@ -108,8 +123,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     }
     currency = currency || <Currency>{};
     currency.displayName = currency?.displayName || chain;
-    currency.symbol =
-      currency?.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
+    currency.symbol = currency?.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
     currency.decimals = currency?.decimals || +chainInfo.tokenDecimals.value?.[0].toHuman() || 0;
     currency.genesis = genesis;
 
@@ -123,6 +137,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     console.info(`${this._logPrefix}Last block: #${lastHeader.number} - hash ${lastHeader.hash}`);
 
     return {
+      peer,
       currency,
       currencySymbol: currency?.symbol,
       api,

@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  inject,
-  Injector,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Injector, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { RegisterModal } from '../register/register.modal';
@@ -50,8 +41,6 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
   @Input() canRegister: boolean;
 
   @Output() valueChanges = new EventEmitter<AuthData>();
-  @Output() onCancel = new EventEmitter<void>();
-  @Output() onSubmit = new EventEmitter<AuthData>();
 
   disable(opts?: { onlySelf?: boolean; emitEvent?: boolean }) {
     super.disable(opts);
@@ -77,9 +66,7 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     this.mobile = settings.mobile;
     this._enable = true;
 
-    this.registerSubscription(
-      this.form.valueChanges.pipe(debounceTime(500)).subscribe(() => this.valueChanges.emit(this.value))
-    );
+    this.registerSubscription(this.form.valueChanges.pipe(debounceTime(500)).subscribe(() => this.valueChanges.emit(this.value)));
 
     this.state.connect(
       'account',
@@ -102,8 +89,8 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     }
   }
 
-  cancel() {
-    this.onCancel.emit();
+  doCancel() {
+    this.cancel.emit();
   }
 
   async doSubmit(event?: Event) {
@@ -128,11 +115,11 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     this.showPwd = false; // Hide password
     this.error = null; // Reset error
 
-    setTimeout(() => this.onSubmit.emit(data));
+    setTimeout(() => this.validate.emit(data));
   }
 
   register() {
-    this.onCancel.emit();
+    this.cancel.emit();
     setTimeout(async () => {
       const modal = await this.modalCtrl.create({
         component: RegisterModal,

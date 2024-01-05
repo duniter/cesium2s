@@ -36,13 +36,7 @@
         <ion-label color="medium" translate>COMMON.PUBKEY</ion-label>
         <ion-input *ngIf="loaded; else skeleton60" class="ion-text-end" [value]="data?.address" readonly></ion-input>
 
-        <ion-button
-          slot="end"
-          (click)="copyAddress()"
-          [disabled]="loading"
-          fill="clear"
-          [title]="'COMMON.COPY' | translate"
-        >
+        <ion-button slot="end" (click)="copyAddress()" [disabled]="loading" fill="clear" [title]="'COMMON.COPY' | translate">
           <ion-icon slot="icon-only" name="copy"></ion-icon>
         </ion-button>
       </ion-item>

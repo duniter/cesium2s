@@ -8,7 +8,12 @@ export interface Peer {
 }
 
 export abstract class Peers {
+  static equals(peer1: Peer, peer2: Peer): boolean {
+    return this.getWsUri(peer1) === this.getWsUri(peer2);
+  }
+
   static fromUri(peerUri: string): Peer {
+    if (!peerUri) return null;
     try {
       const url = new URL(peerUri);
       let port = parseInt(url.port);
@@ -26,8 +31,11 @@ export abstract class Peers {
   }
 
   static getWsUri(peer: Peer) {
-    return `${peer.useSsl || peer.port === 443 ? 'wss' : 'ws'}://${peer.host}${
-      isNil(peer.port) ? '' : ':' + peer.port
-    }${peer.path || '/ws'}`;
+    if (!peer) return null;
+    return `${peer.useSsl || peer.port === 443 ? 'wss' : 'ws'}://${peer.host}${isNil(peer.port) ? '' : ':' + peer.port}${peer.path || '/ws'}`;
+  }
+
+  static sameUri(uri1: string, uri2: string): boolean {
+    return this.getWsUri(this.fromUri(uri1)) === this.getWsUri(this.fromUri(uri2));
   }
 }

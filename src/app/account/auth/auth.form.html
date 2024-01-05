@@ -73,12 +73,7 @@
 
       <!-- Address -->
       <ion-item *ngIf="account.address" @slideUpDownAnimation>
-        <ion-textarea
-          [value]="account.address"
-          [label]="'COMMON.ADDRESS' | translate"
-          labelPlacement="floating"
-          [disabled]="true"
-        ></ion-textarea>
+        <ion-textarea [value]="account.address" [label]="'COMMON.ADDRESS' | translate" labelPlacement="floating" [disabled]="true"></ion-textarea>
       </ion-item>
     </ng-container>
   </ion-list>

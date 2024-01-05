@@ -53,7 +53,11 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   @Output() itemClick = new EventEmitter<Account>();
   @Output() closeClick = new EventEmitter<Account>();
 
-  constructor(private router: Router, private wotService: WotService, private modalCtrl: ModalController) {
+  constructor(
+    private router: Router,
+    private wotService: WotService,
+    private modalCtrl: ModalController
+  ) {
     super({ name: 'wot-lookup-page' });
 
     this._state.connect(

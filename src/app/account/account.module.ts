@@ -10,14 +10,7 @@ import { APP_AUTH_CONTROLLER } from '@app/account/account.model';
 import { AccountListModule } from '@app/account/list/account-list.module';
 
 @NgModule({
-  imports: [
-    TranslateModule.forChild(),
-    AppSharedModule,
-    AppAuthModule,
-    AppRegisterModule,
-    AppUnlockModule,
-    AccountListModule,
-  ],
+  imports: [TranslateModule.forChild(), AppSharedModule, AppAuthModule, AppRegisterModule, AppUnlockModule, AccountListModule],
   exports: [TranslateModule, AccountListModule],
 })
 export class AppAccountModule {

@@ -8,10 +8,7 @@ export interface RxBaseServiceOptions<T extends object> {
   initialState?: T;
 }
 
-export abstract class RxBaseService<
-    T extends object = Object,
-    O extends RxBaseServiceOptions<T> = RxBaseServiceOptions<T>
-  >
+export abstract class RxBaseService<T extends object = Object, O extends RxBaseServiceOptions<T> = RxBaseServiceOptions<T>>
   extends RxState<T>
   implements OnDestroy
 {

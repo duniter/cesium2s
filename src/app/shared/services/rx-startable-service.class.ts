@@ -5,10 +5,7 @@ import { ReadyAsyncFunction, IStartableService, IWithReadyService } from '@app/s
 
 export interface RxStartableServiceOptions<T extends object = Object> extends RxBaseServiceOptions<T> {}
 
-export abstract class RxStartableService<
-    T extends object = Object,
-    O extends RxStartableServiceOptions<T> = RxStartableServiceOptions<T>
-  >
+export abstract class RxStartableService<T extends object = Object, O extends RxStartableServiceOptions<T> = RxStartableServiceOptions<T>>
   extends RxBaseService<T, O>
   implements IStartableService<T>
 {

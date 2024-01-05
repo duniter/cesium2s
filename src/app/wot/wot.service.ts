@@ -15,7 +15,10 @@ export class WotService extends RxStartableService<WotState> {
     return this.network.api;
   }
 
-  constructor(protected network: NetworkService, protected accountService: AccountsService) {
+  constructor(
+    protected network: NetworkService,
+    protected accountService: AccountsService
+  ) {
     super(network, {
       name: 'wot-service',
     });

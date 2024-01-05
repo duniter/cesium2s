@@ -5,7 +5,10 @@ import { IStorage } from '@app/shared/services/storage/storage.utils';
 // @dynamic
 @Directive()
 export class KeyringStorage implements KeyringStore {
-  constructor(protected storage: IStorage, protected storagePrefix?: string) {
+  constructor(
+    protected storage: IStorage,
+    protected storagePrefix?: string
+  ) {
     this.storagePrefix = this.storagePrefix || 'keyring-';
   }
 

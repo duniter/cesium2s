@@ -66,13 +66,7 @@
           </p>
         </ion-label>
 
-        <ion-button
-          [disabled]="loading$ | async"
-          (click)="showQrCode($event, pubkey, 'COMMON.PUBKEY')"
-          slot="end"
-          fill="clear"
-          shape="round"
-        >
+        <ion-button [disabled]="loading$ | async" (click)="showQrCode($event, pubkey, 'COMMON.PUBKEY')" slot="end" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-item>

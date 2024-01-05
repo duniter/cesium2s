@@ -9,14 +9,15 @@ import { AuthController } from '@app/account/auth.controller';
 export class AuthGuardService implements CanActivate {
   private readonly _debug: boolean;
 
-  constructor(private accountService: AccountsService, private authController: AuthController, private router: Router) {
+  constructor(
+    private accountService: AccountsService,
+    private authController: AuthController,
+    private router: Router
+  ) {
     this._debug = !environment.production;
   }
 
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean | UrlTree> | boolean | UrlTree {
     // If account not started: loop after started
     if (!this.accountService.started) {
       return (
@@ -32,8 +33,7 @@ export class AuthGuardService implements CanActivate {
       if (this._debug) console.debug('[auth-guard] Need authentication for page /' + next.url.join('/'));
       return this.login().then((res) => {
         if (!res) {
-          if (this._debug)
-            console.debug('[auth-guard] Authentication cancelled. Could not access to /' + next.url.join('/'));
+          if (this._debug) console.debug('[auth-guard] Authentication cancelled. Could not access to /' + next.url.join('/'));
           return this.router.parseUrl('/home');
         }
         // Iterate

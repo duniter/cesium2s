@@ -29,7 +29,11 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
   @RxStateProperty() account: Account;
   @RxStateSelect() account$: Observable<Account>;
 
-  constructor(private router: Router, private accountService: AccountsService, private wotService: WotService) {
+  constructor(
+    private router: Router,
+    private accountService: AccountsService,
+    private wotService: WotService
+  ) {
     super({ name: 'wot-details-page' });
 
     this._state.connect(
