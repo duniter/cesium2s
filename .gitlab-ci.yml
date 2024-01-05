@@ -25,7 +25,7 @@ variables:
 # Jobs templates
 # ---------------------------------------------------------------
 .configure-git-template: &git-setup
-  tags: [redshift]
+  tags: [kepler]
   before_script:
     - echo "fetch origin"
     - git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
@@ -35,7 +35,7 @@ variables:
 
 .docker:
   image: docker:latest
-  tags: [redshift]
+  tags: [kepler]
   services:
     - docker:dind
   before_script:
@@ -73,7 +73,7 @@ build:env:
 # ---------------------------------------------------------------
 .build:
   stage: build
-  tags: [redshift]
+  tags: [kepler]
   needs: ["build:env"]
   before_script:
     # Get project dependencies
