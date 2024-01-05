@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { environment } from '@environments/environment';
-import { OnDestroy } from '@angular/core';
+import { Directive, OnDestroy } from '@angular/core';
 import { RxState } from '@rx-angular/state';
 
 export interface RxBaseServiceOptions<T extends object> {
@@ -8,6 +8,7 @@ export interface RxBaseServiceOptions<T extends object> {
   initialState?: Partial<T>;
 }
 
+@Directive()
 export abstract class RxBaseService<T extends object = Object, O extends RxBaseServiceOptions<T> = RxBaseServiceOptions<T>>
   extends RxState<T>
   implements OnDestroy

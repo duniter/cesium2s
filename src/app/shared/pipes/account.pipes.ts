@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, inject, Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, Directive, inject, Pipe, PipeTransform } from '@angular/core';
 import { Account, AccountUtils } from '@app/account/account.model';
 import { equals, getPropertyByPath } from '@app/shared/functions';
 import { Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import { AccountsService } from '@app/account/accounts.service';
 /**
  * A common pipe, that will subscribe to all account changes, to refresh its value
  */
+@Directive()
 export abstract class AccountAbstractPipe<T = any, O = any> implements PipeTransform {
   private value: T = null;
   private _lastAccount: Partial<Account> | null = null;
