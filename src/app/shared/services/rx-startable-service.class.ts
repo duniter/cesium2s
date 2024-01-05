@@ -1,10 +1,11 @@
-import { Optional } from '@angular/core';
+import { Directive, Optional } from '@angular/core';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
-import { RxBaseServiceOptions, RxBaseService } from '@app/shared/services/rx-service.class';
-import { ReadyAsyncFunction, IStartableService, IWithReadyService } from '@app/shared/services/service.model';
+import { RxBaseService, RxBaseServiceOptions } from '@app/shared/services/rx-service.class';
+import { IStartableService, IWithReadyService, ReadyAsyncFunction } from '@app/shared/services/service.model';
 
 export interface RxStartableServiceOptions<T extends object = Object> extends RxBaseServiceOptions<T> {}
 
+@Directive()
 export abstract class RxStartableService<T extends object = Object, O extends RxStartableServiceOptions<T> = RxStartableServiceOptions<T>>
   extends RxBaseService<T, O>
   implements IStartableService<T>
