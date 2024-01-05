@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AccountsService } from '@app/account/accounts.service';
 import { SettingsService } from '@app/settings/settings.service';
@@ -26,7 +26,6 @@ export const REGISTER_FORM_SLIDES = {
   selector: 'app-register-form',
   templateUrl: 'register.form.html',
   styleUrls: ['./register.form.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class RegisterForm extends AppForm<AuthData> implements OnInit {
   protected swiperModules = [IonicSlides];

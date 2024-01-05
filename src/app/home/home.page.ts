@@ -80,7 +80,8 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
     }
   }
 
-  async register() {
+  async register(event?: Event) {
+    event?.preventDefault();
     const data = await this.authController.createNew({
       redirectToWalletPage: true,
     });
