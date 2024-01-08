@@ -441,7 +441,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     }
 
     // Check fee
-    fee = fee || currency.fees.tx || 0;
+    fee = fee || currency.fees?.tx || 0;
     if (fee < 0) {
       throw new Error('ERROR.FEE_NEGATIVE');
     }
@@ -459,7 +459,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
       throw new Error('ERROR.NOT_ENOUGH_CREDIT');
     }
 
-    console.info(`[account-service] Sending ${amount} :\nfrom: ${from.address}\nto ${to.address}`);
+    console.info(`[account-service] Sending ${amount} ${currency.symbol} (fee: ${fee}):\nfrom: ${from.address}\nto ${to.address}`);
 
     // Compute total amount (with fee) and remove decimals
     const powBase = Math.pow(10, currency.decimals || 0);

@@ -88,7 +88,7 @@ export class AppComponent {
 
   async detectDeepLink() {
     try {
-      const { url } = await App.getLaunchUrl();
+      const url = (await App.getLaunchUrl())?.url;
       if (isNotNilOrBlank(url)) {
         const slashIndex = url.indexOf('/');
         if (slashIndex !== -1) {
