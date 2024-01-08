@@ -58,12 +58,12 @@
 
       <!-- pubkey -->
       <ion-item *ngIf="(account$ | async)?.meta?.publicKeyV1; let pubkey" (click)="copyToClipboard($event, pubkey)">
-        <ion-icon name="key" slot="start"></ion-icon>
+        <ion-icon aria-hidden="true" name="key" slot="start"></ion-icon>
 
         <ion-label>
           <h2 translate>COMMON.PUBKEY</h2>
-          <p class="ion-text-wrap">
-            <span>{{ pubkey }}</span>
+          <p class="ion-text-nowrap">
+            <span>{{ pubkey | pubkeyFormat }}</span>
           </p>
         </ion-label>
 
@@ -74,11 +74,11 @@
 
       <!-- address -->
       <ion-item *rxIf="account$; let account" (click)="copyToClipboard($event, account.address)">
-        <ion-icon slot="start" name="key"></ion-icon>
+        <ion-icon aria-hidden="true" slot="start" name="key"></ion-icon>
         <ion-label>
           <h2 translate>COMMON.ADDRESS</h2>
-          <p class="ion-text-wrap">
-            <span>{{ account.address }}</span>
+          <p class="ion-text-nowrap">
+            <span>{{ account.address | addressFormat }}</span>
           </p>
         </ion-label>
 
@@ -102,9 +102,9 @@
       <!--      <ion-item detail  -->
       <!--                 [routerLink]="['/wot/cert/', data?.address]">-->
       <ion-item detail (click)="notImplementedModal.present()">
-        <ion-icon slot="start" name="ribbon"></ion-icon>
+        <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
         <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
-        <ion-badge color="success">0</ion-badge>
+        <ion-badge color="success" slot="end">0</ion-badge>
       </ion-item>
     </ion-list>
 

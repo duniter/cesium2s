@@ -22,6 +22,7 @@ export interface TransferState extends AppPageState {
   accounts: Account[];
   account: Account;
   recipient: Partial<Account>;
+  submitted: boolean;
 }
 
 export interface TransferPageOptions {
@@ -57,15 +58,19 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   @RxStateSelect() protected accounts$: Observable<Account[]>;
   @RxStateSelect() protected account$: Observable<Account>;
   @RxStateSelect() protected recipient$: Observable<Partial<Account>>;
+  @RxStateSelect() protected submitted$: Observable<boolean>;
 
   @Input() @RxStateProperty() currency: Currency;
   @Input() @RxStateProperty() fee: number;
   @Input() @RxStateProperty() account: Account = null;
   @Input() @RxStateProperty() recipient: Partial<Account>;
   @Input() @RxStateProperty() amount: number;
+
   @Input() showComment: boolean;
   @Input() dismissOnSubmit: boolean = false; // True is modal
   @Input() showToastOnSubmit: boolean = true;
+
+  @RxStateProperty() submitted: boolean;
 
   get accountName(): string {
     return AccountUtils.getDisplayName(this.account);
@@ -166,7 +171,9 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     return {};
   }
 
-  async selectAccount() {
+  async selectAccount(event: UIEvent) {
+    event?.preventDefault();
+
     const account = await this.accountService.selectAccount({
       minBalance: this.amount || 0,
       positiveBalanceFirst: true,
@@ -174,6 +181,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     });
     if (account) {
       this.account = account;
+      this.markForCheck();
     }
   }
 
@@ -192,7 +200,10 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
 
   async doSubmit() {
     // Check valid
-    if (!this.recipient || !this.account) return; // Skip
+    if (!this.recipient || !this.account) {
+      this.markAsSubmitted();
+      return;
+    } // Skip
 
     this.markAsLoading();
     this.resetError();
@@ -257,7 +268,12 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
 
     try {
       console.info('[transfer] Hide background');
+      document.querySelector('body').classList.add('scanner-active');
       await BarcodeScanner.hideBackground(); // make background of WebView transparent
+
+      // setTimeout(() => {
+      //   console.info('[transfer] Stopping scanner...');
+      // }, 5000);
 
       console.info('[transfer] Start scanning...');
       const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
@@ -270,6 +286,8 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
       console.error('[transfer] Failed to scan QR code: ' + (err?.message || ''), err);
       this.setError(err);
       this.markAsLoaded();
+    } finally {
+      document.querySelector('body').classList.remove('scanner-active');
     }
   }
 
@@ -280,9 +298,25 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   protected async ngOnUnload() {
     this.showComment = false;
     await this.qrCodeModal?.dismiss();
+    this.markAsPristine();
+
     return {
       ...(await super.ngOnUnload()),
       recipient: { address: null, meta: null },
     };
+  }
+
+  protected markAsSubmitted(opts = { emitEvent: true }) {
+    if (!this.submitted) {
+      this.submitted = true;
+      if (opts.emitEvent !== false) this.markForCheck();
+    }
+  }
+
+  protected markAsPristine(opts = { emitEvent: true }) {
+    if (this.submitted) {
+      this.submitted = false;
+      if (opts.emitEvent !== false) this.markForCheck();
+    }
   }
 }
