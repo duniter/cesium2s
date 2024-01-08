@@ -247,18 +247,29 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     this.recipient = data;
   }
 
-  async scanRecipient(event: Event) {
+  async scanRecipient(event?: Event) {
     if (!this._enableScan) return; // SKip
 
-    event.preventDefault();
+    event?.preventDefault();
 
-    await BarcodeScanner.hideBackground(); // make background of WebView transparent
+    this.markAsLoading();
+    this.resetError();
 
-    const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+    try {
+      console.info('[transfer] Hide background');
+      await BarcodeScanner.hideBackground(); // make background of WebView transparent
 
-    // if the result has content
-    if (result.hasContent) {
-      this.setRecipient(result.content);
+      console.info('[transfer] Start scanning...');
+      const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+
+      // if the result has content
+      if (result.hasContent) {
+        this.setRecipient(result.content);
+      }
+    } catch (err) {
+      console.error('[transfer] Failed to scan QR code: ' + (err?.message || ''), err);
+      this.setError(err);
+      this.markAsLoaded();
     }
   }
 

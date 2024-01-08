@@ -36,6 +36,7 @@ import { PropertyGetPipe } from './property.pipes';
 import { AmountFormatPipe } from '@app/shared/pipes/amount.pipe';
 import { AddressFormatPipe } from '@app/shared/pipes/address.pipes';
 import { AccountBalancePipe, AccountNamePipe, AccountPropertyPipe } from '@app/shared/pipes/account.pipes';
+import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
 
 @NgModule({
   imports: [CommonModule, IonicModule, TranslateModule],
@@ -77,6 +78,7 @@ import { AccountBalancePipe, AccountNamePipe, AccountPropertyPipe } from '@app/s
     // Currency pipes
     AmountFormatPipe,
     AddressFormatPipe,
+    PubkeyFormatPipe,
     AbbreviatePipe,
     // Account pipes
     AccountPropertyPipe,
@@ -121,6 +123,7 @@ import { AccountBalancePipe, AccountNamePipe, AccountPropertyPipe } from '@app/s
     // Currency pipes
     AmountFormatPipe,
     AddressFormatPipe,
+    PubkeyFormatPipe,
     AbbreviatePipe,
     // Account pipes
     AccountPropertyPipe,

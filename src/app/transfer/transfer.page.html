@@ -8,7 +8,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" *rxLet="loading$ as loading">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large" translate>TRANSFER.TITLE</ion-title>
@@ -23,17 +23,16 @@
     </ion-item>
 
     <!-- TO -->
-    <ion-item>
-      <ion-label color="medium" translate>TRANSFER.TO</ion-label>
+    <ion-item *rxIf="recipient$; let recipient; suspense: skeleton60">
+      <!--      <ion-label color="medium" translate>TRANSFER.TO</ion-label>-->
       <ion-textarea
-        *rxIf="recipient$; let recipient; else: skeleton60"
         [rows]="mobile ? 2 : 1"
         [tabIndex]="mobile ? -1 : 1"
-        class="ion-text-wrap ion-text-end"
+        [label]="'TRANSFER.TO' | translate"
+        class="ion-text-nowrap"
         [(ngModel)]="recipient.address"
         required
       ></ion-textarea>
-      <ion-note slot="error" translate>ERROR.FIELD_REQUIRED</ion-note>
 
       <ion-button slot="end" fill="clear" [disabled]="loading" [title]="'COMMON.BTN_SEARCH' | translate" (click)="openWotModal($event)">
         <ion-icon slot="icon-only" name="search"></ion-icon>
@@ -43,32 +42,25 @@
       <ion-button slot="end" fill="clear" color="dark" *ngIf="_enableScan" (click)="scanRecipient($event)" [disabled]="loading">
         <ion-icon slot="icon-only" name="qr-code"></ion-icon>
       </ion-button>
+
+      <ion-note slot="error" *rxIf="submitted$" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>
 
     <!-- FROM -->
-    <ion-item>
-      <ion-label color="medium" translate>TRANSFER.FROM</ion-label>
-      <ng-container *rxIf="accounts$; let accounts; suspense: skeleton60">
-        <ion-input [(ngModel)]="accountName" [debounce]="450" required></ion-input>
+    <ion-item *rxIf="accounts$; let accounts; suspense: skeleton60" (click)="selectAccount($event)" tappable>
+      <!--      <ion-label color="medium" translate>TRANSFER.FROM</ion-label>-->
+      <ion-input [(ngModel)]="accountName" [debounce]="450" [label]="'TRANSFER.FROM' | translate" readonly required></ion-input>
 
-        <ion-badge *ngIf="account$ | push | balance; let balance" slot="end" [color]="amount + fee > balance / 100 ? 'danger' : 'success'">
-          {{ balance | amountFormat }}
-        </ion-badge>
+      <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
 
-        <ion-button slot="end" fill="clear" [disabled]="loading" [title]="'COMMON.BTN_SEARCH' | translate" (click)="selectAccount()">
-          <ion-icon slot="icon-only" name="search"></ion-icon>
-        </ion-button>
-
-        <ion-note slot="error" translate>ERROR.FIELD_REQUIRED</ion-note>
-      </ng-container>
+      <ion-note slot="error" *rxIf="submitted$" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>
 
     <!-- amount -->
     <ion-item>
-      <ion-label color="medium" translate>TRANSFER.AMOUNT</ion-label>
-      <ion-input type="number" [(ngModel)]="amount" required></ion-input>
-      <ion-label color="medium" slot="end" *rxIf="currency$; let currency">{{ currency.symbol }}</ion-label>
-      <ion-note slot="error" translate>ERROR.FIELD_REQUIRED</ion-note>
+      <ion-input type="number" [(ngModel)]="amount" [label]="'TRANSFER.AMOUNT' | translate" required></ion-input>
+      <ion-note color="medium" slot="end" *rxIf="currency$; let currency">{{ currency.symbol }}</ion-note>
+      <ion-note slot="error" *rxIf="submitted$" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>
 
     <ion-item lines="none">
@@ -112,7 +104,12 @@
 </ng-template>
 
 <ng-template #skeleton60>
-  <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+  <ion-item>
+    <ion-icon name="__NONE__" slot="start"></ion-icon>
+    <ion-label>
+      <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+    </ion-label>
+  </ion-item>
 </ng-template>
 
 <ion-modal #qrCodeModal [backdropDismiss]="true" [presentingElement]="_presentingElement" [canDismiss]="true">
