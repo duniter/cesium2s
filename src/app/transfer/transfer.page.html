@@ -105,7 +105,7 @@
     <ion-icon slot="start" name="qr-code"></ion-icon>
     <ion-label translate>TRANSFER.BTN_QR_CODE</ion-label>
   </ion-button>
-  <ion-button (click)="submit()" [disabled]="loading || invalid" color="tertiary">
+  <ion-button (click)="doSubmit()" [disabled]="loading || invalid" color="tertiary">
     <ion-icon slot="start" name="paper-plane"></ion-icon>
     <ion-label translate>TRANSFER.BTN_SEND</ion-label>
   </ion-button>

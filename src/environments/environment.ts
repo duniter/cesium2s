@@ -41,7 +41,7 @@ export const environment = <Environment>{
   },
 
   defaultPeers: [
-    'ws://127.0.0.1:9944',
+    //'ws://127.0.0.1:9944',
     /* GDev endpoints */
     'wss://gdev.coinduf.eu/ws',
     'wss://vit.fdn.org/ws',

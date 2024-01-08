@@ -16,7 +16,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     displayName: 'Ğdev',
     symbol: 'GD',
     prefix: 42,
-    genesis: '0x9f956a87b5568f12c757bb3426897bba6123a1ef311fcd0945bd669fd0e612f8',
+    genesis: '0xa565a0ccbab8e5f29f0c8a901a3a062d17360a4d4f5319d03a1580fba4cbf3f6',
     fees: {
       identity: 300, // = 3 Gdev
       tx: 1, // = 0.01 Gdev
@@ -125,7 +125,12 @@ export class NetworkService extends RxStartableService<NetworkState> {
     currency.displayName = currency?.displayName || chain;
     currency.symbol = currency?.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
     currency.decimals = currency?.decimals || +chainInfo.tokenDecimals.value?.[0].toHuman() || 0;
+    currency.prefix = currency.prefix || WELL_KNOWN_CURRENCIES.Ğdev.prefix; // TODO use G1 defaults
     currency.genesis = genesis;
+    currency.fees = {
+      ...WELL_KNOWN_CURRENCIES.Ğdev.fees, // TODO use G1 defaults
+      ...(currency.fees || {}),
+    };
 
     // Read the genesys block hash
     console.debug(`${this._logPrefix}Blockchain symbol: ${currency.symbol}`);

@@ -190,7 +190,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     this.close();
   }
 
-  async submit() {
+  async doSubmit() {
     // Check valid
     if (!this.recipient || !this.account) return; // Skip
 
