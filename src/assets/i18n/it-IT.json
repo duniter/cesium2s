@@ -5,7 +5,7 @@
     "APP_BUILD": "build {{build}}",
     "PUBKEY": "Chiave pubblica",
     "MEMBER": "Membro",
-    "BLOCK" : "Blocco",
+    "BLOCK": "Blocco",
     "BTN_OK": "OK",
     "BTN_YES": "Sì",
     "BTN_NO": "No",
@@ -78,11 +78,11 @@
       "SHARE_ON_TWITTER": "Condividere su Twitter",
       "SHARE_ON_FACEBOOK": "Condividere su Facebook",
       "SHARE_ON_DIASPORA": "Condividere su Diaspora*",
-      "SHARE_ON_GOOGLEPLUS":"Condividere su Google+"
+      "SHARE_ON_GOOGLEPLUS": "Condividere su Google+"
     },
     "FILE": {
-      "DATE" : "Data:",
-      "TYPE" : "Tipo:",
+      "DATE": "Data:",
+      "TYPE": "Tipo:",
       "SIZE": "Dimensioni del file:",
       "VALIDATING": "Validazione in corso..."
     }
@@ -126,7 +126,7 @@
     "FORK_ME": "Fork me!",
     "SHOW_LICENSE": "Mostra licenza",
     "REPORT_ISSUE": "Segnalare un bug",
-    "NOT_YOUR_ACCOUNT_QUESTION" : "Non sei proprietario del conto <b><i class=\"ion-key\"></i> {{pubkey|formatPubkey}}</b>?",
+    "NOT_YOUR_ACCOUNT_QUESTION": "Non sei proprietario del conto <b><i class=\"ion-key\"></i> {{pubkey|formatPubkey}}</b>?",
     "BTN_CHANGE_ACCOUNT": "Disconettere questo conto",
     "CONNECTION_ERROR": "Nodo <b>{{server}}</b> irraggiungibile o indirizzo non valido. <br/><br/> Verifica tua connessione or cambia nodo. <a class=\"positive\" ng-click=\"doQuickFix('settings')\">nell impostazioni. </a>.",
     "SHOW_ALL_FEED": "Mostra tutto",
@@ -167,12 +167,12 @@
     "EXPERT_MODE": "Abilitare modalità eseperto",
     "EXPERT_MODE_HELP": "Permette di vedere più dettagli",
     "POPUP_PEER": {
-      "TITLE" : "Nodo Duniter",
-      "HOST" : "Indirizzo",
+      "TITLE": "Nodo Duniter",
+      "HOST": "Indirizzo",
       "HOST_HELP": "Indirizzo: server:port",
-      "USE_SSL" : "Cifrato?",
-      "USE_SSL_HELP" : "(Cifratura SSL)",
-      "BTN_SHOW_LIST" : "Lista dei nodi"
+      "USE_SSL": "Cifrato?",
+      "USE_SSL_HELP": "(Cifratura SSL)",
+      "BTN_SHOW_LIST": "Lista dei nodi"
     }
   },
   "BLOCKCHAIN": {
@@ -260,7 +260,7 @@
       "WOT_RULES_DIVIDER": "Regole della Rete di Fiducia",
       "SENTRIES": "Numero di certificazioni (date <b>e</b> ricevute) per diventare membro referente ",
       "SENTRIES_FORMULA": "Numero di certificazioni necessarie per diventare membro (formula)",
-      "XPERCENT":"Percentuale minima di membri referenti per rispettare la regola di distanza tra i membri",
+      "XPERCENT": "Percentuale minima di membri referenti per rispettare la regola di distanza tra i membri",
       "AVG_GEN_TIME": "Tempo medio tra due blocchi",
       "CURRENT": "attuale",
       "MATH_CEILING": "TETTO",
@@ -302,13 +302,13 @@
     "MIRROR": "Specchio",
     "MIRRORS": "Specchi",
     "MIRROR_PEERS": "Nodi specchio",
-    "PEER_LIST" : "Lista dei nodi",
-    "MEMBERS" : "Membri",
-    "MEMBER_PEERS" : "Nodi membri",
-    "ALL_PEERS" : "Tutti i nodi",
-    "DIFFICULTY" : "Difficoltà",
-    "API" : "API",
-    "CURRENT_BLOCK" : "Blocco #",
+    "PEER_LIST": "Lista dei nodi",
+    "MEMBERS": "Membri",
+    "MEMBER_PEERS": "Nodi membri",
+    "ALL_PEERS": "Tutti i nodi",
+    "DIFFICULTY": "Difficoltà",
+    "API": "API",
+    "CURRENT_BLOCK": "Blocco #",
     "POPOVER_FILTER_TITLE": "Filtro",
     "OFFLINE": "Sconessi",
     "OFFLINE_PEERS": "Nodi sconessi",
@@ -317,7 +317,7 @@
       "TITLE": "Nodo",
       "OWNER": "Proprietà di",
       "SHOW_RAW_PEERING": "Vedere il documento di peering",
-     "SHOW_RAW_CURRENT_BLOCK": "Vedere l'utimo blocco (formatto grezzo)",
+      "SHOW_RAW_CURRENT_BLOCK": "Vedere l'utimo blocco (formatto grezzo)",
       "LAST_BLOCKS": "Ultimi blocchi",
       "KNOWN_PEERS": "Nodi conosciuti:",
       "GENERAL_DIVIDER": "Informazioni generali",
@@ -370,8 +370,8 @@
       "NO_NEWCOMERS": "Nessun membro."
     },
     "CONTACTS": {
-     "TITLE": "Contatti"
-   },
+      "TITLE": "Contatti"
+    },
     "MODAL": {
       "TITLE": "Ricerca"
     },
@@ -386,7 +386,7 @@
       "SENTRY_MEMBER": "Membro referente"
     },
     "OPERATIONS": {
-      "TITLE": "{{uid}} - Operazioni"
+      "TITLE": "Operazioni"
     },
     "GIVEN_CERTIFICATIONS": {
       "TITLE": "{{uid}} - Certificazioni inviate",
@@ -536,9 +536,9 @@
       "HELP": "Uno pseudonimo è necessario per che gli altri ti possino trovare."
     },
     "SELECT_IDENTITY_MODAL": {
-     "TITLE": "Selezionare una identità",
-     "HELP": "Più <b>identità diverse</b> sono state inviate per la chiave pubblica <span class=\"gray\"><i class=\"ion-key\"></i> {{pubkey|formatPubkey}}</span>.<br/>Seleziona un dossier da usare :"
-   },
+      "TITLE": "Selezionare una identità",
+      "HELP": "Più <b>identità diverse</b> sono state inviate per la chiave pubblica <span class=\"gray\"><i class=\"ion-key\"></i> {{pubkey|formatPubkey}}</span>.<br/>Seleziona un dossier da usare :"
+    },
     "SELECT_WALLET_MODAL": {
       "TITLE": "Selezione del portafoglio"
     },
@@ -554,12 +554,12 @@
         "NAME_HELP": "Nome del portafoglio"
       }
     },
-    "SECURITY":{
-      "ADD_QUESTION" : "Aggiungere domanda personalizzata",
-      "BTN_CLEAN" : "Svuotare",
-      "BTN_RESET" : "Reset",
+    "SECURITY": {
+      "ADD_QUESTION": "Aggiungere domanda personalizzata",
+      "BTN_CLEAN": "Svuotare",
+      "BTN_RESET": "Reset",
       "DOWNLOAD_REVOKE": "Salvare un file di revoca",
-      "DOWNLOAD_REVOKE_HELP" : "Avere une file di revoca è necessario in caso di smarrimento delle tue credenziali. Ti permette <b> di rimuovere tuo conto dalla Rete di Fiducia</b>, per farlo tornare ad essere un semplice portafoglio.",
+      "DOWNLOAD_REVOKE_HELP": "Avere une file di revoca è necessario in caso di smarrimento delle tue credenziali. Ti permette <b> di rimuovere tuo conto dalla Rete di Fiducia</b>, per farlo tornare ad essere un semplice portafoglio.",
       "HELP_LEVEL": "Scegliere <strong> almeno{{nb}} domande </strong> :",
       "LEVEL": "Livello di sicurezza",
       "LOW_LEVEL": "Basso <span class=\"hidden-xs\">(minimo di 2 domande)</span>",
@@ -585,8 +585,8 @@
       "QUESTION_19": "Cosa faceva il tuo nonno?",
       "RECOVER_ID": "Ricuperare la mia password...",
       "RECOVER_ID_HELP": "Se hai un<b<file di backup deelle tue credenziali</b>, li puoi trovare rispondendo correttamente alle tue domande personalizzate.",
-      "REVOCATION_WITH_FILE" : "Revocare il mio conto membro...",
-     "REVOCATION_WITH_FILE_DESCRIPTION": "Se pensi di aver perso <b>definitivamente le tue credenziali</b> di conto membro (o che la sicurezza del tuo conto è compromessa), puoi usare <b>il file di revoca</b> del conto <b>per forzare la sua uscita permanente dalla Rete di Fiducia</b>.",
+      "REVOCATION_WITH_FILE": "Revocare il mio conto membro...",
+      "REVOCATION_WITH_FILE_DESCRIPTION": "Se pensi di aver perso <b>definitivamente le tue credenziali</b> di conto membro (o che la sicurezza del tuo conto è compromessa), puoi usare <b>il file di revoca</b> del conto <b>per forzare la sua uscita permanente dalla Rete di Fiducia</b>.",
       "REVOCATION_WITH_FILE_HELP": "Se hai <b>definitivamente perso le tue credenziali (o se la sicurezza del tuo conto è compromessa), puoi usare <b>il file di revoca</b> del conto <b>per uscire dalla Rete di Fiducia</b>.",
       "REVOCATION_WALLET": "Revocare questo conto subito",
       "REVOCATION_WALLET_HELP": "Richiedere la cancellazione dell'identità <b>revocherà la tua adesione alla Rete di Fiducia</ b> (definitivamente per lo pseudonimo e per la chiave pubblica associata). Il conto non potrà più produrre il Dividendo Universale.<br/>Nonostante ciò, puoi ancora usare il conto come semplice portafoglio.",
@@ -705,7 +705,7 @@
     "REVOCATION_FAILED": "Errore avvenuto durante la richiesta di cancellazione dell'identità.",
     "SALT_OR_PASSWORD_NOT_CONFIRMED": "Identificativo segreto o password sbagliati",
     "RECOVER_ID_FAILED": "Impossibile recuperare la password",
-    "LOAD_FILE_FAILED" : "Impossibile caricare il file",
+    "LOAD_FILE_FAILED": "Impossibile caricare il file",
     "NOT_VALID_REVOCATION_FILE": "File di cancellazione dell'identità errato (formato di file incorreto)",
     "NOT_VALID_SAVE_ID_FILE": "File di backup dei credenziali errato (formato di file incorreto)",
     "NOT_VALID_KEY_FILE": "File di portachiavi non valido (formato non riconosciuto)",
@@ -714,7 +714,7 @@
     "GET_LICENSE_FILE_FAILED": "Impossibile caricare il file della licenza",
     "CHECK_NETWORK_CONNECTION": "Nessun nodo sembra disponibile.<br/><br/>Per favore <b>verifica la tua connessione Internet</b>.",
     "ISSUE_524_TX_FAILED": "Bonifico .<br/><br/>Un messaggio è stato inviato agli sviluppatori per aiutare a risolvere il problema. <b>Grazie per il tuo aiuto</b>."
-   },
+  },
   "INFO": {
     "POPUP_TITLE": "Informazioni",
     "CERTIFICATION_DONE": "Identità firmata con successo",
@@ -731,7 +731,7 @@
   },
   "CONFIRM": {
     "CAN_CONTINUE": "<b>Sei sicuro/a</b> di voler procedere?",
-     "POPUP_TITLE": "<b>Conferma</b>",
+    "POPUP_TITLE": "<b>Conferma</b>",
     "POPUP_WARNING_TITLE": "<b>Avviso</b>",
     "POPUP_SECURITY_WARNING_TITLE": "<i class=\"icon ion-alert-circled\"></i> <b>Avvertimento di sicurezza</b>",
     "CERTIFY_RULES_TITLE_UID": "Certificare {{uid}}",
@@ -754,22 +754,22 @@
     "USE_FALLBACK_NODE": "Nodo <b>{{old}}</b> indisponibile o indirizzo errato.<br/><br/>Vuoi utilizzare temporanemante il <b>{{new}}</b> nodo?",
     "INVALID_FILE_FORMAT": "Formato file non valido.",
     "SAME_TX_RECIPIENT": "Il destinatario deve essere diverso dall'emittente."
- },
- "MODE": {
-   "DEMO": {
-     "BADGE": "Demo",
-     "MODE": "Modalità dimostrativa",
-     "FEATURE_NOT_AVAILABLE": "Funzionalità <b>non disponibile</b> su questo sito dimostrativo.",
-     "MODE_HELP": "Il Cesium funziona in <b>modalità dimostrativa</b>: è disponibile la consultazione del conto, ma non è possibile eseguire alcuna operazione.",
-     "INSTALL_HELP": "Per <b>motivi di sicurezza</b> ti consigliamo di <b>installare</b> la tua copia del software.<br/>Visita il sito <a href='https://cesium.app'>www.cesium.app</a> per assistenza."
-   },
-   "READONLY": {
-     "BADGE": "Monit",
-     "MODE": "Modalità di monitoraggio",
-     "MODE_HELP": "Il Cesium funziona in <b>modalità monitoraggio</b>: sono disponibili solo le funzionalità di monitoraggio della valuta.",
-     "INSTALL_HELP": "Se desidera <b>creare un account di portafoglio</b> per inviare o ricevere valuta, ti consigliamo di <b>installare</b> la tua copia del software.<br/>Visita il sito <a href='https://cesium.app'>www.cesium.app</a> per assistenza."
-   }
- },
+  },
+  "MODE": {
+    "DEMO": {
+      "BADGE": "Demo",
+      "MODE": "Modalità dimostrativa",
+      "FEATURE_NOT_AVAILABLE": "Funzionalità <b>non disponibile</b> su questo sito dimostrativo.",
+      "MODE_HELP": "Il Cesium funziona in <b>modalità dimostrativa</b>: è disponibile la consultazione del conto, ma non è possibile eseguire alcuna operazione.",
+      "INSTALL_HELP": "Per <b>motivi di sicurezza</b> ti consigliamo di <b>installare</b> la tua copia del software.<br/>Visita il sito <a href='https://cesium.app'>www.cesium.app</a> per assistenza."
+    },
+    "READONLY": {
+      "BADGE": "Monit",
+      "MODE": "Modalità di monitoraggio",
+      "MODE_HELP": "Il Cesium funziona in <b>modalità monitoraggio</b>: sono disponibili solo le funzionalità di monitoraggio della valuta.",
+      "INSTALL_HELP": "Se desidera <b>creare un account di portafoglio</b> per inviare o ricevere valuta, ti consigliamo di <b>installare</b> la tua copia del software.<br/>Visita il sito <a href='https://cesium.app'>www.cesium.app</a> per assistenza."
+    }
+  },
   "DOWNLOAD": {
     "POPUP_TITLE": "<b>File di revoca dell'identità/b>",
     "POPUP_REVOKE_MESSAGE": "Per migliorare la sicurezza del tuo conto, scarica <b>il documento di revoca del conto</b>. Ti consentirà di revocare il tuo conto (nel caso di violazione del conto, della tua identità, conto creato con errori, etc.).<br/><br/><b>Hai salvato questo documento in un luogo sicuro.</b>"
@@ -846,91 +846,91 @@
       "END_READONLY": "Il tour guidato <b>è finito</b>.<br/><br/>{{'MODE.READONLY.INSTALL_HELP'|translate}}."
     }
   },
- "API" :{
-   "COMMON": {
-     "LINK_DOC": "documentazione API",
-     "LINK_DOC_HELP": "Documentazione dello sviluppatore",
-     "LINK_STANDARD_APP": "versione classica",
-     "LINK_STANDARD_APP_HELP": "Apri la versione classica di {{'COMMON.APP_NAME'|translate}}"
-   },
-   "HOME": {
-     "TITLE": "Documentazione API {{'COMMON.APP_NAME'|translate}}",
-     "MESSAGE": "Benvenuto alla <b>documentazione dell'API</b> {{'COMMON.APP_NAME'|translate}}.<br/>Connettiti alla pagina web <a href=\"http://duniter.org\" target=\"_system\">Duniter</a> molto facilmente!",
-     "MESSAGE_SHORT": "Connettiti alla pagina web <a href=\"http://duniter.org\" target=\"_system\">Duniter</a> molto facilmente!",
-     "DOC_HEADER": "Servizi disponibili:"
-   },
-   "TRANSFER": {
-     "TITLE": "{{'COMMON.APP_NAME'|translate}} - Pagamento online",
-     "TITLE_SHORT": "Pagamento online",
-     "SUMMARY": "Riepilogo dell'ordine:",
-     "AMOUNT": "Importo:",
-     "NAME": "Nome :",
-     "PUBKEY": "Chiave pubblica del destinatario:",
-     "COMMENT": "Riferimento dell'ordine:",
-     "DEMO": {
-       "SALT": "demo",
-       "PASSWORD": "demo",
-       "PUBKEY": "3G28bL6deXQBYpPBpLFuECo46d3kfYMJwst7uhdVBnD1",
-       "HELP": "<b>Modo dimostrativo</b>: Nessun pagamento sarà realmente inviato con questa simulazione.<br/>Per favore usa le credenziali: <b>{{'API.TRANSFER.DEMO.SALT'|translate}} / {{'API.TRANSFER.DEMO.PASSWORD'|translate}}</b>",
-       "BAD_CREDENTIALS": "Credenziali non valide.<br/>In modalità demo, le credenziali sono: {{'API.TRANSFER.DEMO.SALT'|translate}} / {{'API.TRANSFER.DEMO.PASSWORD'|translate}}"
-     },
-     "INFO": {
-       "SUCCESS_REDIRECTING_WITH_NAME": "Pagamento inviato.<br/>Redirigendo a <b>{{name}}</b>...",
-       "SUCCESS_REDIRECTING": "Pagamento inviato.<br/>Redirigendo al sito del venditore...",
-       "CANCEL_REDIRECTING_WITH_NAME": "Pagamento annullato.<br/>Redirigendo a<b>{{name}}</b>...",
-       "CANCEL_REDIRECTING": "Pagamento annullato.<br/>Redirigendo al sito del venditore..."
-     },
-     "ERROR": {
-       "TRANSFER_FAILED": "Mancato pagamento"
-     }
-   },
-   "DOC": {
-     "DESCRIPTION_DIVIDER": "Descrizione",
-     "URL_DIVIDER": "Indirizzo chiamata",
-     "PARAMETERS_DIVIDER": "Impostazioni",
-     "AVAILABLE_PARAMETERS": "Ecco l'elenco dei parametri disponibili :",
-     "DEMO_DIVIDER": "Provare",
-     "DEMO_HELP": "Per provare questo servizio, clicca sul bottone qui a fianco. Il risultato apparirà qui sotto .",
-     "DEMO_RESULT": "Risultato della chiamata:",
-     "DEMO_SUCCEED": "<i class=\"icon ion-checkmark\"></i> Successo!",
-     "DEMO_CANCELLED": "<i class=\"icon ion-close\"></i> Annulato dall'utente",
-     "INTEGRATE_DIVIDER": "Integrare",
-     "INTEGRATE_CODE": "Codice:",
-     "INTEGRATE_RESULT": "Previsualizzare il risultato:",
-     "INTEGRATE_PARAMETERS": "Parametri",
-     "TRANSFER": {
-       "TITLE": "Pagamenti",
-       "DESCRIPTION": "Da un sito (per es. : un sito di e-commerce) si può delegare il pagamento in moneta libera a Cesium API. Per invocare l'API, basta innescare l'apertura di una pagina con questo indirizzo:",
-       "PARAM_PUBKEY": "Chiave pubblica del destinatario",
-       "PARAM_PUBKEY_HELP": "Chiave pubblica del destinatario (obbligatoria)",
-       "PARAM_AMOUNT": "Importo",
-       "PARAM_AMOUNT_HELP": "Importo della transazione (obbligatorio)",
-       "PARAM_COMMENT": "Riferimento (o commento)",
-       "PARAM_COMMENT_HELP": "Riferimento o commento. Ti può aiutare per esempio a trovare tuo pagamento nella blockchain.",
-       "PARAM_NAME": "Nome (del destinatario o del sito web)",
-       "PARAM_NAME_HELP": "Nome del sito web o del destinatario chiamando l'API. Può essere un nome leggibile (\"Mio sito\"), oppure l'indirizzo http del sito (\"MioSito.com\").",
-       "PARAM_REDIRECT_URL": "Indirizzo web di redirezione",
-       "PARAM_REDIRECT_URL_HELP": "Indirizzo web (URL) di redirezione, chiamato dopo aver inviato il pagamento. Può includere le seguenti stringe, che saranno sostituite con i valori della transazione : \"{tx}\", \"{hash}\", \"{comment}\", \"{amount}\" e {pubkey}.",
-       "PARAM_CANCEL_URL": "Indirizzo web della cancellazione",
-       "PARAM_CANCEL_URL_HELP": "Indirizzo web (URL) in caso dell'annullamento del pagamento dall'utente. Può includere le seguenti stringe, che saranno sostituite dinamicamente : \"{comment}\", \"{amount}\" e {pubkey}.",
-       "EXAMPLES_HELP": "Alcuni esempi di integrazione :",
-       "EXAMPLE_BUTTON": "Bottone HTML",
-       "EXAMPLE_BUTTON_DEFAULT_TEXT": "Pagare in {{currency|currencySymbol}}",
-       "EXAMPLE_BUTTON_DEFAULT_STYLE": "Stile personalizzato",
-       "EXAMPLE_BUTTON_TEXT_HELP": "Testo del bottone",
-       "EXAMPLE_BUTTON_BG_COLOR": "Colore del fondo",
-       "EXAMPLE_BUTTON_BG_COLOR_HELP": "Per esempio: #fbc14c, black, lightgrey, rgb(180,180,180)",
-       "EXAMPLE_BUTTON_FONT_COLOR": "Colore del testo",
-       "EXAMPLE_BUTTON_FONT_COLOR_HELP": "Esempio: black, orange, rgb(180,180,180)",
-       "EXAMPLE_BUTTON_TEXT_ICON": "Icona",
-       "EXAMPLE_BUTTON_TEXT_WIDTH": "Larghezza",
-       "EXAMPLE_BUTTON_TEXT_WIDTH_HELP": "Esempio: 200px, 50%",
-       "EXAMPLE_BUTTON_ICON_NONE": "Nessuna",
-       "EXAMPLE_BUTTON_ICON_DUNITER": "Logo Duniter",
-       "EXAMPLE_BUTTON_ICON_CESIUM": "Logo Cesium",
-       "EXAMPLE_BUTTON_ICON_G1_COLOR": "Logo Ğ1",
-       "EXAMPLE_BUTTON_ICON_G1_BLACK": "Logo Ğ1 (nero)"
-     }
-   }
- }
+  "API": {
+    "COMMON": {
+      "LINK_DOC": "documentazione API",
+      "LINK_DOC_HELP": "Documentazione dello sviluppatore",
+      "LINK_STANDARD_APP": "versione classica",
+      "LINK_STANDARD_APP_HELP": "Apri la versione classica di {{'COMMON.APP_NAME'|translate}}"
+    },
+    "HOME": {
+      "TITLE": "Documentazione API {{'COMMON.APP_NAME'|translate}}",
+      "MESSAGE": "Benvenuto alla <b>documentazione dell'API</b> {{'COMMON.APP_NAME'|translate}}.<br/>Connettiti alla pagina web <a href=\"http://duniter.org\" target=\"_system\">Duniter</a> molto facilmente!",
+      "MESSAGE_SHORT": "Connettiti alla pagina web <a href=\"http://duniter.org\" target=\"_system\">Duniter</a> molto facilmente!",
+      "DOC_HEADER": "Servizi disponibili:"
+    },
+    "TRANSFER": {
+      "TITLE": "{{'COMMON.APP_NAME'|translate}} - Pagamento online",
+      "TITLE_SHORT": "Pagamento online",
+      "SUMMARY": "Riepilogo dell'ordine:",
+      "AMOUNT": "Importo:",
+      "NAME": "Nome :",
+      "PUBKEY": "Chiave pubblica del destinatario:",
+      "COMMENT": "Riferimento dell'ordine:",
+      "DEMO": {
+        "SALT": "demo",
+        "PASSWORD": "demo",
+        "PUBKEY": "3G28bL6deXQBYpPBpLFuECo46d3kfYMJwst7uhdVBnD1",
+        "HELP": "<b>Modo dimostrativo</b>: Nessun pagamento sarà realmente inviato con questa simulazione.<br/>Per favore usa le credenziali: <b>{{'API.TRANSFER.DEMO.SALT'|translate}} / {{'API.TRANSFER.DEMO.PASSWORD'|translate}}</b>",
+        "BAD_CREDENTIALS": "Credenziali non valide.<br/>In modalità demo, le credenziali sono: {{'API.TRANSFER.DEMO.SALT'|translate}} / {{'API.TRANSFER.DEMO.PASSWORD'|translate}}"
+      },
+      "INFO": {
+        "SUCCESS_REDIRECTING_WITH_NAME": "Pagamento inviato.<br/>Redirigendo a <b>{{name}}</b>...",
+        "SUCCESS_REDIRECTING": "Pagamento inviato.<br/>Redirigendo al sito del venditore...",
+        "CANCEL_REDIRECTING_WITH_NAME": "Pagamento annullato.<br/>Redirigendo a<b>{{name}}</b>...",
+        "CANCEL_REDIRECTING": "Pagamento annullato.<br/>Redirigendo al sito del venditore..."
+      },
+      "ERROR": {
+        "TRANSFER_FAILED": "Mancato pagamento"
+      }
+    },
+    "DOC": {
+      "DESCRIPTION_DIVIDER": "Descrizione",
+      "URL_DIVIDER": "Indirizzo chiamata",
+      "PARAMETERS_DIVIDER": "Impostazioni",
+      "AVAILABLE_PARAMETERS": "Ecco l'elenco dei parametri disponibili :",
+      "DEMO_DIVIDER": "Provare",
+      "DEMO_HELP": "Per provare questo servizio, clicca sul bottone qui a fianco. Il risultato apparirà qui sotto .",
+      "DEMO_RESULT": "Risultato della chiamata:",
+      "DEMO_SUCCEED": "<i class=\"icon ion-checkmark\"></i> Successo!",
+      "DEMO_CANCELLED": "<i class=\"icon ion-close\"></i> Annulato dall'utente",
+      "INTEGRATE_DIVIDER": "Integrare",
+      "INTEGRATE_CODE": "Codice:",
+      "INTEGRATE_RESULT": "Previsualizzare il risultato:",
+      "INTEGRATE_PARAMETERS": "Parametri",
+      "TRANSFER": {
+        "TITLE": "Pagamenti",
+        "DESCRIPTION": "Da un sito (per es. : un sito di e-commerce) si può delegare il pagamento in moneta libera a Cesium API. Per invocare l'API, basta innescare l'apertura di una pagina con questo indirizzo:",
+        "PARAM_PUBKEY": "Chiave pubblica del destinatario",
+        "PARAM_PUBKEY_HELP": "Chiave pubblica del destinatario (obbligatoria)",
+        "PARAM_AMOUNT": "Importo",
+        "PARAM_AMOUNT_HELP": "Importo della transazione (obbligatorio)",
+        "PARAM_COMMENT": "Riferimento (o commento)",
+        "PARAM_COMMENT_HELP": "Riferimento o commento. Ti può aiutare per esempio a trovare tuo pagamento nella blockchain.",
+        "PARAM_NAME": "Nome (del destinatario o del sito web)",
+        "PARAM_NAME_HELP": "Nome del sito web o del destinatario chiamando l'API. Può essere un nome leggibile (\"Mio sito\"), oppure l'indirizzo http del sito (\"MioSito.com\").",
+        "PARAM_REDIRECT_URL": "Indirizzo web di redirezione",
+        "PARAM_REDIRECT_URL_HELP": "Indirizzo web (URL) di redirezione, chiamato dopo aver inviato il pagamento. Può includere le seguenti stringe, che saranno sostituite con i valori della transazione : \"{tx}\", \"{hash}\", \"{comment}\", \"{amount}\" e {pubkey}.",
+        "PARAM_CANCEL_URL": "Indirizzo web della cancellazione",
+        "PARAM_CANCEL_URL_HELP": "Indirizzo web (URL) in caso dell'annullamento del pagamento dall'utente. Può includere le seguenti stringe, che saranno sostituite dinamicamente : \"{comment}\", \"{amount}\" e {pubkey}.",
+        "EXAMPLES_HELP": "Alcuni esempi di integrazione :",
+        "EXAMPLE_BUTTON": "Bottone HTML",
+        "EXAMPLE_BUTTON_DEFAULT_TEXT": "Pagare in {{currency|currencySymbol}}",
+        "EXAMPLE_BUTTON_DEFAULT_STYLE": "Stile personalizzato",
+        "EXAMPLE_BUTTON_TEXT_HELP": "Testo del bottone",
+        "EXAMPLE_BUTTON_BG_COLOR": "Colore del fondo",
+        "EXAMPLE_BUTTON_BG_COLOR_HELP": "Per esempio: #fbc14c, black, lightgrey, rgb(180,180,180)",
+        "EXAMPLE_BUTTON_FONT_COLOR": "Colore del testo",
+        "EXAMPLE_BUTTON_FONT_COLOR_HELP": "Esempio: black, orange, rgb(180,180,180)",
+        "EXAMPLE_BUTTON_TEXT_ICON": "Icona",
+        "EXAMPLE_BUTTON_TEXT_WIDTH": "Larghezza",
+        "EXAMPLE_BUTTON_TEXT_WIDTH_HELP": "Esempio: 200px, 50%",
+        "EXAMPLE_BUTTON_ICON_NONE": "Nessuna",
+        "EXAMPLE_BUTTON_ICON_DUNITER": "Logo Duniter",
+        "EXAMPLE_BUTTON_ICON_CESIUM": "Logo Cesium",
+        "EXAMPLE_BUTTON_ICON_G1_COLOR": "Logo Ğ1",
+        "EXAMPLE_BUTTON_ICON_G1_BLACK": "Logo Ğ1 (nero)"
+      }
+    }
+  }
 }

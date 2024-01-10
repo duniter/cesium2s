@@ -28,17 +28,13 @@ export interface AccountMeta {
   [key: string]: unknown;
 }
 
-export interface Tx {
-  // TODO
-}
-
 export interface AccountData {
   randomId?: string;
   free?: number;
   reserved?: number;
   feeFrozen?: number;
 
-  txs: Tx[];
+  txs?: any[];
 }
 
 export class AccountUtils {
@@ -48,7 +44,7 @@ export class AccountUtils {
   }
 
   static getDisplayName(account: Partial<Account>) {
-    return account?.meta?.name || formatAddress(account?.address) || '';
+    return account?.meta?.name || account?.meta?.uid || formatAddress(account?.address) || '';
   }
 }
 

@@ -6,6 +6,7 @@ export interface Currency {
   symbol: string;
   prefix: number;
   genesis: HexString | null;
+  powBase: number;
   fees: {
     identity: number;
     tx: number;

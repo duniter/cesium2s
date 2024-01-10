@@ -1,9 +1,14 @@
 
 fragment LightAccount on Account {
   id
+  __typename
+
   identity {
+    __typename
+    id
     name
     membership {
+      __typename
       id
     }
   }
@@ -35,7 +40,7 @@ query WotSearchLast($limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!
   accounts(
     limit: $limit
     offset: $offset
-    orderBy: $orderBy,
+    orderBy: $orderBy
     where: {identity: {id_isNull: false}, AND: {identity: {membership_isNull: $pending} }}
   ) {
     ...LightAccount
@@ -44,6 +49,7 @@ query WotSearchLast($limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!
 
 fragment Transfer on Transfer {
   id
+  __typename
   amount
   timestamp
   blockNumber
@@ -55,17 +61,42 @@ fragment Transfer on Transfer {
   }
 }
 
-query txHistoryByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [TransferOrderByInput!]) {
+query TransferSearchByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [TransferOrderByInput!]) {
   accounts(
     limit: 1
     offset: 0,
     where: {id_eq: $address}
   ) {
+    ...LightAccount
     transfersIssued(limit: $limit, offset: $offset, orderBy: $orderBy) {
       ...Transfer
     }
     transfersReceived(limit: $limit, offset: $offset, orderBy: $orderBy) {
       ...Transfer
     }
+  }
+}
+
+fragment LightBlock on Block {
+  id
+  height
+  hash
+  timestamp
+  callsCount
+  eventsCount
+  extrinsicsCount
+  __typename
+}
+
+query BlockById($id: String!) {
+  blockById(id: $id) {
+    ...LightBlock
+  }
+}
+
+
+query Blocks($where: BlockWhereInput, $limit: Int!, $offset: Int!, $orderBy: [BlockOrderByInput!]) {
+  blocks(limit: $limit, offset: $offset, orderBy: $orderBy, where: $where) {
+    ...LightBlock
   }
 }

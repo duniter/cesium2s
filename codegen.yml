@@ -1,8 +1,8 @@
 overwrite: true
-schema: "src/schema.graphql"
-documents: "src/!(interfaces)/**/*.{ts,graphql}"
+schema: "src/duniter/indexer/schema.graphql"
+documents: "src/!(duniter)/**/*.{ts,graphql}"
 generates:
-  src/interfaces/indexer/types.ts:
+  src/duniter/indexer/types.ts:
     plugins:
       - "add"
       - "typescript"
@@ -14,10 +14,11 @@ generates:
       nameSuffix: "Document"
       sdkClass: true
       serviceName: "IndexerGraphqlService"
-#  src/interfaces/indexer/introspection-result.ts:
+      #namedClient: 'indexer'
+#  src/duniter/indexer/introspection-result.ts:
 #    plugins:
 #      - "fragment-matcher"
-  src/interfaces/indexer/apollo-helpers.ts:
+  src/duniter/indexer/apollo-helpers.ts:
     plugins:
       - "add"
       - "typescript-apollo-client-helpers"

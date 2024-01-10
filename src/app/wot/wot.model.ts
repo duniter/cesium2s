@@ -1,9 +1,10 @@
-import { equals, isNil, isNilOrBlank, isNotNilOrBlank } from '@app/shared/functions';
+import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
 
 export interface WotSearchFilter {
   address?: string;
   searchText?: string;
   last?: boolean;
+  pending?: boolean;
 }
 
 export class WotSearchFilterUtils {
@@ -12,6 +13,6 @@ export class WotSearchFilterUtils {
   }
 
   static isEmpty(filter: WotSearchFilter) {
-    return !filter || (isNilOrBlank(filter.searchText) && isNil(filter.last) && isNotNilOrBlank(filter.address));
+    return !filter || (isNilOrBlank(filter.searchText) && isNil(filter.last) && isNilOrBlank(filter.address));
   }
 }

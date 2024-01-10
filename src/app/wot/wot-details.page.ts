@@ -67,8 +67,10 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     return <WotDetailsPageState>{ account };
   }
 
-  async copyPubkey() {
+  async copyPubkey(event: UIEvent) {
     if (this.loading || !this.data?.account?.meta?.publicKeyV1) return; // Skip
+
+    event.preventDefault();
 
     await Clipboard.write({
       string: this.account.meta.publicKeyV1,
@@ -76,8 +78,10 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     await this.showToast({ message: 'INFO.COPY_TO_CLIPBOARD_DONE' });
   }
 
-  async copyAddress() {
+  async copyAddress(event: UIEvent) {
     if (this.loading || !this.data?.account?.address) return; // Skip
+
+    event.preventDefault();
 
     await Clipboard.write({
       string: this.account.address,

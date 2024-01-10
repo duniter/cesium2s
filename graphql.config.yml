@@ -1,4 +1,4 @@
-schema: src/schema.graphql
+schema: src/duniter/indexer/schema.graphql
 extensions:
   endpoints:
     Gdev GraphQL Endpoint:

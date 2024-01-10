@@ -50,6 +50,30 @@ ion-toolbar {
 
 /* -- list -- */
 
+ion-header,
+ion-list {
+  ion-item {
+    ion-avatar {
+      --border-radius: 5px !important;
+      --border-width: 1px !important;
+      --border-color: var(--ion-color-step-150) !important;
+    }
+
+    a {
+      text-decoration: none;
+    }
+    a[href]:hover {
+      cursor: pointer;
+    }
+
+    p,
+    .sc-ion-label-md-s p,
+    .sc-ion-label-ios-s p {
+      font-size: 0.775rem;
+    }
+  }
+}
+
 @media screen and (min-width: $screen-md) {
   ion-list ion-item.ion-activatable {
     cursor: pointer !important;

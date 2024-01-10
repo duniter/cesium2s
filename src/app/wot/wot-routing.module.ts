@@ -16,6 +16,10 @@ const routes: Routes = [
     pathMatch: 'full',
     component: WotDetailsPage,
   },
+  {
+    path: 'tx',
+    loadChildren: () => import('../history/wallet-tx-routing.module').then((m) => m.AppWalletTxRoutingModule),
+  },
 ];
 
 @NgModule({

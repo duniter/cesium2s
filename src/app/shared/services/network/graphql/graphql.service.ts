@@ -126,6 +126,14 @@ export abstract class GraphqlService<
     return this.client?.cache;
   }
 
+  get fetchPolicy(): FetchPolicy {
+    return this.offline ? 'cache-only' : this.defaultFetchPolicy;
+  }
+
+  get watchFetchPolicy(): WatchQueryFetchPolicy {
+    return this.offline ? 'cache-only' : this.defaultWatchFetchPolicy;
+  }
+
   protected constructor(
     private storage: StorageService,
     private typePolicies?: TypePolicies,
@@ -173,7 +181,7 @@ export abstract class GraphqlService<
       res = await this.client.query<T, V>({
         query: opts.query,
         variables: opts.variables,
-        fetchPolicy: opts.fetchPolicy || this.defaultFetchPolicy || undefined,
+        fetchPolicy: opts.fetchPolicy || this.fetchPolicy || undefined,
       });
     } catch (err) {
       res = this.toApolloError<T>(err, opts.error);
@@ -188,7 +196,7 @@ export abstract class GraphqlService<
     return this.apollo.watchQuery<T, V>({
       query: opts.query,
       variables: opts.variables,
-      fetchPolicy: opts.fetchPolicy || this.defaultWatchFetchPolicy || undefined,
+      fetchPolicy: opts.fetchPolicy || this.watchFetchPolicy || undefined,
       notifyOnNetworkStatusChange: true,
     });
   }
@@ -749,10 +757,18 @@ export abstract class GraphqlService<
       mutationLinks = [retryLink, authLink, httpLink];
     }
 
-    // create Apollo
+    // Create Apollo client
     const client = new ApolloClient({
       cache,
       name,
+      defaultOptions: {
+        query: {
+          fetchPolicy: this.defaultFetchPolicy,
+        },
+        watchQuery: {
+          fetchPolicy: this.defaultWatchFetchPolicy,
+        },
+      },
       link: ApolloLink.split(
         // Handle mutations
         isMutationOperation,

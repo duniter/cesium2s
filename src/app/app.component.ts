@@ -30,7 +30,8 @@ export class AppComponent {
   appName = 'COMMON.APP_NAME';
   appPages: IMenuItem[] = [
     { title: 'MENU.HOME', url: '/home', icon: 'home' },
-    { title: 'MENU.ACCOUNT', url: '/wallet', icon: 'card' },
+    { title: 'MENU.ACCOUNT', url: '/wallet', icon: 'person' },
+    { title: 'MENU.TRANSACTIONS', url: '/history', icon: 'card' },
     { title: 'COMMON.BTN_SEND_MONEY', url: '/transfer', icon: 'paper-plane', visible: () => this.platform.mobile },
 
     {

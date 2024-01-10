@@ -20,7 +20,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     genesis: '0xa565a0ccbab8e5f29f0c8a901a3a062d17360a4d4f5319d03a1580fba4cbf3f6',
     fees: {
       identity: 300, // = 3 Gdev
-      tx: 1, // = 0.01 Gdev
+      tx: 2, // = 0.02 Gdev
     },
     decimals: 2,
   },
@@ -107,16 +107,22 @@ export class NetworkService extends RxStartableService<NetworkState> {
     //console.debug(`${this._logPrefix}API loaded [${Object.keys(api).join(',')}]`)
 
     // Get the chain information
-    const chainInfo = await api.registry.getChainProperties();
-    const chainObj = await api.rpc.system.chain();
-    const chain = '' + chainObj.toHuman().split(' ')?.[0];
+    const [chain, nodeName, nodeVersion, properties] = await Promise.all([
+      api.rpc.system.chain(),
+      api.rpc.system.name(),
+      api.rpc.system.version(),
+      api.rpc.system.properties(),
+    ]);
+    //const chainObj = await api.rpc.system.chain();
+    //const chainPrefix = '' + chain.toHuman().split(' ')?.[0];
     const genesis = api.genesisHash.toHex();
 
-    console.info(`${this._logPrefix}Connecting to chain {${chain}}: ` + JSON.stringify(chainInfo.toHuman()));
+    console.info(`${this._logPrefix}Node {${nodeName}} v${nodeVersion}`);
+    console.info(`${this._logPrefix}Connecting to chain {${chain}}: ` + JSON.stringify(properties.toHuman()));
 
     let currency: Currency;
     // Check is well known currency
-    const wellKnownCurrency = Object.values(WELL_KNOWN_CURRENCIES).find((c) => c.displayName === chain);
+    const wellKnownCurrency = Object.values(WELL_KNOWN_CURRENCIES).find((c) => c.displayName === chain.toHuman());
     if (wellKnownCurrency) {
       if (wellKnownCurrency.genesis && wellKnownCurrency.genesis !== genesis) {
         console.warn(`${this._logPrefix}Invalid genesis for ${chain}! Expected ${wellKnownCurrency.genesis} but peer return ${genesis}`);
@@ -126,9 +132,10 @@ export class NetworkService extends RxStartableService<NetworkState> {
       console.warn(`${this._logPrefix}Not a well known currency: ${chain}!`);
     }
     currency = currency || <Currency>{};
-    currency.displayName = currency?.displayName || chain;
-    currency.symbol = currency?.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
-    currency.decimals = currency?.decimals || +chainInfo.tokenDecimals.value?.[0].toHuman() || 0;
+    currency.displayName = currency?.displayName || chain.toHuman();
+    currency.symbol = currency?.symbol || properties.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
+    currency.decimals = currency?.decimals || +properties.tokenDecimals.value?.[0].toHuman() || 0;
+    currency.powBase = Math.pow(10, currency.decimals);
     currency.prefix = currency.prefix || WELL_KNOWN_CURRENCIES.GDEV.prefix; // TODO use G1 defaults
     currency.genesis = genesis;
     currency.fees = {
@@ -137,9 +144,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     };
 
     // Read the genesys block hash
-    console.debug(`${this._logPrefix}Blockchain symbol: ${currency.symbol}`);
-    console.debug(`${this._logPrefix}Blockchain decimals: ${currency.decimals}`);
-    console.debug(`${this._logPrefix}Blockchain genesis: ${currency.genesis}`);
+    console.debug(`${this._logPrefix}Chain genesis: ${currency.genesis}`);
 
     // Retrieve the latest header
     const lastHeader = await api.rpc.chain.getHeader();

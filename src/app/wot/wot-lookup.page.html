@@ -36,6 +36,29 @@
       (click)="searchClick.emit($event)"
     ></ion-searchbar>
 
+    <ion-list-header>
+      <ion-item lines="none" class="ion-float-end" style="width: 100%">
+        <ion-buttons slot="end">
+          <ion-button
+            fill="clear"
+            [color]="filter?.last && !filter.pending ? 'secondary' : undefined"
+            (click)="applyFilter({ last: true, pending: false, searchText: '' })"
+            translate
+          >
+            WOT.LOOKUP.NEWCOMERS
+          </ion-button>
+          <ion-button
+            fill="clear"
+            [color]="filter?.last && filter.pending ? 'secondary' : undefined"
+            (click)="applyFilter({ last: true, pending: true, searchText: '' })"
+            translate
+          >
+            WOT.LOOKUP.PENDING
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-list-header>
+
     <ion-list>
       <ng-container *ngIf="loading; else items">
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
@@ -45,15 +68,16 @@
 
       <ng-template #items>
         <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
-          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)" [style.--animation-order]="index">
-            <ion-avatar slot="start" *ngIf="item.meta?.avatar; else iconPerson">
-              <ion-img [src]="item.meta?.avatar"></ion-img>
-            </ion-avatar>
-            <ng-template #iconPerson>
+          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)">
+            @if (item.meta?.avatar) {
+              <ion-avatar slot="start">
+                <ion-img [src]="item.meta?.avatar"></ion-img>
+              </ion-avatar>
+            } @else {
               <ion-avatar slot="start">
                 <svg width="40" width="40" [data-jdenticon-value]="item.data?.randomId || item.address"></svg>
               </ion-avatar>
-            </ng-template>
+            }
             <ion-label>
               <h2>
                 <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
@@ -61,7 +85,10 @@
                   {{ item.meta?.uid }}
                 </ion-text>
               </h2>
-              <p>{{ item.address | addressFormat }}</p>
+              <p>
+                <ion-icon name="key"></ion-icon>
+                {{ item.address | addressFormat }}
+              </p>
             </ion-label>
             <ion-button slot="end" *ngIf="showItemActions && !mobile" (click)="transferTo($event, item)" [title]="'BTN_SEND_MONEY' | translate">
               <ion-icon slot="icon-only" name="paper-plane"></ion-icon>

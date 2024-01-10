@@ -2,7 +2,6 @@ import { ChangeDetectorRef, inject, Injectable, Pipe, PipeTransform } from '@ang
 import { Account, AccountUtils } from '@app/account/account.model';
 import { equals, getPropertyByPath } from '@app/shared/functions';
 import { Subscription } from 'rxjs';
-import { formatAddress } from '@app/shared/currencies';
 import { AccountsService } from '@app/account/accounts.service';
 
 // @dynamic
@@ -124,6 +123,29 @@ export class AccountNamePipe extends AccountAbstractPipe<string, void> implement
   }
 
   protected _transform(account: Partial<Account>): string {
-    return account?.meta?.name || account?.meta?.uid || formatAddress(account?.address);
+    return AccountUtils.getDisplayName(account);
+  }
+}
+
+@Pipe({
+  name: 'isMemberAccount',
+  pure: false,
+})
+export class IsMemberAccountPipe extends AccountAbstractPipe<boolean, void> implements PipeTransform {
+  constructor(_ref: ChangeDetectorRef) {
+    super(_ref);
+  }
+
+  protected _transform(account: Partial<Account>): boolean {
+    return (account?.meta?.uid && account.meta.isMember === true) || false;
+  }
+}
+
+@Pipe({
+  name: 'isUserAccount',
+})
+export class IsUserAccountPipePipe implements PipeTransform {
+  transform(account: Partial<Account>): boolean {
+    return !!account?.data;
   }
 }

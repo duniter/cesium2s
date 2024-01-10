@@ -5,7 +5,7 @@ import { changeCaseToUnderscore, isNotNilOrBlank, sleep } from '@app/shared/func
 import { environment } from '@environments/environment';
 import { waitIdle } from '@app/shared/forms';
 import { WaitForOptions } from '@app/shared/observables';
-import { IonRouterOutlet, ToastController, ToastOptions } from '@ionic/angular';
+import { IonRouterOutlet, NavController, ToastController, ToastOptions } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { map, Observable, Subscription } from 'rxjs';
 import { RxState } from '@rx-angular/state';
@@ -34,6 +34,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   protected settings = inject(SettingsService);
   protected readonly routerOutlet = inject(IonRouterOutlet, { optional: true });
   protected readonly activatedRoute = inject(ActivatedRoute);
+  protected readonly navController = inject(NavController);
   protected toastController = inject(ToastController);
   @RxStateRegister() protected readonly _state: RxState<S> = inject(RxState<S>, { optional: true });
 
@@ -50,7 +51,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   @RxStateSelect() error$: Observable<string>;
   @RxStateSelect() loading$: Observable<boolean>;
 
-  loaded$ = this._state.select('loading').pipe(map((value) => value === false));
+  loaded$ = this._state?.select('loading').pipe(map((value) => value === false));
 
   get loaded(): boolean {
     return !this.loading;
@@ -68,6 +69,14 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   }
   get form(): FormGroup {
     return this._form;
+  }
+
+  get canGoBack(): boolean {
+    return this.routerOutlet?.canGoBack() || false;
+  }
+
+  get showMenuButton(): boolean {
+    return !this.canGoBack;
   }
 
   protected constructor(options?: Partial<O>, form?: FormGroup) {

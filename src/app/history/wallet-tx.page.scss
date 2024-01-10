@@ -1,0 +1,17 @@
+ion-toolbar {
+  div[slot='end'],
+  ion-buttons[slot='end'] {
+    padding-inline-end: var(--ion-padding);
+    color: var(--ion-text-color, #000);
+  }
+}
+
+ion-item {
+  p a.tx-timestamp {
+    color: var(--ion-color-medium);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

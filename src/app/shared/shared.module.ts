@@ -15,10 +15,12 @@ import { MaskitoModule } from '@maskito/angular';
 import { SwiperDirective } from '@app/shared/swiper/app-swiper.directive';
 import { AppSkeletonListComponent } from '@app/shared/loading/skeleton.list/skeleton.list.component';
 import { AppGraphQLModule } from '@app/shared/services/network/graphql/graphql.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
     CommonModule,
+    RouterModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
@@ -41,6 +43,7 @@ import { AppGraphQLModule } from '@app/shared/services/network/graphql/graphql.m
   ],
   exports: [
     CommonModule,
+    RouterModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,

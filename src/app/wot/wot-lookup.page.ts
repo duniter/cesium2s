@@ -2,11 +2,10 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit
 
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
-import { Router } from '@angular/router';
 import { WotSearchFilter, WotSearchFilterUtils } from '@app/wot/wot.model';
 import { arraySize, equals, isNilOrBlank, isNotNilOrBlank, toBoolean, toNumber } from '@app/shared/functions';
 import { firstValueFrom, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, mergeMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, mergeMap, tap } from 'rxjs/operators';
 
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
@@ -68,7 +67,6 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   @Output() closeClick = new EventEmitter<Account>();
 
   constructor(
-    private router: Router,
     private indexerService: IndexerService,
     private modalCtrl: ModalController,
     @Inject(APP_TRANSFER_CONTROLLER) private transferController: ITransferController
@@ -100,6 +98,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
           limit: (l1, l2) => l1 === l2,
         })
         .pipe(
+          filter(({ filter }) => !WotSearchFilterUtils.isEmpty(filter) && filter.address !== 'default'),
           mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
           tap((items) => {
             this.canFetchMore = arraySize(items) === this.limit;
@@ -135,14 +134,11 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     return <WotLookupState>{ filter };
   }
 
-  search(filter?: WotSearchFilter, options?: { limit: number; offset: number }): Observable<Account[]> {
+  search(searchFilter?: WotSearchFilter, options?: { limit: number; offset: number }): Observable<Account[]> {
     try {
-      return this.indexerService.wotSearch(filter, options).pipe(
-        tap(() => {
-          if (equals(this.filter, filter)) {
-            this.markAsLoaded();
-          }
-        })
+      return this.indexerService.wotSearch(searchFilter, options).pipe(
+        filter(() => equals(this.filter, searchFilter)),
+        tap(() => this.markAsLoaded())
       );
     } catch (err) {
       this.setError(err);
@@ -165,7 +161,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     } else {
       //      if (this.mobile) {
       // Open
-      this.router.navigate([item.address], {
+      this.navController.navigateForward([item.address], {
         relativeTo: this.activatedRoute,
       });
       // } else {
@@ -196,5 +192,16 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
       }
       event.target.complete();
     }
+  }
+
+  applyFilter(filter: Partial<WotSearchFilter>) {
+    this._state.set(
+      'filter',
+      (s) =>
+        <WotSearchFilter>{
+          ...s.filter,
+          ...filter,
+        }
+    );
   }
 }

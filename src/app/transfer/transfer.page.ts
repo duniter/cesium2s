@@ -16,6 +16,7 @@ import { RxState } from '@rx-angular/state';
 import { AccountsService } from '@app/account/accounts.service';
 import { WotController } from '@app/wot/wot.controller';
 import { TransferFormOptions } from '@app/transfer/transfer.model';
+import { PredefinedColors } from '@ionic/core';
 
 export interface TransferPageState extends AppPageState {
   currency: Currency;
@@ -28,6 +29,7 @@ export interface TransferPageState extends AppPageState {
 
 export interface TransferPageInputs extends TransferFormOptions {
   dismissOnSubmit?: boolean;
+  toolbarColor?: PredefinedColors;
 }
 
 @Component({
@@ -40,6 +42,7 @@ export interface TransferPageInputs extends TransferFormOptions {
 export class TransferPage extends AppPage<TransferPageState> implements TransferPageInputs, OnInit, OnDestroy {
   protected _enableScan: boolean = false;
   protected _autoOpenWotModal = true;
+  protected _isModal: boolean;
   protected _initialWotModalBreakpoint = 0.25;
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
@@ -66,6 +69,7 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
   @Input() showComment: boolean;
   @Input() dismissOnSubmit: boolean = false; // True is modal
   @Input() showToastOnSubmit: boolean = true;
+  @Input() toolbarColor: PredefinedColors;
 
   @RxStateProperty() submitted: boolean;
 
@@ -141,8 +145,9 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     super.ngOnInit();
+    this._isModal = !!(await this.modalCtrl.getTop()) && !this.routerOutlet;
 
     // Hide modal when leave page
     this.registerSubscription(

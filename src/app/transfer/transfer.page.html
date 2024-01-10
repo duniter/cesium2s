@@ -1,16 +1,23 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="primary">
+  <ion-toolbar [color]="toolbarColor">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-      <ion-back-button></ion-back-button>
+      @if (_isModal) {
+        <ion-button (click)="cancel()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      } @else {
+        <ion-menu-button *ngIf="showMenuButton"></ion-menu-button>
+        <ion-back-button></ion-back-button>
+      }
     </ion-buttons>
     <ion-title translate>TRANSFER.TITLE</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" *rxLet="loading$ as loading">
-  <ion-header collapse="condense">
+  <ion-header collapse="condense" *ngIf="!_isModal">
     <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
       <ion-title size="large" translate>TRANSFER.TITLE</ion-title>
     </ion-toolbar>
   </ion-header>
