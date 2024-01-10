@@ -146,6 +146,6 @@ export class IsMemberAccountPipe extends AccountAbstractPipe<boolean, void> impl
 })
 export class IsUserAccountPipePipe implements PipeTransform {
   transform(account: Partial<Account>): boolean {
-    return !!account?.data;
+    return account?.meta?.self === true;
   }
 }
