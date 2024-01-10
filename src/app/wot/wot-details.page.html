@@ -48,7 +48,7 @@
 
         <ion-label>
           <h2 translate>COMMON.PUBKEY</h2>
-          <p class="ion-text-wrap">{{ pubkey }}</p>
+          <p class="ion-text-wrap">{{ pubkey | pubkeyFormat }}</p>
         </ion-label>
 
         <ion-button slot="end" (click)="copyPubkey()" fill="clear" [title]="'COMMON.COPY' | translate">
@@ -63,7 +63,7 @@
         <ion-label>
           <h2 translate>COMMON.ADDRESS</h2>
           <p class="ion-text-wrap">
-            <span>{{ account.address }}</span>
+            <span>{{ account.address | addressFormat }}</span>
           </p>
         </ion-label>
         <ion-button slot="end" (click)="copyAddress()" fill="clear" [title]="'COMMON.COPY' | translate">
@@ -74,7 +74,7 @@
   </ion-list>
 
   <div class="ion-text-center">
-    <ion-button [routerLink]="['/transfer', 'to', account?.address]" [disabled]="loading">
+    <ion-button (click)="transferTo()" [disabled]="loading">
       <ion-icon slot="start" name="paper-plane"></ion-icon>
       <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
     </ion-button>

@@ -13,21 +13,22 @@ const routes: Routes = [
   },
   {
     path: 'wallet',
-    loadChildren: () => import('./wallet/wallet.module').then((m) => m.AppWalletModule),
+    loadChildren: () => import('./wallet/wallet-routing.module').then((m) => m.AppWalletRoutingModule),
   },
   {
     path: 'transfer',
-    loadChildren: () => import('./transfer/transfer.module').then((m) => m.AppTransferModule),
+    loadChildren: () => import('./transfer/transfer-routing.module').then((m) => m.AppTransferRoutingModule),
   },
   {
     path: 'wot',
-    loadChildren: () => import('./wot/wot.module').then((m) => m.WotModule),
+    loadChildren: () => import('./wot/wot-routing.module').then((m) => m.AppWotRoutingModule),
   },
   {
     path: 'settings',
-    loadChildren: () => import('./settings/settings.module').then((m) => m.SettingsPageModule),
+    loadChildren: () => import('./settings/settings-routing.module').then((m) => m.AppSettingsRoutingModule),
   },
-  // DEV only
+
+  // -- DEV only
   {
     path: 'playground',
     loadChildren: () => import('./playground/playground.module').then((m) => m.PlaygroundModule),

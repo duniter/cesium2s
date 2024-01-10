@@ -21,9 +21,10 @@ export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
   protected constructor(private _cd: ChangeDetectorRef) {}
 
   transform(account: Partial<Account>, opts: O): T {
+    // Not a user account (e.g. any wot identity)
     if (!account?.data) {
       this._dispose();
-      return undefined;
+      return this._transform(account);
     }
 
     // if we ask another time for the same account and opts, return the last value
@@ -123,6 +124,6 @@ export class AccountNamePipe extends AccountAbstractPipe<string, void> implement
   }
 
   protected _transform(account: Partial<Account>): string {
-    return account?.meta?.name || formatAddress(account?.address);
+    return account?.meta?.name || account?.meta?.uid || formatAddress(account?.address);
   }
 }

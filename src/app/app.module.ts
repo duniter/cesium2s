@@ -19,9 +19,11 @@ import { JDENTICON_CONFIG } from 'ngx-jdenticon';
 import { APP_LOCALES } from '@app/settings/settings.model';
 import { APP_STORAGE } from '@app/shared/services/storage/storage.utils';
 import { StorageService } from '@app/shared/services/storage/storage.service';
-import { AppTransferModule } from '@app/transfer/transfer.module';
-import { AppAccountModule } from '@app/account/account.module';
 import { AccountsService } from '@app/account/accounts.service';
+import { AppAccountModule } from '@app/account/account.module';
+import { AppTransferModule } from '@app/transfer/transfer.module';
+import { APP_GRAPHQL_TYPE_POLICIES } from '@app/shared/services/network/graphql/graphql.service';
+import { INDEXER_GRAPHQL_TYPE_POLICIES } from '@app/network/indexer/indexer.config';
 
 export function createTranslateLoader(http: HttpClient) {
   if (environment.production) {
@@ -63,6 +65,12 @@ export function createTranslateLoader(http: HttpClient) {
     AccountsService,
 
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    {
+      provide: APP_GRAPHQL_TYPE_POLICIES,
+      useValue: {
+        ...INDEXER_GRAPHQL_TYPE_POLICIES,
+      },
+    },
     { provide: APP_STORAGE, useExisting: StorageService },
     { provide: APP_BASE_HREF, useValue: environment.baseUrl || '/' },
 

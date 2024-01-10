@@ -62,6 +62,11 @@ export function arrayDistinct<T>(obj: T[], properties?: string[]): T[] {
     return res.concat(item);
   }, []);
 }
+export function arrayRandomPick<T>(items: T[]): T {
+  if (!items || !Array.isArray(items) || items.length === 0) throw new Error('Invalid input: non-empty array is required');
+  const index = Math.floor(Math.random() * items.length);
+  return items[index];
+}
 export function nullIfUndefined<T>(obj: T | null | undefined): T | null {
   return obj === undefined ? null : obj;
 }

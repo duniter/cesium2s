@@ -1,0 +1,25 @@
+overwrite: true
+schema: "src/schema.graphql"
+documents: "src/!(interfaces)/**/*.{ts,graphql}"
+generates:
+  src/interfaces/indexer/types.ts:
+    plugins:
+      - "add"
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-apollo-angular"
+      - "fragment-matcher"
+    config:
+      content: "// Auto-generated via `npx graphql-codegen`, do not edit\n/* eslint-disable */"
+      nameSuffix: "Document"
+      sdkClass: true
+      serviceName: "IndexerGraphqlService"
+#  src/interfaces/indexer/introspection-result.ts:
+#    plugins:
+#      - "fragment-matcher"
+  src/interfaces/indexer/apollo-helpers.ts:
+    plugins:
+      - "add"
+      - "typescript-apollo-client-helpers"
+    config:
+      content: "// Auto-generated via `npx graphql-codegen`, do not edit\n/* eslint-disable */"

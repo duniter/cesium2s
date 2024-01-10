@@ -425,12 +425,20 @@ export class AccountsService extends RxStartableService<AccountsState> {
     return this.accounts$.pipe(map((accounts) => accounts?.find((a) => a.address === address)));
   }
 
+  /**
+   *
+   * @param from
+   * @param to
+   * @param amount the TX amount, using decimals
+   * @param fee the TX fee, using decimals
+   */
   async transfer(from: Partial<Account>, to: Partial<Account>, amount: number, fee?: number): Promise<string> {
     if (!from || !to) throw new Error("Missing argument 'from' or 'to' !");
     const currency = this.network.currency;
 
     // Check currency
     if (!currency) throw new Error('ERROR.CHECK_NETWORK_CONNECTION');
+    const powBase = Math.pow(10, currency.decimals || 0);
 
     // Check amount
     if (isNilOrNaN(amount)) {
@@ -440,7 +448,11 @@ export class AccountsService extends RxStartableService<AccountsState> {
       throw new Error('ERROR.AMOUNT_NEGATIVE');
     }
 
-    // Check fee
+    // Remove decimals, in amount and fee
+    amount = amount * powBase;
+    if (fee) fee = fee * powBase;
+
+    // Check fee validity
     fee = fee || currency.fees?.tx || 0;
     if (fee < 0) {
       throw new Error('ERROR.FEE_NEGATIVE');
@@ -459,11 +471,9 @@ export class AccountsService extends RxStartableService<AccountsState> {
       throw new Error('ERROR.NOT_ENOUGH_CREDIT');
     }
 
-    console.info(`[account-service] Sending ${amount} ${currency.symbol} (fee: ${fee}):\nfrom: ${from.address}\nto ${to.address}`);
-
-    // Compute total amount (with fee) and remove decimals
-    const powBase = Math.pow(10, currency.decimals || 0);
-    const totalAmount = Math.floor((amount + fee) * powBase);
+    console.info(
+      `[account-service] Sending ${amount / powBase} ${currency.symbol} (fee: ${fee / powBase}):\nfrom: ${from.address}\nto ${to.address}`
+    );
 
     // Get pair, and unlock it
     const issuerPair = keyring.getPair(issuerAccount.address);
@@ -476,29 +486,31 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     try {
       // Sign and send a transfer from Alice to Bob
-      const txHash = await this.api.tx.balances.transfer(to.address, totalAmount).signAndSend(issuerPair, async ({ status, events }) => {
+      const txHash = await this.api.tx.balances.transfer(to.address, amount).signAndSend(issuerPair, async ({ status, events }) => {
         if (status.isInBlock) {
           console.info(`${this._logPrefix}Completed at block hash #${status.hash.toHuman()}`);
 
           if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
 
+          // List of outdated accounts
           const outdatedAccounts = [issuerAccount];
 
-          // Update receiver account
+          // Add receiver to outdated account
           if (await this.isAvailable(to.address)) {
             const toAccount = await this.getByAddress(to.address);
             outdatedAccounts.push(toAccount);
           }
 
-          await sleep(200);
+          await sleep(200); // Wait 200ms
+
           await this.refreshData(outdatedAccounts, { reload: true });
         } else {
-          console.info(`Current status`, status.toHuman());
+          console.info(`${this._logPrefix}Current status: `, status.toHuman());
         }
       });
 
       // Show the hash
-      console.info(`Submitted with hash ${txHash}`);
+      console.info(`${this._logPrefix}Finalized hash ${txHash}`);
 
       return txHash.toString();
     } catch (err) {

@@ -25,3 +25,17 @@ export declare interface IconRef {
 }
 
 export declare type AppEvent = MouseEvent | TouchEvent | PointerEvent | CustomEvent;
+
+export interface SimpleError {
+  code?: number;
+  message: string;
+}
+export interface AppError extends SimpleError {
+  details?: AppError;
+}
+
+export type AnyError = string | AppError;
+
+export interface InfiniteScrollEvent extends CustomEvent<void> {
+  target: EventTarget & { complete?: () => void };
+}

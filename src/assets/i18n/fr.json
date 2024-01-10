@@ -48,7 +48,7 @@
     "CHOOSE_FILE": "Déposez votre fichier <br/>ou cliquez pour le sélectionner",
     "DAYS": "jours",
     "NO_ACCOUNT_QUESTION": "Pas encore de compte ? Créez-en un gratuitement !",
-    "SEARCH_NO_RESULT": "Aucun résultat trouvé",
+    "SEARCH_NO_RESULT": "Aucun résultat",
     "LOADING": "Veuillez patienter...",
     "LOADING_WAIT": "Veuillez patienter...<br/><small>(Cesium interroge le nœud Duniter)</small>",
     "SEARCHING": "Recherche en cours...",

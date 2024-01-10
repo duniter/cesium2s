@@ -15,8 +15,9 @@ import { CapacitorPlugins } from '@app/shared/capacitor/plugins';
 import { RxState } from '@rx-angular/state';
 import { AccountsService } from '@app/account/accounts.service';
 import { WotController } from '@app/wot/wot.controller';
+import { TransferFormOptions } from '@app/transfer/transfer.model';
 
-export interface TransferState extends AppPageState {
+export interface TransferPageState extends AppPageState {
   currency: Currency;
   fee: number;
   accounts: Account[];
@@ -25,11 +26,7 @@ export interface TransferState extends AppPageState {
   submitted: boolean;
 }
 
-export interface TransferPageOptions {
-  issuer?: Account;
-  recipient?: Account;
-  amount?: number;
-  fee?: number;
+export interface TransferPageInputs extends TransferFormOptions {
   dismissOnSubmit?: boolean;
 }
 
@@ -40,7 +37,7 @@ export interface TransferPageOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [RxState],
 })
-export class TransferPage extends AppPage<TransferState> implements OnInit, OnDestroy {
+export class TransferPage extends AppPage<TransferPageState> implements TransferPageInputs, OnInit, OnDestroy {
   protected _enableScan: boolean = false;
   protected _autoOpenWotModal = true;
   protected _initialWotModalBreakpoint = 0.25;
@@ -118,7 +115,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
           tap((accounts) => console.debug(this._logPrefix + 'Accounts loaded:', accounts)),
           mergeMap(async (accounts) => {
             // Load account
-            const fromAddress = this.activatedRoute.snapshot.paramMap.get('from');
+            const fromAddress = this.account?.address || this.activatedRoute.snapshot.paramMap.get('from');
             if (isNotNilOrBlank(fromAddress)) {
               this.account = await this.accountService.getByAddress(fromAddress);
             }
@@ -128,7 +125,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
             }
 
             // Load recipient
-            const toAddress = this.activatedRoute.snapshot.paramMap.get('to');
+            const toAddress = this.recipient?.address || this.activatedRoute.snapshot.paramMap.get('to');
             if (isNotNilOrBlank(toAddress)) {
               this.recipient = <Account>{ address: toAddress };
             }
@@ -296,14 +293,21 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   }
 
   protected async ngOnUnload() {
+    console.debug('[transfer] Unloading page...');
+
     this.showComment = false;
     await this.qrCodeModal?.dismiss();
-    this.markAsPristine();
 
     return {
       ...(await super.ngOnUnload()),
+      accounts: undefined,
       recipient: { address: null, meta: null },
     };
+  }
+
+  protected async unload(): Promise<void> {
+    this.markAsPristine();
+    return super.unload();
   }
 
   protected markAsSubmitted(opts = { emitEvent: true }) {

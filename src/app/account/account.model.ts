@@ -23,6 +23,7 @@ export interface AccountMeta {
   uid?: string;
   avatar?: string;
   email?: string;
+  isMember?: boolean;
 
   [key: string]: unknown;
 }

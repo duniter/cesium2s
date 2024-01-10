@@ -30,6 +30,8 @@
 
       // Local deps
       "@duniter/types": ["src/interfaces/types-lookup.ts"],
+      "@duniter/indexer": ["src/interfaces/indexer/types.ts"],
+      "@duniter/indexer/*": ["src/interfaces/indexer/*"],
 
       // here we replace the @polkadot/api augmentation with our own, generated from chain
       "@polkadot/api/augment": ["src/interfaces/augment-api.ts"],

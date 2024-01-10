@@ -128,16 +128,19 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   protected abstract ngOnLoad(): Promise<Partial<S>>;
 
   protected async unload() {
+    this.resetError();
+    this.markAsLoading();
+
     try {
       const initialState = await this.ngOnUnload();
       if (initialState) {
-        this._state.set(initialState);
+        this._state?.set(initialState);
       }
     } catch (err) {
       console.error(this._logPrefix + 'Unload page error', err);
       // Continue
     } finally {
-      this.setError(undefined);
+      this.resetError();
       this.markAsLoading();
     }
   }

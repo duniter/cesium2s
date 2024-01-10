@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 
 import { Clipboard } from '@capacitor/clipboard';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
@@ -12,6 +12,7 @@ import { filter, mergeMap } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { map, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
+import { APP_TRANSFER_CONTROLLER, ITransferController, TransferFormOptions } from '@app/transfer/transfer.model';
 
 export interface WalletState extends AppPageState {
   accounts: Account[];
@@ -67,7 +68,8 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     protected router: Router,
     protected route: ActivatedRoute,
     protected networkService: NetworkService,
-    protected accountService: AccountsService
+    protected accountService: AccountsService,
+    @Inject(APP_TRANSFER_CONTROLLER) protected transferController: ITransferController
   ) {
     super({
       name: 'wallet-page',
@@ -160,5 +162,9 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     this.account = data;
 
     return data;
+  }
+
+  transfer(opts?: TransferFormOptions) {
+    return this.transferController.transfer({ account: this.account, ...opts });
   }
 }

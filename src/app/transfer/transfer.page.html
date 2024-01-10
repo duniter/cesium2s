@@ -23,7 +23,7 @@
     </ion-item>
 
     <!-- TO -->
-    <ion-item *rxIf="recipient$; let recipient; suspense: skeleton60">
+    <ion-item *rxIf="recipient$; let recipient; suspense: skeletonItem">
       <!--      <ion-label color="medium" translate>TRANSFER.TO</ion-label>-->
       <ion-textarea
         [rows]="mobile ? 2 : 1"
@@ -46,9 +46,8 @@
       <ion-note slot="error" *rxIf="submitted$" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>
 
-    <!-- FROM -->
-    <ion-item *rxIf="accounts$; let accounts; suspense: skeleton60" (click)="selectAccount($event)" tappable>
-      <!--      <ion-label color="medium" translate>TRANSFER.FROM</ion-label>-->
+    <!-- from -->
+    <ion-item *rxIf="accounts$; let accounts; suspense: skeletonItem" (click)="selectAccount($event)" tappable>
       <ion-input [(ngModel)]="accountName" [debounce]="450" [label]="'TRANSFER.FROM' | translate" readonly required></ion-input>
 
       <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
@@ -103,9 +102,9 @@
   </ion-button>
 </ng-template>
 
-<ng-template #skeleton60>
+<ng-template #skeletonItem>
   <ion-item>
-    <ion-icon name="__NONE__" slot="start"></ion-icon>
+    <ion-icon slot="start" name="none"></ion-icon>
     <ion-label>
       <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
     </ion-label>

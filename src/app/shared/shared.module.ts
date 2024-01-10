@@ -14,6 +14,7 @@ import { RxIf } from '@rx-angular/template/if';
 import { MaskitoModule } from '@maskito/angular';
 import { SwiperDirective } from '@app/shared/swiper/app-swiper.directive';
 import { AppSkeletonListComponent } from '@app/shared/loading/skeleton.list/skeleton.list.component';
+import { AppGraphQLModule } from '@app/shared/services/network/graphql/graphql.module';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { AppSkeletonListComponent } from '@app/shared/loading/skeleton.list/skel
     SharedPipesModule,
     ListPopoverModule,
     SwiperDirective,
+    AppGraphQLModule,
     AppSkeletonListComponent,
   ],
   exports: [
@@ -56,6 +58,7 @@ import { AppSkeletonListComponent } from '@app/shared/loading/skeleton.list/skel
     SharedPipesModule,
     ListPopoverModule,
     SwiperDirective,
+    AppGraphQLModule,
     AppSkeletonListComponent,
   ],
 })

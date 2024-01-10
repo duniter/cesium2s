@@ -30,8 +30,7 @@
       showClearButton="true"
       [debounce]="debounceTime"
       (ionClear)="markAsLoading()"
-      (ionInput)="markAsLoading()"
-      (ionChange)="searchChanged($event, $event.detail.value)"
+      (ionInput)="searchChanged($event, $event.detail.value)"
       (search)="searchChanged($event, searchBar.value)"
       [placeholder]="'WOT.SEARCH_HELP' | translate"
       (click)="searchClick.emit($event)"
@@ -45,8 +44,8 @@
       </ng-container>
 
       <ng-template #items>
-        <ion-item-sliding *rxFor="let item of items$">
-          <ion-item [detail]="!itemClick.observed" (click)="click(item)">
+        <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
+          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)" [style.--animation-order]="index">
             <ion-avatar slot="start" *ngIf="item.meta?.avatar; else iconPerson">
               <ion-img [src]="item.meta?.avatar"></ion-img>
             </ion-avatar>
@@ -56,22 +55,42 @@
               </ion-avatar>
             </ng-template>
             <ion-label>
-              <h2>{{ item.meta?.name }}</h2>
+              <h2>
+                <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
+                  <small><ion-icon name="person"></ion-icon></small>
+                  {{ item.meta?.uid }}
+                </ion-text>
+              </h2>
               <p>{{ item.address | addressFormat }}</p>
             </ion-label>
-            <ion-button slot="end" *ngIf="showItemActions && !mobile" (click)="transfer(item)" [title]="'BTN_SEND_MONEY' | translate">
+            <ion-button slot="end" *ngIf="showItemActions && !mobile" (click)="transferTo($event, item)" [title]="'BTN_SEND_MONEY' | translate">
               <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
             </ion-button>
           </ion-item>
 
           <ion-item-options *ngIf="mobile && showItemActions">
-            <ion-item-option (click)="transfer(item)" [title]="'BTN_SEND_MONEY' | translate">
+            <ion-item-option (click)="transferTo($event, item)" [title]="'BTN_SEND_MONEY' | translate">
               <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
+
+        <div *rxLet="count$ as count">
+          <!-- no result -->
+          <ion-item *ngIf="count === 0" lines="none">
+            <ion-text color="danger" class="text-italic" translate>COMMON.SEARCH_NO_RESULT</ion-text>
+          </ion-item>
+        </div>
       </ng-template>
     </ion-list>
+
+    <!-- infinite scroll -->
+    <ion-infinite-scroll *rxIf="enableInfiniteScroll$" [threshold]="mobile ? '100px' : '2%'" position="bottom" (ionInfinite)="fetchMore($event)">
+      <ion-infinite-scroll-content loading-spinner="none">
+        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
 </ion-content>
 

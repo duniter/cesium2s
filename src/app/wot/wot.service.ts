@@ -3,9 +3,9 @@ import { NetworkService } from '../network/network.service';
 import { ApiPromise } from '@polkadot/api';
 import { WotSearchFilter } from '@app/wot/wot.model';
 import { AccountsService } from '@app/account/accounts.service';
-import { sleep } from '@app/shared/functions';
 import { Account } from '@app/account/account.model';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
+import { Observable } from 'rxjs';
 
 export interface WotState {}
 
@@ -28,23 +28,31 @@ export class WotService extends RxStartableService<WotState> {
     return {};
   }
 
-  async search(filter?: WotSearchFilter): Promise<Account[]> {
-    if (!this.started) await this.ready();
-
+  search(filter?: WotSearchFilter, options?: { limit?: number; offset?: number }): Observable<Account[]> {
     console.info(this._logPrefix + 'Searching...', filter);
 
-    // TODO
-    await sleep(500);
-    const avatars = ['a', 'b', 'c', 'd'].map((letter) => 'https://i.pravatar.cc/300?u=' + letter);
-
-    return (await this.accountService.getAll()).map((account, i) => {
-      return <Account>{
-        address: account.address,
-        meta: {
-          name: account.meta?.name,
-          avatar: avatars[i],
-        },
-      };
-    });
+    return this.network.indexer.wotSearch(
+      {
+        ...filter,
+      },
+      { limit: 10, offset: 0, ...options }
+    );
+    //
+    // const avatars = ['a', 'b', 'c', 'd'].map((letter) => 'https://i.pravatar.cc/300?u=' + letter);
+    //
+    // return this.accountService.watchAll().pipe(
+    //   map((accounts, i) =>
+    //     accounts.map(
+    //       (account) =>
+    //         <Account>{
+    //           address: account.address,
+    //           meta: {
+    //             name: account.meta?.name,
+    //             avatar: avatars[i],
+    //           },
+    //         }
+    //     )
+    //   )
+    // );
   }
 }

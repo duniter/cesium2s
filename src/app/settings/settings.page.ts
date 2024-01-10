@@ -42,11 +42,13 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
   ];
   @RxStateSelect() preferredPeers$: Observable<string[]>;
   @RxStateSelect() peer$: Observable<string>;
+  @RxStateSelect() indexer$: Observable<string>;
   @RxStateSelect() dirty$: Observable<boolean>;
 
-  @RxStateProperty() peer: string;
-  @RxStateProperty() locale: string;
   @RxStateProperty() darkMode: boolean;
+  @RxStateProperty() locale: string;
+  @RxStateProperty() peer: string;
+  @RxStateProperty() indexer: string;
   @RxStateProperty() unAuthDelayMs: number;
   @RxStateProperty() dirty: boolean;
 
@@ -59,7 +61,7 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
     super({ name: 'settings' });
 
     // Detect changes
-    this._state.hold(this._state.select(['peer', 'locale', 'unAuthDelayMs'], (s) => s).pipe(skip(1)), () => {
+    this._state.hold(this._state.select(['locale', 'peer', 'indexer', 'unAuthDelayMs'], (s) => s).pipe(skip(1)), () => {
       if (this.mobile) {
         this.save();
       } else {

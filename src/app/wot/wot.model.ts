@@ -2,7 +2,7 @@ import { equals, isNil, isNilOrBlank, isNotNilOrBlank } from '@app/shared/functi
 
 export interface WotSearchFilter {
   address?: string;
-  text?: string;
+  searchText?: string;
   last?: boolean;
 }
 
@@ -12,6 +12,6 @@ export class WotSearchFilterUtils {
   }
 
   static isEmpty(filter: WotSearchFilter) {
-    return !filter || (isNilOrBlank(filter.text) && isNil(filter.last) && isNotNilOrBlank(filter.address));
+    return !filter || (isNilOrBlank(filter.searchText) && isNil(filter.last) && isNotNilOrBlank(filter.address));
   }
 }

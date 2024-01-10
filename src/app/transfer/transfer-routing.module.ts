@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { TransferPage } from './transfer.page';
 import { AuthGuardService } from '@app/account/auth-guard.service';
+import { AppTransferModule } from '@app/transfer/transfer.module';
 
 const routes: Routes = [
   {
@@ -26,7 +27,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [AppTransferModule, RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TransferPageRoutingModule {}
+export class AppTransferRoutingModule {}

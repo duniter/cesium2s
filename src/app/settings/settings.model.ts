@@ -11,6 +11,8 @@ export declare interface Settings {
   peer: string;
   currency?: string;
   preferredPeers?: string[];
+  indexer: string;
+  preferredIndexers?: string[];
   pages?: any;
   locale?: string;
   mobile?: boolean;

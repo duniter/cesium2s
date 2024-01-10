@@ -1,19 +1,20 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { SettingsService } from '../settings/settings.service';
-import { Peer, Peers } from './peer.model';
+import { Peer, Peers } from '@app/shared/services/network/peer.model';
 import { abbreviate } from '@app/shared/currencies';
 import { Currency } from '@app/network/currency.model';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { isNotNilOrBlank } from '@app/shared/functions';
+import { arrayRandomPick, isNotNilOrBlank } from '@app/shared/functions';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
-  Ğdev: <Partial<Currency>>{
+  GDEV: <Partial<Currency>>{
     network: 'gdev',
-    displayName: 'Ğdev',
+    displayName: 'ĞDev',
     symbol: 'GD',
     prefix: 42,
     genesis: '0xa565a0ccbab8e5f29f0c8a901a3a062d17360a4d4f5319d03a1580fba4cbf3f6',
@@ -23,7 +24,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     },
     decimals: 2,
   },
-  Ğ1: <Partial<Currency>>{
+  G1: <Partial<Currency>>{
     network: 'g1',
     displayName: 'Ğ1',
     symbol: 'G1',
@@ -46,6 +47,8 @@ export interface NetworkState {
 
 @Injectable({ providedIn: 'root' })
 export class NetworkService extends RxStartableService<NetworkState> {
+  indexer = inject(IndexerService);
+
   @RxStateProperty() peer: Peer;
   @RxStateProperty() currency: Currency;
   @RxStateProperty() currencySymbol: string;
@@ -77,11 +80,11 @@ export class NetworkService extends RxStartableService<NetworkState> {
 
     let peer = Peers.fromUri(settings.peer);
     if (!peer) {
-      const peers = await this.filterAliveNodes(settings.preferredPeers);
+      const peers = await this.filterAlivePeers(settings.preferredPeers);
       if (!peers.length) {
         throw { message: 'ERROR.CHECK_NETWORK_CONNECTION' };
       }
-      peer = this.selectRandomPeer(peers);
+      peer = arrayRandomPick(peers);
     }
 
     const wsUri = Peers.getWsUri(peer);
@@ -105,19 +108,20 @@ export class NetworkService extends RxStartableService<NetworkState> {
 
     // Get the chain information
     const chainInfo = await api.registry.getChainProperties();
-    const chain = '' + (await api.rpc.system.chain()).toHuman().split(' ')?.[0];
+    const chainObj = await api.rpc.system.chain();
+    const chain = '' + chainObj.toHuman().split(' ')?.[0];
     const genesis = api.genesisHash.toHex();
 
     console.info(`${this._logPrefix}Connecting to chain {${chain}}: ` + JSON.stringify(chainInfo.toHuman()));
 
     let currency: Currency;
     // Check is well known currency
-    if (WELL_KNOWN_CURRENCIES[chain]) {
-      const wellKnownCurrency = WELL_KNOWN_CURRENCIES[chain];
+    const wellKnownCurrency = Object.values(WELL_KNOWN_CURRENCIES).find((c) => c.displayName === chain);
+    if (wellKnownCurrency) {
       if (wellKnownCurrency.genesis && wellKnownCurrency.genesis !== genesis) {
         console.warn(`${this._logPrefix}Invalid genesis for ${chain}! Expected ${wellKnownCurrency.genesis} but peer return ${genesis}`);
       }
-      currency = { ...wellKnownCurrency };
+      currency = <Currency>{ ...wellKnownCurrency };
     } else {
       console.warn(`${this._logPrefix}Not a well known currency: ${chain}!`);
     }
@@ -125,10 +129,10 @@ export class NetworkService extends RxStartableService<NetworkState> {
     currency.displayName = currency?.displayName || chain;
     currency.symbol = currency?.symbol || chainInfo.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
     currency.decimals = currency?.decimals || +chainInfo.tokenDecimals.value?.[0].toHuman() || 0;
-    currency.prefix = currency.prefix || WELL_KNOWN_CURRENCIES.Ğdev.prefix; // TODO use G1 defaults
+    currency.prefix = currency.prefix || WELL_KNOWN_CURRENCIES.GDEV.prefix; // TODO use G1 defaults
     currency.genesis = genesis;
     currency.fees = {
-      ...WELL_KNOWN_CURRENCIES.Ğdev.fees, // TODO use G1 defaults
+      ...WELL_KNOWN_CURRENCIES.GDEV.fees, // TODO use G1 defaults
       ...(currency.fees || {}),
     };
 
@@ -141,6 +145,8 @@ export class NetworkService extends RxStartableService<NetworkState> {
     const lastHeader = await api.rpc.chain.getHeader();
     console.info(`${this._logPrefix}Last block: #${lastHeader.number} - hash ${lastHeader.hash}`);
 
+    await this.indexer.start();
+
     return {
       peer,
       currency,
@@ -149,7 +155,13 @@ export class NetworkService extends RxStartableService<NetworkState> {
     };
   }
 
-  async filterAliveNodes(
+  protected async ngOnStop(): Promise<void> {
+    await this.indexer.stop();
+
+    return super.ngOnStop();
+  }
+
+  protected async filterAlivePeers(
     peers: string[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     opts?: {
@@ -170,7 +182,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     return result;
   }
 
-  async isPeerAlive(
+  protected async isPeerAlive(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     peer: Peer,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -180,10 +192,5 @@ export class NetworkService extends RxStartableService<NetworkState> {
   ): Promise<boolean> {
     // TODO
     return Promise.resolve(true);
-  }
-
-  selectRandomPeer(peers: Peer[]): Peer {
-    const index = Math.floor(Math.random() * peers.length);
-    return peers[index];
   }
 }
