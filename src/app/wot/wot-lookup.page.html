@@ -1,18 +1,19 @@
-<ion-header [translucent]="true" *ngIf="showToolbar">
-  <ion-toolbar [color]="toolbarColor">
-    <ion-buttons slot="start" *ngIf="!modal">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title translate>MENU.WOT</ion-title>
-    <ion-buttons slot="end">
-      <ng-content select="[toolbar-end]"></ng-content>
+@if (showToolbar) {
+  <ion-header [translucent]="true">
+    <ion-toolbar [color]="toolbarColor">
+      <ion-buttons slot="start" *ngIf="!modal">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title translate>MENU.WOT</ion-title>
+      <ion-buttons slot="end">
+        <ng-content select="[toolbar-end]"></ng-content>
 
-      <!-- close -->
-      <ion-button fill="clear" *ngIf="closeClick.observed" (click)="closeClick.emit($event)" translate>COMMON.BTN_CLOSE</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
+        <!-- close -->
+        <ion-button fill="clear" *ngIf="closeClick.observed" (click)="closeClick.emit($event)" translate>COMMON.BTN_CLOSE</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+}
 <ion-content [fullscreen]="showSearchBar">
   <ion-header collapse="condense" *ngIf="showToolbar">
     <ion-toolbar>
@@ -21,20 +22,21 @@
   </ion-header>
 
   <div id="container">
-    <ion-searchbar
-      *ngIf="showSearchBar"
-      #searchBar
-      inputmode="search"
-      autocomplete="off"
-      animated="true"
-      showClearButton="true"
-      [debounce]="debounceTime"
-      (ionClear)="markAsLoading()"
-      (ionInput)="searchChanged($event, $event.detail.value)"
-      (search)="searchChanged($event, searchBar.value)"
-      [placeholder]="'WOT.SEARCH_HELP' | translate"
-      (click)="searchClick.emit($event)"
-    ></ion-searchbar>
+    @if (showSearchBar) {
+      <ion-searchbar
+        #searchBar
+        inputmode="search"
+        autocomplete="off"
+        animated="true"
+        showClearButton="true"
+        [debounce]="debounceTime"
+        (ionClear)="markAsLoading()"
+        (ionInput)="searchChanged($event, $event.detail.value)"
+        (search)="searchChanged($event, searchBar.value)"
+        [placeholder]="'WOT.SEARCH_HELP' | translate"
+        (click)="searchClick.emit($event)"
+      ></ion-searchbar>
+    }
 
     <ion-list-header>
       <ion-item lines="none" class="ion-float-end" style="width: 100%">

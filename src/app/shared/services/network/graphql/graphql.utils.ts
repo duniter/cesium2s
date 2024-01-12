@@ -52,7 +52,7 @@ export default class TrackerLink extends ApolloLink {
   private trackedQueriesUpdated = new EventEmitter();
   private trackedQueriesById: { [id: string]: TrackedQuery } = {};
   private enableSubject = new BehaviorSubject<boolean>(false);
-  private subscription = new Subscription();
+  private readonly subscription = new Subscription();
   private readonly debug: boolean;
 
   constructor(opts: { debounce?: number; storage: PersistentStorage<string>; debug?: boolean }) {
@@ -91,7 +91,7 @@ export default class TrackerLink extends ApolloLink {
   }
 
   destroy() {
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 
   request(operation: Operation, forward: NextLink) {
@@ -146,7 +146,7 @@ export default class TrackerLink extends ApolloLink {
   }
 }
 
-export async function restoreTrackedQueries(opts: { apolloClient: ApolloClient<any>; storage: PersistentStorage<any>; debug?: boolean }) {
+export async function restoreTrackedQueries(opts: { client: ApolloClient<any>; storage: PersistentStorage<any>; debug?: boolean }) {
   const list = JSON.parse(await opts.storage.getItem(TRACKED_QUERIES_STORAGE_KEY)) as TrackedQuery[];
 
   if (!list) return;
@@ -156,7 +156,7 @@ export async function restoreTrackedQueries(opts: { apolloClient: ApolloClient<a
     const context = JSON.parse(trackedQuery.contextJSON);
     const query = JSON.parse(trackedQuery.queryJSON);
     const variables = JSON.parse(trackedQuery.variablesJSON);
-    return opts.apolloClient.mutate({
+    return opts.client.mutate({
       context,
       mutation: query,
       optimisticResponse: context.optimisticResponse,

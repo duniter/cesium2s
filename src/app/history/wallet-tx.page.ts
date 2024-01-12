@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
-import { arraySize, equals, isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
+import { isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
 import { NetworkService } from '@app/network/network.service';
-import { ActionSheetOptions, IonModal, PopoverOptions } from '@ionic/angular';
+import { ActionSheetOptions, InfiniteScrollCustomEvent, IonModal, PopoverOptions } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { filter, map, mergeMap, tap } from 'rxjs/operators';
@@ -18,8 +18,9 @@ import {
   TransferSearchFilter,
   TransferSearchFilterUtils,
 } from '@app/transfer/transfer.model';
-import { IndexerService } from '@app/network/indexer/indexer.service';
-import { InfiniteScrollEvent } from '@app/shared/types';
+import { IndexerService } from '@app/network/indexer.service';
+import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
+import { firstFalsePromise } from '@app/shared/observables';
 
 export interface WalletTxState extends AppPageState {
   accounts: Account[];
@@ -30,10 +31,10 @@ export interface WalletTxState extends AppPageState {
   balance: number;
   filter: TransferSearchFilter;
   items: Transfer[];
-  count: number;
   limit: number;
   canFetchMore: boolean;
-  enableInfiniteScroll: boolean;
+  fetchMoreFn: FetchMoreFn<LoadResult<Transfer>>;
+  disabledInfiniteScroll: boolean;
 }
 
 @Component({
@@ -53,13 +54,16 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
 
   @RxStateSelect() accounts$: Observable<Account[]>;
   @RxStateSelect() account$: Observable<Account>;
+  @RxStateSelect() address$: Observable<string>;
   @RxStateSelect() owner$: Observable<boolean>;
   @RxStateSelect() items$: Observable<Transfer[]>;
-  @RxStateSelect() protected count$: Observable<number>;
-  @RxStateSelect() protected enableInfiniteScroll$: Observable<boolean>;
+  @RxStateSelect() protected canFetchMore$: Observable<boolean>;
+  @RxStateSelect() protected disabledInfiniteScroll$: Observable<boolean>;
 
   @RxStateProperty() count: number;
+  @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Transfer>>;
   @RxStateProperty() canFetchMore: boolean;
+  @RxStateProperty() disabledInfiniteScroll: boolean;
 
   get balance(): number {
     if (!this.account?.data) return undefined;
@@ -86,6 +90,9 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     super({
       name: 'wallet-tx-page',
       loadDueTime: accountService.started ? 0 : 250,
+      initialState: {
+        disabledInfiniteScroll: true,
+      },
     });
 
     // Watch address from route or account
@@ -139,30 +146,32 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     );
 
     // Create filter
-    this._state.connect('filter', this._state.select(['address'], (res) => res).pipe(map(({ address }) => <TransferSearchFilter>{ address })));
+    this._state.connect(
+      'filter',
+      this.address$.pipe(
+        filter((address) => address && address !== 'default'),
+        map((address) => <TransferSearchFilter>{ address })
+      )
+    );
 
     // Load items
     this._state.connect(
       'items',
       this._state
         .select(['filter', 'limit'], (res) => res, {
-          filter: TransferSearchFilterUtils.isEquals,
+          filter: (f1, f2) => TransferSearchFilterUtils.isEquals(f1, f2),
           limit: (l1, l2) => l1 === l2,
         })
         .pipe(
-          filter(({ filter }) => !TransferSearchFilterUtils.isEmpty(filter) && filter.address !== 'default'),
+          filter(({ filter }) => !TransferSearchFilterUtils.isEmpty(filter)),
           mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
-          tap((items) => {
-            this.canFetchMore = arraySize(items) === this.limit;
+          map(({ data, fetchMore }) => {
+            this.fetchMoreFn = fetchMore;
+            this.canFetchMore = !!fetchMore;
+            this.disabledInfiniteScroll = !fetchMore;
+            return data;
           })
         )
-    );
-
-    this._state.connect('count', this.items$.pipe(map(arraySize)));
-
-    this._state.connect(
-      'enableInfiniteScroll',
-      this._state.select(['loading', 'canFetchMore'], (res) => res).pipe(map(({ loading, canFetchMore }) => !loading && canFetchMore))
     );
   }
 
@@ -173,10 +182,10 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     this.limit = toNumber(this.limit, 20);
   }
 
-  search(searchFilter?: TransferSearchFilter, options?: { limit: number; offset: number }): Observable<Transfer[]> {
+  search(searchFilter?: TransferSearchFilter, options?: { limit: number; offset: number }): Observable<LoadResult<Transfer>> {
     try {
       return this.indexerService.transferSearch(searchFilter, options).pipe(
-        filter(() => equals(this.filter, searchFilter)),
+        filter(() => TransferSearchFilterUtils.isEquals(this.filter, searchFilter)),
         tap(() => this.markAsLoaded())
       );
     } catch (err) {
@@ -211,18 +220,29 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     }
   }
 
-  async fetchMore(event?: InfiniteScrollEvent) {
-    if (!this.canFetchMore || this.loading) return; // Skip
+  async fetchMore(event?: InfiniteScrollCustomEvent) {
+    await firstFalsePromise(this.loading$);
 
-    console.debug(this._logPrefix + 'Fetching more, from offset: ' + this.count, event);
-    const items = await firstValueFrom(this.search(this.filter, { limit: this.limit, offset: this.count }));
-    if (items && event?.target && event.target.complete) {
-      if (items.length) {
-        this._state.set('items', (s) => [...s.items, ...items]);
-        this.canFetchMore = items.length === this.limit;
-      } else {
-        this.canFetchMore = false;
+    if (this.canFetchMore) {
+      console.debug(this._logPrefix + 'Fetching more...');
+
+      let { data, fetchMore } = await this.fetchMoreFn(this.limit);
+
+      while (data.length < this.limit && fetchMore) {
+        const res = await fetchMore(this.limit);
+        if (res.data?.length) data = [...data, ...res.data];
+        fetchMore = res.fetchMore;
       }
+      if (data?.length) {
+        this._state.set('items', (s) => [...s.items, ...data]);
+      }
+
+      this.fetchMoreFn = fetchMore;
+      this.canFetchMore = !!fetchMore;
+      this.disabledInfiniteScroll = !fetchMore;
+    }
+
+    if (event?.target && event.target.complete) {
       event.target.complete();
     }
   }

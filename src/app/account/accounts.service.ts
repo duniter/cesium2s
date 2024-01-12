@@ -9,7 +9,7 @@ import { base58Encode, cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-
 import { isEmptyArray, isNil, isNilOrBlank, isNilOrNaN, isNotEmptyArray, isNotNil, isNotNilOrBlank, sleep } from '@app/shared/functions';
 import { APP_STORAGE, IStorage } from '@app/shared/services/storage/storage.utils';
 import { debounceTime, firstValueFrom, from, map, Observable, Subscription, switchMap, timer } from 'rxjs';
-import { Currency } from '@app/network/currency.model';
+import { Currency } from '@app/currency/currency.model';
 import { SettingsService } from '@app/settings/settings.service';
 import { scryptEncode } from '@polkadot/util-crypto/scrypt/encode';
 import { u8aToHex } from '@polkadot/util';

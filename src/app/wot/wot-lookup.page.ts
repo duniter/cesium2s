@@ -10,11 +10,10 @@ import { debounceTime, distinctUntilChanged, filter, map, mergeMap, tap } from '
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { RxState } from '@rx-angular/state';
-import { ModalController } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, ModalController } from '@ionic/angular';
 
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { InfiniteScrollEvent } from '@app/shared/types';
-import { IndexerService } from '@app/network/indexer/indexer.service';
+import { IndexerService } from '@app/network/indexer.service';
 
 export interface WotLookupState extends AppPageState {
   searchText: string;
@@ -178,7 +177,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     this.searchText = value;
   }
 
-  async fetchMore(event?: InfiniteScrollEvent) {
+  async fetchMore(event?: InfiniteScrollCustomEvent) {
     if (!this.canFetchMore || this.loading) return; // Skip
 
     console.debug(this._logPrefix + 'Fetching more, from offset: ' + this.count, event);

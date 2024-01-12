@@ -13,18 +13,28 @@ import {
 import { DocumentNode } from 'graphql/index';
 import { StorageService } from '@app/shared/services/storage/storage.service';
 import { Account } from '@app/account/account.model';
-import { AccountOrderByInput, BlockOrderByInput, IndexerGraphqlService, TransferOrderByInput } from '@duniter/indexer';
-import { Observable, of } from 'rxjs';
+import { AccountOrderByInput, BlockOrderByInput, IndexerGraphqlService, TransferOrderByInput, TransferWhereInput } from './indexer-types.generated';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IndexerFragmentConverter } from '@app/network/indexer/indexer.utils';
+import { IndexerFragmentConverter } from './indexer.utils';
 import { Transfer, TransferComparators, TransferSearchFilter } from '@app/transfer/transfer.model';
 import { WotSearchFilter } from '@app/wot/wot.model';
 import { Block, BlockSearchFilter } from '@app/block/block.model';
+import { DateUtils, fromDateISOString, toDateISOString } from '@app/shared/dates';
+import { LoadResult } from '@app/shared/services/service.model';
+import { Currency } from '@app/currency/currency.model';
+import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { firstNotNilPromise } from '@app/shared/observables';
 
-export interface IndexerState extends GraphqlServiceState {}
+export interface IndexerState extends GraphqlServiceState {
+  currency: Currency;
+}
 
 @Injectable({ providedIn: 'root' })
 export class IndexerService extends GraphqlService<IndexerState> {
+  @RxStateSelect() currency$: Observable<Currency>;
+  @RxStateProperty() currency: Currency;
+
   constructor(
     storage: StorageService,
     private settings: SettingsService,
@@ -85,42 +95,80 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
   transferSearch(
     filter: TransferSearchFilter,
-    options: { offset?: number; limit?: number; orderBy?: TransferOrderByInput[] }
-  ): Observable<Transfer[]> {
-    console.info(`${this._logPrefix}Searching transfers...`, filter);
+    options: { limit?: number; offset?: number; orderBy?: TransferOrderByInput[] }
+  ): Observable<LoadResult<Transfer>> {
+    filter = {
+      minTimestamp: DateUtils.moment().add(-1, 'week'),
+      ...filter,
+    };
+
+    console.info(`${this._logPrefix}Searching transfers...`, JSON.stringify(filter));
 
     options = {
-      limit: 10,
       offset: 0,
+      limit: 10,
       orderBy: [TransferOrderByInput.BlockNumberDesc],
       ...options,
     };
+    const where: TransferWhereInput = {
+      timestamp_gt: toDateISOString(filter.minTimestamp),
+    };
+    if (filter.maxTimestamp) {
+      where.timestamp_lt = toDateISOString(filter.maxTimestamp);
+    }
 
     return this.indexerGraphqlService
-      .transferSearchByAddressWatch(
-        {
-          address: filter.address,
-          //blockNumberLt: filter.blockNumberLt,
-          limit: options.limit,
-          offset: options.offset,
-          orderBy: options.orderBy,
-        },
-        { fetchPolicy: this.defaultWatchFetchPolicy }
-      )
-      .valueChanges.pipe(
+      .transferSearchByAddress({
+        address: filter.address,
+        offset: options.offset,
+        limit: options.limit + 1, // Add 1 item, to check if can fetch more
+        where,
+        orderBy: options.orderBy,
+      })
+      .pipe(
         map(({ data }) => data.accounts?.[0]),
         map((account) => {
-          return (
-            (account && [
-              ...account.transfersIssued,
-              //, ...account.transfersReceived
-            ]) ||
-            []
-          );
+          return (account && [...account.transfersIssued, ...account.transfersReceived]) || [];
         }),
         map((inputs) => IndexerFragmentConverter.toTransfers(filter.address, inputs, true)),
+        // Re-Sort issued and received TX
         map((items) => items.sort(TransferComparators.sortByBlockDesc)),
-        map((items) => items.slice(0, options.limit))
+        map((items) => {
+          const result: LoadResult<Transfer> = { data: items };
+          // We can fetch more, on same timestamp
+          if (items.length > options.limit) {
+            items = items.slice(0, options.limit);
+            const issuedCount = items.filter((tx) => tx.amount < 0).length;
+            const receivedCount = items.filter((tx) => tx.amount > 0).length;
+            const effectiveLimit = Math.max(issuedCount, receivedCount);
+            const nextOffset = options.offset + effectiveLimit;
+            result.data = items;
+            result.fetchMore = (limit) => {
+              console.debug(`${this._logPrefix}Fetching more transfers - offset: ${nextOffset}`);
+              return firstValueFrom(this.transferSearch(filter, { ...options, offset: nextOffset, limit }));
+            };
+          }
+          // All fetched, update the timestamp
+          else {
+            const nextMinTimestamp = filter.minTimestamp.clone().add(-1, 'month');
+            const currencyStartTime = fromDateISOString(this.currency?.startTime);
+            if (currencyStartTime?.isSameOrBefore(nextMinTimestamp)) {
+              result.fetchMore = (limit) => {
+                console.debug(`${this._logPrefix}Fetching more, starting at ${nextMinTimestamp.toISOString()}`);
+                return firstValueFrom(
+                  this.transferSearch(
+                    { ...filter, minTimestamp: nextMinTimestamp, maxTimestamp: filter.minTimestamp },
+                    { ...options, offset: 0, limit }
+                  )
+                );
+              };
+            } else {
+              console.debug(`${this._logPrefix}Reach currency start (${currencyStartTime?.toISOString()}): Cannot fetch more transfers`);
+            }
+          }
+          //return items.slice(0, options.limit);
+          return result;
+        })
       );
   }
 
@@ -161,7 +209,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
   protected async ngOnStart(): Promise<IndexerState> {
     // Wait settings and storage
-    const settings = await this.settings.ready();
+    const [settings, currency] = await Promise.all([this.settings.ready(), firstNotNilPromise(this.currency$)]);
 
     let peer = Peers.fromUri(settings.indexer);
     if (!peer) {
@@ -173,13 +221,17 @@ export class IndexerService extends GraphqlService<IndexerState> {
     }
 
     const client = await super.createClient(peer, 'indexer');
-    this.apollo.client = client;
 
     return {
       peer,
       client,
+      currency,
       offline: false,
     };
+  }
+
+  protected async ngOnStop(): Promise<void> {
+    super.ngOnStop();
   }
 
   protected async filterAlivePeers(

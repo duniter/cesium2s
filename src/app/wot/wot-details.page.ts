@@ -10,7 +10,7 @@ import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
 import { map } from 'rxjs/operators';
 import { firstArrayValue } from '@app/shared/functions';
-import { IndexerService } from '@app/network/indexer/indexer.service';
+import { IndexerService } from '@app/network/indexer.service';
 
 export interface WotDetailsPageState extends AppPageState {
   address: string;

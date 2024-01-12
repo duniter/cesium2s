@@ -41,7 +41,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   protected readonly _debug = !environment.production;
   protected readonly _logPrefix: string;
   protected readonly _options: O;
-  protected _presentingElement: Element = null;
+  protected _presentingElement: HTMLElement = null;
 
   readonly mobile: boolean;
 

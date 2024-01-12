@@ -14,7 +14,7 @@ export interface IMenuItem {
   url?: string;
   icon: string;
   disabled?: () => boolean;
-  handle?: (event) => Promise<any>;
+  handle?: (event: Event) => Promise<void | unknown>;
   visible?: () => boolean;
   color?: PredefinedColors;
 }

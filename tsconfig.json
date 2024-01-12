@@ -29,9 +29,7 @@
       "rxjs/*": ["node_modules/rxjs/*"],
 
       // Local deps
-      "@duniter/types": ["src/duniter/interfaces/types-lookup.ts"],
-      "@duniter/indexer": ["src/duniter/indexer/types.ts"],
-      "@duniter/indexer/*": ["src/duniter/indexer/*"],
+      "@duniter/interfaces": ["src/interfaces/types-lookup.ts"],
 
       // here we replace the @polkadot/api augmentation with our own, generated from chain
       "@polkadot/api/augment": ["src/interfaces/augment-api.ts"],

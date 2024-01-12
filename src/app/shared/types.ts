@@ -35,7 +35,3 @@ export interface AppError extends SimpleError {
 }
 
 export type AnyError = string | AppError;
-
-export interface InfiniteScrollEvent extends CustomEvent<void> {
-  target: EventTarget & { complete?: () => void };
-}

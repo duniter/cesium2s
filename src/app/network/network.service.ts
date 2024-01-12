@@ -3,13 +3,14 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { SettingsService } from '../settings/settings.service';
 import { Peer, Peers } from '@app/shared/services/network/peer.model';
 import { abbreviate } from '@app/shared/currencies';
-import { Currency } from '@app/network/currency.model';
+import { Currency } from '../currency/currency.model';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { arrayRandomPick, isNotNilOrBlank } from '@app/shared/functions';
-import { IndexerService } from '@app/network/indexer/indexer.service';
+import { IndexerService } from './indexer.service';
+import { fromDateISOString } from '@app/shared/dates';
 
 const WELL_KNOWN_CURRENCIES = Object.freeze({
   GDEV: <Partial<Currency>>{
@@ -18,6 +19,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     symbol: 'GD',
     prefix: 42,
     genesis: '0xa565a0ccbab8e5f29f0c8a901a3a062d17360a4d4f5319d03a1580fba4cbf3f6',
+    startTime: '2017-07-08T00:00:00.00Z', // TODO
     fees: {
       identity: 300, // = 3 Gdev
       tx: 2, // = 0.02 Gdev
@@ -30,6 +32,7 @@ const WELL_KNOWN_CURRENCIES = Object.freeze({
     symbol: 'G1',
     prefix: 4450,
     genesis: '0x___TODO___',
+    startTime: '2017-03-08T00:00:00.00Z', // TODO
     fees: {
       identity: 300, // = 3G1 - FIXME
       tx: 1, // = 0.01 G1 - FIXME
@@ -138,6 +141,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     currency.powBase = Math.pow(10, currency.decimals);
     currency.prefix = currency.prefix || WELL_KNOWN_CURRENCIES.GDEV.prefix; // TODO use G1 defaults
     currency.genesis = genesis;
+    currency.startTime = fromDateISOString(currency.startTime);
     currency.fees = {
       ...WELL_KNOWN_CURRENCIES.GDEV.fees, // TODO use G1 defaults
       ...(currency.fees || {}),
@@ -150,6 +154,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     const lastHeader = await api.rpc.chain.getHeader();
     console.info(`${this._logPrefix}Last block: #${lastHeader.number} - hash ${lastHeader.hash}`);
 
+    this.indexer.currency = currency;
     await this.indexer.start();
 
     return {

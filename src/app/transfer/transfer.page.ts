@@ -6,7 +6,7 @@ import { mergeMap, Observable, tap } from 'rxjs';
 import { isNotEmptyArray, isNotNilOrBlank } from '@app/shared/functions';
 import { filter } from 'rxjs/operators';
 import { NetworkService } from '@app/network/network.service';
-import { Currency } from '@app/network/currency.model';
+import { Currency } from '@app/currency/currency.model';
 import { NavigationEnd, Router } from '@angular/router';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
@@ -41,9 +41,7 @@ export interface TransferPageInputs extends TransferFormOptions {
 })
 export class TransferPage extends AppPage<TransferPageState> implements TransferPageInputs, OnInit, OnDestroy {
   protected _enableScan: boolean = false;
-  protected _autoOpenWotModal = true;
   protected _isModal: boolean;
-  protected _initialWotModalBreakpoint = 0.25;
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet',
@@ -250,7 +248,7 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
     event.preventDefault();
 
     const searchText = this.recipient?.address;
-    const data = await this.wotCtrl.select({ searchText });
+    const data = await this.wotCtrl.select({ searchText, showItemActions: false });
 
     if (!data) {
       console.log('TODO cancelled');

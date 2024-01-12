@@ -55,56 +55,53 @@
     </ion-item>
   </ion-header>
 
-  <div id="container">
-    <ion-list>
-      <ion-item *rxIf="error$; let error" lines="none" color="light">
-        <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
-        <ion-label color="danger">{{ error | translate }}</ion-label>
-      </ion-item>
-      <ion-item *rxFor="let item of items$; index as index; trackBy: 'id'">
-        @if (item.account.meta?.avatar) {
-          <ion-avatar slot="start">
-            <ion-img [src]="item.meta.avatar"></ion-img>
-          </ion-avatar>
-        } @else {
-          <ion-avatar slot="start">
-            <svg width="40" width="40" [data-jdenticon-value]="item.account.data?.randomId || item.account.address"></svg>
-          </ion-avatar>
-        }
-        <ion-label *rxLet="item.account | isMemberAccount; let isMember">
-          <h3>
-            <a
-              [routerLink]="['/wot', item.account.address]"
-              routerDirection="forward"
-              (click)="showAccount($event, item.account)"
-              [class.ion-color-primary]="isMember"
-              [class.ion-color-dark]="!isMember"
-            >
-              <small>
-                <ion-icon [name]="isMember ? 'person' : 'key'"></ion-icon>
-              </small>
-              {{ item.account | accountName }}
-            </a>
-          </h3>
-          <p>
-            <a [routerLink]="['/block', item.blockNumber]" routerDirection="forward" (click)="$event.preventDefault()" class="tx-timestamp">
-              {{ item.timestamp | dateFromNow }} | {{ item.timestamp | dateFormat }}
-            </a>
-          </p>
-        </ion-label>
+  <ion-list>
+    <ion-item *rxIf="error$; let error" lines="none" color="light">
+      <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
+      <ion-label color="danger">{{ error | translate }}</ion-label>
+    </ion-item>
+    <ion-item *rxFor="let item of items$; index as index; trackBy: 'id'">
+      @if (item.account.meta?.avatar) {
+        <ion-avatar slot="start">
+          <ion-img [src]="item.meta.avatar"></ion-img>
+        </ion-avatar>
+      } @else {
+        <ion-avatar slot="start">
+          <svg width="40" width="40" [data-jdenticon-value]="item.account.data?.randomId || item.account.address"></svg>
+        </ion-avatar>
+      }
+      <ion-label *rxLet="item.account | isMemberAccount; let isMember">
+        <h3>
+          <a
+            [routerLink]="['/wot', item.account.address]"
+            routerDirection="forward"
+            (click)="showAccount($event, item.account)"
+            [class.ion-color-primary]="isMember"
+            [class.ion-color-dark]="!isMember"
+          >
+            <small>
+              <ion-icon [name]="isMember ? 'person' : 'key'"></ion-icon>
+            </small>
+            {{ item.account | accountName }}
+          </a>
+        </h3>
+        <p>
+          <a [routerLink]="['/block', item.blockNumber]" routerDirection="forward" (click)="$event.preventDefault()" class="tx-timestamp">
+            {{ item.timestamp | dateFromNow }} | {{ item.timestamp | dateFormat }}
+          </a>
+        </p>
+      </ion-label>
 
-        <ion-badge [color]="item.amount > 0 ? 'secondary' : 'light'" slot="end">{{ item.amount | amountFormat }}</ion-badge>
-      </ion-item>
-    </ion-list>
+      <ion-badge [color]="item.amount > 0 ? 'secondary' : 'light'" slot="end">{{ item.amount | amountFormat }}</ion-badge>
+    </ion-item>
+  </ion-list>
 
-    <!-- infinite scroll -->
-    <ion-infinite-scroll *rxIf="enableInfiniteScroll$" [threshold]="mobile ? '100px' : '2%'" position="bottom" (ionInfinite)="fetchMore($event)">
-      <ion-infinite-scroll-content loading-spinner="none">
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-      </ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </div>
+  <!-- infinite scroll -->
+  <ion-infinite-scroll *ngIf="canFetchMore$ | async" [threshold]="'100px'" position="bottom" (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content loading-spinner="none">
+      <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
 
 <ion-modal #authModal [backdropDismiss]="false">

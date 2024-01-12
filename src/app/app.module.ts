@@ -23,7 +23,7 @@ import { AccountsService } from '@app/account/accounts.service';
 import { AppAccountModule } from '@app/account/account.module';
 import { AppTransferModule } from '@app/transfer/transfer.module';
 import { APP_GRAPHQL_TYPE_POLICIES } from '@app/shared/services/network/graphql/graphql.service';
-import { INDEXER_GRAPHQL_TYPE_POLICIES } from '@app/network/indexer/indexer.config';
+import { INDEXER_GRAPHQL_TYPE_POLICIES } from '@app/network/indexer.config';
 
 export function createTranslateLoader(http: HttpClient) {
   if (environment.production) {

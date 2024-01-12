@@ -59,8 +59,10 @@ export class SettingsService extends RxStartableService<Settings> {
   clone(): Settings {
     return <Settings>{
       locale: environment.defaultLocale,
-      peer: environment.defaultPeers?.[0],
       defaultPeers: environment.defaultPeers || [],
+      peer: environment.defaultPeers?.[0],
+      defaultIndexers: environment.defaultIndexers || [],
+      indexer: environment.defaultIndexers?.[0],
       ...this.get(),
     };
   }

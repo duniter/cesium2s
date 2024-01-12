@@ -145,6 +145,7 @@
     "BTN_DARK_MODE": "Mode sombre/clair",
     "PEER": "Nœud Duniter",
     "PEER_SHORT": "Nœud Duniter",
+    "INDEXER": "Indexeur de données",
     "PEER_CHANGED_TEMPORARY": "Adresse utilisée temporairement",
     "PERSIST_CACHE": "Conserver les données de navigation (expérimental)",
     "PERSIST_CACHE_HELP": "Permet une navigation plus rapide, en conservant localement les données reçues, pour les utiliser d'une session à l'autre.",

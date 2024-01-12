@@ -52,7 +52,6 @@ import { environment } from '@environments/environment';
 import { RxStartableService, RxStartableServiceOptions } from '@app/shared/services/rx-startable-service.class';
 import { Peer, Peers } from '../peer.model';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import type { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 // Workaround for issue https://github.com/ng-packagr/ng-packagr/issues/2215
 const QueueLink = unwrapESModule(queueLinkImported);
 const SerializingLink = unwrapESModule(serializingLinkImported);
@@ -86,9 +85,9 @@ export const APP_GRAPHQL_FRAGMENTS = new InjectionToken<DocumentNode[]>('graphql
 
 export interface ConnectionParams extends Record<string, string> {}
 
-export interface GraphqlServiceState<TCacheShape = NormalizedCacheObject> {
+export interface GraphqlServiceState {
   peer: Peer;
-  client: ApolloClient<TCacheShape>;
+  client: ApolloClient<any>;
   offline: boolean;
 }
 
@@ -635,6 +634,7 @@ export abstract class GraphqlService<
   /* -- protected methods -- */
 
   protected async createClient(peer: Peer, name?: string) {
+    name = name || this.options?.name || 'default';
     if (!peer) throw Error('Missing peer. Unable to start graphql service');
 
     console.info(`${this._logPrefix}Creating Apollo GraphQL client '${name}'...`);
@@ -671,8 +671,9 @@ export abstract class GraphqlService<
     const storage: PersistentStorage<string> = new StorageServiceWrapper(this.storage);
 
     // Remove existing client
-    if (name && this.apollo.use(name)) {
-      console.warn(`${this._logPrefix}Deleting previous existing client...`);
+    const oldClient = this.apollo.use(name)?.client;
+    if (oldClient) {
+      await this.resetClient(oldClient);
       this.apollo.removeClient(name);
     }
 
@@ -758,9 +759,8 @@ export abstract class GraphqlService<
     }
 
     // Create Apollo client
-    const client = new ApolloClient({
+    this.apollo.createNamed(name, {
       cache,
-      name,
       defaultOptions: {
         query: {
           fetchPolicy: this.defaultFetchPolicy,
@@ -786,11 +786,13 @@ export abstract class GraphqlService<
       connectToDevTools: !environment.production,
     });
 
+    const client = this.apollo.use(name).client;
+
     // Enable tracked queries persistence
     if (enableMutationTrackerLink && environment.graphql.persistCache) {
       try {
         await restoreTrackedQueries({
-          apolloClient: client,
+          client,
           storage,
           debug: this._debug,
         });
@@ -805,7 +807,11 @@ export abstract class GraphqlService<
 
   protected async ngOnStop() {
     console.info(`${this._logPrefix}Stopping...`);
-    await this.resetClient();
+
+    const client = this.client;
+    if (client) {
+      await this.resetClient(client);
+    }
   }
 
   protected async resetClient(client?: ApolloClient<any>) {

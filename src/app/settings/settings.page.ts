@@ -42,6 +42,7 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
   ];
   @RxStateSelect() preferredPeers$: Observable<string[]>;
   @RxStateSelect() peer$: Observable<string>;
+  @RxStateSelect() preferredIndexers$: Observable<string[]>;
   @RxStateSelect() indexer$: Observable<string>;
   @RxStateSelect() dirty$: Observable<boolean>;
 
@@ -52,7 +53,8 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
   @RxStateProperty() unAuthDelayMs: number;
   @RxStateProperty() dirty: boolean;
 
-  @ViewChild('peerModal') peerModal: IonModal;
+  @ViewChild('selectPeerModal') selectPeerModal: IonModal;
+  @ViewChild('selectIndexerModal') selectIndexerModal: IonModal;
 
   constructor(
     protected networkService: NetworkService,
@@ -90,7 +92,12 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
 
   selectPeer(peer: string) {
     this.peer = peer;
-    this.peerModal.dismiss();
+    this.selectPeerModal.dismiss();
+  }
+
+  selectIndexer(peer: string) {
+    this.indexer = peer;
+    this.selectIndexerModal.dismiss();
   }
 
   markAsDirty() {

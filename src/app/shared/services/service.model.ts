@@ -8,7 +8,7 @@ export declare interface IWithReadyService<T = any> {
   ready: ReadyAsyncFunction<T>;
 }
 
-export declare type FetchMoreFn<R, V = object> = (variables?: V) => Promise<R>;
+export declare type FetchMoreFn<R> = (limit?: number) => Promise<R>;
 
 export declare interface LoadResult<T> {
   data: T[];

@@ -46,6 +46,9 @@ export class TransferComparators {
 export interface TransferSearchFilter {
   address?: string;
   amount?: string;
+  limit?: number;
+  minTimestamp?: Moment;
+  maxTimestamp?: Moment;
 }
 
 export class TransferSearchFilterUtils {
@@ -54,6 +57,6 @@ export class TransferSearchFilterUtils {
   }
 
   static isEmpty(filter: TransferSearchFilter) {
-    return !filter || (isNil(filter.amount) && isNilOrBlank(filter.address));
+    return !filter || (isNilOrBlank(filter.address) && isNilOrBlank(filter.minTimestamp) && isNil(filter.amount));
   }
 }

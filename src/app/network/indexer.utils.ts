@@ -1,4 +1,4 @@
-import { LightAccountFragment, LightBlockFragment, TransferFragment } from '@duniter/indexer';
+import { LightAccountFragment, LightBlockFragment, TransferFragment } from './indexer-types.generated';
 import { Account } from '@app/account/account.model';
 import { isNotNil } from '@app/shared/functions';
 import { fromDateISOString } from '@app/shared/dates';
