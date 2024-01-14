@@ -4,9 +4,9 @@ import { SettingsService } from '@app/settings/settings.service';
 import { changeCaseToUnderscore, isNotNilOrBlank, sleep } from '@app/shared/functions';
 import { environment } from '@environments/environment';
 import { waitForFalse, WaitForOptions } from '@app/shared/observables';
-import { IonRouterOutlet, NavController, ToastController, ToastOptions } from '@ionic/angular';
+import { IonRouterOutlet, ToastController, ToastOptions } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { map, Observable, Subject, Subscription } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { RxStateProperty, RxStateRegister, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { FormGroup } from '@angular/forms';
@@ -27,7 +27,6 @@ export interface AppPageOptions<S extends AppPageState = AppPageState> {
 export abstract class AppPage<S extends AppPageState = AppPageState, O extends AppPageOptions<S> = AppPageOptions<S>> implements OnInit, OnDestroy {
   private _subscription = new Subscription();
   private _form: FormGroup;
-  private _$destroy = new Subject<void>();
   private _cd = inject(ChangeDetectorRef, { optional: true });
 
   protected translate = inject(TranslateService);
@@ -114,7 +113,6 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   ngOnDestroy() {
     console.debug(`${this._logPrefix}Destroy`);
     this._subscription?.unsubscribe();
-    this._$destroy.next();
   }
 
   protected async load() {
@@ -138,9 +136,6 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   protected abstract ngOnLoad(): Promise<Partial<S>>;
 
   protected async unload() {
-    this.resetError();
-    this.markAsLoading();
-
     try {
       const initialState = await this.ngOnUnload();
       if (initialState) {

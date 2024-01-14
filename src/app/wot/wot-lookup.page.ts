@@ -54,7 +54,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Account>>;
   @RxStateProperty() canFetchMore: boolean;
 
-  @Input() modal = false;
+  @Input() isModal = false;
   @Input() debounceTime = 650;
   @Input() showToolbar = true;
   @Input() showSearchBar = true;
@@ -119,7 +119,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     this.showItemActions = toBoolean(this.showItemActions, !this.itemClick.observed);
     this.limit = toNumber(this.limit, 20);
 
-    if (this.modal) {
+    if (this.isModal) {
       this.registerSubscription(this.itemClick.subscribe((item) => this.modalCtrl.dismiss(item)));
       this.registerSubscription(this.closeClick.subscribe(() => this.modalCtrl.dismiss()));
     }
