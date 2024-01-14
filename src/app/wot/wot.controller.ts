@@ -12,7 +12,7 @@ export class WotController {
       component: WotLookupPage,
       componentProps: <WotLookupOptions>{
         ...options,
-        modal: true,
+        isModal: true,
       },
     });
     await modal.present();
