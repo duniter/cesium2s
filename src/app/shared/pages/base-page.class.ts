@@ -141,6 +141,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
       if (initialState) {
         this._state?.set(initialState);
       }
+      this.resetError();
     } catch (err) {
       console.error(this._logPrefix + 'Unload page error', err);
       // Continue
