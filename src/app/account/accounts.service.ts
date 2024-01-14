@@ -479,9 +479,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
       throw new Error('ERROR.AMOUNT_NEGATIVE');
     }
 
-    // Remove decimals, in amount and fee
+    // Convert amount to right unit ("cents")
     amount = amount * powBase;
-    if (fee) fee = fee * powBase;
 
     // Check fee validity
     fee = fee || currency.fees?.tx || 0;
