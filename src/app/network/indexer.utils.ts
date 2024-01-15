@@ -37,7 +37,7 @@ export class IndexerFragmentConverter {
       to = this.toAccount(item.to);
       amount = -1 * item.amount;
     } else if (item.to?.id === accountAddress) {
-      from = this.toAccount(item.to);
+      from = this.toAccount(item.from);
       amount = item.amount;
     }
     return <Transfer>{

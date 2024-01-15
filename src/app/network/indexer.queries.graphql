@@ -61,17 +61,16 @@ fragment Transfer on Transfer {
   }
 }
 
-query TransferSearchByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [TransferOrderByInput!], $where: TransferWhereInput) {
+query TransferSearchByAddress($address: String!, $limit: Int!, $orderBy: [TransferOrderByInput!], $where: TransferWhereInput) {
   accounts(
     limit: 1
-    offset: 0,
     where: {id_eq: $address}
   ) {
     ...LightAccount
-    transfersIssued(orderBy: $orderBy, where: $where, limit: $limit, offset: $offset) {
+    transfersIssued(orderBy: $orderBy, where: $where, limit: $limit) {
       ...Transfer
     }
-    transfersReceived(orderBy: $orderBy, where: $where, limit: $limit, offset: $offset) {
+    transfersReceived(orderBy: $orderBy, where: $where, limit: $limit) {
       ...Transfer
     }
   }

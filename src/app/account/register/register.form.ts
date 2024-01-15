@@ -80,14 +80,14 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   ngOnInit() {
     // For DEV only ------------------------
     if (!environment.production) {
-      this.form.setValue({
-        words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
-        wordNumber: 1,
-        code: 'AAAAA',
-        codeConfirmation: null,
-        name: null,
-        address: null,
-      });
+      // this.form.setValue({
+      //   words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
+      //   wordNumber: 1,
+      //   code: 'AAAAA',
+      //   codeConfirmation: null,
+      //   name: null,
+      //   address: null,
+      // });
     }
   }
 

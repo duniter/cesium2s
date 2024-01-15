@@ -3226,7 +3226,6 @@ export type TransferFragment = {
 export type TransferSearchByAddressQueryVariables = Exact<{
   address: Scalars['String']['input'];
   limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
   orderBy?: InputMaybe<Array<TransferOrderByInput> | TransferOrderByInput>;
   where?: InputMaybe<TransferWhereInput>;
 }>;
@@ -3435,13 +3434,13 @@ export class WotSearchLastGQL extends Apollo.Query<WotSearchLastQuery, WotSearch
   }
 }
 export const TransferSearchByAddressDocument = gql`
-  query TransferSearchByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [TransferOrderByInput!], $where: TransferWhereInput) {
-    accounts(limit: 1, offset: 0, where: { id_eq: $address }) {
+  query TransferSearchByAddress($address: String!, $limit: Int!, $orderBy: [TransferOrderByInput!], $where: TransferWhereInput) {
+    accounts(limit: 1, where: { id_eq: $address }) {
       ...LightAccount
-      transfersIssued(orderBy: $orderBy, where: $where, limit: $limit, offset: $offset) {
+      transfersIssued(orderBy: $orderBy, where: $where, limit: $limit) {
         ...Transfer
       }
-      transfersReceived(orderBy: $orderBy, where: $where, limit: $limit, offset: $offset) {
+      transfersReceived(orderBy: $orderBy, where: $where, limit: $limit) {
         ...Transfer
       }
     }

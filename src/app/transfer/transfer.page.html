@@ -36,6 +36,7 @@
         [rows]="mobile ? 2 : 1"
         [tabIndex]="mobile ? -1 : 1"
         [label]="'TRANSFER.TO' | translate"
+        labelPlacement="floating"
         class="ion-text-nowrap"
         [(ngModel)]="recipient.address"
         required
@@ -55,7 +56,14 @@
 
     <!-- from -->
     <ion-item *rxIf="accounts$; let accounts; suspense: skeletonItem" (click)="selectAccount($event)" tappable>
-      <ion-input [(ngModel)]="accountName" [debounce]="450" [label]="'TRANSFER.FROM' | translate" readonly required></ion-input>
+      <ion-input
+        [(ngModel)]="accountName"
+        [debounce]="450"
+        [label]="'TRANSFER.FROM' | translate"
+        labelPlacement="floating"
+        readonly
+        required
+      ></ion-input>
 
       <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
 
@@ -64,7 +72,7 @@
 
     <!-- amount -->
     <ion-item>
-      <ion-input type="number" [(ngModel)]="amount" [label]="'TRANSFER.AMOUNT' | translate" required></ion-input>
+      <ion-input type="number" [(ngModel)]="amount" [label]="'TRANSFER.AMOUNT' | translate" labelPlacement="floating" required></ion-input>
       <ion-note color="medium" slot="end" *rxIf="currency$; let currency">{{ currency.symbol }}</ion-note>
       <ion-note slot="error" *rxIf="submitted$" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>

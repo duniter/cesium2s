@@ -9,7 +9,11 @@
   <ion-progress-bar type="indeterminate" *rxIf="loading$"></ion-progress-bar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" *ngIf="mobile">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large" translate>WOT.OPERATIONS.TITLE</ion-title>
@@ -60,6 +64,8 @@
       <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
       <ion-label color="danger">{{ error | translate }}</ion-label>
     </ion-item>
+
+    <!-- wot identities -->
     <ion-item *rxFor="let item of items$; index as index; trackBy: 'id'">
       @if (item.account.meta?.avatar) {
         <ion-avatar slot="start">
@@ -94,10 +100,27 @@
 
       <ion-badge [color]="item.amount > 0 ? 'secondary' : 'light'" slot="end">{{ item.amount | amountFormat }}</ion-badge>
     </ion-item>
+
+    <!-- loading spinner -->
+    <ng-container *rxIf="loading$; else noResult">
+      <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+    </ng-container>
+
+    <!-- no result -->
+    <ng-template #noResult>
+      <ion-item *rxIf="(count$ | push) === 0" lines="none">
+        <ion-text color="danger" class="text-italic" translate>COMMON.SEARCH_NO_RESULT</ion-text>
+      </ion-item>
+    </ng-template>
   </ion-list>
 
   <!-- infinite scroll -->
-  <ion-infinite-scroll *ngIf="canFetchMore$ | async" [threshold]="'100px'" position="bottom" (ionInfinite)="fetchMore($event)">
+  <ion-infinite-scroll
+    [disabled]="(canFetchMore$ | async) === false"
+    [threshold]="mobile ? '100px' : '2%'"
+    position="bottom"
+    (ionInfinite)="fetchMore($event)"
+  >
     <ion-infinite-scroll-content loading-spinner="none">
       <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
     </ion-infinite-scroll-content>

@@ -52,7 +52,7 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
             return this.accountService.watchByAddress(address);
           }
 
-          return this.indexerService.wotSearch({ address }, { limit: 1 }).pipe(map(firstArrayValue));
+          return this.indexerService.wotSearch({ address }, { limit: 1 }).pipe(map(({ data }) => firstArrayValue(data)));
         })
       )
     );

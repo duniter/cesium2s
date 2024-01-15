@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
-import { Account } from '@app/account/account.model';
-import { isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
+import { Account, AccountUtils } from '@app/account/account.model';
+import { arraySize, isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
 import { NetworkService } from '@app/network/network.service';
-import { ActionSheetOptions, InfiniteScrollCustomEvent, IonModal, PopoverOptions } from '@ionic/angular';
+import { ActionSheetOptions, InfiniteScrollCustomEvent, IonModal, PopoverOptions, RefresherCustomEvent } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { filter, map, mergeMap, tap } from 'rxjs/operators';
@@ -20,7 +20,6 @@ import {
 } from '@app/transfer/transfer.model';
 import { IndexerService } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
-import { firstFalsePromise } from '@app/shared/observables';
 
 export interface WalletTxState extends AppPageState {
   accounts: Account[];
@@ -29,12 +28,13 @@ export interface WalletTxState extends AppPageState {
   address: string;
   currency: string;
   balance: number;
+
   filter: TransferSearchFilter;
-  items: Transfer[];
   limit: number;
+  items: Transfer[];
+  count: number;
   canFetchMore: boolean;
   fetchMoreFn: FetchMoreFn<LoadResult<Transfer>>;
-  disabledInfiniteScroll: boolean;
 }
 
 @Component({
@@ -45,25 +45,26 @@ export interface WalletTxState extends AppPageState {
   providers: [RxState],
 })
 export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
+  @RxStateSelect() protected items$: Observable<Transfer[]>;
+  @RxStateSelect() protected count$: Observable<number>;
+  @RxStateSelect() protected accounts$: Observable<Account[]>;
+  @RxStateSelect() protected account$: Observable<Account>;
+  @RxStateSelect() protected address$: Observable<string>;
+  @RxStateSelect() protected owner$: Observable<boolean>;
+  @RxStateSelect() protected canFetchMore$: Observable<boolean>;
+
+  @RxStateProperty() currency: string;
   @RxStateProperty() accounts: Account[];
   @RxStateProperty() account: Account;
   @RxStateProperty() address: string;
-  @RxStateProperty() filter: TransferSearchFilter;
-  @RxStateProperty() limit: number;
-  @RxStateProperty() currency: string;
-
-  @RxStateSelect() accounts$: Observable<Account[]>;
-  @RxStateSelect() account$: Observable<Account>;
-  @RxStateSelect() address$: Observable<string>;
-  @RxStateSelect() owner$: Observable<boolean>;
-  @RxStateSelect() items$: Observable<Transfer[]>;
-  @RxStateSelect() protected canFetchMore$: Observable<boolean>;
-  @RxStateSelect() protected disabledInfiniteScroll$: Observable<boolean>;
-
   @RxStateProperty() count: number;
   @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Transfer>>;
   @RxStateProperty() canFetchMore: boolean;
-  @RxStateProperty() disabledInfiniteScroll: boolean;
+
+  @Input() @RxStateProperty() filter: TransferSearchFilter;
+  @Input() @RxStateProperty() limit: number;
+
+  @Output() refresh = new EventEmitter<RefresherCustomEvent>();
 
   get balance(): number {
     if (!this.account?.data) return undefined;
@@ -91,7 +92,7 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
       name: 'wallet-tx-page',
       loadDueTime: accountService.started ? 0 : 250,
       initialState: {
-        disabledInfiniteScroll: true,
+        canFetchMore: false,
       },
     });
 
@@ -134,8 +135,8 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
                 account = await this.accountService.getByName(address);
                 return account;
               } catch (err) {
-                const wotAccounts = await firstValueFrom(this.indexerService.wotSearch({ address }, { limit: 1 }));
-                if (wotAccounts?.length) return wotAccounts[0];
+                const { data } = await firstValueFrom(this.indexerService.wotSearch({ address }, { limit: 1 }));
+                if (data?.length) return data[0];
                 throw err;
               }
             } else {
@@ -157,22 +158,28 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     // Load items
     this._state.connect(
       'items',
-      this._state
-        .select(['filter', 'limit'], (res) => res, {
-          filter: (f1, f2) => TransferSearchFilterUtils.isEquals(f1, f2),
+      merge(
+        this.refresh.pipe(
+          filter(() => !this.loading),
+          map(() => ({ filter: this.filter, limit: this.limit }))
+        ),
+        this._state.select(['filter', 'limit', 'account'], (res) => res, {
+          filter: TransferSearchFilterUtils.isEquals,
           limit: (l1, l2) => l1 === l2,
+          account: AccountUtils.isEquals,
         })
-        .pipe(
-          filter(({ filter }) => !TransferSearchFilterUtils.isEmpty(filter)),
-          mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
-          map(({ data, fetchMore }) => {
-            this.fetchMoreFn = fetchMore;
-            this.canFetchMore = !!fetchMore;
-            this.disabledInfiniteScroll = !fetchMore;
-            return data;
-          })
-        )
+      ).pipe(
+        filter(({ filter }) => !TransferSearchFilterUtils.isEmpty(filter)),
+        mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
+        map(({ data, fetchMore }) => {
+          this.fetchMoreFn = fetchMore;
+          this.canFetchMore = !!fetchMore;
+          return data;
+        })
+      )
     );
+
+    this._state.connect('count', this.items$.pipe(map(arraySize)));
   }
 
   async ngOnInit() {
@@ -184,6 +191,8 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
 
   search(searchFilter?: TransferSearchFilter, options?: { limit: number; offset: number }): Observable<LoadResult<Transfer>> {
     try {
+      this.markAsLoading();
+
       return this.indexerService.transferSearch(searchFilter, options).pipe(
         filter(() => TransferSearchFilterUtils.isEquals(this.filter, searchFilter)),
         tap(() => this.markAsLoaded())
@@ -221,13 +230,15 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
   }
 
   async fetchMore(event?: InfiniteScrollCustomEvent) {
-    await firstFalsePromise(this.loading$);
+    // Wait end of current load
+    await this.waitIdle();
 
     if (this.canFetchMore) {
-      console.debug(this._logPrefix + 'Fetching more...');
+      console.debug(this._logPrefix + 'Fetching more items...');
 
-      let { data, fetchMore } = await this.fetchMoreFn(this.limit);
+      let { data, fetchMore } = await this.fetchMoreFn();
 
+      // Fetch more again, since we fetch using a timestamp
       while (data.length < this.limit && fetchMore) {
         const res = await fetchMore(this.limit);
         if (res.data?.length) data = [...data, ...res.data];
@@ -239,11 +250,21 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
 
       this.fetchMoreFn = fetchMore;
       this.canFetchMore = !!fetchMore;
-      this.disabledInfiniteScroll = !fetchMore;
     }
 
     if (event?.target && event.target.complete) {
-      event.target.complete();
+      await event.target.complete();
+    }
+  }
+
+  async doRefresh(event?: RefresherCustomEvent) {
+    this.refresh.emit(event);
+
+    // When end of load
+    await this.waitIdle();
+
+    if (event?.target && event.target.complete) {
+      await event.target.complete();
     }
   }
 }

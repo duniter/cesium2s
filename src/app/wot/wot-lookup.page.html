@@ -14,7 +14,7 @@
     </ion-toolbar>
   </ion-header>
 }
-<ion-content [fullscreen]="showSearchBar">
+<ion-content>
   <ion-header collapse="condense" *ngIf="showToolbar">
     <ion-toolbar>
       <ion-title size="large" translate>MENU.WOT</ion-title>
@@ -38,85 +38,86 @@
       ></ion-searchbar>
     }
 
-    <ion-list-header>
+    <ion-list-header *ngIf="showFilterButtons">
       <ion-item lines="none" class="ion-float-end" style="width: 100%">
         <ion-buttons slot="end">
           <ion-button
             fill="clear"
             [color]="filter?.last && !filter.pending ? 'secondary' : undefined"
             (click)="applyFilter({ last: true, pending: false, searchText: '' })"
-            translate
           >
-            WOT.LOOKUP.NEWCOMERS
+            <ion-icon name="people" slot="start"></ion-icon>
+            <ion-label translate>WOT.LOOKUP.NEWCOMERS</ion-label>
           </ion-button>
           <ion-button
             fill="clear"
             [color]="filter?.last && filter.pending ? 'secondary' : undefined"
             (click)="applyFilter({ last: true, pending: true, searchText: '' })"
-            translate
           >
-            WOT.LOOKUP.PENDING
+            <ion-icon name="time-outline" slot="start"></ion-icon>
+            <ion-label translate>WOT.LOOKUP.PENDING</ion-label>
           </ion-button>
         </ion-buttons>
       </ion-item>
     </ion-list-header>
 
     <ion-list>
-      <ng-container *ngIf="loading; else items">
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+      <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
+        <ion-item [detail]="!itemClick.observed" (click)="click($event, item)">
+          @if (item.meta?.avatar) {
+            <ion-avatar slot="start">
+              <ion-img [src]="item.meta?.avatar"></ion-img>
+            </ion-avatar>
+          } @else {
+            <ion-avatar slot="start">
+              <svg width="40" width="40" [data-jdenticon-value]="item.data?.randomId || item.address"></svg>
+            </ion-avatar>
+          }
+          <ion-label>
+            <h2>
+              <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
+                <small><ion-icon name="person"></ion-icon></small>
+                {{ item.meta?.uid }}
+              </ion-text>
+            </h2>
+            <p>
+              <ion-icon name="key"></ion-icon>
+              {{ item.address | addressFormat }}
+            </p>
+          </ion-label>
+          <ion-button slot="end" *ngIf="showItemActions && !mobile" (click)="transferTo($event, item)" [title]="'COMMON.BTN_SEND_MONEY' | translate">
+            <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <ion-item-options *ngIf="mobile && showItemActions">
+          <ion-item-option (click)="transferTo($event, item)" [title]="'COMMON.BTN_SEND_MONEY' | translate">
+            <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+
+      <!-- loading spinner -->
+      <ng-container *rxIf="loading$; else noResult">
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
       </ng-container>
 
-      <ng-template #items>
-        <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
-          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)">
-            @if (item.meta?.avatar) {
-              <ion-avatar slot="start">
-                <ion-img [src]="item.meta?.avatar"></ion-img>
-              </ion-avatar>
-            } @else {
-              <ion-avatar slot="start">
-                <svg width="40" width="40" [data-jdenticon-value]="item.data?.randomId || item.address"></svg>
-              </ion-avatar>
-            }
-            <ion-label>
-              <h2>
-                <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
-                  <small><ion-icon name="person"></ion-icon></small>
-                  {{ item.meta?.uid }}
-                </ion-text>
-              </h2>
-              <p>
-                <ion-icon name="key"></ion-icon>
-                {{ item.address | addressFormat }}
-              </p>
-            </ion-label>
-            <ion-button slot="end" *ngIf="showItemActions && !mobile" (click)="transferTo($event, item)" [title]="'BTN_SEND_MONEY' | translate">
-              <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
-            </ion-button>
-          </ion-item>
-
-          <ion-item-options *ngIf="mobile && showItemActions">
-            <ion-item-option (click)="transferTo($event, item)" [title]="'BTN_SEND_MONEY' | translate">
-              <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-
-        <div *rxLet="count$ as count">
-          <!-- no result -->
-          <ion-item *ngIf="count === 0" lines="none">
-            <ion-text color="danger" class="text-italic" translate>COMMON.SEARCH_NO_RESULT</ion-text>
-          </ion-item>
-        </div>
+      <!-- no result -->
+      <ng-template #noResult>
+        <ion-item *rxIf="(count$ | push) === 0" lines="none">
+          <ion-text color="danger" class="text-italic" translate>COMMON.SEARCH_NO_RESULT</ion-text>
+        </ion-item>
       </ng-template>
     </ion-list>
 
     <!-- infinite scroll -->
-    <ion-infinite-scroll *rxIf="enableInfiniteScroll$" [threshold]="mobile ? '100px' : '2%'" position="bottom" (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll
+      [disabled]="(canFetchMore$ | async) === false"
+      [threshold]="mobile ? '100px' : '2%'"
+      position="bottom"
+      (ionInfinite)="fetchMore($event)"
+    >
       <ion-infinite-scroll-content loading-spinner="none">
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>

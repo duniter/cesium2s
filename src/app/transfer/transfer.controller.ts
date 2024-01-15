@@ -6,8 +6,6 @@ import { ITransferController, TransferFormOptions } from '@app/transfer/transfer
 
 @Injectable()
 export class TransferController implements ITransferController {
-  private readonly _presentingElement: HTMLElement = this.platform.mobile ? document.querySelector('.ion-page') : null;
-
   get mobile() {
     return this.platform.mobile;
   }
@@ -20,7 +18,7 @@ export class TransferController implements ITransferController {
 
   async transfer(opts?: TransferFormOptions): Promise<string> {
     // Open as a page
-    if (!opts?.modal && this.platform.mobile) {
+    if (opts?.modal === false && this.platform.mobile) {
       console.info('[transfer] Opening transfer page');
       if (opts?.account?.address) {
         await this.navController.navigateForward(['transfer', 'from', opts.account.address], {
@@ -39,10 +37,11 @@ export class TransferController implements ITransferController {
     // Open as a modal
     else {
       console.info('[transfer] Opening transfer modal');
+      const presentingElement: HTMLElement = this.platform.mobile ? document.querySelector('.ion-page') : null;
 
       const modal = await this.modalCtrl.create({
         component: TransferPage,
-        presentingElement: this._presentingElement,
+        presentingElement,
         canDismiss: true,
         componentProps: <TransferPageInputs>{
           ...opts,

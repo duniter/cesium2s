@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
 import { WotSearchFilter, WotSearchFilterUtils } from '@app/wot/wot.model';
-import { arraySize, equals, isNilOrBlank, isNotNilOrBlank, toBoolean, toNumber } from '@app/shared/functions';
-import { firstValueFrom, Observable } from 'rxjs';
+import { arraySize, isNilOrBlank, isNotNilOrBlank, toBoolean, toNumber } from '@app/shared/functions';
+import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, mergeMap, tap } from 'rxjs/operators';
 
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
@@ -14,6 +14,7 @@ import { InfiniteScrollCustomEvent, ModalController } from '@ionic/angular';
 
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
 import { IndexerService } from '@app/network/indexer.service';
+import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 
 export interface WotLookupState extends AppPageState {
   searchText: string;
@@ -22,7 +23,7 @@ export interface WotLookupState extends AppPageState {
   count: number;
   limit: number;
   canFetchMore: boolean;
-  enableInfiniteScroll: boolean;
+  fetchMoreFn: FetchMoreFn<LoadResult<Account>>;
 }
 
 export interface WotLookupOptions {
@@ -30,6 +31,7 @@ export interface WotLookupOptions {
   showToolbar?: boolean;
   showSearchBar?: boolean;
   showItemActions?: boolean;
+  showFilterButtons?: boolean;
   toolbarColor?: PredefinedColors;
   searchText?: string;
   filter?: WotSearchFilter;
@@ -46,15 +48,17 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   @RxStateSelect() protected items$: Observable<Account[]>;
   @RxStateSelect() protected count$: Observable<number>;
   @RxStateSelect() protected filter$: Observable<WotSearchFilter>;
-  @RxStateSelect() protected enableInfiniteScroll$: Observable<boolean>;
+  @RxStateSelect() protected canFetchMore$: Observable<boolean>;
 
   @RxStateProperty() count: number;
+  @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Account>>;
   @RxStateProperty() canFetchMore: boolean;
 
   @Input() modal = false;
   @Input() debounceTime = 650;
   @Input() showToolbar = true;
   @Input() showSearchBar = true;
+  @Input() showFilterButtons = true;
   @Input() showItemActions: boolean;
   @Input() toolbarColor: PredefinedColors = 'primary';
   @Input() @RxStateProperty() filter: WotSearchFilter;
@@ -99,18 +103,15 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
         .pipe(
           filter(({ filter }) => !WotSearchFilterUtils.isEmpty(filter) && filter.address !== 'default'),
           mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
-          tap((items) => {
-            this.canFetchMore = arraySize(items) === this.limit;
+          map(({ data, fetchMore }) => {
+            this.fetchMoreFn = fetchMore;
+            this.canFetchMore = !!fetchMore;
+            return data;
           })
         )
     );
 
     this._state.connect('count', this.items$.pipe(map(arraySize)));
-
-    this._state.connect(
-      'enableInfiniteScroll',
-      this._state.select(['loading', 'canFetchMore'], (res) => res).pipe(map(({ loading, canFetchMore }) => !loading && canFetchMore))
-    );
   }
 
   ngOnInit() {
@@ -133,10 +134,10 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     return <WotLookupState>{ filter };
   }
 
-  search(searchFilter?: WotSearchFilter, options?: { limit: number; offset: number }): Observable<Account[]> {
+  search(searchFilter?: WotSearchFilter, options?: { limit: number; offset: number }): Observable<LoadResult<Account>> {
     try {
       return this.indexerService.wotSearch(searchFilter, options).pipe(
-        filter(() => equals(this.filter, searchFilter)),
+        filter(() => WotSearchFilterUtils.isEquals(this.filter, searchFilter)),
         tap(() => this.markAsLoaded())
       );
     } catch (err) {
@@ -178,18 +179,22 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   }
 
   async fetchMore(event?: InfiniteScrollCustomEvent) {
-    if (!this.canFetchMore || this.loading) return; // Skip
+    // Wait end of current load
+    await this.waitIdle();
 
-    console.debug(this._logPrefix + 'Fetching more, from offset: ' + this.count, event);
-    const items = await firstValueFrom(this.search(this.filter, { limit: this.limit, offset: this.count }));
-    if (items && event?.target && event.target.complete) {
-      if (items.length) {
-        this._state.set('items', (s) => [...s.items, ...items]);
-        this.canFetchMore = items.length === this.limit;
-      } else {
-        this.canFetchMore = false;
+    if (this.canFetchMore) {
+      console.debug(this._logPrefix + 'Fetching more items, from offset: ' + this.count, event);
+      const { data, fetchMore } = await this.fetchMoreFn();
+
+      if (data?.length) {
+        this._state.set('items', (s) => [...s.items, ...data]);
       }
-      event.target.complete();
+      this.fetchMoreFn = fetchMore;
+      this.canFetchMore = !!fetchMore;
+    }
+
+    if (event?.target && event.target.complete) {
+      await event.target.complete();
     }
   }
 

@@ -67,7 +67,7 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
   @Input() showComment: boolean;
   @Input() dismissOnSubmit: boolean = false; // True is modal
   @Input() showToastOnSubmit: boolean = true;
-  @Input() toolbarColor: PredefinedColors;
+  @Input() toolbarColor: PredefinedColors = 'secondary';
 
   @RxStateProperty() submitted: boolean;
 
@@ -248,7 +248,7 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
     event.preventDefault();
 
     const searchText = this.recipient?.address;
-    const data = await this.wotCtrl.select({ searchText, showItemActions: false });
+    const data = await this.wotCtrl.select({ searchText, showItemActions: false, showFilterButtons: false });
 
     if (!data) {
       console.log('TODO cancelled');
