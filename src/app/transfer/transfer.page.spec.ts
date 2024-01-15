@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-import { TransferPage } from './wallet.page';
+import { TransferPage } from './transfer.page';
 
 describe('FolderPage', () => {
   let component: TransferPage;
@@ -9,8 +9,8 @@ describe('FolderPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TransferPage ],
-      imports: [IonicModule.forRoot(), RouterModule.forRoot([])]
+      declarations: [TransferPage],
+      imports: [IonicModule.forRoot(), RouterModule.forRoot([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransferPage);

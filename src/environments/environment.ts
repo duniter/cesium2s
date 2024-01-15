@@ -13,6 +13,12 @@ export const environment = <Environment>{
 
   defaultLocale: 'fr',
 
+  graphql: {
+    fetchPolicy: 'cache-first',
+    watchFetchPolicy: 'cache-and-network',
+    persistCache: false, // TODO test enabled
+  },
+
   // Storage
   storage: {
     name: 'cesium',
@@ -50,4 +56,6 @@ export const environment = <Environment>{
     'wss://gdev.p2p.legal/ws',
     //'wss://1000i100.fr/ws',
   ],
+
+  defaultIndexers: ['https://subsquid.gdev.coinduf.eu/graphql'],
 };

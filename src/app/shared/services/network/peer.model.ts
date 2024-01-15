@@ -32,7 +32,12 @@ export abstract class Peers {
 
   static getWsUri(peer: Peer) {
     if (!peer) return null;
-    return `${peer.useSsl || peer.port === 443 ? 'wss' : 'ws'}://${peer.host}${isNil(peer.port) ? '' : ':' + peer.port}${peer.path || '/ws'}`;
+    return `${peer.useSsl || peer.port === 443 ? 'wss' : 'ws'}://${peer.host}${isNil(peer.port) ? '' : ':' + peer.port}${peer.path || ''}`;
+  }
+
+  static getHttpUri(peer: Peer) {
+    if (!peer) return null;
+    return `${peer.useSsl || peer.port === 443 ? 'https' : 'http'}://${peer.host}${isNil(peer.port) ? '' : ':' + peer.port}${peer.path || ''}`;
   }
 
   static sameUri(uri1: string, uri2: string): boolean {

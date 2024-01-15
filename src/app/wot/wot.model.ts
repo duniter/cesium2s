@@ -1,9 +1,22 @@
-import { equals, isNil, isNilOrBlank, isNotNilOrBlank } from '@app/shared/functions';
+import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
+import { PredefinedColors } from '@app/shared/colors/colors.utils';
+
+export interface WotLookupOptions {
+  debounceTime?: number;
+  showToolbar?: boolean;
+  showSearchBar?: boolean;
+  showItemActions?: boolean;
+  showFilterButtons?: boolean;
+  toolbarColor?: PredefinedColors;
+  searchText?: string;
+  filter?: WotSearchFilter;
+}
 
 export interface WotSearchFilter {
   address?: string;
-  text?: string;
+  searchText?: string;
   last?: boolean;
+  pending?: boolean;
 }
 
 export class WotSearchFilterUtils {
@@ -12,6 +25,6 @@ export class WotSearchFilterUtils {
   }
 
   static isEmpty(filter: WotSearchFilter) {
-    return !filter || (isNilOrBlank(filter.text) && isNil(filter.last) && isNotNilOrBlank(filter.address));
+    return !filter || (isNilOrBlank(filter.searchText) && isNil(filter.last) && isNilOrBlank(filter.address));
   }
 }

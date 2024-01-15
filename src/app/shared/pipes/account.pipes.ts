@@ -2,8 +2,7 @@ import { ChangeDetectorRef, inject, Injectable, Pipe, PipeTransform } from '@ang
 import { Account, AccountUtils } from '@app/account/account.model';
 import { equals, getPropertyByPath } from '@app/shared/functions';
 import { Subscription } from 'rxjs';
-import { formatAddress } from '@app/shared/currencies';
-import { AccountsService } from '@app/account/accounts.service';
+import { AccountsService, LoadAccountDataOptions } from '@app/account/accounts.service';
 
 // @dynamic
 /**
@@ -18,12 +17,16 @@ export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
 
   protected _accountsService = inject(AccountsService);
 
-  protected constructor(private _cd: ChangeDetectorRef) {}
+  protected constructor(
+    private _cd: ChangeDetectorRef,
+    private _watchOptions?: LoadAccountDataOptions
+  ) {}
 
   transform(account: Partial<Account>, opts: O): T {
-    if (!account?.data) {
+    // Not a user account (e.g. any wot identity)
+    if (!account?.address) {
       this._dispose();
-      return undefined;
+      return this._transform(account);
     }
 
     // if we ask another time for the same account and opts, return the last value
@@ -45,7 +48,7 @@ export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
 
     // subscribe to onTranslationChange event, in case the translations change
     if (!this._changesSubscription) {
-      this._changesSubscription = this._accountsService.watchByAddress(account.address).subscribe((updatedAccount) => {
+      this._changesSubscription = this._accountsService.watchByAddress(account.address, this._watchOptions).subscribe((updatedAccount) => {
         this.value = this._transform(updatedAccount, opts);
         this._cd.markForCheck();
       });
@@ -105,7 +108,7 @@ export class AccountPropertyPipe<T = never, O extends AccountPropertyPipeOptions
 })
 export class AccountBalancePipe extends AccountAbstractPipe<number, void> implements PipeTransform {
   constructor(_ref: ChangeDetectorRef) {
-    super(_ref);
+    super(_ref, { withBalance: true });
   }
 
   protected _transform(account: Partial<Account>): number {
@@ -123,6 +126,29 @@ export class AccountNamePipe extends AccountAbstractPipe<string, void> implement
   }
 
   protected _transform(account: Partial<Account>): string {
-    return account?.meta?.name || formatAddress(account?.address);
+    return AccountUtils.getDisplayName(account);
+  }
+}
+
+@Pipe({
+  name: 'isMemberAccount',
+  pure: false,
+})
+export class IsMemberAccountPipe extends AccountAbstractPipe<boolean, void> implements PipeTransform {
+  constructor(_ref: ChangeDetectorRef) {
+    super(_ref);
+  }
+
+  protected _transform(account: Partial<Account>): boolean {
+    return (account && account.meta && account.meta.isMember === true) || false;
+  }
+}
+
+@Pipe({
+  name: 'isUserAccount',
+})
+export class IsUserAccountPipePipe implements PipeTransform {
+  transform(account: Partial<Account>): boolean {
+    return account?.meta?.self === true;
   }
 }

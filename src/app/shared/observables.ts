@@ -120,3 +120,7 @@ export async function waitForTrue(observable: Observable<boolean>, opts?: WaitFo
   }
   return firstValueFrom(firstTrueObservable);
 }
+
+export async function waitForFalse(observable: Observable<boolean>, opts?: WaitForOptions): Promise<void> {
+  return waitForTrue(observable.pipe(map((v) => v === false)), opts);
+}

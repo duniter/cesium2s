@@ -3,20 +3,19 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { TransferPage } from './transfer.page';
 import { AppSharedModule } from '@app/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { TransferPageRoutingModule } from '@app/transfer/transfer-routing.module';
-import { WotModule } from '@app/wot/wot.module';
 import { TransferController } from '@app/transfer/transfer.controller';
+import { APP_TRANSFER_CONTROLLER } from '@app/transfer/transfer.model';
 
 @NgModule({
-  imports: [AppSharedModule, TranslateModule.forChild(), TransferPageRoutingModule, WotModule],
+  imports: [AppSharedModule, TranslateModule.forChild()],
   declarations: [TransferPage],
 })
 export class AppTransferModule {
   static forRoot(): ModuleWithProviders<AppTransferModule> {
-    console.info('[transfer] Creating module (root)');
+    console.debug('[transfer] Creating module (root)');
     return {
       ngModule: AppTransferModule,
-      providers: [TransferController],
+      providers: [TransferController, { provide: APP_TRANSFER_CONTROLLER, useExisting: TransferController }],
     };
   }
 }

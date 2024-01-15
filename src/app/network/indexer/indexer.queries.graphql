@@ -1,0 +1,71 @@
+
+fragment LightAccount on Account {
+  id
+  identity {
+    name
+    membership {
+      id
+    }
+  }
+}
+
+query WotSearchByText($searchText: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
+  accounts(
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+    where: { id_startsWith: $searchText, OR: { identity: { name_containsInsensitive: $searchText } } }
+  ) {
+    ...LightAccount
+  }
+}
+
+query WotSearchByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
+  accounts(
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+    where: { id_eq: $address }
+  ) {
+    ...LightAccount
+  }
+}
+
+query WotSearchLast($limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!], $pending: Boolean!) {
+  accounts(
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy,
+    where: {identity: {id_isNull: false}, AND: {identity: {membership_isNull: $pending} }}
+  ) {
+    ...LightAccount
+  }
+}
+
+fragment Transfer on Transfer {
+  id
+  amount
+  timestamp
+  blockNumber
+  from {
+    ...LightAccount
+  }
+  to {
+    ...LightAccount
+  }
+}
+
+query txHistoryByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [TransferOrderByInput!]) {
+  accounts(
+    limit: 1
+    offset: 0,
+    where: {id_eq: $address}
+  ) {
+    transfersIssued(limit: $limit, offset: $offset, orderBy: $orderBy) {
+      ...Transfer
+    }
+    transfersReceived(limit: $limit, offset: $offset, orderBy: $orderBy) {
+      ...Transfer
+    }
+  }
+}

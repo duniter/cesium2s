@@ -5,7 +5,7 @@
     "APP_BUILD": "date : {{build}}",
     "PUBKEY": "Publika ŝlosilo",
     "MEMBER": "Membro",
-    "BLOCK" : "Bloko",
+    "BLOCK": "Bloko",
     "BTN_OK": "OK",
     "BTN_YES": "Jes",
     "BTN_NO": "Ne",
@@ -129,7 +129,7 @@
     "FORK_ME": "Duobligu min!",
     "SHOW_LICENSE": "Vidi la licencon de la programo",
     "REPORT_ISSUE": "fuŝaĵo",
-    "NOT_YOUR_ACCOUNT_QUESTION" : "Vi ne posedas la konton <b class=\"ion-key\"> {{pubkey|formatPubkey}}</b>&nbsp;?",
+    "NOT_YOUR_ACCOUNT_QUESTION": "Vi ne posedas la konton <b class=\"ion-key\"> {{pubkey|formatPubkey}}</b>&nbsp;?",
     "BTN_CHANGE_ACCOUNT": "Malkonektu tiun ĉi konton",
     "CONNECTION_ERROR": "Nodo <b>{{server}}</b> neatingebla aŭ adreso nevalida.<br/><br/>Kontrolu vian retkonekton, aŭ elektu alian nodon <a class=\"positive\" ng-click=\"doQuickFix('settings')\">ĉe la parametroj</a>.",
     "SHOW_ALL_FEED": "Vidi ĉion",
@@ -279,7 +279,7 @@
       "WOT_RULES_DIVIDER": "Reguloj de la reto de fido",
       "SENTRIES": "Nombro de atestaĵoj (senditaj <b>kaj</b> ricevitaj) por fariĝi referenca membro",
       "SENTRIES_FORMULA": "Nombro de atestaĵoj (senditaj <b>kaj</b> ricevitaj) por fariĝi referenca membro (formulo)",
-      "XPERCENT":"Minimuma procento da referencaj membroj atingenda por konformiĝi al la regulo pri distanco",
+      "XPERCENT": "Minimuma procento da referencaj membroj atingenda por konformiĝi al la regulo pri distanco",
       "AVG_GEN_TIME": "Meza daŭro inter du blokoj",
       "CURRENT": "nuna",
       "MATH_CEILING": "PLAFONO",
@@ -321,13 +321,13 @@
     "MIRROR": "spegulo",
     "MIRRORS": "Speguloj",
     "MIRROR_PEERS": "Spegul-nodoj",
-    "PEER_LIST" : "Listo de la nodoj",
-    "MEMBERS" : "Membroj",
-    "MEMBER_PEERS" : "Membro-nodoj",
-    "ALL_PEERS" : "Ĉiuj nodoj",
-    "DIFFICULTY" : "Malfacileco",
-    "API" : "API",
-    "CURRENT_BLOCK" : "Bloko #",
+    "PEER_LIST": "Listo de la nodoj",
+    "MEMBERS": "Membroj",
+    "MEMBER_PEERS": "Membro-nodoj",
+    "ALL_PEERS": "Ĉiuj nodoj",
+    "DIFFICULTY": "Malfacileco",
+    "API": "API",
+    "CURRENT_BLOCK": "Bloko #",
     "POPOVER_FILTER_TITLE": "Filtrilo",
     "OFFLINE": "Nekonektita",
     "OFFLINE_PEERS": "Nekonektitaj nodoj",
@@ -405,7 +405,7 @@
       "SENTRY_MEMBER": "Referenca membro"
     },
     "OPERATIONS": {
-      "TITLE": "{{uid}} - Spezoj"
+      "TITLE": "Spezoj"
     },
     "GIVEN_CERTIFICATIONS": {
       "TITLE": "{{uid}} - Senditaj atestaĵoj",
@@ -642,7 +642,7 @@
         "WIF_FORMAT_HELP": "Tiu strukturo stokas vian ŝlosilaron inkluzivante en ĝin kontrol-sumon por kontroli la sendifektecon de la dosiero. Ĝi kongruas aparte kun la paper-monujoj (Duniter paper wallet).<br/><b>Atenton:</b>La dosiero <b>ne estas ĉifrita</b> (la sekreta ŝlosilo klare aperas en ĝi); bonvolu do stoki ĝin en sekura loko!",
         "EWIF_FORMAT": "Strukturo EWIF (Encrypted Wallet Import Format) - v1",
         "EWIF_FORMAT_HELP": "Tiu strukturo stokas vian ŝlosilaron <b>laŭ ĉifrita maniero</b> dank'al sekreta frazo elektita de vi. Ĝi ankaŭ inkluzivas kontrol-sumon por kontroli la sendifektecon de la dosiero.<br/><b>Atenton:</b> Zorgu, ke vi ĉiam rememoru vian sekretan frazon!",
-	      "PASSWORD_POPUP": {
+        "PASSWORD_POPUP": {
           "TITLE": "Ĉifrita dosiero pri ŝlosilaro",
           "HELP": "Bonvolu indiki la la sekretan frazon:",
           "PASSWORD_HELP": "Sekreta frazo"
@@ -767,7 +767,7 @@
     "REVOCATION_FAILED": "Malsukceso pri nuligo.",
     "SALT_OR_PASSWORD_NOT_CONFIRMED": "Sekreta identigilo aŭ pasvorto malĝusta.",
     "RECOVER_ID_FAILED": "Malsukceso por ricevi la identigilojn",
-    "LOAD_FILE_FAILED" : "Malsukceso por ŝarĝi la dosieron",
+    "LOAD_FILE_FAILED": "Malsukceso por ŝarĝi la dosieron",
     "NOT_VALID_REVOCATION_FILE": "Dosiero pri nuligo ne valida (malĝusta strukturo de dosiero)",
     "NOT_VALID_SAVE_ID_FILE": "Dosiero pri konservado ne valida (malĝusta strukturo de dosiero)",
     "NOT_VALID_KEY_FILE": "Dosiero pri ŝlosilaro ne valida (strukturo ne rekonata)",
@@ -928,7 +928,7 @@
       "END_READONLY": "Tiu ĉi gvidata vizito <b>finiĝis</b>.<br/><br/>{{'MODE.READONLY.INSTALL_HELP'|translate}}."
     }
   },
-  "API" :{
+  "API": {
     "COMMON": {
       "LINK_DOC": "Dokumentaro API",
       "LINK_DOC_HELP": "Dokumentaro por la programistoj",

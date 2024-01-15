@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { WotLookupPage } from './wot-lookup.page';
 import { WotDetailsPage } from '@app/wot/wot-details.page';
+import { AppWotModule } from '@app/wot/wot.module';
 
 const routes: Routes = [
   {
@@ -15,10 +16,14 @@ const routes: Routes = [
     pathMatch: 'full',
     component: WotDetailsPage,
   },
+  {
+    path: 'tx',
+    loadChildren: () => import('../history/wallet-tx-routing.module').then((m) => m.AppWalletTxRoutingModule),
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [AppWotModule, RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class WotRoutingModule {}
+export class AppWotRoutingModule {}

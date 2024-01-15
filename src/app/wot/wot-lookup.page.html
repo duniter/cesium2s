@@ -1,19 +1,20 @@
-<ion-header [translucent]="true" *ngIf="showToolbar">
-  <ion-toolbar [color]="toolbarColor">
-    <ion-buttons slot="start" *ngIf="!modal">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title translate>MENU.WOT</ion-title>
-    <ion-buttons slot="end">
-      <ng-content select="[toolbar-end]"></ng-content>
+@if (showToolbar) {
+  <ion-header [translucent]="true">
+    <ion-toolbar [color]="toolbarColor">
+      <ion-buttons slot="start" *ngIf="!isModal">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title translate>MENU.WOT</ion-title>
+      <ion-buttons slot="end">
+        <ng-content select="[toolbar-end]"></ng-content>
 
-      <!-- close -->
-      <ion-button fill="clear" *ngIf="closeClick.observed" (click)="closeClick.emit($event)" translate>COMMON.BTN_CLOSE</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="showSearchBar">
+        <!-- close -->
+        <ion-button fill="clear" *ngIf="closeClick.observed" (click)="closeClick.emit($event)" translate>COMMON.BTN_CLOSE</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+}
+<ion-content>
   <ion-header collapse="condense" *ngIf="showToolbar">
     <ion-toolbar>
       <ion-title size="large" translate>MENU.WOT</ion-title>
@@ -21,57 +22,121 @@
   </ion-header>
 
   <div id="container">
-    <ion-searchbar
-      *ngIf="showSearchBar"
-      #searchBar
-      inputmode="search"
-      autocomplete="off"
-      animated="true"
-      showClearButton="true"
-      [debounce]="debounceTime"
-      (ionClear)="markAsLoading()"
-      (ionInput)="markAsLoading()"
-      (ionChange)="searchChanged($event, $event.detail.value)"
-      (search)="searchChanged($event, searchBar.value)"
-      [placeholder]="'WOT.SEARCH_HELP' | translate"
-      (click)="searchClick.emit($event)"
-    ></ion-searchbar>
+    @if (showSearchBar) {
+      <ion-searchbar
+        #searchBar
+        inputmode="search"
+        autocomplete="off"
+        animated="true"
+        showClearButton="true"
+        [debounce]="debounceTime"
+        (ionClear)="clearSearch($event)"
+        (ionInput)="searchChanged($event, $event.detail.value)"
+        (search)="searchChanged($event, searchBar.value)"
+        (keydown.enter)="refresh.emit($event)"
+        [placeholder]="'WOT.SEARCH_HELP' | translate"
+        (click)="searchClick.emit($event)"
+      ></ion-searchbar>
+    }
 
-    <ion-list>
-      <ng-container *ngIf="loading; else items">
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+    <ion-list-header *ngIf="showFilterButtons">
+      <ion-grid>
+        <ion-col>&nbsp;</ion-col>
+        <ion-col class="ion-float-end" size="auto">
+          <ion-button
+            fill="clear"
+            [color]="filter?.last && !filter.pending ? 'secondary' : 'dark'"
+            (click)="applyFilter({ last: true, pending: false, searchText: '' })"
+          >
+            <ion-icon name="people" slot="start"></ion-icon>
+            <ion-label translate>WOT.LOOKUP.NEWCOMERS</ion-label>
+          </ion-button>
+          <ion-button
+            fill="clear"
+            [color]="filter?.last && filter.pending ? 'secondary' : 'dark'"
+            (click)="applyFilter({ last: true, pending: true, searchText: '' })"
+          >
+            <ion-icon name="time-outline" slot="start"></ion-icon>
+            <ion-label translate>WOT.LOOKUP.PENDING</ion-label>
+          </ion-button>
+
+          <ion-button fill="solid" color="light" (click)="refresh.emit($event)">
+            <ion-label translate>COMMON.BTN_SEARCH</ion-label>
+          </ion-button>
+        </ion-col>
+      </ion-grid>
+      <!-- <ion-item lines="none" class="ion-float-end" style="width: 100%">
+        <ion-buttons slot="end">
+
+        </ion-buttons>
+      </ion-item>-->
+    </ion-list-header>
+
+    <ion-list [class.cdk-visually-hidden]="loading$ | push">
+      <!-- loading spinner -->
+      <ng-container *rxIf="loading$; else items">
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
       </ng-container>
 
       <ng-template #items>
-        <ion-item-sliding *rxFor="let item of items$">
-          <ion-item [detail]="!itemClick.observed" (click)="click(item)">
-            <ion-avatar slot="start" *ngIf="item.meta?.avatar; else iconPerson">
-              <ion-img [src]="item.meta?.avatar"></ion-img>
-            </ion-avatar>
-            <ng-template #iconPerson>
+        <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
+          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)">
+            @if (item.meta?.avatar) {
+              <ion-avatar slot="start">
+                <ion-img [src]="item.meta?.avatar"></ion-img>
+              </ion-avatar>
+            } @else {
               <ion-avatar slot="start">
                 <svg width="40" width="40" [data-jdenticon-value]="item.data?.randomId || item.address"></svg>
               </ion-avatar>
-            </ng-template>
+            }
             <ion-label>
-              <h2>{{ item.meta?.name }}</h2>
-              <p>{{ item.address | addressFormat }}</p>
+              <h2>
+                <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
+                  <small><ion-icon name="person"></ion-icon></small>
+                  {{ item.meta?.uid }}
+                </ion-text>
+              </h2>
+              <p>
+                <ion-icon name="key"></ion-icon>
+                {{ item.address | addressFormat }}
+              </p>
             </ion-label>
-            <ion-button slot="end" *ngIf="showItemActions && !mobile" (click)="transfer(item)" [title]="'BTN_SEND_MONEY' | translate">
+            <ion-button
+              slot="end"
+              *ngIf="showItemActions && !mobile"
+              (click)="transferTo($event, item)"
+              [title]="'COMMON.BTN_SEND_MONEY' | translate"
+            >
               <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
             </ion-button>
           </ion-item>
 
           <ion-item-options *ngIf="mobile && showItemActions">
-            <ion-item-option (click)="transfer(item)" [title]="'BTN_SEND_MONEY' | translate">
+            <ion-item-option (click)="transferTo($event, item)" [title]="'COMMON.BTN_SEND_MONEY' | translate">
               <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
+
+        <!-- no result -->
+        <ion-item *rxIf="(count$ | push) === 0" lines="none">
+          <ion-text color="danger" class="text-italic" translate>COMMON.SEARCH_NO_RESULT</ion-text>
+        </ion-item>
       </ng-template>
     </ion-list>
+
+    <!-- infinite scroll -->
+    <ion-infinite-scroll
+      [disabled]="(canFetchMore$ | async) === false"
+      [threshold]="mobile ? '100px' : '2%'"
+      position="bottom"
+      (ionInfinite)="fetchMore($event)"
+    >
+      <ion-infinite-scroll-content loading-spinner="none">
+        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
 </ion-content>
 
