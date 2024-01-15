@@ -243,7 +243,7 @@ release:tags:
 
 gitlab-release:
   stage: release
-  tags: [sih_public_runner]
+  tags: [kepler]
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
     - echo "running release for ${CI_COMMIT_TAG}"

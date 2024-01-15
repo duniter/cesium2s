@@ -1,7 +1,7 @@
 @if (showToolbar) {
   <ion-header [translucent]="true">
     <ion-toolbar [color]="toolbarColor">
-      <ion-buttons slot="start" *ngIf="!modal">
+      <ion-buttons slot="start" *ngIf="!isModal">
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title translate>MENU.WOT</ion-title>
