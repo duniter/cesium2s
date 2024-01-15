@@ -6,7 +6,7 @@ import { environment } from '@environments/environment';
 import { waitForFalse, WaitForOptions } from '@app/shared/observables';
 import { IonRouterOutlet, ToastController, ToastOptions } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { map, Observable, Subscription } from 'rxjs';
+import { map, Observable, Subject, Subscription } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { RxStateProperty, RxStateRegister, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { FormGroup } from '@angular/forms';
