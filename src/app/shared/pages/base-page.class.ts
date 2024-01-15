@@ -4,7 +4,7 @@ import { SettingsService } from '@app/settings/settings.service';
 import { changeCaseToUnderscore, isNotNilOrBlank, sleep } from '@app/shared/functions';
 import { environment } from '@environments/environment';
 import { waitForFalse, WaitForOptions } from '@app/shared/observables';
-import { IonRouterOutlet, ToastController, ToastOptions } from '@ionic/angular';
+import { IonRouterOutlet, NavController, ToastController, ToastOptions } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { map, Observable, Subscription } from 'rxjs';
 import { RxState } from '@rx-angular/state';
