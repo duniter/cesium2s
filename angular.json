@@ -53,7 +53,7 @@
               },
               {
                 "glob": "manifest.json",
-                "input": "src/assets",
+                "input": "src",
                 "output": "/"
               }
             ],

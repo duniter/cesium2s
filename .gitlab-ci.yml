@@ -8,6 +8,8 @@ image: node:18-slim
 stages:
   - environment
   - build
+  - alt_build
+  - release
 
 # ---------------------------------------------------------------
 # Global variables
@@ -17,9 +19,11 @@ variables:
   CI_BUILD_IMAGE: $CI_REGISTRY_IMAGE/build:develop
   BUILD_CACHE_DIR: /tmp/.build-cache
   BUILD_ENVIRONMENT: prod
+  DOCKER_BUILDKIT: 1
+  ARTIFACT_ZIP_FILES: ${OUTPUT_DIR}/${CI_PROJECT_NAME}-*.zip
   ENV_FILE: variables.env
-  IONIC_CLI_VERSION: 7.1.1
-  ANGULAR_CLI_VERSION: 7.1.5
+  IONIC_CLI_VERSION: 7.2.0
+  ANGULAR_CLI_VERSION: 17.0.3
 
 # ---------------------------------------------------------------
 # Jobs templates
@@ -39,9 +43,9 @@ variables:
   services:
     - docker:dind
   before_script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+#    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
   after_script:
-    - docker logout ${CI_REGISTRY}
+  #    - docker logout ${CI_REGISTRY}
   allow_failure: false
 
 # ---------------------------------------------------------------
@@ -82,6 +86,9 @@ build:env:
     # Show version
     #- ng version
     - npm version
+  script:
+    # Build
+    - npm run build:${BUILD_ENVIRONMENT}
   after_script:
     # Remember version
     - APP_VERSION=$(node -e "console.log(require('./package.json').version)")
@@ -96,19 +103,154 @@ build:env:
 build:
   extends: .build
   image: ${CI_BUILD_IMAGE}
-  script:
-    # Build
-    - npm run build:${BUILD_ENVIRONMENT}
   only:
     - develop
 
 build:feature:
   extends: .build
   image: ${CI_BUILD_IMAGE}
-  script:
-    # Build
-    - npm run build:${BUILD_ENVIRONMENT}
   only:
     - /^feature\/.*/
     - /^features\/.*/
   when: manual
+
+
+failsafe-build:
+  extends: .build
+  stage: alt_build
+  when: on_failure
+  before_script:
+    # Install global dependencies
+    - npm install -g @ionic/cli@${IONIC_CLI_VERSION} @angular/cli@${ANGULAR_CLI_VERSION}
+    # Update project dependencies
+    - npm install --force
+  only:
+    - develop
+    - /^feature\/.*/
+    - /^features\/.*/
+
+# ---------------------------------------------------------------
+# Release jobs
+# ---------------------------------------------------------------
+.release:
+  <<: *git-setup
+  stage: release
+  script:
+    - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "ERROR: Missing environment variable 'RELEASE_VERSION'" ; exit 1; fi
+    - echo "--- Release in progress"
+    - git checkout -b release/${RELEASE_VERSION}
+    - echo "--- Manage app version"
+    - 'current=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?" package.json | grep -m 1 -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
+    - 'currentAndroidVersionCode=`grep -oP "versionCode [0-9]+" android/app/build.gradle | grep -oP "\d+"`'
+    - 'currentAndroidVersionName=`grep -oP "versionName \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" android/app/build.gradle | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
+    - 'currentManifestVersion=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
+    - 'IFS="."'
+    - 'read -ra SPLITED_VERSION <<< "${RELEASE_VERSION}"'
+    - 'IFS="-"'
+    - 'read -ra SPLITED_PATCH <<< "${SPLITED_VERSION[2]}"'
+    - 'major2d=$(printf %02d ${SPLITED_VERSION[0]}) ; minor2d=$(printf %02d ${SPLITED_VERSION[1]}) ; patch2d=$(printf %02d ${SPLITED_PATCH[0]})'
+    - 'androidVersionCode=$major2d$minor2d$patch2d'
+    - 'sed -i "s/version\": \"$current\"/version\": \"${RELEASE_VERSION}\"/g" package.json'
+    - 'sed -i "s/versionCode $currentAndroidVersionCode\"/ versionCode $androidVersionCode\"/g" android/app/build.gradle'
+    - 'sed -i "s/versionName \"$currentAndroidVersionName\"/ versionName \"${RELEASE_VERSION}\"/g" android/app/build.gradle'
+    - 'sed -i "s/version\": \"$currentManifestVersion\"/version\": \"${RELEASE_VERSION}\"/g" src/manifest.json'
+    - 'sed -i "s/echo \".*\" #lastest/echo \"${RELEASE_VERSION}\" #lastest/g" install.sh'
+    # Copy cached dependencies and build
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - cp -R "${BUILD_CACHE_DIR}/node_modules" .
+    # Show version
+    # FIXME fail since 13/11/2023
+    #- ng version
+    - npm version
+    # Build
+    - export NODE_OPTIONS=--max-old-space-size=4096
+    - npm run build:prod
+    # Git process for release (ISO gitflow)
+    - git add .
+    - git commit -m "Prepare release ${RELEASE_VERSION}"
+    - git checkout master
+    - git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
+    - git tag -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
+    - git checkout develop
+    - git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
+    - git push origin develop
+    - git push origin master
+    - git push --tags
+    - git branch -D "release/${RELEASE_VERSION}"
+  after_script:
+    # Remember version
+    - APP_VERSION=$(node -e "console.log(require('./package.json').version)")
+    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
+    # Zip output
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
+    - currentDir=$(pwd)
+    - mkdir -p ${currentDir}/dist
+    - zipFile=${currentDir}/dist/${fileName}
+    - if [[ -f "${zipFile}" ]]; then rm "${zipFile}"; fi
+    - cd www || exit 1
+    - if ! zip -q -r "${zipFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
+    - cd ..
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "Deploy to gitlab generic package :"
+    - echo " File= ${zipFile}"
+    - echo " Url= ${targetUrl}"
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${zipFile}" "${targetUrl}"; then exit 1; fi'
+  artifacts:
+    paths:
+      - www
+    reports:
+      dotenv: ${ENV_FILE}
+    expire_in: 24 hours
+  allow_failure: false
+  only:
+    - develop
+  when: manual
+
+release:
+  extends: .release
+  image: ${CI_BUILD_IMAGE}
+  needs: [build]
+
+failsafe-release:
+  extends: .release
+  needs: [failsafe-build]
+
+release:tags:
+  <<: *git-setup
+  image: ${CI_BUILD_IMAGE}
+  stage: release
+  script:
+    - echo "--- Release in progress"
+    - git checkout -b release/${CI_COMMIT_TAG}
+    # Copy cached dependencies and build
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - cp -R "${BUILD_CACHE_DIR}/node_modules" .
+    # Show version
+    # FIXME fail since 13/11/2023
+    #- ng version
+    - npm version
+    # Build
+    - export NODE_OPTIONS=--max-old-space-size=4096
+    - npm run build:prod
+  artifacts:
+    paths:
+      - www
+    expire_in: 24 hours
+  allow_failure: false
+  when: manual
+  only:
+    - tags
+
+gitlab-release:
+  stage: release
+  tags: [sih_public_runner]
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - echo "running release for ${CI_COMMIT_TAG}"
+  release:
+    name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
+    description: "Created using the release-cli $EXTRA_DESCRIPTION"
+    tag_name: "${CI_COMMIT_TAG}"
+    ref: "${CI_COMMIT_TAG}"
+  only:
+    - tags
