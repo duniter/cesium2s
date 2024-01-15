@@ -1,0 +1,101 @@
+
+fragment LightAccount on Account {
+  id
+  __typename
+
+  identity {
+    __typename
+    id
+    name
+    membership {
+      __typename
+      id
+    }
+  }
+}
+
+query WotSearchByText($searchText: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
+  accounts(
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+    where: { id_startsWith: $searchText, OR: { identity: { name_containsInsensitive: $searchText } } }
+  ) {
+    ...LightAccount
+  }
+}
+
+query WotSearchByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
+  accounts(
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+    where: { id_eq: $address }
+  ) {
+    ...LightAccount
+  }
+}
+
+query WotSearchLast($limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!], $pending: Boolean!) {
+  accounts(
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+    where: {identity: {id_isNull: false}, AND: {identity: {membership_isNull: $pending} }}
+  ) {
+    ...LightAccount
+  }
+}
+
+fragment Transfer on Transfer {
+  id
+  __typename
+  amount
+  timestamp
+  blockNumber
+  from {
+    ...LightAccount
+  }
+  to {
+    ...LightAccount
+  }
+}
+
+query TransferSearchByAddress($address: String!, $limit: Int!, $orderBy: [TransferOrderByInput!], $where: TransferWhereInput) {
+  accounts(
+    limit: 1
+    where: {id_eq: $address}
+  ) {
+    ...LightAccount
+    transfersIssued(orderBy: $orderBy, where: $where, limit: $limit) {
+      ...Transfer
+    }
+    transfersReceived(orderBy: $orderBy, where: $where, limit: $limit) {
+      ...Transfer
+    }
+  }
+}
+
+fragment LightBlock on Block {
+  id
+  height
+  hash
+  timestamp
+  callsCount
+  eventsCount
+  extrinsicsCount
+  __typename
+}
+
+query BlockById($id: String!) {
+  blockById(id: $id) {
+    ...LightBlock
+  }
+}
+
+
+query Blocks($where: BlockWhereInput, $limit: Int!, $offset: Int!, $orderBy: [BlockOrderByInput!]) {
+  blocks(limit: $limit, offset: $offset, orderBy: $orderBy, where: $where) {
+    ...LightBlock
+  }
+}

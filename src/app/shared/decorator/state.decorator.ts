@@ -21,12 +21,19 @@ export function RxStateRegister(): PropertyDecorator {
   };
 }
 
-export function RxStateProperty<T = any>(statePropertyName?: string | keyof T, opts?: { stateName?: string }): PropertyDecorator {
+export function RxStateProperty<T = any, K1 extends keyof T = any, K2 extends keyof T[K1] = any>(
+  statePropertyName?: string | K1 | [K1, K2],
+  opts?: { stateName?: string }
+): PropertyDecorator {
   return function (target: Constructor, key: string) {
     // DEBUG
     //console.debug(`${target.constructor?.name} @StateProperty() ${key}`);
 
-    statePropertyName = (statePropertyName as string) || key;
+    const statePropertyNames = Array.isArray(statePropertyName)
+      ? statePropertyName
+      : typeof statePropertyName === 'string'
+        ? [statePropertyName]
+        : [key];
     const state = target instanceof RxState ? null : target[STATE_VAR_NAME_KEY] || opts?.stateName || DEFAULT_STATE_VAR_NAME;
     const stateObj = state ? `this.${state}` : `this`;
 
@@ -38,9 +45,9 @@ export function RxStateProperty<T = any>(statePropertyName?: string | keyof T, o
       state && !environment.production
         ? `  if (!this.${state}) throw new Error('Missing state! Please add a RxState in class: ' + this.constructor.name);\n`
         : '';
-    const getter = new Function(`return function ${getMethodName}(){\n  return ${stateObj}.get('${statePropertyName}');\n}`)();
+    const getter = new Function(`return function ${getMethodName}(){\n  return ${stateObj}.get('${statePropertyNames.join("','")}');\n}`)();
     const setter = new Function(
-      `return function ${setMethodName}(value){\n${checkStateExists}  ${stateObj}.set('${statePropertyName}', _ => value);\n}`
+      `return function ${setMethodName}(value){\n${checkStateExists}  ${stateObj}.set('${statePropertyNames.join("','")}', _ => value);\n}`
     )();
 
     target[getMethodName] = getter;

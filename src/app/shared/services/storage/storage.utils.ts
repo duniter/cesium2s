@@ -2,8 +2,6 @@ import { InjectionToken } from '@angular/core';
 import { Drivers } from '@ionic/storage';
 import * as LocalForage from 'localforage';
 
-import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface IStorage<V = any> {
   readonly driver: string;
@@ -16,7 +14,6 @@ export interface IStorage<V = any> {
 }
 
 export const StorageDrivers = {
-  SQLLite: CordovaSQLiteDriver._driver,
   SecureStorage: Drivers.SecureStorage,
   WebSQL: LocalForage.WEBSQL,
   IndexedDB: Drivers.IndexedDB,

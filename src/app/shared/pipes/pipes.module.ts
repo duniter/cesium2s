@@ -35,7 +35,13 @@ import { FormGetArrayPipe, FormGetControlPipe, FormGetGroupPipe, FormGetPipe, Fo
 import { PropertyGetPipe } from './property.pipes';
 import { AmountFormatPipe } from '@app/shared/pipes/amount.pipe';
 import { AddressFormatPipe } from '@app/shared/pipes/address.pipes';
-import { AccountBalancePipe, AccountNamePipe, AccountPropertyPipe } from '@app/shared/pipes/account.pipes';
+import {
+  AccountBalancePipe,
+  AccountNamePipe,
+  AccountPropertyPipe,
+  IsMemberAccountPipe,
+  IsUserAccountPipePipe,
+} from '@app/shared/pipes/account.pipes';
 import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
 
 @NgModule({
@@ -84,6 +90,8 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
     AccountPropertyPipe,
     AccountBalancePipe,
     AccountNamePipe,
+    IsMemberAccountPipe,
+    IsUserAccountPipePipe,
   ],
   exports: [
     PropertyGetPipe,
@@ -129,6 +137,8 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
     AccountPropertyPipe,
     AccountBalancePipe,
     AccountNamePipe,
+    IsMemberAccountPipe,
+    IsUserAccountPipePipe,
   ],
 })
 export class SharedPipesModule {}

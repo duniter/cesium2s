@@ -25,4 +25,6 @@ export const environment = <Environment>{
     'wss://gdev.p2p.legal/ws',
     //'wss://1000i100.fr/ws',
   ],
+
+  defaultIndexers: ['https://subsquid.gdev.coinduf.eu/graphql'],
 };

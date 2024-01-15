@@ -1,16 +1,23 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="primary">
+  <ion-toolbar [color]="toolbarColor">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-      <ion-back-button></ion-back-button>
+      @if (_isModal) {
+        <ion-button (click)="cancel()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      } @else {
+        <ion-menu-button *ngIf="showMenuButton"></ion-menu-button>
+        <ion-back-button></ion-back-button>
+      }
     </ion-buttons>
     <ion-title translate>TRANSFER.TITLE</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" *rxLet="loading$ as loading">
-  <ion-header collapse="condense">
+  <ion-header collapse="condense" *ngIf="!_isModal">
     <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
       <ion-title size="large" translate>TRANSFER.TITLE</ion-title>
     </ion-toolbar>
   </ion-header>
@@ -23,12 +30,13 @@
     </ion-item>
 
     <!-- TO -->
-    <ion-item *rxIf="recipient$; let recipient; suspense: skeleton60">
+    <ion-item *rxIf="recipient$; let recipient; suspense: skeletonItem">
       <!--      <ion-label color="medium" translate>TRANSFER.TO</ion-label>-->
       <ion-textarea
         [rows]="mobile ? 2 : 1"
         [tabIndex]="mobile ? -1 : 1"
         [label]="'TRANSFER.TO' | translate"
+        labelPlacement="floating"
         class="ion-text-nowrap"
         [(ngModel)]="recipient.address"
         required
@@ -46,10 +54,16 @@
       <ion-note slot="error" *rxIf="submitted$" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>
 
-    <!-- FROM -->
-    <ion-item *rxIf="accounts$; let accounts; suspense: skeleton60" (click)="selectAccount($event)" tappable>
-      <!--      <ion-label color="medium" translate>TRANSFER.FROM</ion-label>-->
-      <ion-input [(ngModel)]="accountName" [debounce]="450" [label]="'TRANSFER.FROM' | translate" readonly required></ion-input>
+    <!-- from -->
+    <ion-item *rxIf="accounts$; let accounts; suspense: skeletonItem" (click)="selectAccount($event)" tappable>
+      <ion-input
+        [(ngModel)]="accountName"
+        [debounce]="450"
+        [label]="'TRANSFER.FROM' | translate"
+        labelPlacement="floating"
+        readonly
+        required
+      ></ion-input>
 
       <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
 
@@ -58,7 +72,7 @@
 
     <!-- amount -->
     <ion-item>
-      <ion-input type="number" [(ngModel)]="amount" [label]="'TRANSFER.AMOUNT' | translate" required></ion-input>
+      <ion-input type="number" [(ngModel)]="amount" [label]="'TRANSFER.AMOUNT' | translate" labelPlacement="floating" required></ion-input>
       <ion-note color="medium" slot="end" *rxIf="currency$; let currency">{{ currency.symbol }}</ion-note>
       <ion-note slot="error" *rxIf="submitted$" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>
@@ -103,9 +117,9 @@
   </ion-button>
 </ng-template>
 
-<ng-template #skeleton60>
+<ng-template #skeletonItem>
   <ion-item>
-    <ion-icon name="__NONE__" slot="start"></ion-icon>
+    <ion-icon slot="start" name="none"></ion-icon>
     <ion-label>
       <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
     </ion-label>

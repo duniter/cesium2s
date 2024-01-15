@@ -13,6 +13,7 @@ import { UnlockModal } from '@app/account/unlock/unlock.modal';
 import { AccountListComponent, AccountListComponentInputs } from '@app/account/list/account-list.component';
 import { AppEvent } from '@app/shared/types';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+
 @Injectable()
 export class AuthController implements IAuthController {
   private readonly _mobile = this.platform.mobile;

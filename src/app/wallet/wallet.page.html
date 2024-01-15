@@ -57,7 +57,7 @@
       </ion-item>
 
       <!-- pubkey -->
-      <ion-item *ngIf="(account$ | async)?.meta?.publicKeyV1; let pubkey" (click)="copyToClipboard($event, pubkey)">
+      <ion-item *ngIf="(account$ | async)?.meta?.publicKeyV1; let pubkey" (click)="copyToClipboard($event, pubkey)" tappable>
         <ion-icon aria-hidden="true" name="key" slot="start"></ion-icon>
 
         <ion-label>
@@ -73,7 +73,7 @@
       </ion-item>
 
       <!-- address -->
-      <ion-item *rxIf="account$; let account" (click)="copyToClipboard($event, account.address)">
+      <ion-item *rxIf="account$; let account" (click)="copyToClipboard($event, account.address)" tappable>
         <ion-icon aria-hidden="true" slot="start" name="key"></ion-icon>
         <ion-label>
           <h2 translate>COMMON.ADDRESS</h2>
@@ -93,6 +93,18 @@
         </ion-button>
       </ion-item>
 
+      <!-- TX history -->
+      <ion-item detail [routerLink]="['/history/', account?.address]" [routerDirection]="mobile ? 'forward' : 'root'">
+        <ion-icon aria-hidden="true" slot="start" name="card"></ion-icon>
+        <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
+      </ion-item>
+
+      <ion-item detail (click)="notImplementedModal.present()">
+        <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
+        <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
+        <ion-badge color="success" slot="end">0</ion-badge>
+      </ion-item>
+
       <!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->
       <!--        <ion-icon slot="start" name="ribbon"></ion-icon>-->
       <!--        <ion-label translate>ACCOUNT.BALANCE_ACCOUNT</ion-label>-->
@@ -101,15 +113,10 @@
 
       <!--      <ion-item detail  -->
       <!--                 [routerLink]="['/wot/cert/', data?.address]">-->
-      <ion-item detail (click)="notImplementedModal.present()">
-        <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
-        <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
-        <ion-badge color="success" slot="end">0</ion-badge>
-      </ion-item>
     </ion-list>
 
     <div class="ion-text-center ion-padding-top">
-      <ion-button [routerLink]="['/transfer', 'from', (account$ | push)?.address]" [disabled]="loading">
+      <ion-button *rxIf="account$; let account" (click)="transfer()" [disabled]="loading">
         <ion-icon slot="start" name="paper-plane"></ion-icon>
         <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
       </ion-button>

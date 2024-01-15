@@ -48,7 +48,7 @@
     "CHOOSE_FILE": "Déposez votre fichier <br/>ou cliquez pour le sélectionner",
     "DAYS": "jours",
     "NO_ACCOUNT_QUESTION": "Pas encore de compte ? Créez-en un gratuitement !",
-    "SEARCH_NO_RESULT": "Aucun résultat trouvé",
+    "SEARCH_NO_RESULT": "Aucun résultat",
     "LOADING": "Veuillez patienter...",
     "LOADING_WAIT": "Veuillez patienter...<br/><small>(Cesium interroge le nœud Duniter)</small>",
     "SEARCHING": "Recherche en cours...",
@@ -145,6 +145,7 @@
     "BTN_DARK_MODE": "Mode sombre/clair",
     "PEER": "Nœud Duniter",
     "PEER_SHORT": "Nœud Duniter",
+    "INDEXER": "Indexeur de données",
     "PEER_CHANGED_TEMPORARY": "Adresse utilisée temporairement",
     "PERSIST_CACHE": "Conserver les données de navigation (expérimental)",
     "PERSIST_CACHE_HELP": "Permet une navigation plus rapide, en conservant localement les données reçues, pour les utiliser d'une session à l'autre.",
@@ -202,7 +203,7 @@
     "VIEW": {
       "HEADER_TITLE": "Bloc #{{number}}-{{hash|formatHash}}",
       "TITLE_CURRENT": "Bloc courant",
-      "TITLE": "Bloc #{{number|formatInteger}}",
+      "TITLE": "Bloc #{{number}}",
       "COMPUTED_BY": "Calculé par le noeud de",
       "SHOW_RAW": "Voir le fichier brut",
       "TECHNICAL_DIVIDER": "Informations techniques",
@@ -213,6 +214,9 @@
       "POW_MIN": "Difficulté minimale",
       "POW_MIN_HELP": "Difficulté imposée pour le calcul du hash",
       "DATA_DIVIDER": "Données",
+      "CALLS_COUNT": "Nombre de calls",
+      "EXTRINSICS_COUNT": "Nombre d'extrinsics",
+      "EVENTS_COUNT": "Nombre d'évènements",
       "IDENTITIES_COUNT": "Nouvelles identités",
       "JOINERS_COUNT": "Nouveaux membres",
       "ACTIVES_COUNT": "Renouvellements",
@@ -408,7 +412,7 @@
       "SENTRY_MEMBER": "Membre référent"
     },
     "OPERATIONS": {
-      "TITLE": "{{uid}} - Opérations"
+      "TITLE": "Opérations"
     },
     "GIVEN_CERTIFICATIONS": {
       "TITLE": "{{uid}} - Certifications émises",

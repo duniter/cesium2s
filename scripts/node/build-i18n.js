@@ -6,8 +6,6 @@ const { readdirSync, readFileSync, copyFileSync, existsSync, rmSync, mkdirSync }
 let pkgStr = readFileSync('./package.json', {encoding: 'UTF-8'});
 const pkg = JSON.parse(pkgStr);
 
-//console.info()
-
 const targetI18nDir = process.argv[2] || './www/assets/i18n/';
 const sourceI18nDir = './src/assets/i18n/';
 if (!existsSync(targetI18nDir)) {

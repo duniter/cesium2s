@@ -9,7 +9,7 @@ import { fromDateISOString } from '@app/shared/dates';
 export class DateFromNowPipe implements PipeTransform {
   constructor() {}
 
-  transform(value: string | Moment, withoutSuffix: boolean): string {
+  transform(value: string | Moment, withoutSuffix = false): string {
     const date: Moment = isMoment(value) ? (value as Moment) : fromDateISOString(value);
     return date ? date.fromNow(withoutSuffix) : '';
   }

@@ -1,5 +1,7 @@
 import { StorageConfig } from '@ionic/storage';
 import { AuthData } from '@app/account/account.model';
+import { FetchPolicy } from '@apollo/client';
+import { WatchQueryFetchPolicy } from '@apollo/client/core';
 
 export interface Environment {
   name: string;
@@ -9,7 +11,16 @@ export interface Environment {
   // Default values
   baseUrl?: string;
   defaultLocale: string;
+
   defaultPeers: string[];
+  defaultIndexers: string[];
+
+  // GraphQL
+  graphql?: {
+    fetchPolicy?: FetchPolicy;
+    watchFetchPolicy?: WatchQueryFetchPolicy;
+    persistCache?: boolean;
+  };
 
   // Storage
   storage?: Partial<StorageConfig>;

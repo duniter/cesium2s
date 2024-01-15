@@ -10,7 +10,7 @@ import { AuthController } from '@app/account/auth.controller';
 import { TransferController } from '@app/transfer/transfer.controller';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { Observable } from 'rxjs';
-import { Currency } from '@app/network/currency.model';
+import { Currency } from '@app/currency/currency.model';
 import { RxState } from '@rx-angular/state';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 

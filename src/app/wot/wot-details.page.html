@@ -1,7 +1,7 @@
 <ion-header [translucent]="true" *ngIf="showToolbar">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button *ngIf="!canGoBack"></ion-menu-button>
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title translate>MENU.WOT</ion-title>
@@ -26,7 +26,7 @@
 
       <ion-label>{{ account$ | push | accountName }}</ion-label>
 
-      <div slot="end">
+      <div slot="end" *ngIf="showBalance">
         <ion-label class="ion-text-end">
           <p translate>ACCOUNT.BALANCE</p>
           <h2 *rxIf="loaded$; else loadingText">
@@ -43,38 +43,44 @@
   <ion-list>
     <ng-container *rxIf="account$; let account; suspense: skeletons">
       <!-- pubkey -->
-      <ion-item *ngIf="account?.meta?.publicKeyV1; let pubkey">
+      <ion-item *ngIf="account?.meta?.publicKeyV1; let pubkey" (click)="copyPubkey($event)" tappable>
         <ion-icon slot="start" name="key"></ion-icon>
 
         <ion-label>
           <h2 translate>COMMON.PUBKEY</h2>
-          <p class="ion-text-wrap">{{ pubkey }}</p>
+          <p class="ion-text-wrap">{{ pubkey | pubkeyFormat }}</p>
         </ion-label>
 
-        <ion-button slot="end" (click)="copyPubkey()" fill="clear" [title]="'COMMON.COPY' | translate">
+        <ion-button slot="end" fill="clear" [title]="'COMMON.COPY' | translate">
           <ion-icon slot="icon-only" name="copy"></ion-icon>
         </ion-button>
       </ion-item>
 
       <!-- address -->
-      <ion-item>
+      <ion-item (click)="copyAddress($event)" tappable>
         <ion-icon slot="start" name="key"></ion-icon>
 
         <ion-label>
           <h2 translate>COMMON.ADDRESS</h2>
           <p class="ion-text-wrap">
-            <span>{{ account.address }}</span>
+            <span>{{ account.address | addressFormat }}</span>
           </p>
         </ion-label>
-        <ion-button slot="end" (click)="copyAddress()" fill="clear" [title]="'COMMON.COPY' | translate">
+        <ion-button slot="end" (click)="copyAddress($event)" fill="clear" [title]="'COMMON.COPY' | translate">
           <ion-icon slot="icon-only" name="copy"></ion-icon>
         </ion-button>
+      </ion-item>
+
+      <!-- TX history -->
+      <ion-item detail [routerLink]="['/wot', 'tx', account.address, account.meta?.uid]" routerDirection="forward">
+        <ion-icon aria-hidden="true" slot="start" name="card"></ion-icon>
+        <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
       </ion-item>
     </ng-container>
   </ion-list>
 
   <div class="ion-text-center">
-    <ion-button [routerLink]="['/transfer', 'to', account?.address]" [disabled]="loading">
+    <ion-button (click)="transferTo()" [disabled]="loading">
       <ion-icon slot="start" name="paper-plane"></ion-icon>
       <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
     </ion-button>
