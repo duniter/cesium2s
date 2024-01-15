@@ -38,7 +38,7 @@
           <ion-select-option *rxFor="let account of accounts$" [value]="account">
             {{ account | accountName }}
           </ion-select-option>
-          <ion-select-option [value]="new" translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
+          <ion-select-option [value]="'new'" translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
         </ion-select>
       } @else {
         <ion-label>{{ account | accountName }}</ion-label>
