@@ -11,7 +11,7 @@
   },
   "scripts": {
     "ng": "ng",
-    "clean": "rm -rf www",
+    "clean": "rm -rf www .angular/cache",
     "start": "ng serve",
     "start:dev": "ng serve --host 0.0.0.0 --disable-host-check",
     "start:prod": "ng serve --configuration production",

@@ -82,11 +82,11 @@
             [routerLink]="['/wot', item.account.address]"
             routerDirection="forward"
             (click)="showAccount($event, item.account)"
-            [class.ion-color-primary]="isMember"
-            [class.ion-color-dark]="!isMember"
+            class="tx-account"
+            [class.member]="isMember"
           >
             <small>
-              <ion-icon [name]="isMember ? 'person' : 'key'"></ion-icon>
+              <ion-icon [name]="item.account.meta?.uid ? 'person' : 'key'"></ion-icon>
             </small>
             {{ item.account | accountName }}
           </a>

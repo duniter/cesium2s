@@ -140,7 +140,7 @@ export class IsMemberAccountPipe extends AccountAbstractPipe<boolean, void> impl
   }
 
   protected _transform(account: Partial<Account>): boolean {
-    return (account?.meta?.uid && account.meta.isMember === true) || false;
+    return (account && account.meta && account.meta.isMember === true) || false;
   }
 }
 

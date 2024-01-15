@@ -578,7 +578,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
         };
         changed = true;
 
-        console.log('TODO', Object.keys(this.api.query));
+        //console.log('TODO', Object.keys(this.api.query));
         //await this.api.query.udAccountsStorage.udAccounts(account.address);
       }
 
