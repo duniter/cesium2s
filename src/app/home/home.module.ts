@@ -9,14 +9,7 @@ import { AppRegisterModule } from '@app/account/register/register.module';
 import { AppTransferModule } from '@app/transfer/transfer.module';
 
 @NgModule({
-  imports: [
-    AppSharedModule,
-    TranslateModule.forChild(),
-    HomePageRoutingModule,
-    AppAuthModule,
-    AppRegisterModule,
-    AppTransferModule,
-  ],
+  imports: [AppSharedModule, TranslateModule.forChild(), HomePageRoutingModule, AppAuthModule, AppRegisterModule, AppTransferModule],
   declarations: [HomePage],
 })
 export class HomeModule {}

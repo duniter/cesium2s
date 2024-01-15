@@ -1,10 +1,18 @@
-
-.select-popover-large .popover-content{
+.select-popover-large .popover-content {
   width: #{$app-popover-width} !important;
 }
 
-.login-method-popover{
+.login-method-popover {
   --width: #{$app-popover-width} !important;
+}
+
+.select-account-popover {
+  --width: #{$app-popover-width} !important;
+
+  ion-item:last-of-type {
+    --color: var(--ion-color-danger) !important;
+    font-style: italic;
+  }
 }
 
 .cdk-visually-hidden {
@@ -38,11 +46,33 @@ ion-toolbar ion-menu-button {
 
 ion-toolbar {
   user-select: none;
-
-
 }
 
 /* -- list -- */
+
+ion-header,
+ion-list {
+  ion-item {
+    ion-avatar {
+      --border-radius: 5px !important;
+      --border-width: 1px !important;
+      --border-color: var(--ion-color-step-150) !important;
+    }
+
+    a {
+      text-decoration: none;
+    }
+    a[href]:hover {
+      cursor: pointer;
+    }
+
+    p,
+    .sc-ion-label-md-s p,
+    .sc-ion-label-ios-s p {
+      font-size: 0.775rem;
+    }
+  }
+}
 
 @media screen and (min-width: $screen-md) {
   ion-list ion-item.ion-activatable {
@@ -52,4 +82,8 @@ ion-toolbar {
       cursor: pointer !important;
     }
   }
+}
+
+.text-italic {
+  font-style: italic;
 }

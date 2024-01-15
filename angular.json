@@ -30,13 +30,15 @@
               "store",
               "bn.js",
               "ip-regexp",
+              "tweetnacl",
               "eventemitter3",
               "qrcode",
               "localforage",
-              "localforage-cordovasqlitedriver",
               "moment-timezone",
-              "tweetnacl",
-              "moment"
+              "moment",
+              "apollo-link-serialize",
+              "apollo-link-queue",
+              "apollo-link-logger"
             ],
             "assets": [
               {
@@ -51,7 +53,7 @@
               },
               {
                 "glob": "manifest.json",
-                "input": "src/assets",
+                "input": "src",
                 "output": "/"
               }
             ],

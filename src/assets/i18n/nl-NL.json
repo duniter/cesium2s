@@ -111,7 +111,7 @@
     "BTN_ABOUT": "over",
     "BTN_HELP": "Help",
     "REPORT_ISSUE": "Meld een probleem",
-    "NOT_YOUR_ACCOUNT_QUESTION" : "Is rekening <b><i class=\"ion-key\"></i> {{pubkey|formatPubkey}}</b> niet van jou?",
+    "NOT_YOUR_ACCOUNT_QUESTION": "Is rekening <b><i class=\"ion-key\"></i> {{pubkey|formatPubkey}}</b> niet van jou?",
     "BTN_CHANGE_ACCOUNT": "Dze rekening ontkoppelen",
     "CONNECTION_ERROR": "Node <b>{{server}}</b> onbereikbaar of ongeldig adres.<br/><br/>Controleer de internetverbinding, of schakel knooppunt <a class=\"positive\" ng-click=\"doQuickFix('settings')\">in parameters</a>."
   },
@@ -134,12 +134,12 @@
     "EXPERT_MODE": "Geavanceerde modus inschakelen",
     "EXPERT_MODE_HELP": "Toon meer details",
     "POPUP_PEER": {
-      "TITLE" : "Duniter Knooppunt",
-      "HOST" : "Adres",
+      "TITLE": "Duniter Knooppunt",
+      "HOST": "Adres",
       "HOST_HELP": "Aadres: server:poort",
-      "USE_SSL" : "Secure?",
-      "USE_SSL_HELP" : "(SSL-encryptie)",
-      "BTN_SHOW_LIST" : "Lijst van knooppunten"
+      "USE_SSL": "Secure?",
+      "USE_SSL_HELP": "(SSL-encryptie)",
+      "BTN_SHOW_LIST": "Lijst van knooppunten"
     }
   },
   "BLOCKCHAIN": {
@@ -220,7 +220,7 @@
       "SIG_WINDOW": "Maximum vertraging voor een certificatie in behandeling wordt genomen",
       "STEP_MAX": "Maximum afstand tussen elk WoT lid en een nieuw lid.",
       "WOT_RULES_DIVIDER": "Lidmaatschapseisen",
-      "XPERCENT":"Minimum percentage schildwachten te bereiken om de afstandsregel te respecteren"
+      "XPERCENT": "Minimum percentage schildwachten te bereiken om de afstandsregel te respecteren"
     }
   },
   "NETWORK": {
@@ -307,6 +307,9 @@
       "RECEIVED_BY": "Certificaties ontvanged door {{uid}}",
       "ERROR": "Ontvangen vertificaties met fout",
       "SENTRY_MEMBER": "Referent lid"
+    },
+    "OPERATIONS": {
+      "TITLE": "Transacties"
     },
     "GIVEN_CERTIFICATIONS": {
       "TITLE": "{{uid}} - Verzonden certificaties",

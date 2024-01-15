@@ -2,10 +2,13 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { Settings } from './settings.model';
 import { environment } from '@environments/environment';
 import { Platform } from '@ionic/angular';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { APP_STORAGE, IStorage } from '@app/shared/services/storage/storage.utils';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+import { arrayDistinct } from '@app/shared/functions';
+import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { isMobile } from '@app/shared/platforms';
 
 const SETTINGS_STORAGE_KEY = 'settings';
 
@@ -17,22 +20,38 @@ export class SettingsService extends RxStartableService<Settings> {
     return this.get('mobile');
   }
 
-  constructor(protected ionicPlatform: Platform, @Inject(APP_STORAGE) @Optional() protected storage?: IStorage) {
+  @RxStateSelect() darkMode$: Observable<boolean>;
+  @RxStateSelect() peer$: Observable<string>;
+  @RxStateSelect() indexer$: Observable<string>;
+
+  @RxStateProperty() darkMode: boolean;
+  @RxStateProperty() peer: string;
+  @RxStateProperty() indexer: string;
+
+  constructor(
+    protected ionicPlatform: Platform,
+    @Inject(APP_STORAGE) @Optional() protected storage?: IStorage
+  ) {
     super(ionicPlatform, {
       name: 'settings-service',
+      initialState: {
+        mobile: isMobile(window),
+      },
     });
+
+    // Emit changes event
+    this.hold(this.$, (value) => this.changes.next(value));
   }
 
   protected async ngOnStart(): Promise<Settings> {
-    const mobile =
-      this.ionicPlatform.is('mobile') || this.ionicPlatform.is('iphone') || this.ionicPlatform.is('android');
+    const mobile = this.ionicPlatform.is('mobile') || this.ionicPlatform.is('iphone') || this.ionicPlatform.is('android');
 
     const data = {
       ...(await this.restoreLocally()),
       mobile,
     };
 
-    console.info('[settings-restore] Settings ready: ', data);
+    console.info('[settings-service] Settings ready: ', data);
 
     return data;
   }
@@ -40,8 +59,10 @@ export class SettingsService extends RxStartableService<Settings> {
   clone(): Settings {
     return <Settings>{
       locale: environment.defaultLocale,
-      peer: environment.defaultPeers && environment.defaultPeers[0],
       defaultPeers: environment.defaultPeers || [],
+      peer: environment.defaultPeers?.[0],
+      defaultIndexers: environment.defaultIndexers || [],
+      indexer: environment.defaultIndexers?.[0],
       ...this.get(),
     };
   }
@@ -50,9 +71,10 @@ export class SettingsService extends RxStartableService<Settings> {
     const data = await this.storage.get(SETTINGS_STORAGE_KEY);
     return <Settings>{
       // Default values
-      preferredPeers:
-        !environment.production && environment.dev?.peer ? [environment.dev.peer] : [...environment.defaultPeers],
-      unAuthDelayMs: 15 * 60_000, // 15min
+      preferredPeers: arrayDistinct([...environment.defaultPeers, ...(data?.preferredPeers || [])]),
+      preferredIndexers: arrayDistinct([...environment.defaultIndexers, ...(data?.preferredIndexers || [])]),
+      unAuthDelayMs: 15 * 60_000, //
+      darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
       // Restored data
       ...data,
     };
@@ -69,7 +91,7 @@ export class SettingsService extends RxStartableService<Settings> {
   async saveLocally() {
     if (!this.storage) return; // Skip, no storage
 
-    console.info('[settings] Saving settings to the storage...');
+    console.info('[settings-service] Saving settings to the storage...');
     const data = this.clone();
     await this.storage.set('settings', data);
   }

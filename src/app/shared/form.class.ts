@@ -127,11 +127,9 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
     return this._form;
   }
 
-  @Output()
-  onCancel = new EventEmitter<any>();
+  @Output() cancel = new EventEmitter<void>();
 
-  @Output()
-  onSubmit = new EventEmitter<any>();
+  @Output() validate = new EventEmitter<T>();
 
   protected constructor(injector: Injector, form?: FormGroup) {
     this.translate = injector.get(TranslateService);
@@ -146,18 +144,18 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._subscription.unsubscribe();
-    this.onCancel.complete();
-    this.onCancel.unsubscribe();
-    this.onSubmit.complete();
-    this.onSubmit.unsubscribe();
+    this.cancel.complete();
+    this.cancel.unsubscribe();
+    this.validate.complete();
+    this.validate.unsubscribe();
     this.ready$.complete();
     this.ready$.unsubscribe();
     this.loading$.complete();
     this.loading$.unsubscribe();
   }
 
-  cancel() {
-    this.onCancel.emit();
+  doCancel() {
+    this.cancel.emit();
   }
 
   /**
@@ -185,7 +183,7 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
     }
 
     // Emit event
-    this.onSubmit.emit(event);
+    this.validate.emit(event);
   }
 
   setForm(form: FormGroup) {

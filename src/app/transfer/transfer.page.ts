@@ -6,7 +6,7 @@ import { mergeMap, Observable, tap } from 'rxjs';
 import { isNotEmptyArray, isNotNilOrBlank } from '@app/shared/functions';
 import { filter } from 'rxjs/operators';
 import { NetworkService } from '@app/network/network.service';
-import { Currency } from '@app/network/currency.model';
+import { Currency } from '@app/currency/currency.model';
 import { NavigationEnd, Router } from '@angular/router';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
@@ -15,21 +15,21 @@ import { CapacitorPlugins } from '@app/shared/capacitor/plugins';
 import { RxState } from '@rx-angular/state';
 import { AccountsService } from '@app/account/accounts.service';
 import { WotController } from '@app/wot/wot.controller';
+import { TransferFormOptions } from '@app/transfer/transfer.model';
+import { PredefinedColors } from '@ionic/core';
 
-export interface TransferState extends AppPageState {
+export interface TransferPageState extends AppPageState {
   currency: Currency;
   fee: number;
   accounts: Account[];
   account: Account;
   recipient: Partial<Account>;
+  submitted: boolean;
 }
 
-export interface TransferPageOptions {
-  issuer?: Account;
-  recipient?: Account;
-  amount?: number;
-  fee?: number;
+export interface TransferPageInputs extends TransferFormOptions {
   dismissOnSubmit?: boolean;
+  toolbarColor?: PredefinedColors;
 }
 
 @Component({
@@ -39,10 +39,9 @@ export interface TransferPageOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [RxState],
 })
-export class TransferPage extends AppPage<TransferState> implements OnInit, OnDestroy {
+export class TransferPage extends AppPage<TransferPageState> implements TransferPageInputs, OnInit, OnDestroy {
   protected _enableScan: boolean = false;
-  protected _autoOpenWotModal = true;
-  protected _initialWotModalBreakpoint = 0.25;
+  protected _isModal: boolean;
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet',
@@ -57,15 +56,20 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   @RxStateSelect() protected accounts$: Observable<Account[]>;
   @RxStateSelect() protected account$: Observable<Account>;
   @RxStateSelect() protected recipient$: Observable<Partial<Account>>;
+  @RxStateSelect() protected submitted$: Observable<boolean>;
 
   @Input() @RxStateProperty() currency: Currency;
   @Input() @RxStateProperty() fee: number;
   @Input() @RxStateProperty() account: Account = null;
   @Input() @RxStateProperty() recipient: Partial<Account>;
   @Input() @RxStateProperty() amount: number;
+
   @Input() showComment: boolean;
   @Input() dismissOnSubmit: boolean = false; // True is modal
   @Input() showToastOnSubmit: boolean = true;
+  @Input() toolbarColor: PredefinedColors = 'secondary';
+
+  @RxStateProperty() submitted: boolean;
 
   get accountName(): string {
     return AccountUtils.getDisplayName(this.account);
@@ -113,7 +117,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
           tap((accounts) => console.debug(this._logPrefix + 'Accounts loaded:', accounts)),
           mergeMap(async (accounts) => {
             // Load account
-            const fromAddress = this.activatedRoute.snapshot.paramMap.get('from');
+            const fromAddress = this.account?.address || this.activatedRoute.snapshot.paramMap.get('from');
             if (isNotNilOrBlank(fromAddress)) {
               this.account = await this.accountService.getByAddress(fromAddress);
             }
@@ -123,7 +127,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
             }
 
             // Load recipient
-            const toAddress = this.activatedRoute.snapshot.paramMap.get('to');
+            const toAddress = this.recipient?.address || this.activatedRoute.snapshot.paramMap.get('to');
             if (isNotNilOrBlank(toAddress)) {
               this.recipient = <Account>{ address: toAddress };
             }
@@ -139,8 +143,9 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     super.ngOnInit();
+    this._isModal = !!(await this.modalCtrl.getTop()) && !this.routerOutlet;
 
     // Hide modal when leave page
     this.registerSubscription(
@@ -161,13 +166,14 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   protected async ngOnLoad() {
     await this.accountService.ready();
 
-    this._enableScan =
-      this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
+    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
 
     return {};
   }
 
-  async selectAccount() {
+  async selectAccount(event: UIEvent) {
+    event?.preventDefault();
+
     const account = await this.accountService.selectAccount({
       minBalance: this.amount || 0,
       positiveBalanceFirst: true,
@@ -175,6 +181,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     });
     if (account) {
       this.account = account;
+      this.markForCheck();
     }
   }
 
@@ -191,9 +198,12 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     this.close();
   }
 
-  async submit() {
+  async doSubmit() {
     // Check valid
-    if (!this.recipient || !this.account) return; // Skip
+    if (!this.recipient || !this.account) {
+      this.markAsSubmitted();
+      return;
+    } // Skip
 
     this.markAsLoading();
     this.resetError();
@@ -238,7 +248,7 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     event.preventDefault();
 
     const searchText = this.recipient?.address;
-    const data = await this.wotCtrl.select({ searchText });
+    const data = await this.wotCtrl.select({ searchText, showItemActions: false, showFilterButtons: false });
 
     if (!data) {
       console.log('TODO cancelled');
@@ -248,18 +258,36 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
     this.recipient = data;
   }
 
-  async scanRecipient(event: Event) {
+  async scanRecipient(event?: Event) {
     if (!this._enableScan) return; // SKip
 
-    event.preventDefault();
+    event?.preventDefault();
 
-    await BarcodeScanner.hideBackground(); // make background of WebView transparent
+    this.markAsLoading();
+    this.resetError();
 
-    const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+    try {
+      console.info('[transfer] Hide background');
+      document.querySelector('body').classList.add('scanner-active');
+      await BarcodeScanner.hideBackground(); // make background of WebView transparent
 
-    // if the result has content
-    if (result.hasContent) {
-      this.setRecipient(result.content);
+      // setTimeout(() => {
+      //   console.info('[transfer] Stopping scanner...');
+      // }, 5000);
+
+      console.info('[transfer] Start scanning...');
+      const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+
+      // if the result has content
+      if (result.hasContent) {
+        this.setRecipient(result.content);
+      }
+    } catch (err) {
+      console.error('[transfer] Failed to scan QR code: ' + (err?.message || ''), err);
+      this.setError(err);
+      this.markAsLoaded();
+    } finally {
+      document.querySelector('body').classList.remove('scanner-active');
     }
   }
 
@@ -268,11 +296,34 @@ export class TransferPage extends AppPage<TransferState> implements OnInit, OnDe
   }
 
   protected async ngOnUnload() {
+    console.debug('[transfer] Unloading page...');
+
     this.showComment = false;
     await this.qrCodeModal?.dismiss();
+
     return {
       ...(await super.ngOnUnload()),
+      accounts: undefined,
       recipient: { address: null, meta: null },
     };
+  }
+
+  protected async unload(): Promise<void> {
+    this.markAsPristine();
+    return super.unload();
+  }
+
+  protected markAsSubmitted(opts = { emitEvent: true }) {
+    if (!this.submitted) {
+      this.submitted = true;
+      if (opts.emitEvent !== false) this.markForCheck();
+    }
+  }
+
+  protected markAsPristine(opts = { emitEvent: true }) {
+    if (this.submitted) {
+      this.submitted = false;
+      if (opts.emitEvent !== false) this.markForCheck();
+    }
   }
 }

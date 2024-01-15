@@ -1,9 +1,15 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { APP_LOCALES, LocaleConfig, Settings } from '@app/settings/settings.model';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { RxState } from '@rx-angular/state';
+import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { Observable, skip } from 'rxjs';
+import { IonModal } from '@ionic/angular';
+import { NetworkService } from '@app/network/network.service';
 
-export interface SettingsPageState extends Settings, AppPageState {}
+export interface SettingsPageState extends Settings, AppPageState {
+  dirty: boolean;
+}
 
 @Component({
   selector: 'app-settings',
@@ -34,14 +40,44 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
       value: 15 * 60_000,
     },
   ];
+  @RxStateSelect() preferredPeers$: Observable<string[]>;
+  @RxStateSelect() peer$: Observable<string>;
+  @RxStateSelect() preferredIndexers$: Observable<string[]>;
+  @RxStateSelect() indexer$: Observable<string>;
+  @RxStateSelect() dirty$: Observable<boolean>;
 
-  constructor(@Inject(APP_LOCALES) public locales: LocaleConfig[]) {
+  @RxStateProperty() darkMode: boolean;
+  @RxStateProperty() locale: string;
+  @RxStateProperty() peer: string;
+  @RxStateProperty() indexer: string;
+  @RxStateProperty() unAuthDelayMs: number;
+  @RxStateProperty() dirty: boolean;
+
+  @ViewChild('selectPeerModal') selectPeerModal: IonModal;
+  @ViewChild('selectIndexerModal') selectIndexerModal: IonModal;
+
+  constructor(
+    protected networkService: NetworkService,
+    @Inject(APP_LOCALES) protected locales: LocaleConfig[]
+  ) {
     super({ name: 'settings' });
+
+    // Detect changes
+    this._state.hold(this._state.select(['locale', 'peer', 'indexer', 'unAuthDelayMs'], (s) => s).pipe(skip(1)), () => {
+      if (this.mobile) {
+        this.save();
+      } else {
+        this.markAsDirty();
+      }
+    });
   }
 
   protected async ngOnLoad() {
     await this.settings.ready();
-    return this.settings.clone();
+    return {
+      ...this.settings.clone(),
+      dirty: false,
+    };
   }
 
   cancel() {
@@ -51,7 +87,25 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
 
   save() {
     this.settings.patchValue(this.data);
+    this.dirty = false;
   }
 
-  selectPeer() {}
+  selectPeer(peer: string) {
+    this.peer = peer;
+    this.selectPeerModal.dismiss();
+  }
+
+  selectIndexer(peer: string) {
+    this.indexer = peer;
+    this.selectIndexerModal.dismiss();
+  }
+
+  markAsDirty() {
+    this.dirty = true;
+  }
+
+  toggleDarkMode() {
+    this.darkMode = !this.darkMode;
+    this.save();
+  }
 }

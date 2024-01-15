@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { WalletPage } from './wallet.page';
 import { AuthGuardService } from '@app/account/auth-guard.service';
+import { AppWalletModule } from '@app/wallet/wallet.module';
 
 const routes: Routes = [
   {
@@ -15,10 +16,15 @@ const routes: Routes = [
     component: WalletPage,
     canActivate: [AuthGuardService],
   },
+  {
+    path: 'tx/:address',
+    component: WalletPage,
+    canActivate: [AuthGuardService],
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [AppWalletModule, RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class WalletPageRoutingModule {}
+export class AppWalletRoutingModule {}

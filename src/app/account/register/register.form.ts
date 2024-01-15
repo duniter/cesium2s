@@ -5,7 +5,7 @@ import { SettingsService } from '@app/settings/settings.service';
 import { environment } from '@environments/environment';
 import { AppForm } from '@app/shared/form.class';
 import { NetworkService } from '@app/network/network.service';
-import { Currency } from '@app/network/currency.model';
+import { Currency } from '@app/currency/currency.model';
 import { AccountMeta, AuthData } from '@app/account/account.model';
 import { Swiper, SwiperOptions } from 'swiper/types';
 import { IonicSlides } from '@ionic/angular';
@@ -68,10 +68,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
         words: new FormControl(null, Validators.required),
         wordNumber: new FormControl(null, Validators.required),
         code: new FormControl(null, Validators.required),
-        codeConfirmation: new FormControl(
-          null,
-          Validators.compose([Validators.required, this.equalsValidator('code')])
-        ),
+        codeConfirmation: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('code')])),
         name: new FormControl(null),
         address: new FormControl(null),
       })
@@ -83,14 +80,14 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   ngOnInit() {
     // For DEV only ------------------------
     if (!environment.production) {
-      this.form.setValue({
-        words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
-        wordNumber: 1,
-        code: 'AAAAA',
-        codeConfirmation: null,
-        name: null,
-        address: null,
-      });
+      // this.form.setValue({
+      //   words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
+      //   wordNumber: 1,
+      //   code: 'AAAAA',
+      //   codeConfirmation: null,
+      //   name: null,
+      //   address: null,
+      // });
     }
   }
 
@@ -153,8 +150,8 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     };
   }
 
-  cancel() {
-    this.onCancel.emit();
+  doCancel() {
+    this.cancel.emit();
   }
 
   protected async updateState() {

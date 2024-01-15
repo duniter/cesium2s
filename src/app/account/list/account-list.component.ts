@@ -2,22 +2,17 @@ import { Component, Input } from '@angular/core';
 import { RxState } from '@rx-angular/state';
 import { ModalController } from '@ionic/angular';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
-import { Account } from '@app/account/account.model';
+import { Account, SelectAccountOptions } from '@app/account/account.model';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { AccountsService } from '@app/account/accounts.service';
 import { Observable } from 'rxjs';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
-import { debounceTime } from 'rxjs/operators';
 
 interface AccountListComponentState extends AppPageState {
   accounts: Account[];
 }
 
-export interface AccountListComponentInputs {
-  minBalance: number;
-  showBalance: boolean;
-  positiveBalanceFirst: boolean;
-}
+export interface AccountListComponentInputs extends SelectAccountOptions {}
 
 @Component({
   selector: 'app-account-list',
@@ -43,7 +38,10 @@ export class AccountListComponent extends AppPage<AccountListComponentState> imp
 
   @RxStateSelect() accounts$: Observable<Account[]>;
 
-  constructor(protected accountsService: AccountsService, protected modalController: ModalController) {
+  constructor(
+    protected accountsService: AccountsService,
+    protected modalController: ModalController
+  ) {
     super();
   }
 
@@ -51,7 +49,8 @@ export class AccountListComponent extends AppPage<AccountListComponentState> imp
     super.ngOnInit();
     this._state.connect(
       'accounts',
-      this.accountsService.watchAll({ positiveBalanceFirst: this.positiveBalanceFirst }).pipe(debounceTime(2000))
+      this.accountsService.watchAll({ positiveBalanceFirst: this.positiveBalanceFirst })
+      //.pipe(debounceTime(2000))
     );
   }
 
@@ -61,5 +60,9 @@ export class AccountListComponent extends AppPage<AccountListComponentState> imp
 
   selectAccount(account: Account) {
     return this.modalController.dismiss(account);
+  }
+
+  cancel() {
+    this.modalController.dismiss();
   }
 }

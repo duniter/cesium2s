@@ -1,0 +1,28 @@
+ion-toolbar {
+  div[slot='end'],
+  ion-buttons[slot='end'] {
+    padding-inline-end: var(--ion-padding);
+    color: var(--ion-text-color, #000);
+  }
+}
+
+ion-item {
+  h2,
+  h3,
+  h4 {
+    a.tx-account {
+      color: var(--ion-color-dark);
+
+      &.member {
+        color: var(--ion-color-primary) !important;
+      }
+    }
+  }
+  p a.tx-timestamp {
+    color: var(--ion-color-medium);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

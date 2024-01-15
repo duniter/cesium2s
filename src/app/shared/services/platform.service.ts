@@ -3,15 +3,14 @@ import { Platform } from '@ionic/angular';
 import { NetworkService } from '@app/network/network.service';
 import { SettingsService } from '@app/settings/settings.service';
 import { StorageService } from '@app/shared/services/storage/storage.service';
-import { environment } from '@environments/environment.prod';
+import { environment } from '@environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-import * as momentImported from 'moment';
 import { StatusBar } from '@capacitor/status-bar';
 import { Keyboard } from '@capacitor/keyboard';
 import { CapacitorPlugins } from '@app/shared/capacitor/plugins';
 import { StartableService } from '@app/shared/services/startable-service.class';
-
-const moment = momentImported;
+import { DateUtils } from '@app/shared/dates';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 @Injectable({
   providedIn: 'root',
@@ -27,9 +26,7 @@ export class PlatformService extends StartableService {
   }
 
   get touchUi(): boolean {
-    return this._touchUi != null
-      ? this._touchUi
-      : this.mobile || this.ionicPlatform.is('tablet') || this.ionicPlatform.is('phablet');
+    return this._touchUi != null ? this._touchUi : this.mobile || this.ionicPlatform.is('tablet') || this.ionicPlatform.is('phablet');
   }
 
   get capacitor(): boolean {
@@ -58,6 +55,9 @@ export class PlatformService extends StartableService {
     this._cordova = this.cordova;
     this._capacitor = this.capacitor;
 
+    // Configure theme
+    await this.configureTheme();
+
     // Configure Capacitor plugins
     await this.configureCapacitorPlugins();
 
@@ -65,6 +65,24 @@ export class PlatformService extends StartableService {
     await this.configureTranslate();
 
     await Promise.all([this.storage.ready(), this.settings.ready(), this.network.ready()]);
+
+    if (this._mobile && this._capacitor) {
+      // Hide the splashscreen (if mobile) - after 1s
+      // eslint-disable-next-line @rx-angular/no-zone-critical-browser-apis
+      setTimeout(() => SplashScreen.hide(), 1000);
+    }
+  }
+
+  toggleDarkTheme(enable: boolean) {
+    if (enable && !document.body.classList.contains('dark')) {
+      console.debug('[platform] Enable dark mode...');
+    }
+    document.body.classList.toggle('dark', enable);
+  }
+
+  protected async configureTheme() {
+    // Listen for changes to settings dark mode
+    this.registerSubscription(this.settings.darkMode$.subscribe((darkMode) => this.toggleDarkTheme(darkMode)));
   }
 
   protected async configureCapacitorPlugins() {
@@ -80,13 +98,11 @@ export class PlatformService extends StartableService {
       plugin = CapacitorPlugins.Keyboard;
       await Keyboard.setAccessoryBarVisible({ isVisible: false });
     } catch (err) {
-      console.error(
-        `[platform] Error while configuring ${plugin} plugin: ${err?.originalStack || JSON.stringify(err)}`
-      );
+      console.error(`[platform] Error while configuring ${plugin} plugin: ${err?.originalStack || JSON.stringify(err)}`);
     }
   }
 
-  protected configureTranslate() {
+  protected async configureTranslate() {
     console.info('[platform] Configuring i18n ...');
 
     // this language will be used as a fallback when a translation isn't found in the current language
@@ -95,18 +111,13 @@ export class PlatformService extends StartableService {
     // When locale changes, apply to date adapter
     this.translate.onLangChange.subscribe((event) => {
       if (event && event.lang) {
-        // force 'en' as 'en_GB'
-        if (event.lang === 'en') {
-          event.lang = 'en_GB';
-        }
-
         // config moment lib
         try {
-          moment.locale(event.lang);
+          DateUtils.moment.locale(event.lang);
           console.debug('[platform] Use locale {' + event.lang + '}');
         } catch (err) {
           // If error, fallback to en
-          moment.locale('en');
+          DateUtils.moment.locale('en');
           console.warn('[platform] Unknown local for moment lib. Using default [en]');
         }
 
@@ -116,8 +127,14 @@ export class PlatformService extends StartableService {
     });
 
     this.settings.changes.subscribe((data) => {
-      if (data?.locale && data.locale !== this.translate.currentLang) {
-        this.translate.use(data.locale);
+      if (data?.locale) {
+        if (data.locale !== this.translate.currentLang) {
+          this.translate.use(data.locale);
+        }
+      } else {
+        // Applying default, when settings has no locale property (hotfix - ludovic.pecquot@e-is.pro - 14/11/2021 - since v1.20.42)
+        console.warn('[platform] No locale found in settings: applying defaultLocale: ', environment.defaultLocale);
+        this.translate.use(environment.defaultLocale);
       }
     });
   }

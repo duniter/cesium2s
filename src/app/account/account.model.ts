@@ -18,17 +18,15 @@ export interface AccountMeta {
   isTesting?: boolean;
 
   // Cesium properties
+  self?: boolean;
   default?: boolean;
   publicKeyV1?: string;
   uid?: string;
   avatar?: string;
   email?: string;
+  isMember?: boolean;
 
   [key: string]: unknown;
-}
-
-export interface Tx {
-  // TODO
 }
 
 export interface AccountData {
@@ -37,7 +35,7 @@ export interface AccountData {
   reserved?: number;
   feeFrozen?: number;
 
-  txs: Tx[];
+  txs?: any[];
 }
 
 export class AccountUtils {
@@ -47,7 +45,11 @@ export class AccountUtils {
   }
 
   static getDisplayName(account: Partial<Account>) {
-    return account?.meta?.name || formatAddress(account?.address) || '';
+    return account?.meta?.name || account?.meta?.uid || formatAddress(account?.address) || '';
+  }
+
+  static isEquals(a1: Account, a2: Account) {
+    return a1 === a2 || (a1 && a1.address && a1.address === a2?.address);
   }
 }
 

@@ -1,10 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as momentImported from 'moment';
 import { Moment } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
-import { fromDateISOString } from '@app/shared/dates';
-
-const moment = momentImported;
+import { DateUtils, fromDateISOString } from '@app/shared/dates';
 
 @Pipe({
   name: 'dateDiffDuration',
@@ -20,10 +17,10 @@ export class DateDiffDurationPipe implements PipeTransform {
     const startDate = fromDateISOString(value.startValue);
     const endDate = fromDateISOString(value.endValue);
 
-    const duration = moment.duration(endDate.diff(startDate));
+    const duration = DateUtils.moment.duration(endDate.diff(startDate));
     if (duration.asMinutes() < 0) return '';
 
-    const timeDuration = moment(0).hour(duration.hours()).minute(duration.minutes());
+    const timeDuration = DateUtils.moment(0).hour(duration.hours()).minute(duration.minutes());
 
     const days = Math.floor(duration.asDays());
     return (days > 0 ? days.toString() + (this.dayUnit + ' ') : '') + timeDuration.format('HH:mm');

@@ -3,9 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { SettingsService } from '@app/settings/settings.service';
 import { changeCaseToUnderscore, isNotNilOrBlank, sleep } from '@app/shared/functions';
 import { environment } from '@environments/environment';
-import { waitIdle } from '@app/shared/forms';
-import { WaitForOptions } from '@app/shared/observables';
-import { IonRouterOutlet, ToastController, ToastOptions } from '@ionic/angular';
+import { waitForFalse, WaitForOptions } from '@app/shared/observables';
+import { IonRouterOutlet, NavController, ToastController, ToastOptions } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { map, Observable, Subscription } from 'rxjs';
 import { RxState } from '@rx-angular/state';
@@ -25,9 +24,7 @@ export interface AppPageOptions<S extends AppPageState = AppPageState> {
 }
 
 @Directive()
-export abstract class AppPage<S extends AppPageState = AppPageState, O extends AppPageOptions<S> = AppPageOptions<S>>
-  implements OnInit, OnDestroy
-{
+export abstract class AppPage<S extends AppPageState = AppPageState, O extends AppPageOptions<S> = AppPageOptions<S>> implements OnInit, OnDestroy {
   private _subscription = new Subscription();
   private _form: FormGroup;
   private _cd = inject(ChangeDetectorRef, { optional: true });
@@ -36,13 +33,14 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   protected settings = inject(SettingsService);
   protected readonly routerOutlet = inject(IonRouterOutlet, { optional: true });
   protected readonly activatedRoute = inject(ActivatedRoute);
+  protected readonly navController = inject(NavController);
   protected toastController = inject(ToastController);
   @RxStateRegister() protected readonly _state: RxState<S> = inject(RxState<S>, { optional: true });
 
   protected readonly _debug = !environment.production;
   protected readonly _logPrefix: string;
   protected readonly _options: O;
-  protected _presentingElement: Element = null;
+  protected _presentingElement: HTMLElement = null;
 
   readonly mobile: boolean;
 
@@ -52,7 +50,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   @RxStateSelect() error$: Observable<string>;
   @RxStateSelect() loading$: Observable<boolean>;
 
-  loaded$ = this._state.select('loading').pipe(map((value) => value === false));
+  loaded$ = this._state?.select('loading').pipe(map((value) => value === false));
 
   get loaded(): boolean {
     return !this.loading;
@@ -70,6 +68,14 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   }
   get form(): FormGroup {
     return this._form;
+  }
+
+  get canGoBack(): boolean {
+    return this.routerOutlet?.canGoBack() || false;
+  }
+
+  get showMenuButton(): boolean {
+    return !this.canGoBack;
   }
 
   protected constructor(options?: Partial<O>, form?: FormGroup) {
@@ -133,13 +139,14 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
     try {
       const initialState = await this.ngOnUnload();
       if (initialState) {
-        this._state.set(initialState);
+        this._state?.set(initialState);
       }
+      this.resetError();
     } catch (err) {
       console.error(this._logPrefix + 'Unload page error', err);
       // Continue
     } finally {
-      this.setError(undefined);
+      this.resetError();
       this.markAsLoading();
     }
   }
@@ -152,8 +159,8 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
     return Promise.resolve(initialState);
   }
 
-  protected setError(err: any, opts = { emitEvent: true }) {
-    let message = err?.message || err || 'ERROR.UNKNOWN_ERROR';
+  protected setError(err: string | { message: string }, opts = { emitEvent: true }) {
+    let message = (typeof err === 'object' ? err.message : err) || 'ERROR.UNKNOWN_ERROR';
     if (!message) {
       console.error(err);
       message = 'ERROR.UNKNOWN_ERROR';
@@ -184,7 +191,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   }
 
   protected async waitIdle(opts?: WaitForOptions) {
-    return waitIdle(this, opts);
+    return waitForFalse(this.loading$, opts);
   }
 
   protected markForCheck() {
@@ -192,9 +199,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   }
 
   protected async showToast(opts: ToastOptions & { messageParams?: Object }) {
-    const message = isNotNilOrBlank(opts?.message)
-      ? this.translate.instant(opts.message as string, opts.messageParams)
-      : undefined;
+    const message = isNotNilOrBlank(opts?.message) ? this.translate.instant(opts.message as string, opts.messageParams) : undefined;
     const toast = await this.toastController.create({
       duration: 2000,
       ...opts,

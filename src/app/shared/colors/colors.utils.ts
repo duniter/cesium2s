@@ -1,13 +1,4 @@
-export type PredefinedColors =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'light'
-  | 'medium'
-  | 'dark';
+export type PredefinedColors = 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'danger' | 'light' | 'medium' | 'dark';
 
 export function rgbToHex(r: number, g: number, b: number): string {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);

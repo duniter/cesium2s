@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 
 import { Clipboard } from '@capacitor/clipboard';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
@@ -12,6 +12,7 @@ import { filter, mergeMap } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { map, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
+import { APP_TRANSFER_CONTROLLER, ITransferController, TransferFormOptions } from '@app/transfer/transfer.model';
 
 export interface WalletState extends AppPageState {
   accounts: Account[];
@@ -54,7 +55,6 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
   };
   protected popoverOptions: Partial<PopoverOptions> = {
     cssClass: 'select-account-popover',
-    reference: 'event',
   };
 
   get new(): Account {
@@ -68,7 +68,8 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     protected router: Router,
     protected route: ActivatedRoute,
     protected networkService: NetworkService,
-    protected accountService: AccountsService
+    protected accountService: AccountsService,
+    @Inject(APP_TRANSFER_CONTROLLER) protected transferController: ITransferController
   ) {
     super({
       name: 'wallet-page',
@@ -78,10 +79,9 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     // Watch address from route or account
     this._state.connect(
       'address',
-      merge(
-        this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))),
-        this.account$.pipe(map((a) => a?.address))
-      ).pipe(filter((address) => isNotNilOrBlank(address) && address !== this.address))
+      merge(this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))), this.account$.pipe(map((a) => a?.address))).pipe(
+        filter((address) => isNotNilOrBlank(address) && address !== this.address)
+      )
     );
 
     // Watch accounts
@@ -94,13 +94,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     this._state.connect(
       'account',
       this._state.$.pipe(
-        filter(
-          (s) =>
-            isNotEmptyArray(s.accounts) &&
-            isNil(s.account) &&
-            isNotNilOrBlank(s.address) &&
-            s.account !== WalletPage.NEW
-        ),
+        filter((s) => isNotEmptyArray(s.accounts) && isNil(s.account) && isNotNilOrBlank(s.address) && s.account !== WalletPage.NEW),
         mergeMap(async (s) => {
           console.debug(this._logPrefix + 'Loading account from address: ' + s.address);
 
@@ -168,5 +162,9 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     this.account = data;
 
     return data;
+  }
+
+  transfer(opts?: TransferFormOptions) {
+    return this.transferController.transfer({ account: this.account, ...opts });
   }
 }

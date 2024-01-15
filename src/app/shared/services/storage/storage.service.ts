@@ -13,7 +13,10 @@ export class StorageService<T = any> extends StartableService<Storage> implement
     return this.storage?.driver;
   }
 
-  constructor(private platform: Platform, private storage: Storage) {
+  constructor(
+    private platform: Platform,
+    private storage: Storage
+  ) {
     super(platform);
     this.start();
   }

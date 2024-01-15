@@ -1,16 +1,19 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core';
 
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
-import { Router } from '@angular/router';
-import { WotService } from '@app/wot/wot.service';
 import { AccountsService } from '@app/account/accounts.service';
 import { Clipboard } from '@capacitor/clipboard';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import { firstValueFrom, mergeMap, Observable } from 'rxjs';
+import { firstValueFrom, mergeMap, Observable, switchMap } from 'rxjs';
 import { RxState } from '@rx-angular/state';
+import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
+import { map } from 'rxjs/operators';
+import { firstArrayValue } from '@app/shared/functions';
+import { IndexerService } from '@app/network/indexer.service';
 
 export interface WotDetailsPageState extends AppPageState {
+  address: string;
   account: Account;
 }
 
@@ -22,32 +25,44 @@ export interface WotDetailsPageState extends AppPageState {
   providers: [RxState],
 })
 export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnInit {
-  address = this.activatedRoute.snapshot.paramMap.get('address');
-
-  @Input() showToolbar = true;
-
-  @RxStateProperty() account: Account;
+  @RxStateSelect() address$: Observable<string>;
   @RxStateSelect() account$: Observable<Account>;
 
-  constructor(private router: Router, private accountService: AccountsService, private wotService: WotService) {
+  @Input() showToolbar = true;
+  @Input() showBalance = false;
+  @Input() @RxStateProperty() address: string;
+  @Input() @RxStateProperty() account: Account;
+
+  constructor(
+    private accountsService: AccountsService,
+    private indexerService: IndexerService,
+    @Inject(APP_TRANSFER_CONTROLLER) private transferController: ITransferController
+  ) {
     super({ name: 'wot-details-page' });
+    this._state.connect('address', this.activatedRoute.paramMap.pipe(map((paramMap) => paramMap.get('address'))));
 
     this._state.connect(
       'account',
-      this.activatedRoute.paramMap.pipe(
-        mergeMap(async (map) => {
-          const address = map.get('address');
-
-          await Promise.all([this.accountService.ready(), this.wotService.ready()]);
-
-          const ownedAddress = await this.accountService.isAvailable(address);
+      this.address$.pipe(
+        mergeMap(async (address) => {
+          const ownedAddress = await this.accountsService.isAvailable(address);
+          return { address, ownedAddress };
+        }),
+        switchMap(({ address, ownedAddress }) => {
           if (ownedAddress) {
-            return this.accountService.getByAddress(this.address);
+            return this.accountsService.watchByAddress(address);
           }
-
-          const data = await this.wotService.search({ address: this.address });
-
-          return data ? data[0] : undefined;
+          return this.indexerService.wotSearch({ address }, { limit: 1 }).pipe(map(({ data }) => firstArrayValue(data)));
+        }),
+        mergeMap(async (account) => {
+          if (account.data) return account;
+          const { data } = await this.accountsService.api.query.system.account(account.address);
+          return {
+            ...account,
+            data: {
+              ...JSON.parse(data.toString()),
+            },
+          };
         })
       )
     );
@@ -62,12 +77,29 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     return <WotDetailsPageState>{ account };
   }
 
-  async copyAddress() {
+  async copyPubkey(event: UIEvent) {
+    if (this.loading || !this.data?.account?.meta?.publicKeyV1) return; // Skip
+
+    event.preventDefault();
+
+    await Clipboard.write({
+      string: this.account.meta.publicKeyV1,
+    });
+    await this.showToast({ message: 'INFO.COPY_TO_CLIPBOARD_DONE' });
+  }
+
+  async copyAddress(event: UIEvent) {
     if (this.loading || !this.data?.account?.address) return; // Skip
+
+    event.preventDefault();
 
     await Clipboard.write({
       string: this.account.address,
     });
     await this.showToast({ message: 'INFO.COPY_TO_CLIPBOARD_DONE' });
+  }
+
+  async transferTo() {
+    return this.transferController.transfer({ recipient: this.account });
   }
 }

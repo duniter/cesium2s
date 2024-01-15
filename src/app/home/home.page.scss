@@ -11,17 +11,18 @@ h5 {
 .ion-text-center {
   text-align: center;
 }
-
 ion-content {
   --background: transparent;
   --ion-toolbar-background: transparent;
+  --ion-background-color: var(--ion-color-primary900);
+
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   display: inline-block;
   padding: 15px;
-  background-color: var(--ion-color-primary);
+  background-color: var(--ion-background-color);
 
   ion-card {
     z-index: 9;
@@ -41,8 +42,8 @@ ion-content {
     max-width: 430px;
     margin-left: auto;
     margin-right: auto;
-
   }
+
   ion-card.welcome {
     background-color: rgba(var(--ion-color-light-rgb), 0.9);
 
@@ -89,14 +90,11 @@ ion-content {
   }
 }
 
-
 @media screen and (min-width: $screen-md) {
-
   .circle-bg-dark {
     background-image: url('/assets/img/logo.large.empty.transparent.svg');
     background-repeat: no-repeat;
-    background-position: -756px -100px;;
+    background-position: -756px -100px;
     background-size: 1024px 1024px;
   }
-
 }

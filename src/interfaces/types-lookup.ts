@@ -5,7 +5,25 @@
 // this is required to allow for ambient/previous definitions
 import '@polkadot/types/lookup';
 
-import type { BTreeSet, Bytes, Compact, Enum, Null, Option, Result, Struct, Text, U8aFixed, Vec, bool, u128, u16, u32, u64, u8 } from '@polkadot/types-codec';
+import type {
+  BTreeSet,
+  Bytes,
+  Compact,
+  Enum,
+  Null,
+  Option,
+  Result,
+  Struct,
+  Text,
+  U8aFixed,
+  Vec,
+  bool,
+  u128,
+  u16,
+  u32,
+  u64,
+  u8,
+} from '@polkadot/types-codec';
 import type { ITuple } from '@polkadot/types-codec/types';
 import type { OpaqueMultiaddr, OpaquePeerId } from '@polkadot/types/interfaces/imOnline';
 import type { AccountId32, Call, H256, MultiAddress, Perbill } from '@polkadot/types/interfaces/runtime';
@@ -138,7 +156,20 @@ declare module '@polkadot/types/lookup' {
     readonly isExhausted: boolean;
     readonly isCorruption: boolean;
     readonly isUnavailable: boolean;
-    readonly type: 'Other' | 'CannotLookup' | 'BadOrigin' | 'Module' | 'ConsumerRemaining' | 'NoProviders' | 'TooManyConsumers' | 'Token' | 'Arithmetic' | 'Transactional' | 'Exhausted' | 'Corruption' | 'Unavailable';
+    readonly type:
+      | 'Other'
+      | 'CannotLookup'
+      | 'BadOrigin'
+      | 'Module'
+      | 'ConsumerRemaining'
+      | 'NoProviders'
+      | 'TooManyConsumers'
+      | 'Token'
+      | 'Arithmetic'
+      | 'Transactional'
+      | 'Exhausted'
+      | 'Corruption'
+      | 'Unavailable';
   }
 
   /** @name SpRuntimeModuleError (26) */
@@ -158,7 +189,16 @@ declare module '@polkadot/types/lookup' {
     readonly isUnsupported: boolean;
     readonly isCannotCreateHold: boolean;
     readonly isNotExpendable: boolean;
-    readonly type: 'FundsUnavailable' | 'OnlyProvider' | 'BelowMinimum' | 'CannotCreate' | 'UnknownAsset' | 'Frozen' | 'Unsupported' | 'CannotCreateHold' | 'NotExpendable';
+    readonly type:
+      | 'FundsUnavailable'
+      | 'OnlyProvider'
+      | 'BelowMinimum'
+      | 'CannotCreate'
+      | 'UnknownAsset'
+      | 'Frozen'
+      | 'Unsupported'
+      | 'CannotCreateHold'
+      | 'NotExpendable';
   }
 
   /** @name SpArithmeticArithmeticError (28) */
@@ -341,7 +381,28 @@ declare module '@polkadot/types/lookup' {
       readonly who: AccountId32;
       readonly amount: u64;
     } & Struct;
-    readonly type: 'Endowed' | 'DustLost' | 'Transfer' | 'BalanceSet' | 'Reserved' | 'Unreserved' | 'ReserveRepatriated' | 'Deposit' | 'Withdraw' | 'Slashed' | 'Minted' | 'Burned' | 'Suspended' | 'Restored' | 'Upgraded' | 'Issued' | 'Rescinded' | 'Locked' | 'Unlocked' | 'Frozen' | 'Thawed';
+    readonly type:
+      | 'Endowed'
+      | 'DustLost'
+      | 'Transfer'
+      | 'BalanceSet'
+      | 'Reserved'
+      | 'Unreserved'
+      | 'ReserveRepatriated'
+      | 'Deposit'
+      | 'Withdraw'
+      | 'Slashed'
+      | 'Minted'
+      | 'Burned'
+      | 'Suspended'
+      | 'Restored'
+      | 'Upgraded'
+      | 'Issued'
+      | 'Rescinded'
+      | 'Locked'
+      | 'Unlocked'
+      | 'Frozen'
+      | 'Thawed';
   }
 
   /** @name FrameSupportTokensMiscBalanceStatus (37) */
@@ -415,7 +476,13 @@ declare module '@polkadot/types/lookup' {
     readonly asMemberRemoved: u32;
     readonly isMemberRemovedFromBlackList: boolean;
     readonly asMemberRemovedFromBlackList: u32;
-    readonly type: 'IncomingAuthorities' | 'OutgoingAuthorities' | 'MemberGoOffline' | 'MemberGoOnline' | 'MemberRemoved' | 'MemberRemovedFromBlackList';
+    readonly type:
+      | 'IncomingAuthorities'
+      | 'OutgoingAuthorities'
+      | 'MemberGoOffline'
+      | 'MemberGoOnline'
+      | 'MemberRemoved'
+      | 'MemberRemovedFromBlackList';
   }
 
   /** @name PalletOffencesEvent (45) */
@@ -655,7 +722,13 @@ declare module '@polkadot/types/lookup' {
     readonly asMembershipRevoked: u32;
     readonly isPendingMembershipExpired: boolean;
     readonly asPendingMembershipExpired: u32;
-    readonly type: 'MembershipAcquired' | 'MembershipExpired' | 'MembershipRenewed' | 'MembershipRequested' | 'MembershipRevoked' | 'PendingMembershipExpired';
+    readonly type:
+      | 'MembershipAcquired'
+      | 'MembershipExpired'
+      | 'MembershipRenewed'
+      | 'MembershipRequested'
+      | 'MembershipRevoked'
+      | 'PendingMembershipExpired';
   }
 
   /** @name PalletCertificationEvent (72) */
@@ -1006,7 +1079,13 @@ declare module '@polkadot/types/lookup' {
     readonly isNonDefaultComposite: boolean;
     readonly isNonZeroRefCount: boolean;
     readonly isCallFiltered: boolean;
-    readonly type: 'InvalidSpecName' | 'SpecVersionNeedsToIncrease' | 'FailedToExtractRuntimeVersion' | 'NonDefaultComposite' | 'NonZeroRefCount' | 'CallFiltered';
+    readonly type:
+      | 'InvalidSpecName'
+      | 'SpecVersionNeedsToIncrease'
+      | 'FailedToExtractRuntimeVersion'
+      | 'NonDefaultComposite'
+      | 'NonZeroRefCount'
+      | 'CallFiltered';
   }
 
   /** @name PalletDuniterAccountCall (108) */
@@ -1208,7 +1287,16 @@ declare module '@polkadot/types/lookup' {
       readonly who: MultiAddress;
       readonly newFree: Compact<u64>;
     } & Struct;
-    readonly type: 'TransferAllowDeath' | 'SetBalanceDeprecated' | 'ForceTransfer' | 'TransferKeepAlive' | 'TransferAll' | 'ForceUnreserve' | 'UpgradeAccounts' | 'Transfer' | 'ForceSetBalance';
+    readonly type:
+      | 'TransferAllowDeath'
+      | 'SetBalanceDeprecated'
+      | 'ForceTransfer'
+      | 'TransferKeepAlive'
+      | 'TransferAll'
+      | 'ForceUnreserve'
+      | 'UpgradeAccounts'
+      | 'Transfer'
+      | 'ForceSetBalance';
   }
 
   /** @name PalletOneshotAccountCall (132) */
@@ -1541,7 +1629,16 @@ declare module '@polkadot/types/lookup' {
       readonly accountId: AccountId32;
       readonly payloadSig: SpRuntimeMultiSignature;
     } & Struct;
-    readonly type: 'CreateIdentity' | 'ConfirmIdentity' | 'ValidateIdentity' | 'ChangeOwnerKey' | 'RevokeIdentity' | 'RemoveIdentity' | 'PruneItemIdentitiesNames' | 'FixSufficients' | 'LinkAccount';
+    readonly type:
+      | 'CreateIdentity'
+      | 'ConfirmIdentity'
+      | 'ValidateIdentity'
+      | 'ChangeOwnerKey'
+      | 'RevokeIdentity'
+      | 'RemoveIdentity'
+      | 'PruneItemIdentitiesNames'
+      | 'FixSufficients'
+      | 'LinkAccount';
   }
 
   /** @name SpRuntimeMultiSignature (164) */
@@ -1740,7 +1837,17 @@ declare module '@polkadot/types/lookup' {
       readonly forceProxyType: Option<GdevRuntimeProxyType>;
       readonly call: Call;
     } & Struct;
-    readonly type: 'Proxy' | 'AddProxy' | 'RemoveProxy' | 'RemoveProxies' | 'CreatePure' | 'KillPure' | 'Announce' | 'RemoveAnnouncement' | 'RejectAnnouncement' | 'ProxyAnnounced';
+    readonly type:
+      | 'Proxy'
+      | 'AddProxy'
+      | 'RemoveProxy'
+      | 'RemoveProxies'
+      | 'CreatePure'
+      | 'KillPure'
+      | 'Announce'
+      | 'RemoveAnnouncement'
+      | 'RejectAnnouncement'
+      | 'ProxyAnnounced';
   }
 
   /** @name PalletUtilityCall (186) */
@@ -1969,7 +2076,17 @@ declare module '@polkadot/types/lookup' {
     readonly isTooManyReserves: boolean;
     readonly isTooManyHolds: boolean;
     readonly isTooManyFreezes: boolean;
-    readonly type: 'VestingBalance' | 'LiquidityRestrictions' | 'InsufficientBalance' | 'ExistentialDeposit' | 'Expendability' | 'ExistingVestingSchedule' | 'DeadAccount' | 'TooManyReserves' | 'TooManyHolds' | 'TooManyFreezes';
+    readonly type:
+      | 'VestingBalance'
+      | 'LiquidityRestrictions'
+      | 'InsufficientBalance'
+      | 'ExistentialDeposit'
+      | 'Expendability'
+      | 'ExistingVestingSchedule'
+      | 'DeadAccount'
+      | 'TooManyReserves'
+      | 'TooManyHolds'
+      | 'TooManyFreezes';
   }
 
   /** @name PalletTransactionPaymentReleases (228) */
@@ -1988,7 +2105,14 @@ declare module '@polkadot/types/lookup' {
     readonly isInsufficientBalance: boolean;
     readonly isOneshotAccountAlreadyCreated: boolean;
     readonly isOneshotAccountNotExist: boolean;
-    readonly type: 'BlockHeightInFuture' | 'BlockHeightTooOld' | 'DestAccountNotExist' | 'ExistentialDeposit' | 'InsufficientBalance' | 'OneshotAccountAlreadyCreated' | 'OneshotAccountNotExist';
+    readonly type:
+      | 'BlockHeightInFuture'
+      | 'BlockHeightTooOld'
+      | 'DestAccountNotExist'
+      | 'ExistentialDeposit'
+      | 'InsufficientBalance'
+      | 'OneshotAccountAlreadyCreated'
+      | 'OneshotAccountNotExist';
   }
 
   /** @name PalletQuotaQuota (230) */
@@ -2023,7 +2147,19 @@ declare module '@polkadot/types/lookup' {
     readonly isNotMember: boolean;
     readonly isSessionKeysNotProvided: boolean;
     readonly isTooManyAuthorities: boolean;
-    readonly type: 'AlreadyIncoming' | 'AlreadyOnline' | 'AlreadyOutgoing' | 'MemberIdNotFound' | 'MemberIdBlackListed' | 'MemberNotBlackListed' | 'MemberNotFound' | 'NotOnlineNorIncoming' | 'NotOwner' | 'NotMember' | 'SessionKeysNotProvided' | 'TooManyAuthorities';
+    readonly type:
+      | 'AlreadyIncoming'
+      | 'AlreadyOnline'
+      | 'AlreadyOutgoing'
+      | 'MemberIdNotFound'
+      | 'MemberIdBlackListed'
+      | 'MemberNotBlackListed'
+      | 'MemberNotFound'
+      | 'NotOnlineNorIncoming'
+      | 'NotOwner'
+      | 'NotMember'
+      | 'SessionKeysNotProvided'
+      | 'TooManyAuthorities';
   }
 
   /** @name SpStakingOffenceOffenceDetails (236) */
@@ -2079,7 +2215,14 @@ declare module '@polkadot/types/lookup' {
     readonly isInvalidKeyOwnershipProof: boolean;
     readonly isInvalidEquivocationProof: boolean;
     readonly isDuplicateOffenceReport: boolean;
-    readonly type: 'PauseFailed' | 'ResumeFailed' | 'ChangePending' | 'TooSoon' | 'InvalidKeyOwnershipProof' | 'InvalidEquivocationProof' | 'DuplicateOffenceReport';
+    readonly type:
+      | 'PauseFailed'
+      | 'ResumeFailed'
+      | 'ChangePending'
+      | 'TooSoon'
+      | 'InvalidKeyOwnershipProof'
+      | 'InvalidEquivocationProof'
+      | 'DuplicateOffenceReport';
   }
 
   /** @name PalletImOnlineBoundedOpaqueNetworkState (250) */
@@ -2149,7 +2292,17 @@ declare module '@polkadot/types/lookup' {
     readonly isTooManyProposals: boolean;
     readonly isWrongProposalWeight: boolean;
     readonly isWrongProposalLength: boolean;
-    readonly type: 'NotMember' | 'DuplicateProposal' | 'ProposalMissing' | 'WrongIndex' | 'DuplicateVote' | 'AlreadyInitialized' | 'TooEarly' | 'TooManyProposals' | 'WrongProposalWeight' | 'WrongProposalLength';
+    readonly type:
+      | 'NotMember'
+      | 'DuplicateProposal'
+      | 'ProposalMissing'
+      | 'WrongIndex'
+      | 'DuplicateVote'
+      | 'AlreadyInitialized'
+      | 'TooEarly'
+      | 'TooManyProposals'
+      | 'WrongProposalWeight'
+      | 'WrongProposalLength';
   }
 
   /** @name PalletUniversalDividendError (267) */
@@ -2172,7 +2325,19 @@ declare module '@polkadot/types/lookup' {
     readonly isIssuerCanNotEmitCert: boolean;
     readonly isCertToUndefined: boolean;
     readonly isIdtyNotFound: boolean;
-    readonly type: 'NotEnoughCertsToClaimMembership' | 'DistanceNotOK' | 'IdtyNotAllowedToRequestMembership' | 'IdtyNotAllowedToRenewMembership' | 'IdtyCreationPeriodNotRespected' | 'NotEnoughReceivedCertsToCreateIdty' | 'MaxEmittedCertsReached' | 'NotAllowedToChangeIdtyAddress' | 'NotAllowedToRemoveIdty' | 'IssuerCanNotEmitCert' | 'CertToUndefined' | 'IdtyNotFound';
+    readonly type:
+      | 'NotEnoughCertsToClaimMembership'
+      | 'DistanceNotOK'
+      | 'IdtyNotAllowedToRequestMembership'
+      | 'IdtyNotAllowedToRenewMembership'
+      | 'IdtyCreationPeriodNotRespected'
+      | 'NotEnoughReceivedCertsToCreateIdty'
+      | 'MaxEmittedCertsReached'
+      | 'NotAllowedToChangeIdtyAddress'
+      | 'NotAllowedToRemoveIdty'
+      | 'IssuerCanNotEmitCert'
+      | 'CertToUndefined'
+      | 'IdtyNotFound';
   }
 
   /** @name PalletIdentityIdtyValue (269) */
@@ -2221,7 +2386,28 @@ declare module '@polkadot/types/lookup' {
     readonly isProhibitedToRevertToAnOldKey: boolean;
     readonly isRightAlreadyAdded: boolean;
     readonly isRightNotExist: boolean;
-    readonly type: 'IdtyAlreadyConfirmed' | 'IdtyAlreadyCreated' | 'IdtyAlreadyValidated' | 'IdtyCreationNotAllowed' | 'IdtyIndexNotFound' | 'IdtyNameAlreadyExist' | 'IdtyNameInvalid' | 'IdtyNotConfirmedByOwner' | 'IdtyNotFound' | 'IdtyNotMember' | 'IdtyNotValidated' | 'IdtyNotYetRenewable' | 'InvalidSignature' | 'InvalidRevocationKey' | 'NotRespectIdtyCreationPeriod' | 'NotSameIdtyName' | 'OwnerKeyAlreadyRecentlyChanged' | 'OwnerKeyAlreadyUsed' | 'ProhibitedToRevertToAnOldKey' | 'RightAlreadyAdded' | 'RightNotExist';
+    readonly type:
+      | 'IdtyAlreadyConfirmed'
+      | 'IdtyAlreadyCreated'
+      | 'IdtyAlreadyValidated'
+      | 'IdtyCreationNotAllowed'
+      | 'IdtyIndexNotFound'
+      | 'IdtyNameAlreadyExist'
+      | 'IdtyNameInvalid'
+      | 'IdtyNotConfirmedByOwner'
+      | 'IdtyNotFound'
+      | 'IdtyNotMember'
+      | 'IdtyNotValidated'
+      | 'IdtyNotYetRenewable'
+      | 'InvalidSignature'
+      | 'InvalidRevocationKey'
+      | 'NotRespectIdtyCreationPeriod'
+      | 'NotSameIdtyName'
+      | 'OwnerKeyAlreadyRecentlyChanged'
+      | 'OwnerKeyAlreadyUsed'
+      | 'ProhibitedToRevertToAnOldKey'
+      | 'RightAlreadyAdded'
+      | 'RightNotExist';
   }
 
   /** @name SpMembershipMembershipData (277) */
@@ -2237,7 +2423,13 @@ declare module '@polkadot/types/lookup' {
     readonly isMembershipNotFound: boolean;
     readonly isOriginNotAllowedToUseIdty: boolean;
     readonly isMembershipRequestNotFound: boolean;
-    readonly type: 'IdtyIdNotFound' | 'MembershipAlreadyAcquired' | 'MembershipAlreadyRequested' | 'MembershipNotFound' | 'OriginNotAllowedToUseIdty' | 'MembershipRequestNotFound';
+    readonly type:
+      | 'IdtyIdNotFound'
+      | 'MembershipAlreadyAcquired'
+      | 'MembershipAlreadyRequested'
+      | 'MembershipNotFound'
+      | 'OriginNotAllowedToUseIdty'
+      | 'MembershipRequestNotFound';
   }
 
   /** @name PalletCertificationIdtyCertMeta (279) */
@@ -2282,7 +2474,17 @@ declare module '@polkadot/types/lookup' {
     readonly isQueueFull: boolean;
     readonly isTooManyEvaluators: boolean;
     readonly isWrongResultLength: boolean;
-    readonly type: 'AlreadyInEvaluation' | 'CannotReserve' | 'ManyEvaluationsByAuthor' | 'ManyEvaluationsInBlock' | 'NoAuthor' | 'NoIdentity' | 'NonEligibleForEvaluation' | 'QueueFull' | 'TooManyEvaluators' | 'WrongResultLength';
+    readonly type:
+      | 'AlreadyInEvaluation'
+      | 'CannotReserve'
+      | 'ManyEvaluationsByAuthor'
+      | 'ManyEvaluationsInBlock'
+      | 'NoAuthor'
+      | 'NoIdentity'
+      | 'NonEligibleForEvaluation'
+      | 'QueueFull'
+      | 'TooManyEvaluators'
+      | 'WrongResultLength';
   }
 
   /** @name PalletAtomicSwapError (297) */
@@ -2295,7 +2497,15 @@ declare module '@polkadot/types/lookup' {
     readonly isNotExist: boolean;
     readonly isClaimActionMismatch: boolean;
     readonly isDurationNotPassed: boolean;
-    readonly type: 'AlreadyExist' | 'InvalidProof' | 'ProofTooLarge' | 'SourceMismatch' | 'AlreadyClaimed' | 'NotExist' | 'ClaimActionMismatch' | 'DurationNotPassed';
+    readonly type:
+      | 'AlreadyExist'
+      | 'InvalidProof'
+      | 'ProofTooLarge'
+      | 'SourceMismatch'
+      | 'AlreadyClaimed'
+      | 'NotExist'
+      | 'ClaimActionMismatch'
+      | 'DurationNotPassed';
   }
 
   /** @name PalletMultisigMultisig (298) */
@@ -2322,7 +2532,21 @@ declare module '@polkadot/types/lookup' {
     readonly isUnexpectedTimepoint: boolean;
     readonly isMaxWeightTooLow: boolean;
     readonly isAlreadyStored: boolean;
-    readonly type: 'MinimumThreshold' | 'AlreadyApproved' | 'NoApprovalsNeeded' | 'TooFewSignatories' | 'TooManySignatories' | 'SignatoriesOutOfOrder' | 'SenderInSignatories' | 'NotFound' | 'NotOwner' | 'NoTimepoint' | 'WrongTimepoint' | 'UnexpectedTimepoint' | 'MaxWeightTooLow' | 'AlreadyStored';
+    readonly type:
+      | 'MinimumThreshold'
+      | 'AlreadyApproved'
+      | 'NoApprovalsNeeded'
+      | 'TooFewSignatories'
+      | 'TooManySignatories'
+      | 'SignatoriesOutOfOrder'
+      | 'SenderInSignatories'
+      | 'NotFound'
+      | 'NotOwner'
+      | 'NoTimepoint'
+      | 'WrongTimepoint'
+      | 'UnexpectedTimepoint'
+      | 'MaxWeightTooLow'
+      | 'AlreadyStored';
   }
 
   /** @name PalletProvideRandomnessRequest (302) */
@@ -2417,5 +2641,4 @@ declare module '@polkadot/types/lookup' {
 
   /** @name PalletTransactionPaymentChargeTransactionPayment (332) */
   interface PalletTransactionPaymentChargeTransactionPayment extends Compact<u64> {}
-
 } // declare module

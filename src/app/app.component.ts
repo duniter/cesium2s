@@ -7,13 +7,14 @@ import { isNotNilOrBlank } from '@app/shared/functions';
 import { TransferController } from '@app/transfer/transfer.controller';
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { fadeInAnimation } from '@app/shared/animations';
+import { SettingsService } from '@app/settings/settings.service';
 
 export interface IMenuItem {
   title: string;
   url?: string;
   icon: string;
   disabled?: () => boolean;
-  handle?: (event) => Promise<any>;
+  handle?: (event: Event) => Promise<void | unknown>;
   visible?: () => boolean;
   color?: PredefinedColors;
 }
@@ -29,7 +30,8 @@ export class AppComponent {
   appName = 'COMMON.APP_NAME';
   appPages: IMenuItem[] = [
     { title: 'MENU.HOME', url: '/home', icon: 'home' },
-    { title: 'MENU.ACCOUNT', url: '/wallet', icon: 'card' },
+    { title: 'MENU.ACCOUNT', url: '/wallet', icon: 'person' },
+    { title: 'MENU.TRANSACTIONS', url: '/history', icon: 'card' },
     { title: 'COMMON.BTN_SEND_MONEY', url: '/transfer', icon: 'paper-plane', visible: () => this.platform.mobile },
 
     {
@@ -57,6 +59,7 @@ export class AppComponent {
 
   constructor(
     private platform: PlatformService,
+    protected settings: SettingsService,
     private accountService: AccountsService,
     private transferController: TransferController,
     private router: Router
@@ -86,7 +89,7 @@ export class AppComponent {
 
   async detectDeepLink() {
     try {
-      const { url } = await App.getLaunchUrl();
+      const url = (await App.getLaunchUrl())?.url;
       if (isNotNilOrBlank(url)) {
         const slashIndex = url.indexOf('/');
         if (slashIndex !== -1) {
@@ -100,9 +103,7 @@ export class AppComponent {
         }
       }
     } catch (err) {
-      console.error(
-        `[platform] Cannot get launch URL: ${err.message || err}\n${err?.originalStack || JSON.stringify(err)}`
-      );
+      console.error(`[platform] Cannot get launch URL: ${err.message || err}\n${err?.originalStack || JSON.stringify(err)}`);
       // Continue
     }
   }

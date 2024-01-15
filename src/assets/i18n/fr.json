@@ -6,7 +6,7 @@
     "PUBKEY": "Clé publique",
     "ADDRESS": "Addresse SS58",
     "MEMBER": "Membre",
-    "BLOCK" : "Bloc",
+    "BLOCK": "Bloc",
     "BTN_OK": "OK",
     "BTN_YES": "Oui",
     "BTN_NO": "Non",
@@ -48,7 +48,7 @@
     "CHOOSE_FILE": "Déposez votre fichier <br/>ou cliquez pour le sélectionner",
     "DAYS": "jours",
     "NO_ACCOUNT_QUESTION": "Pas encore de compte ? Créez-en un gratuitement !",
-    "SEARCH_NO_RESULT": "Aucun résultat trouvé",
+    "SEARCH_NO_RESULT": "Aucun résultat",
     "LOADING": "Veuillez patienter...",
     "LOADING_WAIT": "Veuillez patienter...<br/><small>(Cesium interroge le nœud Duniter)</small>",
     "SEARCHING": "Recherche en cours...",
@@ -130,7 +130,7 @@
     "FORK_ME": "Clonez-moi !",
     "SHOW_LICENSE": "Voir la license de l'application",
     "REPORT_ISSUE": "anomalie",
-    "NOT_YOUR_ACCOUNT_QUESTION" : "Vous n'êtes pas propriétaire du compte <b class=\"ion-key\"> {{pubkey}}</b>&nbsp;?",
+    "NOT_YOUR_ACCOUNT_QUESTION": "Vous n'êtes pas propriétaire du compte <b class=\"ion-key\"> {{pubkey}}</b>&nbsp;?",
     "BTN_CHANGE_ACCOUNT": "Déconnecter ce compte",
     "CONNECTION_ERROR": "Nœud <b>{{server}}</b> injoignable ou adresse invalide.<br/><br/>Vérifiez votre connexion Internet, ou changer de nœud <a class=\"positive\" ng-click=\"doQuickFix('settings')\">dans les paramètres</a>.",
     "SHOW_ALL_FEED": "Voir tout",
@@ -142,8 +142,10 @@
     "DISPLAY_DIVIDER": "Affichage",
     "STORAGE_DIVIDER": "Stockage",
     "NETWORK_SETTINGS": "Réseau",
+    "BTN_DARK_MODE": "Mode sombre/clair",
     "PEER": "Nœud Duniter",
     "PEER_SHORT": "Nœud Duniter",
+    "INDEXER": "Indexeur de données",
     "PEER_CHANGED_TEMPORARY": "Adresse utilisée temporairement",
     "PERSIST_CACHE": "Conserver les données de navigation (expérimental)",
     "PERSIST_CACHE_HELP": "Permet une navigation plus rapide, en conservant localement les données reçues, pour les utiliser d'une session à l'autre.",
@@ -201,7 +203,7 @@
     "VIEW": {
       "HEADER_TITLE": "Bloc #{{number}}-{{hash|formatHash}}",
       "TITLE_CURRENT": "Bloc courant",
-      "TITLE": "Bloc #{{number|formatInteger}}",
+      "TITLE": "Bloc #{{number}}",
       "COMPUTED_BY": "Calculé par le noeud de",
       "SHOW_RAW": "Voir le fichier brut",
       "TECHNICAL_DIVIDER": "Informations techniques",
@@ -212,6 +214,9 @@
       "POW_MIN": "Difficulté minimale",
       "POW_MIN_HELP": "Difficulté imposée pour le calcul du hash",
       "DATA_DIVIDER": "Données",
+      "CALLS_COUNT": "Nombre de calls",
+      "EXTRINSICS_COUNT": "Nombre d'extrinsics",
+      "EVENTS_COUNT": "Nombre d'évènements",
       "IDENTITIES_COUNT": "Nouvelles identités",
       "JOINERS_COUNT": "Nouveaux membres",
       "ACTIVES_COUNT": "Renouvellements",
@@ -281,7 +286,7 @@
       "WOT_RULES_DIVIDER": "Règles de la toile de confiance",
       "SENTRIES": "Nombre de certifications (émises <b>et</b> reçues) pour devenir membre référent",
       "SENTRIES_FORMULA": "Nombre de certifications (émises <b>et</b> reçues) pour devenir membre référent (formule)",
-      "XPERCENT":"Pourcentage minimum de membres référents à atteindre pour respecter la règle de distance",
+      "XPERCENT": "Pourcentage minimum de membres référents à atteindre pour respecter la règle de distance",
       "AVG_GEN_TIME": "Temps moyen entre deux blocs",
       "CURRENT": "actuel",
       "MATH_CEILING": "PLAFOND",
@@ -323,13 +328,13 @@
     "MIRROR": "miroir",
     "MIRRORS": "Miroirs",
     "MIRROR_PEERS": "Nœuds miroirs",
-    "PEER_LIST" : "Liste des nœuds",
-    "MEMBERS" : "Membres",
-    "MEMBER_PEERS" : "Nœuds membres",
-    "ALL_PEERS" : "Tous les nœuds",
-    "DIFFICULTY" : "Difficulté",
-    "API" : "API",
-    "CURRENT_BLOCK" : "Bloc #",
+    "PEER_LIST": "Liste des nœuds",
+    "MEMBERS": "Membres",
+    "MEMBER_PEERS": "Nœuds membres",
+    "ALL_PEERS": "Tous les nœuds",
+    "DIFFICULTY": "Difficulté",
+    "API": "API",
+    "CURRENT_BLOCK": "Bloc #",
     "POPOVER_FILTER_TITLE": "Filtre",
     "OFFLINE": "Hors ligne",
     "OFFLINE_PEERS": "Nœuds hors ligne",
@@ -407,7 +412,7 @@
       "SENTRY_MEMBER": "Membre référent"
     },
     "OPERATIONS": {
-      "TITLE": "{{uid}} - Opérations"
+      "TITLE": "Opérations"
     },
     "GIVEN_CERTIFICATIONS": {
       "TITLE": "{{uid}} - Certifications émises",
@@ -784,7 +789,7 @@
     "REVOCATION_FAILED": "Échec de la révocation.",
     "SALT_OR_PASSWORD_NOT_CONFIRMED": "Identifiant secret ou mot de passe incorrect.",
     "RECOVER_ID_FAILED": "Échec de la récupération des identifiants",
-    "LOAD_FILE_FAILED" : "Échec du chargement du fichier",
+    "LOAD_FILE_FAILED": "Échec du chargement du fichier",
     "NOT_VALID_REVOCATION_FILE": "Fichier de révocation non valide (mauvais format de fichier)",
     "NOT_VALID_SAVE_ID_FILE": "Fichier de récupération non valide (mauvais format de fichier)",
     "NOT_VALID_KEY_FILE": "Fichier de trousseau non valide (format non reconnu)",
@@ -947,7 +952,7 @@
       "END_READONLY": "Cette visite guidée est <b>terminée</b>.<br/><br/>{{'MODE.READONLY.INSTALL_HELP'|translate}}."
     }
   },
-  "API" :{
+  "API": {
     "COMMON": {
       "LINK_DOC": "Documentation API",
       "LINK_DOC_HELP": "Documentation pour les développeurs",

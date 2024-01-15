@@ -35,9 +35,7 @@ export class SwiperDirective implements AfterViewInit, OnDestroy {
     this.swiperElement.initialize();
 
     this._subscription.add(
-      fromEventPattern((handler) => this.swiper.on('slideChangeTransitionStart', handler)).subscribe(() =>
-        this.slideChangeTransitionStart.emit()
-      )
+      fromEventPattern((handler) => this.swiper.on('slideChangeTransitionStart', handler)).subscribe(() => this.slideChangeTransitionStart.emit())
     );
   }
 

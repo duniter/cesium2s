@@ -1,9 +1,9 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
-      <ion-content>
+      <ion-content [class.dark]="settings.darkMode$ | async">
         <ion-list id="main-menu-list">
-          <ion-list-header [innerHTML]="'COMMON.APP_NAME' | translate"></ion-list-header>
+          <ion-list-header class="title" [innerHTML]="'COMMON.APP_NAME' | translate"></ion-list-header>
 
           <ion-note></ion-note>
 
@@ -26,8 +26,7 @@
               (click)="p.handle($event)"
               lines="none"
               detail="false"
-              tappable
-              class="ion-activatable"
+              class="ion-activatable ion-focusable"
               tappable
               @fadeInAnimation
             >

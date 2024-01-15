@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { RegisterModal } from '../register/register.modal';
@@ -23,9 +23,6 @@ export class AuthV2Form extends AppForm<AuthData> implements OnInit {
   protected showMnemonic = false;
 
   @Input() canRegister: boolean;
-
-  @Output() onCancel = new EventEmitter<any>();
-  @Output() onSubmit = new EventEmitter<AuthData>();
 
   constructor(
     injector: Injector,
@@ -60,8 +57,8 @@ export class AuthV2Form extends AppForm<AuthData> implements OnInit {
     }
   }
 
-  cancel() {
-    this.onCancel.emit();
+  doCancel() {
+    this.cancel.emit();
   }
 
   async doSubmit(event?: UIEvent) {
@@ -86,11 +83,11 @@ export class AuthV2Form extends AppForm<AuthData> implements OnInit {
     const data = this.value;
     this.error = null; // Reset error
 
-    setTimeout(() => this.onSubmit.emit(data));
+    setTimeout(() => this.validate.emit(data));
   }
 
   register() {
-    this.onCancel.emit();
+    this.cancel.emit();
     setTimeout(async () => {
       const modal = await this.modalCtrl.create({
         component: RegisterModal,

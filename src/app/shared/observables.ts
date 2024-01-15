@@ -3,10 +3,10 @@ import { filter, first } from 'rxjs/operators';
 import { isNotNil } from './functions';
 import { Predicate } from '@angular/core';
 
-export function filterNotNil<T = any>(obs: Observable<T>): Observable<T> {
+export function filterNotNil<T>(obs: Observable<T>): Observable<T> {
   return obs.pipe(filter(isNotNil));
 }
-export function firstNotNil<T = any>(obs: Observable<T>): Observable<T> {
+export function firstNotNil<T>(obs: Observable<T>): Observable<T> {
   return obs.pipe(first(isNotNil));
 }
 export function filterTrue(obs: Observable<boolean>): Observable<boolean> {
@@ -16,15 +16,15 @@ export function filterFalse(obs: Observable<boolean>): Observable<boolean> {
   return obs.pipe(filter((v) => v === false));
 }
 export function firstTruePromise(obs: Observable<boolean>): Promise<boolean> {
-  return obs.pipe(first((v) => v === true)).toPromise();
+  return firstValueFrom(obs.pipe(filter((v) => v === true)));
 }
 export function firstFalsePromise(obs: Observable<boolean>): Promise<boolean> {
-  return obs.pipe(first((v) => v === false)).toPromise();
+  return firstValueFrom(obs.pipe(filter((v) => v === false)));
 }
-export function firstNotNilPromise<T = any>(obs: Observable<T>): Promise<T> {
-  return firstNotNil(obs).toPromise();
+export function firstNotNilPromise<T>(obs: Observable<T>): Promise<T> {
+  return firstValueFrom(obs.pipe(filter(isNotNil)));
 }
-export function chainPromises<T = any>(defers: (() => Promise<any>)[]): Promise<T[]> {
+export function chainPromises<T>(defers: (() => Promise<T>)[]): Promise<T[]> {
   return (defers || []).reduce((previous: Promise<any> | null, defer) => {
     // First job
     if (!previous) {
@@ -119,4 +119,8 @@ export async function waitForTrue(observable: Observable<boolean>, opts?: WaitFo
     return firstValueFrom(timer(opts.dueTime).pipe(switchMap(() => firstTrueObservable)));
   }
   return firstValueFrom(firstTrueObservable);
+}
+
+export async function waitForFalse(observable: Observable<boolean>, opts?: WaitForOptions): Promise<void> {
+  return waitForTrue(observable.pipe(map((v) => v === false)), opts);
 }

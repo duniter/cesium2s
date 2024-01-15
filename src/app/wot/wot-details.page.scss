@@ -1,6 +1,7 @@
-ion-menu-button {
-  color: var(--ion-color-primary);
-}
-
-#container {
+ion-toolbar {
+  div[slot='end'],
+  ion-buttons[slot='end'] {
+    padding-inline-end: var(--ion-padding);
+    color: var(--ion-text-color, #000);
+  }
 }

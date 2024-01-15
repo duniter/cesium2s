@@ -1,11 +1,12 @@
 import { Subscription } from 'rxjs';
 import { environment } from '@environments/environment';
-import { OnDestroy } from '@angular/core';
+import { Directive, OnDestroy } from '@angular/core';
 
 export interface BaseServiceOptions {
   name?: string;
 }
 
+@Directive()
 export abstract class BaseService<O extends BaseServiceOptions = BaseServiceOptions> implements OnDestroy {
   private _subscription: Subscription = null;
 

@@ -1,22 +1,26 @@
-import { Optional } from '@angular/core';
+import { Directive, Optional } from '@angular/core';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
-import { RxBaseServiceOptions, RxBaseService } from '@app/shared/services/rx-service.class';
-import { ReadyAsyncFunction, IStartableService, IWithReadyService } from '@app/shared/services/service.model';
+import { RxBaseService, RxBaseServiceOptions } from '@app/shared/services/rx-service.class';
+import { IStartableService, IWithReadyService, ReadyAsyncFunction } from '@app/shared/services/service.model';
+import { toBoolean } from '@app/shared/functions';
 
-export interface RxStartableServiceOptions<T extends object = Object> extends RxBaseServiceOptions<T> {}
+export interface RxStartableServiceOptions<T extends object = Object> extends RxBaseServiceOptions<T> {
+  /**
+   * Should start the service when calling ready()? (default: true)
+   */
+  startByReadyFunction?: boolean;
+}
 
-export abstract class RxStartableService<
-    T extends object = Object,
-    O extends RxStartableServiceOptions<T> = RxStartableServiceOptions<T>
-  >
+@Directive()
+export abstract class RxStartableService<T extends object = Object, O extends RxStartableServiceOptions<T> = RxStartableServiceOptions<T>>
   extends RxBaseService<T, O>
   implements IStartableService<T>
 {
   startSubject = new Subject<T>();
   stopSubject = new Subject<void>();
 
-  protected _startByReadyFunction = true; // should start when calling ready() ?
-  protected _debug: boolean = false;
+  protected readonly _startByReadyFunction: boolean;
+  protected readonly _debug: boolean = false;
 
   private _started = false;
   private _startPromise: Promise<T> = null;
@@ -33,6 +37,7 @@ export abstract class RxStartableService<
   protected constructor(@Optional() prerequisiteService?: IWithReadyService, options?: O) {
     super(options);
     this._startPrerequisite = prerequisiteService ? () => prerequisiteService.ready() : () => Promise.resolve();
+    this._startByReadyFunction = toBoolean(options?.startByReadyFunction, true);
   }
 
   start(): Promise<T> {

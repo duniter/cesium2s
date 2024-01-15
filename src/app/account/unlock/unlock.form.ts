@@ -1,23 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Injector,
-  Input,
-  OnInit,
-  Optional,
-  Output,
-} from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Optional, Output } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, FormGroupDirective, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { SettingsService } from '@app/settings/settings.service';
 import { environment } from '@environments/environment';
 import { AppForm } from '@app/shared/form.class';
@@ -65,9 +47,7 @@ export class UnlockForm extends AppForm<string> implements OnInit {
 
   ngOnInit() {
     if (!this.control && this.formGroupDir && this.controlName) {
-      const formControlName = (this.formGroupDir.directives || []).find(
-        (d) => this.controlName && d.name === this.controlName
-      );
+      const formControlName = (this.formGroupDir.directives || []).find((d) => this.controlName && d.name === this.controlName);
       this.control = formControlName && formControlName.control;
       if (this.formGroupDir && this.control) {
         this.setForm(this.formGroupDir.form);
@@ -108,8 +88,8 @@ export class UnlockForm extends AppForm<string> implements OnInit {
     return this.control.valid;
   }
 
-  cancel() {
-    this.onCancel.emit();
+  doCancel() {
+    this.cancel.emit();
   }
 
   onInput(event: Event) {
@@ -129,11 +109,7 @@ export class UnlockForm extends AppForm<string> implements OnInit {
   }
 
   private createValidator(): ValidatorFn {
-    const validators = [
-      Validators.required,
-      Validators.minLength(this.minLength),
-      Validators.maxLength(this.maxLength),
-    ];
+    const validators = [Validators.required, Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)];
 
     // Add equals to expected code
     if (isNotNilOrBlank(this.expectedCode)) {

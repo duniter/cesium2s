@@ -10,9 +10,9 @@ export class DurationPipe implements PipeTransform {
 
   constructor(private translate: TranslateService) {}
 
-  transform(value: number, args?: any): string {
+  transform(value: number, args?: moment.unitOfTime.DurationConstructor | { unit: moment.unitOfTime.DurationConstructor }): string {
     if (!value) return '';
-    const unit = (args && args.unit) || 'hours';
+    const unit: moment.unitOfTime.DurationConstructor = (typeof args === 'object' ? args.unit : args) || 'hours';
 
     // try with moment
     const duration = toDuration(value, unit);

@@ -21,7 +21,7 @@ $screen-breakpoints: (
   sm: $screen-sm,
   md: $screen-md,
   lg: $screen-lg,
-  xl: $screen-xl
+  xl: $screen-xl,
 ) !default;
 
 // --------------------------------------------------
@@ -32,28 +32,30 @@ $app-direction: ltr !default;
 // Theme Colors
 // --------------------------------------------------
 // Ionic colors
-$primary:     #144391 !default;
-$primary100:  #718dbc !default;
-$primary900:  #0e2e63 !default;
-$secondary:   #75C4FD !default;
+$primary: #144391 !default;
+$primary100: #718dbc !default;
+$primary900: #1a237e !default;
+$secondary: #75c4fd !default;
 $secondary50: #d2edfe !default;
 $secondary100: #abdbfe !default;
 $secondary900: #5086ad !default;
-$tertiary:    #5b5ef4 !default;
-$accent:      #ff4081 !default;
-$success:     #10dc60 !default;
-$warning:     #ffce00 !default;
-$danger:      #f53d3d !default;
-$danger100:   #f98989 !default;
-$danger900:   #a82a2a !default;
-$light:       #f4f5f8 !default;
-$medium:      #989aa2 !default;
-$dark:        #222428 !default;
+$tertiary: #5b5ef4 !default;
+$accent: #ff4081 !default;
+$success: #10dc60 !default;
+$warning: #ffce00 !default;
+$danger: #f53d3d !default;
+$danger100: #f98989 !default;
+$danger900: #a82a2a !default;
+$light: #f4f5f8 !default;
+$medium: #989aa2 !default;
+$dark: #222428 !default;
 // User defined colors
 $transparent: transparent;
 
 // Main background color
-$background-color: #fff !default;
+$background-color: #f9f9f9 !default;
+$ion-item-background-color: #fff !default;
+
 // Text color
 $dark-primary-text: rgba(black, 0.87);
 $dark-secondary-text: rgba(black, 0.54);
@@ -90,38 +92,123 @@ $popover-wp-width: 320px;
 // - shade: 12% darker version of the base color (mix with black)
 // - tint: 10% lighter version of the base color (mix with white)
 $colors: (
-  /* primary */
-  primary: (base: $primary, contrast: #fff, shade: get-color-shade($primary), tint: get-color-tint($primary)),
-  /* primary100 */
-  primary100: (base: $primary100, contrast: #fff, shade: get-color-shade($primary100), tint: get-color-tint($primary100)),
-  /* primary900 */
-  primary900: (base: $primary900, contrast: #fff, shade: get-color-shade($primary900), tint: get-color-tint($primary900)),
-  /* secondary */
-  secondary: (base: $secondary, contrast: #fff, shade: get-color-shade($secondary), tint: get-color-tint($secondary)),
-  /* secondary50 */
-  secondary50: (base: $secondary50, contrast: $dark, shade: get-color-shade($secondary50), tint: get-color-tint($secondary50)),
-  /* secondary100 */
-  secondary100: (base: $secondary100, contrast: $dark, shade: get-color-shade($secondary100), tint: get-color-tint($secondary100)),
-  /* secondary900 */
-  secondary900: (base: $secondary900, contrast: #fff, shade: get-color-shade($secondary900), tint: get-color-tint($secondary900)),
-  /* tertiary */
-  tertiary: (base: $tertiary, contrast: #fff, shade: get-color-shade($tertiary), tint: get-color-tint($tertiary)),
-  /* accent */
-  accent: (base: $accent, contrast: #fff, shade: get-color-shade($accent), tint: get-color-tint($accent)),
-  /* warning */
-  success: (base: $success, contrast: #fff, shade: get-color-shade($success), tint: get-color-tint($success)),
-  /* success */
-  warning: (base: $warning, contrast: #fff, shade: get-color-shade($warning), tint: get-color-tint($warning)),
-  /* danger */
-  danger: (base: $danger, contrast: #fff, shade: get-color-shade($danger), tint: get-color-tint($danger)),
-  /* danger100 */
-  danger100: (base: $danger100, contrast: #fff, shade: get-color-shade($danger100), tint: get-color-tint($danger100)),
-  /* light */
-  light: (base: $light, contrast: $dark, shade: get-color-shade($light), tint: get-color-tint($light)),
-  /* medium */
-  medium: (base: $medium, contrast: #fff, shade: get-color-shade($medium), tint: get-color-tint($medium)),
-  /* dark */
-  dark: (base: $dark, contrast: #fff, shade: get-color-shade($dark), tint: get-color-tint($dark)),
-  /* transparent */
-  transparent: (base: $transparent, contrast: $dark, shade: $transparent, tint: $transparent)
+  /* primary */ primary:
+    (
+      base: $primary,
+      contrast: #fff,
+      shade: get-color-shade($primary),
+      tint: get-color-tint($primary),
+    ),
+  /* primary100 */ primary100:
+    (
+      base: $primary100,
+      contrast: #fff,
+      shade: get-color-shade($primary100),
+      tint: get-color-tint($primary100),
+    ),
+  /* primary900 */ primary900:
+    (
+      base: $primary900,
+      contrast: #fff,
+      shade: get-color-shade($primary900),
+      tint: get-color-tint($primary900),
+    ),
+  /* secondary */ secondary:
+    (
+      base: $secondary,
+      contrast: #fff,
+      shade: get-color-shade($secondary),
+      tint: get-color-tint($secondary),
+    ),
+  /* secondary50 */ secondary50:
+    (
+      base: $secondary50,
+      contrast: $dark,
+      shade: get-color-shade($secondary50),
+      tint: get-color-tint($secondary50),
+    ),
+  /* secondary100 */ secondary100:
+    (
+      base: $secondary100,
+      contrast: $dark,
+      shade: get-color-shade($secondary100),
+      tint: get-color-tint($secondary100),
+    ),
+  /* secondary900 */ secondary900:
+    (
+      base: $secondary900,
+      contrast: #fff,
+      shade: get-color-shade($secondary900),
+      tint: get-color-tint($secondary900),
+    ),
+  /* tertiary */ tertiary:
+    (
+      base: $tertiary,
+      contrast: #fff,
+      shade: get-color-shade($tertiary),
+      tint: get-color-tint($tertiary),
+    ),
+  /* accent */ accent:
+    (
+      base: $accent,
+      contrast: #fff,
+      shade: get-color-shade($accent),
+      tint: get-color-tint($accent),
+    ),
+  /* warning */ success:
+    (
+      base: $success,
+      contrast: #fff,
+      shade: get-color-shade($success),
+      tint: get-color-tint($success),
+    ),
+  /* success */ warning:
+    (
+      base: $warning,
+      contrast: #fff,
+      shade: get-color-shade($warning),
+      tint: get-color-tint($warning),
+    ),
+  /* danger */ danger:
+    (
+      base: $danger,
+      contrast: #fff,
+      shade: get-color-shade($danger),
+      tint: get-color-tint($danger),
+    ),
+  /* danger100 */ danger100:
+    (
+      base: $danger100,
+      contrast: #fff,
+      shade: get-color-shade($danger100),
+      tint: get-color-tint($danger100),
+    ),
+  /* light */ light:
+    (
+      base: $light,
+      contrast: $dark,
+      shade: get-color-shade($light),
+      tint: get-color-tint($light),
+    ),
+  /* medium */ medium:
+    (
+      base: $medium,
+      contrast: #fff,
+      shade: get-color-shade($medium),
+      tint: get-color-tint($medium),
+    ),
+  /* dark */ dark:
+    (
+      base: $dark,
+      contrast: #fff,
+      shade: get-color-shade($dark),
+      tint: get-color-tint($dark),
+    ),
+  /* transparent */ transparent:
+    (
+      base: $transparent,
+      contrast: $dark,
+      shade: $transparent,
+      tint: $transparent,
+    )
 );

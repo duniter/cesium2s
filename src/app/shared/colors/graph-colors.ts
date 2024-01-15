@@ -48,7 +48,11 @@ export class Color {
     return new Color([0, 0, 0], 0, 'translucent');
   };
 
-  constructor(private _rgbArray: number[], private _opacity?: number, private _name: string = 'custom') {}
+  constructor(
+    private _rgbArray: number[],
+    private _opacity?: number,
+    private _name: string = 'custom'
+  ) {}
   get name(): string {
     return this._name;
   }
@@ -148,7 +152,10 @@ export class ColorScale {
     return this._max;
   }
 
-  constructor(private colorArray: string[], options?: ColorScaleOptions) {
+  constructor(
+    private colorArray: string[],
+    options?: ColorScaleOptions
+  ) {
     options = options || {};
     // reserved last colors for value > max
     const nbIntervalBeforeUpper = !options.upperMax ? colorArray.length : colorArray.length - 1;
@@ -201,8 +208,7 @@ function linearColorGradientWithIntermediate(count: number, options?: ColorGradi
   // From [0,1]
   options.opacity = options.opacity > 0 && options.opacity < 1 ? options.opacity : 1;
   options.startColor = options.startColor || [255, 255, 190]; // default start = creme
-  options.mainColorIndex =
-    options.mainColorIndex && options.mainColorIndex < count - 1 ? options.mainColorIndex : count - 1;
+  options.mainColorIndex = options.mainColorIndex && options.mainColorIndex < count - 1 ? options.mainColorIndex : count - 1;
   options.endColor = options.endColor || [255, 0, 0]; // default main = red
   options.format = options.format || 'rgb';
 

@@ -5,7 +5,7 @@
     "APP_BUILD": "build {{build}}",
     "PUBKEY": "Public key",
     "MEMBER": "Member",
-    "BLOCK" : "Block",
+    "BLOCK": "Block",
     "BTN_OK": "OK",
     "BTN_YES": "Yes",
     "BTN_NO": "No",
@@ -81,8 +81,8 @@
       "SHARE_ON_GOOGLEPLUS": "Share on Google+"
     },
     "FILE": {
-      "DATE" : "Date:",
-      "TYPE" : "Type:",
+      "DATE": "Date:",
+      "TYPE": "Type:",
       "SIZE": "Size:",
       "VALIDATING": "Validating..."
     }
@@ -129,7 +129,7 @@
     "FORK_ME": "Fork me!",
     "SHOW_LICENSE": "Show license",
     "REPORT_ISSUE": "Report an issue",
-    "NOT_YOUR_ACCOUNT_QUESTION" : "You do not own the account <b><i class=\"ion-key\"></i> {{pubkey|formatPubkey}}</b>?",
+    "NOT_YOUR_ACCOUNT_QUESTION": "You do not own the account <b><i class=\"ion-key\"></i> {{pubkey|formatPubkey}}</b>?",
     "BTN_CHANGE_ACCOUNT": "Disconnect this account",
     "CONNECTION_ERROR": "Peer <b>{{server}}</b> unreachable or invalid address.<br/><br/>Check your Internet connection, or change node <a class=\"positive\" ng-click=\"doQuickFix('settings')\">in the settings</a>.",
     "SHOW_ALL_FEED": "Show all",
@@ -187,12 +187,12 @@
       "N": "{{time | formatDuration}} ({{count}} blocks)"
     },
     "POPUP_PEER": {
-      "TITLE" : "Duniter peer",
-      "HOST" : "Address",
+      "TITLE": "Duniter peer",
+      "HOST": "Address",
       "HOST_HELP": "Address: server:port",
-      "USE_SSL" : "Secured?",
-      "USE_SSL_HELP" : "(SSL Encryption)",
-      "BTN_SHOW_LIST" : "Peer's list"
+      "USE_SSL": "Secured?",
+      "USE_SSL_HELP": "(SSL Encryption)",
+      "BTN_SHOW_LIST": "Peer's list"
     }
   },
   "BLOCKCHAIN": {
@@ -280,7 +280,7 @@
       "WOT_RULES_DIVIDER": "Rules for web of trust",
       "SENTRIES": "Required number of certifications (given <b>and</b> received) to become a referring member",
       "SENTRIES_FORMULA": "Required number of certifications to become a referring member (formula)",
-      "XPERCENT":"Minimum percent of referring member to reach to match the distance rule",
+      "XPERCENT": "Minimum percent of referring member to reach to match the distance rule",
       "AVG_GEN_TIME": "The average time between 2 blocks",
       "CURRENT": "current",
       "MATH_CEILING": "CEILING",
@@ -322,13 +322,13 @@
     "MIRROR": "mirror",
     "MIRRORS": "Mirrors",
     "MIRROR_PEERS": "Mirror peers",
-    "PEER_LIST" : "Peer's list",
-    "MEMBERS" : "Members",
-    "MEMBER_PEERS" : "Member peers",
-    "ALL_PEERS" : "All peers",
-    "DIFFICULTY" : "Difficulty",
-    "API" : "API",
-    "CURRENT_BLOCK" : "Block #",
+    "PEER_LIST": "Peer's list",
+    "MEMBERS": "Members",
+    "MEMBER_PEERS": "Member peers",
+    "ALL_PEERS": "All peers",
+    "DIFFICULTY": "Difficulty",
+    "API": "API",
+    "CURRENT_BLOCK": "Block #",
     "POPOVER_FILTER_TITLE": "Filter",
     "OFFLINE": "Offline",
     "OFFLINE_PEERS": "Offline peers",
@@ -406,7 +406,7 @@
       "SENTRY_MEMBER": "Referring member"
     },
     "OPERATIONS": {
-      "TITLE": "{{uid}} - Operations"
+      "TITLE": "Operations"
     },
     "GIVEN_CERTIFICATIONS": {
       "TITLE": "{{uid}} - Certifications sent",
@@ -587,12 +587,12 @@
         "NO_NEW_WALLET": "No new wallet"
       }
     },
-    "SECURITY":{
-      "ADD_QUESTION" : "Add custom question",
-      "BTN_CLEAN" : "Clean",
-      "BTN_RESET" : "Reset",
+    "SECURITY": {
+      "ADD_QUESTION": "Add custom question",
+      "BTN_CLEAN": "Clean",
+      "BTN_RESET": "Reset",
       "DOWNLOAD_REVOKE": "Save a revocation file",
-      "DOWNLOAD_REVOKE_HELP" : "Having a revocation file is important, for example in case of loss of identifiers. It allows you to <b>get this account out of the Web Of Trust</b>, thus becoming a simple wallet.",
+      "DOWNLOAD_REVOKE_HELP": "Having a revocation file is important, for example in case of loss of identifiers. It allows you to <b>get this account out of the Web Of Trust</b>, thus becoming a simple wallet.",
       "GENERATE_KEYFILE": "Generate my keychain file ...",
       "GENERATE_KEYFILE_HELP": "Generate a file allowing you to authenticate without entering your identifiers.<br/><b>Warning:</b> this file will contain your secret key; It is therefore very important to put it in a safe place!",
       "KEYFILE_FILENAME": "keychain-{{pubkey|formatPubkey}}-{{currency}}-{{format}}.dunikey",
@@ -626,7 +626,7 @@
       "RECOVER_ID": "Recover my password...",
       "RECOVER_ID_HELP": "If you have a <b>backup file of your identifiers</b>, you can find them by answering your personal questions correctly.",
       "RECOVER_ID_SELECT_FILE": "Select the <b>backup file of your identifiers</b> to use:",
-      "REVOCATION_WITH_FILE" : "Revoke my member account...",
+      "REVOCATION_WITH_FILE": "Revoke my member account...",
       "REVOCATION_WITH_FILE_DESCRIPTION": "If you have <b>permanently lost your member account credentials (or if account security is compromised), you can use <b>the revocation file</b> of the account <b>to quit the Web Of Trust</b>.",
       "REVOCATION_WITH_FILE_HELP": "To <b>permanently revoke</ b> a member account, please drag the revocation file in the box below, or click in the box to search for a file.",
       "REVOCATION_WALLET": "Revoke this account immediately",
@@ -768,7 +768,7 @@
     "REVOCATION_FAILED": "Error while trying to revoke the identity.",
     "SALT_OR_PASSWORD_NOT_CONFIRMED": "Wrong secret identifier or password ",
     "RECOVER_ID_FAILED": "Could not recover password",
-    "LOAD_FILE_FAILED" : "Unable to load file",
+    "LOAD_FILE_FAILED": "Unable to load file",
     "NOT_VALID_REVOCATION_FILE": "Invalid revocation file (wrong file format)",
     "NOT_VALID_SAVE_ID_FILE": "Invalid credentials backup file (wrong file format)",
     "NOT_VALID_KEY_FILE": "Invalid keychain file (unrecognized format)",
@@ -929,7 +929,7 @@
       "END_READONLY": "This guided visit has <b>ended</b>.<br/><br/>{{'MODE.READONLY.INSTALL_HELP'|translate}}."
     }
   },
-  "API" :{
+  "API": {
     "COMMON": {
       "LINK_DOC": "API documentation",
       "LINK_DOC_HELP": "API documentation for developers",

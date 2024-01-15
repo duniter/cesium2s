@@ -1,9 +1,14 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title translate>SETTINGS.TITLE</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleDarkMode()" [title]="'SETTINGS.BTN_DARK_MODE' | translate">
+        <ion-icon slot="icon-only" [name]="darkMode ? 'sunny' : 'moon'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -16,11 +21,13 @@
 
   <div id="container">
     <ion-list *rxIf="loaded$; else listSkeleton">
+      <ion-item-divider translate>SETTINGS.DISPLAY_DIVIDER</ion-item-divider>
+
       <ion-item>
         <ion-icon slot="start" name="language"></ion-icon>
         <ion-label color="dark" translate>COMMON.LANGUAGE</ion-label>
         <ion-select
-          [(ngModel)]="data.locale"
+          [(ngModel)]="locale"
           [interface]="mobile ? 'action-sheet' : 'popover'"
           [okText]="'COMMON.BTN_OK' | translate"
           [cancelText]="'COMMON.BTN_CANCEL' | translate"
@@ -35,10 +42,28 @@
 
       <ion-item>
         <ion-icon slot="start" name="cloud-done"></ion-icon>
-        <ion-label color="dark" translate>SETTINGS.PEER</ion-label>
+        <ion-label>
+          <h2 color="dark" translate>SETTINGS.PEER</h2>
+          <p>
+            {{ peer }}
+          </p>
+        </ion-label>
 
-        <ion-input [(ngModel)]="data.peer" class="ion-text-end"></ion-input>
-        <ion-button slot="end" (click)="selectPeer()">
+        <ion-button slot="end" (click)="selectPeerModal.present()" [title]="'SETTINGS.POPUP_PEER.BTN_SHOW_LIST' | translate">
+          <ion-label>...</ion-label>
+        </ion-button>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="cloud-done"></ion-icon>
+        <ion-label>
+          <h2 color="dark" translate>SETTINGS.INDEXER</h2>
+          <p>
+            {{ indexer }}
+          </p>
+        </ion-label>
+
+        <ion-button slot="end" (click)="selectIndexerModal.present()" [title]="'SETTINGS.POPUP_PEER.BTN_SHOW_LIST' | translate">
           <ion-label>...</ion-label>
         </ion-button>
       </ion-item>
@@ -50,23 +75,24 @@
         <ion-label color="dark" translate>SETTINGS.KEEP_AUTH</ion-label>
 
         <ion-select
-          [(ngModel)]="data.unAuthDelayMs"
+          [(ngModel)]="unAuthDelayMs"
           [interface]="mobile ? 'action-sheet' : 'popover'"
           [okText]="'COMMON.BTN_OK' | translate"
           [cancelText]="'COMMON.BTN_CANCEL' | translate"
         >
           <ion-select-option *ngFor="let item of unauthOptions" [value]="item.value">
-            {{ item.label | translate : { value: item.labelParam } }}
+            {{ item.label | translate: { value: item.labelParam } }}
           </ion-select-option>
         </ion-select>
       </ion-item>
     </ion-list>
 
-    <div class="ion-text-center">
+    <!-- buttons -->
+    <div class="ion-text-center" *ngIf="!mobile">
       <ion-button (click)="cancel()" color="light">
         <ion-label translate>COMMON.BTN_CANCEL</ion-label>
       </ion-button>
-      <ion-button (click)="save()" color="danger">
+      <ion-button (click)="save()" *rxLet="dirty$; let dirty" [color]="dirty ? 'danger' : 'light'" [disabled]="!dirty">
         <ion-label translate="COMMON.BTN_SAVE"></ion-label>
       </ion-button>
     </div>
@@ -76,3 +102,51 @@
 <ng-template #listSkeleton>
   <app-skeleton-list [avatar]="true" size="5"></app-skeleton-list>
 </ng-template>
+
+<!-- Select peers modal -->
+<ion-modal #selectPeerModal [backdropDismiss]="true">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="secondary">
+        <ion-buttons slot="start">
+          <ion-button (click)="selectPeerModal.dismiss()" *ngIf="mobile">
+            <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <ion-title translate>SETTINGS.POPUP_PEER.BTN_SHOW_LIST</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item *rxFor="let peer of preferredPeers$" tappable (click)="selectPeer(peer)">
+          <ion-label>{{ peer }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- select indexer modal -->
+<ion-modal #selectIndexerModal [backdropDismiss]="true">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="secondary">
+        <ion-buttons slot="start">
+          <ion-button (click)="selectIndexerModal.dismiss()" *ngIf="mobile">
+            <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <ion-title translate>SETTINGS.POPUP_PEER.BTN_SHOW_LIST</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item *rxFor="let peer of preferredIndexers$" tappable (click)="selectIndexer(peer)">
+          <ion-label>{{ peer }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>

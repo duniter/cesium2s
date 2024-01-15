@@ -1,10 +1,4 @@
-import {
-  getPropertyByPathAsString,
-  isNotNil,
-  isNotNilOrBlank,
-  matchUpperCase,
-  startsWithUpperCase,
-} from '../functions';
+import { getPropertyByPathAsString, isNotNil, isNotNilOrBlank, matchUpperCase, startsWithUpperCase } from '../functions';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export declare type ReadyAsyncFunction<T = any> = () => Promise<T>;
@@ -14,7 +8,7 @@ export declare interface IWithReadyService<T = any> {
   ready: ReadyAsyncFunction<T>;
 }
 
-export declare type FetchMoreFn<R, V = object> = (variables?: V) => Promise<R>;
+export declare type FetchMoreFn<R> = (limit?: number) => Promise<R>;
 
 export declare interface LoadResult<T> {
   data: T[];
@@ -46,14 +40,10 @@ export function suggestFromArray<T = any>(
     // If wildcard, search using regexp
     if ((searchText as string).indexOf('*') !== -1) {
       searchText = (searchText as string).replace('*', '.*');
-      values = values.filter(
-        (v) => keys.findIndex((key) => matchUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1
-      );
+      values = values.filter((v) => keys.findIndex((key) => matchUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1);
     } else {
       // If wildcard, search using startsWith
-      values = values.filter(
-        (v) => keys.findIndex((key) => startsWithUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1
-      );
+      values = values.filter((v) => keys.findIndex((key) => startsWithUpperCase(getPropertyByPathAsString(v, key), searchText)) !== -1);
     }
   }
 

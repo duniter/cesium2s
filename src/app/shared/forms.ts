@@ -86,16 +86,13 @@ export function adaptValueToControl(source: any | undefined, control: AbstractCo
 
     // Skip if value is not an array
     if (!Array.isArray(source) || control.length === 0) {
-      if (isNotEmptyArray(source))
-        console.warn(`WARN: please resize the FormArray '${path}' to the same length of the input array`);
+      if (isNotEmptyArray(source)) console.warn(`WARN: please resize the FormArray '${path}' to the same length of the input array`);
       return [];
     }
 
     // Use the first form group, as model
     const firstItemControl = control.at(0);
-    let result = source.map((item, index) =>
-      adaptValueToControl(item, firstItemControl, pathPrefix + '#' + index)
-    ) as any[];
+    let result = source.map((item, index) => adaptValueToControl(item, firstItemControl, pathPrefix + '#' + index)) as any[];
 
     // Truncate if too many values
     if (result.length > control.length) {
@@ -400,11 +397,7 @@ export function selectInputRange(input: any, startIndex: number, endIndex?: numb
 
 export function getCaretPosition(input: any): number {
   if (input && input.selectionStart) {
-    return input.selectionDirection
-      ? input.selectionDirection === 'backward'
-        ? input.selectionStart
-        : input.selectionEnd
-      : input.selectionStart;
+    return input.selectionDirection ? (input.selectionDirection === 'backward' ? input.selectionStart : input.selectionEnd) : input.selectionStart;
   }
   return -1;
 }
@@ -418,20 +411,13 @@ export function filterNumberInput(event: KeyboardEvent, allowDecimals: boolean, 
   // Decimal separator
   else if (
     allowDecimals &&
-    ((!decimalSeparator && (event.key === '.' || event.key === ',')) ||
-      (decimalSeparator && event.key === decimalSeparator))
+    ((!decimalSeparator && (event.key === '.' || event.key === ',')) || (decimalSeparator && event.key === decimalSeparator))
   ) {
     //console.debug('input decimal separator entered :' + event.code);
     // OK
   } else {
     //input command entered of delete, backspace or one of the 4 direction up, down, left and right, or negative sign
-    if (
-      (event.keyCode >= 37 && event.keyCode <= 40) ||
-      event.keyCode == 46 ||
-      event.which == 8 ||
-      event.keyCode == 9 ||
-      event.keyCode == 45
-    ) {
+    if ((event.keyCode >= 37 && event.keyCode <= 40) || event.keyCode == 46 || event.which == 8 || event.keyCode == 9 || event.keyCode == 45) {
       //console.debug('input command entered :' + event.which + ' ' + event.keyCode + ' ' + event.charCode);
       // OK
     }
@@ -529,10 +515,7 @@ export function canHaveFocus(input: InputElement, opts?: CanGainFocusOptions): b
   );
 }
 
-export function getFocusableInputElements(
-  elements: QueryList<ElementRef>,
-  opts?: GetFocusableInputOptions
-): InputElement[] {
+export function getFocusableInputElements(elements: QueryList<ElementRef>, opts?: GetFocusableInputOptions): InputElement[] {
   opts = { sortByTabIndex: false, excludeEmptyInput: false, ...opts };
 
   // Focus to first input
@@ -545,10 +528,7 @@ export function getFocusableInputElements(
       const included = canHaveFocus(input, opts);
       // DEBUG
       if (input && opts.debug)
-        console.debug(
-          `[inputs] Focusable input {canFocus: ${included}, tabIndex: ${input.tabIndex || input.tabindex}}`,
-          input
-        );
+        console.debug(`[inputs] Focusable input {canFocus: ${included}, tabIndex: ${input.tabIndex || input.tabindex}}`, input);
       return included;
     });
 
@@ -560,11 +540,7 @@ export function getFocusableInputElements(
   return filteredElements;
 }
 
-export function focusNextInput(
-  event: UIEvent | undefined,
-  elements: QueryList<ElementRef>,
-  opts?: GetFocusableInputOptions
-): boolean {
+export function focusNextInput(event: UIEvent | undefined, elements: QueryList<ElementRef>, opts?: GetFocusableInputOptions): boolean {
   // Cancelling event (e.g. when emitted by (keydown.tab) )
   if (event) {
     event.preventDefault();
@@ -572,8 +548,7 @@ export function focusNextInput(
   }
 
   // Get current index
-  const minTabindex =
-    event && isInputElement(event.target) ? event.target.tabIndex || event.target.tabindex : undefined;
+  const minTabindex = event && isInputElement(event.target) ? event.target.tabIndex || event.target.tabindex : undefined;
 
   // Get focusable input elements
   const focusableInputs: InputElement[] = getFocusableInputElements(elements, { minTabindex, ...opts });
@@ -588,11 +563,7 @@ export function focusNextInput(
   return false;
 }
 
-export function focusPreviousInput(
-  event: UIEvent | undefined,
-  elements: QueryList<ElementRef>,
-  opts?: GetFocusableInputOptions
-): boolean {
+export function focusPreviousInput(event: UIEvent | undefined, elements: QueryList<ElementRef>, opts?: GetFocusableInputOptions): boolean {
   // Cancelling event (e.g. when emitted by (keydown.tab) )
   if (event) {
     event.preventDefault();
@@ -600,8 +571,7 @@ export function focusPreviousInput(
   }
 
   // Get current index
-  const maxTabindex =
-    event && isInputElement(event.target) ? event.target.tabIndex || event.target.tabindex : undefined;
+  const maxTabindex = event && isInputElement(event.target) ? event.target.tabIndex || event.target.tabindex : undefined;
 
   // Get focusable input elements
   const focusableInputs: InputElement[] = getFocusableInputElements(elements, { maxTabindex, ...opts });
