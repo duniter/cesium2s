@@ -26,7 +26,7 @@
 
       <ion-label>{{ account$ | push | accountName }}</ion-label>
 
-      <div slot="end">
+      <div slot="end" *ngIf="showBalance">
         <ion-label class="ion-text-end">
           <p translate>ACCOUNT.BALANCE</p>
           <h2 *rxIf="loaded$; else loadingText">

@@ -50,7 +50,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
     });
   }
 
-  wotSearch(filter: WotSearchFilter, options: { offset?: number; limit?: number }): Observable<LoadResult<Account>> {
+  wotSearch(filter: WotSearchFilter, options: { offset?: number; limit?: number; fetchPolicy?: FetchPolicy }): Observable<LoadResult<Account>> {
     console.info(`${this._logPrefix}Searching wot by filter...`, filter);
 
     options = {
@@ -62,12 +62,17 @@ export class IndexerService extends GraphqlService<IndexerState> {
     let data$: Observable<Account[]>;
     if (isNotNilOrBlank(filter.address)) {
       data$ = this.indexerGraphqlService
-        .wotSearchByAddress({
-          address: filter.address,
-          offset: options.offset,
-          limit: options.limit + 1, // Add 1 item, to check if can fetch more
-          orderBy: [AccountOrderByInput.IdAsc],
-        })
+        .wotSearchByAddress(
+          {
+            address: filter.address,
+            offset: options.offset,
+            limit: options.limit + 1, // Add 1 item, to check if can fetch more
+            orderBy: [AccountOrderByInput.IdAsc],
+          },
+          {
+            fetchPolicy: options.fetchPolicy,
+          }
+        )
         .pipe(map(({ data }) => IndexerFragmentConverter.toAccounts(data?.accounts)));
     } else if (isNotNilOrBlank(filter.searchText)) {
       data$ = this.indexerGraphqlService

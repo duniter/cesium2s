@@ -6,9 +6,19 @@ import { keyring } from '@polkadot/ui-keyring';
 import { environment } from '@environments/environment';
 import { KeyringStorage } from '@app/shared/services/storage/keyring-storage';
 import { base58Encode, cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
-import { isEmptyArray, isNil, isNilOrBlank, isNilOrNaN, isNotEmptyArray, isNotNil, isNotNilOrBlank, sleep } from '@app/shared/functions';
+import {
+  firstArrayValue,
+  isEmptyArray,
+  isNil,
+  isNilOrBlank,
+  isNilOrNaN,
+  isNotEmptyArray,
+  isNotNil,
+  isNotNilOrBlank,
+  sleep,
+} from '@app/shared/functions';
 import { APP_STORAGE, IStorage } from '@app/shared/services/storage/storage.utils';
-import { debounceTime, firstValueFrom, from, map, Observable, Subscription, switchMap, timer } from 'rxjs';
+import { debounceTime, firstValueFrom, from, map, mergeMap, Observable, Subscription, switchMap, timer } from 'rxjs';
 import { Currency } from '@app/currency/currency.model';
 import { SettingsService } from '@app/settings/settings.service';
 import { scryptEncode } from '@polkadot/util-crypto/scrypt/encode';
@@ -19,14 +29,17 @@ import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.deco
 import { ED25519_SEED_LENGTH, SCRYPT_PARAMS } from '@app/account/crypto.utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { AppEvent } from '@app/shared/types';
+import { IndexerService } from '@app/network/indexer.service';
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
   withTx?: boolean;
   withCert?: boolean;
   withBalance?: boolean;
+  withMembership?: boolean;
   emitEvent?: boolean;
 }
+export interface WatchAccountDataOptions extends LoadAccountDataOptions {}
 
 export interface AccountsState {
   accounts: Account[];
@@ -54,6 +67,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
   constructor(
     protected network: NetworkService,
+    protected indexer: IndexerService,
     protected settings: SettingsService,
     @Inject(APP_STORAGE) protected storage: IStorage,
     @Inject(APP_AUTH_CONTROLLER) protected authController: IAuthController
@@ -146,6 +160,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
           publicKey: ka.publicKey,
           meta: {
             ...ka.meta,
+            self: true,
           },
         };
       });
@@ -163,7 +178,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
         // DEBUG
         console.info(this._logPrefix + `Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
         accounts.forEach((a) => {
-          console.info(` - ${a.meta?.name || formatAddress(a.address)} {free: ${a.data?.free / 100}, reserved: ${a.data?.reserved / 100}}`);
+          console.info(` - ${AccountUtils.getDisplayName(a)} {free: ${a.data?.free / 100}, reserved: ${a.data?.reserved / 100}}`);
         });
 
         return accounts;
@@ -188,6 +203,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
       isTesting: true,
       default: true,
       ...data.meta,
+      self: true,
     };
 
     const { pair, account } = await this.createAccount(data);
@@ -408,6 +424,10 @@ export class AccountsService extends RxStartableService<AccountsState> {
     return (accounts || this.accounts || []).some((a) => a.address === address);
   }
 
+  isAvailableSync(address: string, accounts?: Account[]): boolean {
+    return (accounts || this.accounts || []).some((a) => a.address === address);
+  }
+
   async getByAddress(address: string, opts?: LoadAccountDataOptions): Promise<Account> {
     if (!this.started) await this.ready();
 
@@ -421,8 +441,18 @@ export class AccountsService extends RxStartableService<AccountsState> {
     return await this.loadData(account, opts);
   }
 
-  watchByAddress(address: string): Observable<Account> {
-    return this.accounts$.pipe(map((accounts) => accounts?.find((a) => a.address === address)));
+  watchByAddress(address: string, opts?: WatchAccountDataOptions): Observable<Account> {
+    // Wait start if need, then loop
+    if (!this.started) return from(this.ready()).pipe(switchMap(() => this.watchByAddress(address)));
+
+    if (this.isAvailableSync(address)) {
+      return this.accounts$.pipe(map((accounts) => accounts?.find((a) => a.address === address)));
+    }
+
+    return this.indexer.wotSearch({ address }, { limit: 1 }).pipe(
+      map(({ data }) => firstArrayValue(data)),
+      mergeMap(async (account) => this.loadData(account, { ...opts, withMembership: false }))
+    );
   }
 
   /**
@@ -544,11 +574,26 @@ export class AccountsService extends RxStartableService<AccountsState> {
         const { data } = await this.api.query.system.account(account.address);
         account.data = {
           ...account.data,
-          ...JSON.parse(data.toString()),
+          ...data.toJSON(),
         };
         changed = true;
 
+        console.log('TODO', Object.keys(this.api.query));
         //await this.api.query.udAccountsStorage.udAccounts(account.address);
+      }
+
+      if (opts.withMembership === true && (isNil(account.meta.isMember) || opts.reload === true)) {
+        const indexedAccount = await firstValueFrom(
+          this.indexer
+            .wotSearch({ address: account.address }, { limit: 1, fetchPolicy: 'network-only' })
+            .pipe(map(({ data }) => firstArrayValue(data)))
+        );
+        account.meta = {
+          ...account.meta,
+          uid: indexedAccount.meta?.uid,
+          isMember: indexedAccount.meta?.isMember,
+        };
+        changed = true;
       }
 
       // Load TX
@@ -568,7 +613,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
       // Emit change event
       if (changed && this.accounts) {
-        console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} data [OK] in ${Date.now() - now}ms`, account.data);
+        console.debug(`${this._logPrefix} Loading ${formatAddress(account.address)} data [OK] in ${Date.now() - now}ms`, account);
       }
     } catch (err) {
       console.error(`${this._logPrefix}Failed to load ${formatAddress(account.address)} data:`, err);

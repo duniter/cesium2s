@@ -18,6 +18,7 @@ export interface AccountMeta {
   isTesting?: boolean;
 
   // Cesium properties
+  self?: boolean;
   default?: boolean;
   publicKeyV1?: string;
   uid?: string;

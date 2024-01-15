@@ -29,11 +29,12 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
   @RxStateSelect() account$: Observable<Account>;
 
   @Input() showToolbar = true;
+  @Input() showBalance = false;
   @Input() @RxStateProperty() address: string;
   @Input() @RxStateProperty() account: Account;
 
   constructor(
-    private accountService: AccountsService,
+    private accountsService: AccountsService,
     private indexerService: IndexerService,
     @Inject(APP_TRANSFER_CONTROLLER) private transferController: ITransferController
   ) {
@@ -44,15 +45,24 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
       'account',
       this.address$.pipe(
         mergeMap(async (address) => {
-          const ownedAddress = await this.accountService.isAvailable(address);
+          const ownedAddress = await this.accountsService.isAvailable(address);
           return { address, ownedAddress };
         }),
         switchMap(({ address, ownedAddress }) => {
           if (ownedAddress) {
-            return this.accountService.watchByAddress(address);
+            return this.accountsService.watchByAddress(address);
           }
-
           return this.indexerService.wotSearch({ address }, { limit: 1 }).pipe(map(({ data }) => firstArrayValue(data)));
+        }),
+        mergeMap(async (account) => {
+          if (account.data) return account;
+          const { data } = await this.accountsService.api.query.system.account(account.address);
+          return {
+            ...account,
+            data: {
+              ...JSON.parse(data.toString()),
+            },
+          };
         })
       )
     );

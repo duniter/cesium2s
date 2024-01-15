@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit
 
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
-import { WotSearchFilter, WotSearchFilterUtils } from '@app/wot/wot.model';
+import { WotLookupOptions, WotSearchFilter, WotSearchFilterUtils } from '@app/wot/wot.model';
 import { arraySize, isNilOrBlank, isNotNilOrBlank, toBoolean, toNumber } from '@app/shared/functions';
-import { Observable } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, mergeMap, tap } from 'rxjs/operators';
 
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
@@ -24,17 +24,11 @@ export interface WotLookupState extends AppPageState {
   limit: number;
   canFetchMore: boolean;
   fetchMoreFn: FetchMoreFn<LoadResult<Account>>;
+  autoLoad: boolean;
 }
 
-export interface WotLookupOptions {
-  debounceTime?: number;
-  showToolbar?: boolean;
-  showSearchBar?: boolean;
-  showItemActions?: boolean;
-  showFilterButtons?: boolean;
-  toolbarColor?: PredefinedColors;
-  searchText?: string;
-  filter?: WotSearchFilter;
+export interface WotLookupInputs extends WotLookupOptions {
+  isModal?: boolean;
 }
 
 @Component({
@@ -44,7 +38,7 @@ export interface WotLookupOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [RxState],
 })
-export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, WotLookupOptions {
+export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, WotLookupInputs {
   @RxStateSelect() protected items$: Observable<Account[]>;
   @RxStateSelect() protected count$: Observable<number>;
   @RxStateSelect() protected filter$: Observable<WotSearchFilter>;
@@ -56,18 +50,20 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
 
   @Input() isModal = false;
   @Input() debounceTime = 650;
+  @Input() toolbarColor: PredefinedColors = 'primary';
   @Input() showToolbar = true;
   @Input() showSearchBar = true;
-  @Input() showFilterButtons = true;
   @Input() showItemActions: boolean;
-  @Input() toolbarColor: PredefinedColors = 'primary';
+  @Input() showFilterButtons = true;
   @Input() @RxStateProperty() filter: WotSearchFilter;
   @Input() @RxStateProperty() searchText: string;
   @Input() @RxStateProperty() limit: number;
+  @Input() @RxStateProperty() autoLoad: boolean;
 
   @Output() searchClick = new EventEmitter<Event>();
   @Output() itemClick = new EventEmitter<Account>();
   @Output() closeClick = new EventEmitter<Account>();
+  @Output() refresh = new EventEmitter<Event>();
 
   constructor(
     private indexerService: IndexerService,
@@ -79,11 +75,9 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     this._state.connect(
       'filter',
       this._state.select('searchText').pipe(
-        //filter(loading => loading === false),
-        //switchMap(() => this._state.select('searchText')),
         distinctUntilChanged(),
-        tap(() => this.markAsLoading()),
-        debounceTime(this.debounceTime)
+        tap(() => this.autoLoad && this.markAsLoading()),
+        debounceTime(this.mobile ? this.debounceTime : 0)
       ),
       (s, searchText) => {
         return {
@@ -95,20 +89,27 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     );
     this._state.connect(
       'items',
-      this._state
-        .select(['filter', 'limit'], (res) => res, {
+      merge(
+        this.refresh.pipe(
+          tap(() => this.markAsLoading()),
+          debounceTime(100), // Wait filter to be update
+          map(() => ({ filter: this.filter, limit: this.limit, autoLoad: true }))
+        ),
+        this._state.select(['filter', 'limit', 'autoLoad'], (res) => res, {
           filter: WotSearchFilterUtils.isEquals,
           limit: (l1, l2) => l1 === l2,
         })
-        .pipe(
-          filter(({ filter }) => !WotSearchFilterUtils.isEmpty(filter) && filter.address !== 'default'),
-          mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
-          map(({ data, fetchMore }) => {
-            this.fetchMoreFn = fetchMore;
-            this.canFetchMore = !!fetchMore;
-            return data;
-          })
-        )
+      ).pipe(
+        filter(({ autoLoad }) => autoLoad || this.mobile),
+        filter(({ filter }) => !WotSearchFilterUtils.isEmpty(filter) && filter.address !== 'default'),
+        mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
+        map(({ data, fetchMore }) => {
+          this.fetchMoreFn = fetchMore;
+          this.canFetchMore = !!fetchMore;
+          this.autoLoad = this.mobile;
+          return data;
+        })
+      )
     );
 
     this._state.connect('count', this.items$.pipe(map(arraySize)));
@@ -117,6 +118,8 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   ngOnInit() {
     super.ngOnInit();
     this.showItemActions = toBoolean(this.showItemActions, !this.itemClick.observed);
+    this.showFilterButtons = toBoolean(this.showFilterButtons, true);
+    this.autoLoad = toBoolean(this.autoLoad, this.showFilterButtons);
     this.limit = toNumber(this.limit, 20);
 
     if (this.isModal) {
@@ -178,6 +181,17 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     this.searchText = value;
   }
 
+  async clearSearch(event: UIEvent) {
+    if (!event || event.defaultPrevented) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.autoLoad && this.showFilterButtons) {
+      this.applyFilter({ last: true, searchText: null });
+      this.refresh.emit();
+    }
+  }
+
   async fetchMore(event?: InfiniteScrollCustomEvent) {
     // Wait end of current load
     await this.waitIdle();
@@ -200,11 +214,13 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
 
   applyFilter(filter: Partial<WotSearchFilter>) {
     this._state.set(
-      'filter',
       (s) =>
-        <WotSearchFilter>{
-          ...s.filter,
-          ...filter,
+        <WotLookupState>{
+          filter: {
+            ...s.filter,
+            ...filter,
+          },
+          autoLoad: true,
         }
     );
   }

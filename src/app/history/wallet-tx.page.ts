@@ -186,7 +186,7 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     console.info(this._logPrefix + 'Initializing...');
     super.ngOnInit();
 
-    this.limit = toNumber(this.limit, 20);
+    this.limit = toNumber(this.limit, 15);
   }
 
   search(searchFilter?: TransferSearchFilter, options?: { limit: number; offset: number }): Observable<LoadResult<Transfer>> {

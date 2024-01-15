@@ -2,7 +2,7 @@ import { ChangeDetectorRef, inject, Injectable, Pipe, PipeTransform } from '@ang
 import { Account, AccountUtils } from '@app/account/account.model';
 import { equals, getPropertyByPath } from '@app/shared/functions';
 import { Subscription } from 'rxjs';
-import { AccountsService } from '@app/account/accounts.service';
+import { AccountsService, LoadAccountDataOptions } from '@app/account/accounts.service';
 
 // @dynamic
 /**
@@ -17,11 +17,14 @@ export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
 
   protected _accountsService = inject(AccountsService);
 
-  protected constructor(private _cd: ChangeDetectorRef) {}
+  protected constructor(
+    private _cd: ChangeDetectorRef,
+    private _watchOptions?: LoadAccountDataOptions
+  ) {}
 
   transform(account: Partial<Account>, opts: O): T {
     // Not a user account (e.g. any wot identity)
-    if (!account?.data) {
+    if (!account?.address) {
       this._dispose();
       return this._transform(account);
     }
@@ -45,7 +48,7 @@ export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
 
     // subscribe to onTranslationChange event, in case the translations change
     if (!this._changesSubscription) {
-      this._changesSubscription = this._accountsService.watchByAddress(account.address).subscribe((updatedAccount) => {
+      this._changesSubscription = this._accountsService.watchByAddress(account.address, this._watchOptions).subscribe((updatedAccount) => {
         this.value = this._transform(updatedAccount, opts);
         this._cd.markForCheck();
       });
@@ -105,7 +108,7 @@ export class AccountPropertyPipe<T = never, O extends AccountPropertyPipeOptions
 })
 export class AccountBalancePipe extends AccountAbstractPipe<number, void> implements PipeTransform {
   constructor(_ref: ChangeDetectorRef) {
-    super(_ref);
+    super(_ref, { withBalance: true });
   }
 
   protected _transform(account: Partial<Account>): number {

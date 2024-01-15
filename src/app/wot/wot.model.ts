@@ -1,4 +1,16 @@
 import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
+import { PredefinedColors } from '@app/shared/colors/colors.utils';
+
+export interface WotLookupOptions {
+  debounceTime?: number;
+  showToolbar?: boolean;
+  showSearchBar?: boolean;
+  showItemActions?: boolean;
+  showFilterButtons?: boolean;
+  toolbarColor?: PredefinedColors;
+  searchText?: string;
+  filter?: WotSearchFilter;
+}
 
 export interface WotSearchFilter {
   address?: string;
