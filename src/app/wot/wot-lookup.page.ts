@@ -40,7 +40,7 @@ export interface WotLookupOptions {
 export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, WotLookupOptions {
   @RxStateSelect() protected items$: Observable<Account[]>;
 
-  @Input() modal = false;
+  @Input() isModal = false;
   @Input() debounceTime = 650;
   @Input() showToolbar = true;
   @Input() showSearchBar = true;
@@ -90,7 +90,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     super.ngOnInit();
     this.showItemActions = toBoolean(this.showItemActions, !this.itemClick.observed);
 
-    if (this.modal) {
+    if (this.isModal) {
       this.registerSubscription(this.itemClick.subscribe((item) => this.modalCtrl.dismiss(item)));
 
       this.registerSubscription(this.closeClick.subscribe(() => this.modalCtrl.dismiss()));
