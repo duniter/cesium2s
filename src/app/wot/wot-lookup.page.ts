@@ -162,14 +162,9 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     if (this.itemClick.observed) {
       this.itemClick.emit(item);
     } else {
-      //      if (this.mobile) {
-      // Open
-      this.navController.navigateForward([item.address], {
+      return this.navController.navigateForward([item.address], {
         relativeTo: this.activatedRoute,
       });
-      // } else {
-      //   this.transferController.transfer({ recipient: item });
-      // }
     }
   }
 
