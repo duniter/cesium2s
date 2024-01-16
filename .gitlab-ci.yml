@@ -140,10 +140,10 @@ failsafe-build:
     - echo "--- Release in progress"
     - git checkout -B release/${RELEASE_VERSION}
     - echo "--- Manage app version"
-    - 'current=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?" package.json | grep -m 1 -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
-    - 'currentManifestVersion=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
-    - 'currentAndroidVersionCode=`grep -oP "versionCode [0-9]+" android/app/build.gradle | grep -oP "\d+"`'
-    - 'currentAndroidVersionName=`grep -oP "versionName \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" android/app/build.gradle | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
+    - 'current=$(grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?" package.json | grep -m 1 -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
+    - 'currentManifestVersion=$(grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
+    - 'currentAndroidVersionCode=$(grep -oP "versionCode [0-9]+" android/app/build.gradle | grep -oP "\d+"`'
+    - 'currentAndroidVersionName=$(grep -oP "versionName \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" android/app/build.gradle | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
     - 'echo " Current version: $current"'
     - 'echo " Current Manifest version: $currentManifestVersion"'
     - 'echo " Current Android version code: $currentAndroidVersionCode"'
@@ -187,7 +187,7 @@ failsafe-build:
     - git branch -D "release/${RELEASE_VERSION}"
   after_script:
     # Remember version
-    - APP_VERSION=$(node -e "console.log(require('./package.json').version)")
+    - APP_VERSION=${RELEASE_VERSION}
     - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
     # Zip output
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
