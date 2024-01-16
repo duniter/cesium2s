@@ -43,9 +43,9 @@ variables:
   services:
     - docker:dind
   before_script:
-#    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
   after_script:
-  #    - docker logout ${CI_REGISTRY}
+    - docker logout ${CI_REGISTRY}
   allow_failure: false
 
 # ---------------------------------------------------------------
@@ -136,7 +136,7 @@ failsafe-build:
   <<: *git-setup
   stage: release
   script:
-    - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "ERROR: Missing environment variable 'RELEASE_VERSION'" ; exit 1; fi
+    - if [[ "_${RELEASE_VERSION}" == "_" ]]; then exit 1; fi
     - echo "--- Release in progress"
     - git checkout -b release/${RELEASE_VERSION}
     - echo "--- Manage app version"
@@ -162,6 +162,8 @@ failsafe-build:
     # FIXME fail since 13/11/2023
     #- ng version
     - npm version
+    # This is need to install husky
+    - npm install
     # Build
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod

@@ -32,3 +32,4 @@ yarn.lock
 /plugins
 /www
 /.local/
+/out-tsc/
