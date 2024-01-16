@@ -1,7 +1,7 @@
 # PREPARE STAGE
 ARG IMAGE_REGISTRY
 ARG DOCKER_IMAGE="node:18-slim"
-ARG IONIC_CLI_VERSION="7.1.5"
+ARG IONIC_CLI_VERSION="7.2.0"
 ARG ANGULAR_CLI_VERSION="17.0.3"
 FROM $IMAGE_REGISTRY$DOCKER_IMAGE AS prepare
 FROM $DOCKER_IMAGE AS prepare
@@ -12,7 +12,7 @@ WORKDIR $CACHE_DIR
 # Copy need files, to check deps
 COPY package.json .
 # set version to 0.0.0 in order not to upload dependencies if only version change
-RUN sed -i 's/version\": \".*\"/version\": \"0.0.0\"/g' package.json
+RUN sed -i 's/\"version\": \".*\"/\"version\": \"0.0.0\"/g' package.json
 
 # BUILD STAGE
 FROM $IMAGE_REGISTRY$DOCKER_IMAGE AS build
