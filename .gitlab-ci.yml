@@ -162,6 +162,8 @@ failsafe-build:
     # FIXME fail since 13/11/2023
     #- ng version
     - npm version
+    # This is need to install husky
+    - npm install
     # Build
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
