@@ -84,7 +84,6 @@ build:env:
     - ls -artl ${BUILD_CACHE_DIR}
     - cp -R ${BUILD_CACHE_DIR}/node_modules .
     # Show version
-    #- ng version
     - npm version
   script:
     # Build
@@ -99,7 +98,6 @@ build:env:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
-  when: manual
 
 build:
   extends: .build
