@@ -142,7 +142,7 @@ failsafe-build:
     - echo "--- Manage app version"
     - 'current=$(grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?" package.json | grep -m 1 -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
     - 'currentManifestVersion=$(grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
-    - 'currentAndroidVersionCode=$(grep -oP "versionCode [0-9]+" android/app/build.gradle | grep -oP "\d+"`'
+    - 'currentAndroidVersionCode=$(grep -oP "versionCode [0-9]+" android/app/build.gradle | grep -oP "\d+")'
     - 'currentAndroidVersionName=$(grep -oP "versionName \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" android/app/build.gradle | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
     - 'echo " Current version: $current"'
     - 'echo " Current Manifest version: $currentManifestVersion"'
