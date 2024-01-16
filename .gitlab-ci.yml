@@ -6,9 +6,9 @@
 image: node:18-slim
 
 stages:
-  #- environment
-  #- build
-  #- alt_build
+  - environment
+  - build
+  - alt_build
   - release
 
 # ---------------------------------------------------------------
@@ -99,12 +99,14 @@ build:env:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
+  when: manual
 
 build:
   extends: .build
   image: ${CI_BUILD_IMAGE}
   only:
     - develop
+  when: manual
 
 build:feature:
   extends: .build
