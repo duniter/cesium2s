@@ -12,7 +12,7 @@ WORKDIR $CACHE_DIR
 # Copy need files, to check deps
 COPY package.json .
 # set version to 0.0.0 in order not to upload dependencies if only version change
-RUN sed -i 's/version\": \".*\"/version\": \"0.0.0\"/g' package.json
+RUN sed -i 's/\"version\": \".*\"/\"version\": \"0.0.0\"/g' package.json
 
 # BUILD STAGE
 FROM $IMAGE_REGISTRY$DOCKER_IMAGE AS build

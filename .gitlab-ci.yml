@@ -123,7 +123,7 @@ failsafe-build:
     # Install global dependencies
     - npm install -g @ionic/cli@${IONIC_CLI_VERSION} @angular/cli@${ANGULAR_CLI_VERSION}
     # Update project dependencies
-    - npm install --force
+    - npm install --unsafe-perm --force
   only:
     - develop
     - /^feature\/.*/
@@ -175,6 +175,8 @@ failsafe-build:
     - git add package.json src/manifest.json android/app/build.gradle install.sh
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - git checkout master
+    - git fetch origin
+    - git pull origin master
     - git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
     - git tag -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
     - git checkout develop
