@@ -1,0 +1,93 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button *ngIf="!canGoBack"></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title size="large">
+      {{ 'BLOCKCHAIN.VIEW.TITLE' | translate: { number: height$ | push | numberFormat } }}
+    </ion-title>
+  </ion-toolbar>
+  <ion-progress-bar type="indeterminate" *rxIf="loading$"></ion-progress-bar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">
+        {{ 'BLOCKCHAIN.VIEW.TITLE' | translate: { number: height$ | push | numberFormat } }}
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ng-container *rxIf="block$; let block; suspense: loading">
+    <ion-list [inset]="true">
+      <ion-item>
+        <ion-icon slot="start" name="time-outline"></ion-icon>
+        <ion-label>{{ block.timestamp | dateFromNow }} | {{ block.timestamp | dateFormat }}</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-list [inset]="true">
+      <ion-item-divider>
+        <ion-label translate>BLOCKCHAIN.VIEW.TECHNICAL_DIVIDER</ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-icon name="cog" slot="start"></ion-icon>
+        @if (mobile) {
+          <ion-label>
+            <h2 translate>BLOCKCHAIN.VIEW.HASH</h2>
+            <p class="ion-text-wrap">{{ block.height }}-{{ block.hash }}</p>
+          </ion-label>
+        } @else {
+          <ion-label>
+            <h2 translate>BLOCKCHAIN.VIEW.HASH</h2>
+          </ion-label>
+          <ion-note slot="end" class="ion-text-wrap">{{ block.height }}-{{ block.hash }}</ion-note>
+        }
+      </ion-item>
+    </ion-list>
+
+    <ion-list [inset]="true">
+      <ion-item-divider>
+        <ion-label translate>BLOCKCHAIN.VIEW.DATA_DIVIDER</ion-label>
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+        <ion-label translate>BLOCKCHAIN.VIEW.CALLS_COUNT</ion-label>
+        <ion-badge slot="end">{{ block.callsCount }}</ion-badge>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+        <ion-label translate>BLOCKCHAIN.VIEW.EVENTS_COUNT</ion-label>
+        <ion-badge slot="end">{{ block.eventsCount }}</ion-badge>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+        <ion-label translate>BLOCKCHAIN.VIEW.EXTRINSICS_COUNT</ion-label>
+        <ion-badge slot="end">{{ block.extrinsicsCount }}</ion-badge>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>
+
+<ng-template #loading>
+  <ion-list>
+    <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+    <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+    <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+  </ion-list>
+</ng-template>
+
+<ng-template #itemSkeleton>
+  <ion-item>
+    <ion-icon slot="start" name="none"></ion-icon>
+    <ion-label>
+      <h3><ion-skeleton-text animated style="width: 20%"></ion-skeleton-text></h3>
+      <p><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></p>
+    </ion-label>
+  </ion-item>
+</ng-template>
