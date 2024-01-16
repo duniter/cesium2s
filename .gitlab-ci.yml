@@ -176,7 +176,7 @@ failsafe-build:
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - git checkout master
     - git status
-    - git log -3 | tail -100
+    - 'git log -3 | tail -100'
     - git remote get-url origin
     #- git reset --hard origin/master
     - git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
