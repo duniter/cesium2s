@@ -2,7 +2,7 @@
   "short_name": "Cesium",
   "name": "Cesium",
   "manifest_version": 2,
-  "version": "2.0.0-rc1",
+  "version": "2.0.0-alpha2",
   "default_locale": "fr",
   "description": "Cesium Wallet for Ğ1 libre currency",
   "icons": [

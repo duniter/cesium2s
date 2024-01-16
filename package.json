@@ -1,6 +1,6 @@
 {
   "name": "cesium",
-  "version": "2.0.0-rc1",
+  "version": "2.0.0-alpha2",
   "description": "Manage G1 wallet",
   "author": "Benoit Lavenier <benoit.lavenier@e-is.pro>",
   "homepage": "https://cesium.app",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "ng": "ng",
-    "clean": "rm -rf www .angular/cache",
+    "clean": "rm -rf www .angular/cache out-tsc",
     "start": "ng serve",
     "start:dev": "ng serve --host 0.0.0.0 --disable-host-check",
     "start:prod": "ng serve --configuration production",
