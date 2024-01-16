@@ -31,7 +31,7 @@ variables:
 .configure-git-template: &git-setup
   tags: [kepler]
   before_script:
-    - echo "fetch origin"
+    - echo "--- Fetch origin"
     - git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git config --global user.name "${GITLAB_USER_NAME}"
@@ -155,13 +155,11 @@ failsafe-build:
     - 'major2d=$(printf %02d ${SPLITED_VERSION[0]}) ; minor2d=$(printf %02d ${SPLITED_VERSION[1]}) ; patch2d=$(printf %02d ${SPLITED_PATCH[0]})'
     - 'androidVersionCode=$major2d$minor2d$patch2d'
     - 'echo " Next version: ${RELEASE_VERSION}"'
-    - 'echo " Next Manifest version: ${RELEASE_VERSION}"'
     - 'echo " Next Android version code: $androidVersionCode"'
-    - 'echo " Next Android version name: ${RELEASE_VERSION}"'
     - 'sed -i "s/\"version\": \"$current\"/\"version\": \"${RELEASE_VERSION}\"/g" package.json'
     - 'sed -i "s/\"version\": \"$currentManifestVersion\"/\"version\": \"${RELEASE_VERSION}\"/g" src/manifest.json'
-    - 'sed -i "s/versionCode $currentAndroidVersionCode\"/ versionCode $androidVersionCode\"/g" android/app/build.gradle'
-    - 'sed -i "s/versionName \"$currentAndroidVersionName\"/ versionName \"${RELEASE_VERSION}\"/g" android/app/build.gradle'
+    - 'sed -i "s/versionCode $currentAndroidVersionCode\"/versionCode $androidVersionCode\"/g" android/app/build.gradle'
+    - 'sed -i "s/versionName \"$currentAndroidVersionName\"/versionName \"${RELEASE_VERSION}\"/g" android/app/build.gradle'
     - 'sed -i "s/echo \".*\" #lastest/echo \"${RELEASE_VERSION}\" #lastest/g" install.sh'
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
@@ -174,7 +172,7 @@ failsafe-build:
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
     # Git process for release (ISO gitflow)
-    - git add .
+    - git add package.json src/manifest.json android/app/build.gradle install.sh
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - git checkout master
     - git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
