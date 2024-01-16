@@ -138,7 +138,7 @@ failsafe-build:
   script:
     - if [[ "_${RELEASE_VERSION}" == "_" ]]; then exit 1; fi
     - echo "--- Release in progress"
-    - git checkout -b release/${RELEASE_VERSION}
+    - git checkout -B release/${RELEASE_VERSION}
     - echo "--- Manage app version"
     - 'current=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?" package.json | grep -m 1 -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
     - 'currentManifestVersion=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
@@ -240,9 +240,29 @@ release:tags:
     # Build
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
+  after_script:
+    # Remember version
+    - APP_VERSION=$(node -e "console.log(require('./package.json').version)")
+    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
+    # Zip output
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
+    - currentDir=$(pwd)
+    - mkdir -p ${currentDir}/dist
+    - zipFile=${currentDir}/dist/${fileName}
+    - if [[ -f "${zipFile}" ]]; then rm "${zipFile}"; fi
+    - cd www || exit 1
+    - if ! zip -q -r "${zipFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
+    - cd ..
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "Deploy to gitlab generic package :"
+    - echo " File= ${zipFile}"
+    - echo " Url= ${targetUrl}"
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${zipFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
       - www
+    reports:
+      dotenv: ${ENV_FILE}
     expire_in: 24 hours
   allow_failure: false
   when: manual
