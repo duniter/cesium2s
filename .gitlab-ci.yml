@@ -241,9 +241,6 @@ release:tags:
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
   after_script:
-    # Remember version
-    - APP_VERSION=$(node -e "console.log(require('./package.json').version)")
-    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
     # Zip output
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
     - currentDir=$(pwd)
@@ -261,8 +258,6 @@ release:tags:
   artifacts:
     paths:
       - www
-    reports:
-      dotenv: ${ENV_FILE}
     expire_in: 24 hours
   allow_failure: false
   when: manual
