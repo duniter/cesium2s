@@ -106,7 +106,6 @@ build:
   image: ${CI_BUILD_IMAGE}
   only:
     - develop
-  when: manual
 
 build:feature:
   extends: .build
@@ -167,12 +166,10 @@ failsafe-build:
     - ls -artl "${BUILD_CACHE_DIR}"
     - cp -R "${BUILD_CACHE_DIR}/node_modules" .
     # Show version
-    # FIXME fail since 13/11/2023
-    #- ng version
     - npm version
-    # Build
+    # Build (if need)
     - export NODE_OPTIONS=--max-old-space-size=4096
-    - npm run build:prod
+    - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
     # Git process for release (ISO gitflow)
     - git add package.json src/manifest.json android/app/build.gradle install.sh
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
@@ -238,7 +235,7 @@ release:tags:
     # FIXME fail since 13/11/2023
     #- ng version
     - npm version
-    # Build
+    # Build (if need)
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
   after_script:
