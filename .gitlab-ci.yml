@@ -141,19 +141,27 @@ failsafe-build:
     - git checkout -b release/${RELEASE_VERSION}
     - echo "--- Manage app version"
     - 'current=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?" package.json | grep -m 1 -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
+    - 'currentManifestVersion=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
     - 'currentAndroidVersionCode=`grep -oP "versionCode [0-9]+" android/app/build.gradle | grep -oP "\d+"`'
     - 'currentAndroidVersionName=`grep -oP "versionName \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" android/app/build.gradle | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
-    - 'currentManifestVersion=`grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?"`'
+    - echo " Current version: $current"
+    - echo " Current Manifest version: $currentManifestVersion"
+    - echo " Current Android version code: $currentAndroidVersionCode"
+    - echo " Current Android version name: $currentAndroidVersionName"
     - 'IFS="."'
     - 'read -ra SPLITED_VERSION <<< "${RELEASE_VERSION}"'
     - 'IFS="-"'
     - 'read -ra SPLITED_PATCH <<< "${SPLITED_VERSION[2]}"'
     - 'major2d=$(printf %02d ${SPLITED_VERSION[0]}) ; minor2d=$(printf %02d ${SPLITED_VERSION[1]}) ; patch2d=$(printf %02d ${SPLITED_PATCH[0]})'
     - 'androidVersionCode=$major2d$minor2d$patch2d'
-    - 'sed -i "s/version\": \"$current\"/version\": \"${RELEASE_VERSION}\"/g" package.json'
+    - echo " Next version: ${RELEASE_VERSION}"
+    - echo " Next Manifest version: ${RELEASE_VERSION}"
+    - echo " Next Android version code: $androidVersionCode"
+    - echo " Next Android version name: ${RELEASE_VERSION}"
+    - 'sed -i "s/\"version\": \"$current\"/\"version\": \"${RELEASE_VERSION}\"/g" package.json'
+    - 'sed -i "s/\"version\": \"$currentManifestVersion\"/\"version\": \"${RELEASE_VERSION}\"/g" src/manifest.json'
     - 'sed -i "s/versionCode $currentAndroidVersionCode\"/ versionCode $androidVersionCode\"/g" android/app/build.gradle'
     - 'sed -i "s/versionName \"$currentAndroidVersionName\"/ versionName \"${RELEASE_VERSION}\"/g" android/app/build.gradle'
-    - 'sed -i "s/version\": \"$currentManifestVersion\"/version\": \"${RELEASE_VERSION}\"/g" src/manifest.json'
     - 'sed -i "s/echo \".*\" #lastest/echo \"${RELEASE_VERSION}\" #lastest/g" install.sh'
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
