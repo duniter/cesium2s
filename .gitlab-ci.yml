@@ -45,10 +45,10 @@ variables:
   tags: [kepler]
   before_script:
     - echo "--- Fetch origin"
-    - git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
+    #- git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git config --global user.name "${GITLAB_USER_NAME}"
-    - git fetch origin
+    #- git fetch origin
 
 .docker:
   image: docker:latest
