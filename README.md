@@ -1,6 +1,9 @@
+[![Latest Release](https://git.duniter.org/clients/cesium-grp/cesium2s/-/badges/release.svg)](https://git.duniter.org/clients/cesium-grp/cesium2s/-/releases)
+[![pipeline status](https://git.duniter.org/clients/cesium-grp/cesium2s/badges/develop/pipeline.svg)](https://git.duniter.org/clients/cesium-grp/cesium2s/-/commits/develop)
+
 # Cesium²
 
-Cesium², running on Duniter v2 (Substrate).
+Cesium², running on Duniter v2s (Substrate).
 
 Cesium² use Angular, Ionic and Capacitor.
 
@@ -25,12 +28,19 @@ npm run start
 
 ## Build for Android
 
-- Init the android project :
+- Init the android project:
   ```bash
-  ionic capacitor add android
-  npx cap sync
+  npm run android:prepare
+  npm run android:init
+  npm run android:sync  # or `ionic capacitor sync android`
   ```
 
-- Launch Android Studio
-- Open the Android project at `<cesium2s-root>/android`
-- Run !
+- Compile from Android Studio:
+  - Open the Android project at `<cesium2s-root>/android`
+  - Run !
+
+- Compile from the command line:
+  ```bash
+  npm run android:prepare
+  npm run android:assemble:prod
+  ```

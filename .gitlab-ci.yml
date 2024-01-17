@@ -11,6 +11,19 @@ stages:
   - alt_build
   - release
 
+
+workflow:
+  rules:
+    - changes:
+        - docker/**/Dockerfile
+        - src/**/*
+        - android/**/*
+        - .gitlab-ci.yml
+        - package.json
+        - package-lock.json
+        - tsconfig*.json
+        - angular.json
+
 # ---------------------------------------------------------------
 # Global variables
 # ---------------------------------------------------------------
@@ -31,7 +44,7 @@ variables:
 .configure-git-template: &git-setup
   tags: [kepler]
   before_script:
-    - echo "fetch origin"
+    - echo "--- Fetch origin"
     - git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git config --global user.name "${GITLAB_USER_NAME}"
@@ -57,20 +70,14 @@ build:env:
   extends: .docker
   stage: environment
   script:
-    # Create the target directory
-    - mkdir -p target/docker
-    - cp -rf scripts/docker/build/* target/docker
     # Build and push the CI image
-    - docker build --cache-from ${CI_BUILD_IMAGE} -t ${CI_BUILD_IMAGE} --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg="CACHE_DIR=${BUILD_CACHE_DIR}" --build-arg="IMAGE_REGISTRY=${DOCKER_IMAGE_REGISTRY}" --build-arg="IONIC_CLI_VERSION=${IONIC_CLI_VERSION}" --build-arg="ANGULAR_CLI_VERSION=${ANGULAR_CLI_VERSION}" -f target/docker/Dockerfile .
+    - docker build --cache-from ${CI_BUILD_IMAGE} -t ${CI_BUILD_IMAGE} --build-arg="BUILDKIT_INLINE_CACHE=1" --build-arg="CACHE_DIR=${BUILD_CACHE_DIR}" --build-arg="IMAGE_REGISTRY=${DOCKER_IMAGE_REGISTRY}" --build-arg="IONIC_CLI_VERSION=${IONIC_CLI_VERSION}" --build-arg="ANGULAR_CLI_VERSION=${ANGULAR_CLI_VERSION}" -f docker/build/Dockerfile .
     - docker push ${CI_BUILD_IMAGE}
   except:
     - tags
     - master
   only:
     - develop
-    - /^feature\/.*/
-    - /^features\/.*/
-
 
 # ---------------------------------------------------------------
 # Build jobs
@@ -78,14 +85,12 @@ build:env:
 .build:
   stage: build
   tags: [kepler]
-  needs: ["build:env"]
   before_script:
     # Get project dependencies
     - ls -artl ${BUILD_CACHE_DIR}
     - cp -R ${BUILD_CACHE_DIR}/node_modules .
-    # Show version
-    #- ng version
-    - npm version
+    # Before command
+    - ${BEFORE_BUILD}
   script:
     # Build
     - npm run build:${BUILD_ENVIRONMENT}
@@ -99,9 +104,12 @@ build:env:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
+  variables:
+    BEFORE_BUILD: npm version
 
 build:
   extends: .build
+  needs: ["build:env"]
   image: ${CI_BUILD_IMAGE}
   only:
     - develop
@@ -109,6 +117,8 @@ build:
 build:feature:
   extends: .build
   image: ${CI_BUILD_IMAGE}
+  variables:
+    BEFORE_BUILD: npm version && npm install
   only:
     - /^feature\/.*/
     - /^features\/.*/
@@ -123,7 +133,7 @@ failsafe-build:
     # Install global dependencies
     - npm install -g @ionic/cli@${IONIC_CLI_VERSION} @angular/cli@${ANGULAR_CLI_VERSION}
     # Update project dependencies
-    - npm install --force
+    - npm install --unsafe-perm --force
   only:
     - develop
     - /^feature\/.*/
@@ -155,33 +165,41 @@ failsafe-build:
     - 'major2d=$(printf %02d ${SPLITED_VERSION[0]}) ; minor2d=$(printf %02d ${SPLITED_VERSION[1]}) ; patch2d=$(printf %02d ${SPLITED_PATCH[0]})'
     - 'androidVersionCode=$major2d$minor2d$patch2d'
     - 'echo " Next version: ${RELEASE_VERSION}"'
-    - 'echo " Next Manifest version: ${RELEASE_VERSION}"'
     - 'echo " Next Android version code: $androidVersionCode"'
-    - 'echo " Next Android version name: ${RELEASE_VERSION}"'
     - 'sed -i "s/\"version\": \"$current\"/\"version\": \"${RELEASE_VERSION}\"/g" package.json'
     - 'sed -i "s/\"version\": \"$currentManifestVersion\"/\"version\": \"${RELEASE_VERSION}\"/g" src/manifest.json'
-    - 'sed -i "s/versionCode $currentAndroidVersionCode\"/ versionCode $androidVersionCode\"/g" android/app/build.gradle'
-    - 'sed -i "s/versionName \"$currentAndroidVersionName\"/ versionName \"${RELEASE_VERSION}\"/g" android/app/build.gradle'
+    - 'sed -i "s/versionCode $currentAndroidVersionCode\"/versionCode $androidVersionCode\"/g" android/app/build.gradle'
+    - 'sed -i "s/versionName \"$currentAndroidVersionName\"/versionName \"${RELEASE_VERSION}\"/g" android/app/build.gradle'
     - 'sed -i "s/echo \".*\" #lastest/echo \"${RELEASE_VERSION}\" #lastest/g" install.sh'
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - cp -R "${BUILD_CACHE_DIR}/node_modules" .
     # Show version
-    # FIXME fail since 13/11/2023
-    #- ng version
     - npm version
-    # Build
     - export NODE_OPTIONS=--max-old-space-size=4096
-    - npm run build:prod
+    # Build web (if need)
+    - echo "--- Building 'www'"
+    - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
+    # Build android
+    - echo "--- Building 'android'"
+    - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
+    - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
+    - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
+    - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
+    #- npm run android:install
+    #- npm run android:build:prod
     # Git process for release (ISO gitflow)
-    - git add .
+    - echo "--- Fishing release"
+    - git add package.json src/manifest.json android/app/build.gradle install.sh
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - git checkout master
+    - git reset --hard origin/master
     - git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
     - git tag -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
-    - git checkout develop
+    - git checkout ${CI_COMMIT_REF_NAME}
+    - git reset --hard origin/${CI_COMMIT_REF_NAME}
     - git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
-    - git push origin develop
+    - git push origin ${CI_COMMIT_REF_NAME}
     - git push origin master
     - git push --tags
     - git branch -D "release/${RELEASE_VERSION}"
@@ -237,7 +255,7 @@ release:tags:
     # FIXME fail since 13/11/2023
     #- ng version
     - npm version
-    # Build
+    # Build (if need)
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
   after_script:

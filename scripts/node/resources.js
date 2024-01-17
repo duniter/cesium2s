@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 
 const SOURCE_IOS_ICON = 'resources/ios/icon/';

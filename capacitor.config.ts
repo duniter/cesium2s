@@ -4,7 +4,6 @@ const config: CapacitorConfig = {
   appId: 'app.cesium',
   appName: 'Cesium2',
   webDir: 'www',
-  bundledWebRuntime: false,
   plugins: {
     SplashScreen: {
       showSpinner: true,

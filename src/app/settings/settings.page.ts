@@ -39,6 +39,15 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
       labelParam: 15,
       value: 15 * 60_000,
     },
+    {
+      label: 'SETTINGS.KEEP_AUTH_OPTION.MINUTES',
+      labelParam: 30,
+      value: 30 * 60_000,
+    },
+    {
+      label: 'SETTINGS.KEEP_AUTH_OPTION.ALWAYS',
+      value: 9999 * 60_000,
+    },
   ];
   @RxStateSelect() preferredPeers$: Observable<string[]>;
   @RxStateSelect() peer$: Observable<string>;
