@@ -148,8 +148,7 @@ failsafe-build:
   script:
     - if [[ "_${RELEASE_VERSION}" == "_" ]]; then exit 1; fi
     - echo "--- Release in progress"
-    - git flow release start "${RELEASE_VERSION}"
-    #- git checkout -B release/${RELEASE_VERSION}
+    - git checkout -B release/${RELEASE_VERSION}
     - echo "--- Manage app version"
     - 'current=$(grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?" package.json | grep -m 1 -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
     - 'currentManifestVersion=$(grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
@@ -187,28 +186,23 @@ failsafe-build:
     - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
     - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
     - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
+    #- npm run android:install
     #- npm run android:build:prod
-    - echo "--- Fishing release"
-    - git add .
-    - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
-    - export GIT_MERGE_AUTOEDIT=no
-    - git flow release finish -F -p "${RELEASE_VERSION}" -m "Release ${RELEASE_VERSION}"
-    - unset GIT_MERGE_AUTOEDIT
     # Git process for release (ISO gitflow)
-    #- echo "--- Fishing release (merge into master and add tag)"
-    #- git add package.json src/manifest.json android/app/build.gradle install.sh
-    #- git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
-    #- git checkout master
-    #- git reset --hard origin/master
-    #- git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
-    #- git tag -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
-    #- git checkout ${CI_COMMIT_REF_NAME}
-    #- git reset --hard origin/${CI_COMMIT_REF_NAME}
-    #- git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
-    #- git push origin ${CI_COMMIT_REF_NAME}
-    #- git push origin master
-    #- git push --tags
-    #- git branch -D "release/${RELEASE_VERSION}"
+    - echo "--- Fishing release"
+    - git add package.json src/manifest.json android/app/build.gradle install.sh
+    - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
+    - git checkout master
+    - git reset --hard origin/master
+    - git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
+    - git tag -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
+    - git checkout ${CI_COMMIT_REF_NAME}
+    - git reset --hard origin/${CI_COMMIT_REF_NAME}
+    - git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
+    - git push origin ${CI_COMMIT_REF_NAME}
+    - git push origin master
+    - git push --tags
+    - git branch -D "release/${RELEASE_VERSION}"
   after_script:
     # Remember version
     - APP_VERSION=${RELEASE_VERSION}
