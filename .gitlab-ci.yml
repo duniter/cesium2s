@@ -45,10 +45,10 @@ variables:
   tags: [kepler]
   before_script:
     - echo "--- Fetch origin"
-    #- git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
+    - git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git config --global user.name "${GITLAB_USER_NAME}"
-    #- git fetch origin
+    - git fetch origin
 
 .docker:
   image: docker:latest
@@ -189,7 +189,7 @@ failsafe-build:
     - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
     #- npm run android:build:prod
     - echo "--- Fishing release"
-    - git add package.json src/manifest.json android/app/build.gradle install.
+    - git add .
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - export GIT_MERGE_AUTOEDIT=no
     - git flow release finish -F -p "${RELEASE_VERSION}" -m "Release ${RELEASE_VERSION}"
