@@ -73,7 +73,7 @@ export class SettingsService extends RxStartableService<Settings> {
       // Default values
       preferredPeers: arrayDistinct([...environment.defaultPeers, ...(data?.preferredPeers || [])]),
       preferredIndexers: arrayDistinct([...environment.defaultIndexers, ...(data?.preferredIndexers || [])]),
-      unAuthDelayMs: 15 * 60_000, //
+      unAuthDelayMs: 15 * 60_000, // 15 min
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
       // Restored data
       ...data,

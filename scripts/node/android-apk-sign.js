@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 require('./android-prepare.js', { stdio: 'inherit' });
 
 let { execSync } = require('child_process');

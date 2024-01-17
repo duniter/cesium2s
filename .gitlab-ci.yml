@@ -61,16 +61,13 @@ build:env:
     - mkdir -p target/docker
     - cp -rf scripts/docker/build/* target/docker
     # Build and push the CI image
-    - docker build --cache-from ${CI_BUILD_IMAGE} -t ${CI_BUILD_IMAGE} --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg="CACHE_DIR=${BUILD_CACHE_DIR}" --build-arg="IMAGE_REGISTRY=${DOCKER_IMAGE_REGISTRY}" --build-arg="IONIC_CLI_VERSION=${IONIC_CLI_VERSION}" --build-arg="ANGULAR_CLI_VERSION=${ANGULAR_CLI_VERSION}" -f target/docker/Dockerfile .
+    - docker build --cache-from ${CI_BUILD_IMAGE} -t ${CI_BUILD_IMAGE} --build-arg="BUILDKIT_INLINE_CACHE=1" --build-arg="CACHE_DIR=${BUILD_CACHE_DIR}" --build-arg="IMAGE_REGISTRY=${DOCKER_IMAGE_REGISTRY}" --build-arg="IONIC_CLI_VERSION=${IONIC_CLI_VERSION}" --build-arg="ANGULAR_CLI_VERSION=${ANGULAR_CLI_VERSION}" -f target/docker/Dockerfile .
     - docker push ${CI_BUILD_IMAGE}
   except:
     - tags
     - master
   only:
     - develop
-    - /^feature\/.*/
-    - /^features\/.*/
-
 
 # ---------------------------------------------------------------
 # Build jobs
@@ -78,13 +75,12 @@ build:env:
 .build:
   stage: build
   tags: [kepler]
-  needs: ["build:env"]
   before_script:
     # Get project dependencies
     - ls -artl ${BUILD_CACHE_DIR}
     - cp -R ${BUILD_CACHE_DIR}/node_modules .
-    # Show version
-    - npm version
+    # Before command
+    - ${BEFORE_BUILD}
   script:
     # Build
     - npm run build:${BUILD_ENVIRONMENT}
@@ -98,9 +94,12 @@ build:env:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
+  variables:
+    BEFORE_BUILD: npm version
 
 build:
   extends: .build
+  needs: ["build:env"]
   image: ${CI_BUILD_IMAGE}
   only:
     - develop
@@ -108,6 +107,8 @@ build:
 build:feature:
   extends: .build
   image: ${CI_BUILD_IMAGE}
+  variables:
+    BEFORE_BUILD: npm version && npm install
   only:
     - /^feature\/.*/
     - /^features\/.*/
@@ -165,19 +166,29 @@ failsafe-build:
     - cp -R "${BUILD_CACHE_DIR}/node_modules" .
     # Show version
     - npm version
-    # Build (if need)
     - export NODE_OPTIONS=--max-old-space-size=4096
+    # Build web (if need)
+    - echo "--- Building 'www'"
     - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
+    # Build android
+    - echo "--- Building 'android'"
+    - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
+    - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
+    - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
+    - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
+    #- npm run android:build:prod
     # Git process for release (ISO gitflow)
+    - echo "--- Fishing release (merge into master and add tag)"
     - git add package.json src/manifest.json android/app/build.gradle install.sh
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - git checkout master
-    - git reset --hard origin/master
+    #- git reset --hard origin/master
     - git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
     - git tag -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
-    - git checkout develop
+    - git checkout ${CI_COMMIT_REF_NAME}
+    #- git reset --hard origin/${CI_COMMIT_REF_NAME}
     - git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
-    - git push origin develop
+    - git push origin ${CI_COMMIT_REF_NAME}
     - git push origin master
     - git push --tags
     - git branch -D "release/${RELEASE_VERSION}"

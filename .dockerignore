@@ -1,0 +1,16 @@
+.editorconfig
+.envrc
+.git*
+.vscode
+.idea
+.angular
+.local
+node_modules
+dist
+out-tsc
+angular/.idea
+angular/.gradle
+angular/**/build
+angular/**/local.properties
+angular/**/release-signing.properties
+scripts/docker/*
