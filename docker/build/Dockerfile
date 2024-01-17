@@ -38,3 +38,6 @@ RUN npm install --unsafe-perm --force
 RUN ls -artl
 
 WORKDIR /build
+
+# Install Android dependencies
+RUN npm run android:install

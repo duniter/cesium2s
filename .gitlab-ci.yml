@@ -149,9 +149,9 @@ build:android:
     expire_in: 72 hours
   only:
     - develop
-    - /^feature\/.*/
-    - /^features\/.*/
-  when: manual
+    #- /^feature\/.*/
+    #- /^features\/.*/
+  #when: manual
 
 failsafe-build:
   extends: .build
@@ -247,7 +247,7 @@ failsafe-build:
     #- echo "Deploy to gitlab generic package :"
     #- echo " File= ${apkFile}"
     #- echo " Url= ${targetUrl}"
-    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${apkFile}" "${targetUrl}"; then exit 1; fi'
+    #- 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${apkFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/release

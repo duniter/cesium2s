@@ -249,7 +249,7 @@ async function main() {
 
   // Check if Gradle is installed.
   if (!fs.existsSync(gradleHome)) {
-    await installGradle(gradleVersion, gradleHome);
+    //await installGradle(gradleVersion, gradleHome);
   }
 
   // Check if the Android platform is prepared.
