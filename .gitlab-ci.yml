@@ -10,6 +10,7 @@ stages:
   - build
   - alt_build
   - release
+  - deploy
 
 workflow:
   rules:
