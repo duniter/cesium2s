@@ -21,6 +21,7 @@ npm-debug.log*
 yarn.lock
 
 /.idea
+/.gradle
 /.ionic
 /.sass-cache
 /.sourcemaps

@@ -11,7 +11,6 @@ stages:
   - alt_build
   - release
 
-
 workflow:
   rules:
     - changes:
@@ -90,7 +89,7 @@ build:env:
     - ls -artl ${BUILD_CACHE_DIR}
     - cp -R ${BUILD_CACHE_DIR}/node_modules .
     # Before command
-    - ${BEFORE_BUILD}
+    - ${BEFORE_SCRIPT}
   script:
     # Build
     - npm run build:${BUILD_ENVIRONMENT}
@@ -105,7 +104,7 @@ build:env:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
   variables:
-    BEFORE_BUILD: npm version
+    BEFORE_SCRIPT: npm version
 
 build:
   extends: .build
@@ -118,12 +117,40 @@ build:feature:
   extends: .build
   image: ${CI_BUILD_IMAGE}
   variables:
-    BEFORE_BUILD: npm version && npm install
+    BEFORE_SCRIPT: npm install
   only:
     - /^feature\/.*/
     - /^features\/.*/
   when: manual
 
+build:android:
+  extends: .build
+  image: ${CI_BUILD_IMAGE}
+  script:
+    # Prepare for signing
+    - echo "--- Building Android APK file ..."
+    - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
+    - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
+    - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
+    - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
+    # Build APK
+    - npm run android:build:${BUILD_ENVIRONMENT}
+    # Make APK file available for next jobs
+    - mkdir -p "${CI_PROJECT_DIR}/release/"
+    - cp ${CI_PROJECT_DIR}/android/app/build/outputs/apk/*/.apk $CI_PROJECT_DIR/release/
+  variables:
+    BEFORE_SCRIPT: npm run android:install
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/release/
+    reports:
+      dotenv: ${ENV_FILE}
+    expire_in: 72 hours
+  only:
+    - develop
+    - /^feature\/.*/
+    - /^features\/.*/
+  when: manual
 
 failsafe-build:
   extends: .build
@@ -180,14 +207,6 @@ failsafe-build:
     # Build web (if need)
     - echo "--- Building 'www'"
     - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
-    # Build android
-    - echo "--- Building 'android'"
-    - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
-    - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
-    - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
-    - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
-    #- npm run android:install
-    #- npm run android:build:prod
     # Git process for release (ISO gitflow)
     - echo "--- Fishing release"
     - git add package.json src/manifest.json android/app/build.gradle install.sh
@@ -207,23 +226,30 @@ failsafe-build:
     # Remember version
     - APP_VERSION=${RELEASE_VERSION}
     - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
+    - mkdir -p ${CI_PROJECT_DIR}/release
     # Zip output
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
-    - currentDir=$(pwd)
-    - mkdir -p ${currentDir}/dist
-    - zipFile=${currentDir}/dist/${fileName}
+    - zipFile=${CI_PROJECT_DIR}/release/${fileName}
     - if [[ -f "${zipFile}" ]]; then rm "${zipFile}"; fi
-    - cd www || exit 1
+    - cd ${CI_PROJECT_DIR}/www || exit 1
     - if ! zip -q -r "${zipFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
-    - cd ..
+    - cd ${CI_PROJECT_DIR}
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
     - echo "Deploy to gitlab generic package :"
     - echo " File= ${zipFile}"
     - echo " Url= ${targetUrl}"
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${zipFile}" "${targetUrl}"; then exit 1; fi'
+    # APK output
+    #- fileName=${CI_PROJECT_NAME}-${APP_VERSION}-android.apk
+    #- apkFile=${CI_PROJECT_DIR}/release/app-release.apk
+    #- targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${apkFile}"
+    #- echo "Deploy to gitlab generic package :"
+    #- echo " File= ${apkFile}"
+    #- echo " Url= ${targetUrl}"
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${apkFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
-      - www
+      - ${CI_PROJECT_DIR}/release
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 24 hours
@@ -252,20 +278,17 @@ release:tags:
     - ls -artl "${BUILD_CACHE_DIR}"
     - cp -R "${BUILD_CACHE_DIR}/node_modules" .
     # Show version
-    # FIXME fail since 13/11/2023
-    #- ng version
     - npm version
-    # Build (if need)
+    # Build
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
   after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/release
     # Zip output
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
-    - currentDir=$(pwd)
-    - mkdir -p ${currentDir}/dist
-    - zipFile=${currentDir}/dist/${fileName}
+    - zipFile=${CI_PROJECT_DIR}/release/${fileName}
     - if [[ -f "${zipFile}" ]]; then rm "${zipFile}"; fi
-    - cd www || exit 1
+    - cd ${CI_PROJECT_DIR}/www || exit 1
     - if ! zip -q -r "${zipFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
     - cd ..
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
@@ -275,12 +298,13 @@ release:tags:
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${zipFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
-      - www
+      - ${CI_PROJECT_DIR}/release
     expire_in: 24 hours
   allow_failure: false
   when: manual
   only:
     - tags
+
 
 gitlab-release:
   stage: release
@@ -295,3 +319,35 @@ gitlab-release:
     ref: "${CI_COMMIT_TAG}"
   only:
     - tags
+
+# ---------------------------------------------------------------
+# Deploy jobs
+# ---------------------------------------------------------------
+deploy:android:
+  image: ${CI_BUILD_IMAGE}
+  stage: deploy
+  needs: [release]
+  before_script:
+    # Prepare APK release signing
+    - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
+    - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
+    - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
+    - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
+    - mkdir -p ${CI_PROJECT_DIR}/release
+  script:
+    # APK output
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-android.apk
+    - apkFile=${CI_PROJECT_DIR}/release/${fileName}
+    - if [[ ! -f "${apkFile}" ]]; then npm run android:install; fi
+    - if [[ ! -f "${apkFile}" ]]; then npm run android:build:prod; fi
+    - cp "${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk" "${apkFile}"
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "Deploy to gitlab APK package :"
+    - echo " File= ${apkFile}"
+    - echo " Url= ${targetUrl}"
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${apkFile}" "${targetUrl}"; then exit 1; fi'
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/release
+    expire_in: 24 hours
+  allow_failure: true
