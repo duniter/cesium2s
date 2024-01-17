@@ -11,6 +11,19 @@ stages:
   - alt_build
   - release
 
+
+workflow:
+  rules:
+    - changes:
+        - docker/**/Dockerfile
+        - src/**/*
+        - android/**/*
+        - .gitlab-ci.yml
+        - package.json
+        - package-lock.json
+        - tsconfig*.json
+        - angular.json
+
 # ---------------------------------------------------------------
 # Global variables
 # ---------------------------------------------------------------
@@ -57,11 +70,8 @@ build:env:
   extends: .docker
   stage: environment
   script:
-    # Create the target directory
-    - mkdir -p target/docker
-    - cp -rf scripts/docker/build/* target/docker
     # Build and push the CI image
-    - docker build --cache-from ${CI_BUILD_IMAGE} -t ${CI_BUILD_IMAGE} --build-arg="BUILDKIT_INLINE_CACHE=1" --build-arg="CACHE_DIR=${BUILD_CACHE_DIR}" --build-arg="IMAGE_REGISTRY=${DOCKER_IMAGE_REGISTRY}" --build-arg="IONIC_CLI_VERSION=${IONIC_CLI_VERSION}" --build-arg="ANGULAR_CLI_VERSION=${ANGULAR_CLI_VERSION}" -f target/docker/Dockerfile .
+    - docker build --cache-from ${CI_BUILD_IMAGE} -t ${CI_BUILD_IMAGE} --build-arg="BUILDKIT_INLINE_CACHE=1" --build-arg="CACHE_DIR=${BUILD_CACHE_DIR}" --build-arg="IMAGE_REGISTRY=${DOCKER_IMAGE_REGISTRY}" --build-arg="IONIC_CLI_VERSION=${IONIC_CLI_VERSION}" --build-arg="ANGULAR_CLI_VERSION=${ANGULAR_CLI_VERSION}" -f docker/build/Dockerfile .
     - docker push ${CI_BUILD_IMAGE}
   except:
     - tags
