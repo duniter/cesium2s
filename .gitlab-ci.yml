@@ -78,6 +78,7 @@ build:env:
     - master
   only:
     - develop
+  when: manual
 
 # ---------------------------------------------------------------
 # Build jobs
@@ -128,6 +129,8 @@ build:android:
   extends: .build
   image: ${CI_BUILD_IMAGE}
   before_script:
+    # Get project dependencies
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" /build/node_modules
     # Install Android environment (e.g. will create local.properties)
     - echo "--- Create Android 'local.properties' ..."
     - echo 'sdk.dir=/root/Android/Sdk' > android/local.properties
