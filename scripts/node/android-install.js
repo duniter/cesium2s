@@ -149,10 +149,7 @@ async function installSdkTools(androidSdkRoot) {
 
 async function main() {
   // Set up environment variables.
-  let gradleVersion = process.env.GRADLE_VERSION;
-  let gradleHome = process.env.GRADLE_HOME;
   let javaHome = process.env.JAVA_HOME;
-  let gradleOpts = process.env.GRADLE_OPTS;
   let androidSdkRoot = process.env.ANDROID_SDK_ROOT;
   let androidCliVersion = process.env.ANDROID_SDK_CLI_VERSION;
   let androidCliRoot = process.env.ANDROID_SDK_CLI_ROOT || `${androidSdkRoot}/cmdline-tools/${androidCliVersion}`;
@@ -166,7 +163,6 @@ async function main() {
     androidSdk: androidSdkRoot,
     androidCli: androidCliRoot,
     buildTools: androidBuildToolsRoot,
-    gradle: `${gradleHome} - options: ${gradleOpts || 'none'}`,
     java: javaHome
   });
 
@@ -193,17 +189,8 @@ async function main() {
   // Add to path
   process.env.PATH = `${androidCliRoot}/bin:${androidBuildToolsRoot}:${process.env.PATH}`;
 
-  // If inside a capacitor project (because this script can be executed from a docker image, inside /tmp/.build-cache)
-  if (fs.existsSync(`${projectDir}/capacitor.config.yml`)) {
-    // Check if the Android platform is prepared.
-    if (!fs.existsSync(`${projectDir}/android`)){
-      console.info("----- Adding Capacitor Android platform...");
-      execSync(
-        `npm run capacitor add android`,
-        { stdio: 'inherit' }
-      );
-      require('./resources');
-    }
+  // If inside a capacitor + Android project
+  if (fs.existsSync(`${projectDir}/capacitor.config.yml`) && fs.existsSync(path.join(projectDir, 'android'))) {
 
     // Create file 'android/local.properties'
     if (!fs.existsSync(path.join(projectDir, 'android', 'local.properties'))) {
