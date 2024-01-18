@@ -21,7 +21,7 @@ FROM $IMAGE_REGISTRY$DOCKER_IMAGE AS build
 ARG CACHE_DIR=/tmp/.build-cache
 WORKDIR $CACHE_DIR
 
-# Caching npm depedencies
+# Copy need files, to check deps
 COPY --from=prepare $CACHE_DIR/package.json .
 COPY --from=prepare $CACHE_DIR/scripts/ scripts/
 
@@ -36,6 +36,15 @@ RUN npm install -g @ionic/cli@${IONIC_CLI_VERSION} @angular/cli@${ANGULAR_CLI_VE
 RUN npm install --unsafe-perm --force
 
 RUN ls -artl
+
+# ANDROID BUILD STAGE
+FROM $IMAGE_REGISTRY$DOCKER_IMAGE AS build-android
+ARG CACHE_DIR=/tmp/.build-cache
+WORKDIR $CACHE_DIR
+
+# Copy need files, to check deps
+COPY --from=build $CACHE_DIR/package.json .
+COPY --from=build $CACHE_DIR/scripts/ scripts/
 
 # Install Android dependencies
 RUN npm run android:install
