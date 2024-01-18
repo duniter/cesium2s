@@ -9,7 +9,7 @@ const os = require('os');
 const {downloadFile, unzipFile, moveFiles, canExecute} = require("./utils");
 
 let projectDir = path.resolve(__dirname, '../..');
-require('./env-global.js');
+require('./env-global');
 
 async function installGradle(gradleVersion, gradleHome) {
   gradleVersion = gradleVersion || process.env.GRADLE_VERSION;
@@ -252,35 +252,39 @@ async function main() {
     //await installGradle(gradleVersion, gradleHome);
   }
 
-  // Check if the Android platform is prepared.
-  if (!fs.existsSync(`${projectDir}/android`)){
-    console.info("----- Adding Capacitor Android platform...");
-    execSync(
-      `npx cap add android`,
-      { stdio: 'inherit' }
-    );
-  }
+  // If inside a capacitor project (because this script can be executed from a docker image, inside /tmp/.build-cache)
+  if (fs.existsSync(`${projectDir}/capacitor.config.yml`)) {
+    // Check if the Android platform is prepared.
+    if (!fs.existsSync(`${projectDir}/android`)){
+      console.info("----- Adding Capacitor Android platform...");
+      execSync(
+        `npm run capacitor add android`,
+        { stdio: 'inherit' }
+      );
+      require('./resources');
+    }
 
-  // Create file 'android/local.properties'
-  if (!fs.existsSync(path.join(projectDir, 'android', 'local.properties'))) {
-    fs.writeFileSync(
-      path.join(projectDir, 'android', 'local.properties'),
-      `sdk.dir=${androidConfig.androidSdk}`);
-  }
+    // Create file 'android/local.properties'
+    if (!fs.existsSync(path.join(projectDir, 'android', 'local.properties'))) {
+      fs.writeFileSync(
+        path.join(projectDir, 'android', 'local.properties'),
+        `sdk.dir=${androidConfig.androidSdk}`);
+    }
 
-  // Create file 'android/app/release-signing.properties'
-  if (!fs.existsSync(path.join(projectDir, 'android', 'app', 'release-signing.properties'))) {
-    console.warn(`WARNING: Missing file 'android/app/release-signing.properties' - This is required for APK release signing`);
-  }
+    // Check key store file exists
+    const keystoreFile = process.env.KEYSTORE_FILE || `${projectDir}/android/app/Cesium.keystore`;
+    if (fs.existsSync(keystoreFile)) {
+      process.env.KEYSTORE_FILE = keystoreFile;
+    }
+    else {
+      console.error(`ERROR: Keystore file node found at '${keystoreFile}'`);
+      process.exit(1);
+    }
 
-  // Check key store file exists
-  const keystoreFile = process.env.KEYSTORE_FILE || `${projectDir}/android/app/Cesium.keystore`;
-  if (fs.existsSync(keystoreFile)) {
-    process.env.KEYSTORE_FILE = keystoreFile;
-  }
-  else {
-    console.error(`ERROR: Keystore file node found at '${keystoreFile}'`);
-    process.exit(1);
+    // Create file 'android/app/release-signing.properties'
+    if (!fs.existsSync(path.join(projectDir, 'android', 'app', 'release-signing.properties'))) {
+      console.warn(`WARNING: Missing file 'android/app/release-signing.properties' - This is required for APK release signing`);
+    }
   }
 
   console.log("--- Preparing Android environment [OK]");

@@ -3,7 +3,6 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const shell = require('shelljs');
 const { execSync } = require('child_process');
 
 const projectDir = path.resolve(__dirname, '../..');

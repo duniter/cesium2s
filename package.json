@@ -18,7 +18,7 @@
     "build": "ng build",
     "build:prod": "ng build --configuration production && npm run i18n:build",
     "build:ci": "ng build --configuration ci",
-    "i18n:build": "node scripts/node/build-i18n.js",
+    "i18n:build": "node scripts/node/build-i18n.js www/assets/i18n",
     "android:init": "ionic capacitor add android && npm run resources",
     "android:sync": "ionic capacitor sync android",
     "android:start": "ionic capacitor run android -l --external",
