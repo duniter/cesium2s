@@ -70,7 +70,12 @@ variables:
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     # Install Android environment (e.g. will create local.properties)
+    - mkdir -p .local
     - npm run android:install
+    - source .local/env.sh
+    # Prepare local.properties file
+    - echo "--- Preparing Android 'local.properties' file ..."
+    - echo 'sdk.dir=${ANDROID_SDK_ROOT}' > android/local.properties
     # Prepare for signing
     - echo "--- Preparing Android 'release-signing.properties' file ..."
     - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
@@ -170,6 +175,7 @@ failsafe-build:
 assemble:android:
   <<: *android-setup
   stage: assemble
+  needs: [ build ]
   script:
     # Build APK
     - echo "--- Building Android APK ..."
