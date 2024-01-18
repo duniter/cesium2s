@@ -45,6 +45,7 @@ WORKDIR $CACHE_DIR
 # Copy need files, to check deps
 COPY --from=build $CACHE_DIR/package.json .
 COPY --from=build $CACHE_DIR/scripts/ scripts/
+COPY --from=build $CACHE_DIR/node_modules/ node_modules/
 
 # Install Android dependencies
 RUN npm run android:install
