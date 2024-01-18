@@ -127,15 +127,20 @@ build:feature:
 build:android:
   extends: .build
   image: ${CI_BUILD_IMAGE}
-  script:
+  before_script:
+    # Install Android environment (e.g. will create local.properties)
+    - echo "--- Create Android 'local.properties' ..."
+    - echo 'sdk.dir=/root/Android/Sdk' > android/local.properties
     # Prepare for signing
-    - echo "--- Building Android APK file ..."
+    - echo "--- Preparing Android 'release-signing.properties' file ..."
     - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
     - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
     - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
     - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
+  script:
     # Build APK
     - npm run android:build:${BUILD_ENVIRONMENT}
+  after_script:
     # Make APK file available for next jobs
     - mkdir -p "${CI_PROJECT_DIR}/release/"
     - cp ${CI_PROJECT_DIR}/android/app/build/outputs/apk/*/.apk $CI_PROJECT_DIR/release/
@@ -329,19 +334,22 @@ deploy:android:
   stage: deploy
   needs: [release]
   before_script:
-    # Prepare APK release signing
+    # Install Android environment (e.g. will create local.properties)
+    - echo "--- Create Android 'local.properties' ..."
+    - echo 'sdk.dir=/root/Android/Sdk' > android/local.properties
+    # Prepare for signing
+    - echo "--- Preparing Android 'release-signing.properties' file ..."
     - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
     - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
     - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
     - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
-    - mkdir -p ${CI_PROJECT_DIR}/release
   script:
     # APK output
+    - buildApkFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
+    - if [[ ! -f "${buildApkFile}" ]]; then npm run android:build:prod; fi
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-android.apk
     - apkFile=${CI_PROJECT_DIR}/release/${fileName}
-    - if [[ ! -f "${apkFile}" ]]; then npm run android:install; fi
-    - if [[ ! -f "${apkFile}" ]]; then npm run android:build:prod; fi
-    - cp "${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk" "${apkFile}"
+    - cp "${buildApkFile}" "${apkFile}"
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
     - echo "Deploy to gitlab APK package :"
     - echo " File= ${apkFile}"

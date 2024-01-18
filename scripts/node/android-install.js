@@ -11,54 +11,6 @@ const {downloadFile, unzipFile, moveFiles, canExecute} = require("./utils");
 let projectDir = path.resolve(__dirname, '../..');
 require('./env-global');
 
-async function installGradle(gradleVersion, gradleHome) {
-  gradleVersion = gradleVersion || process.env.GRADLE_VERSION;
-  gradleHome = gradleHome || process.env.GRADLE_HOME;
-  // Make sure variables are set
-  if (!gradleVersion) {
-    throw new Error("Please set environment variable 'GRADLE_VERSION'.");
-  }
-  if (!gradleHome) {
-    throw new Error("Please set environment variable 'GRADLE_HOME'.");
-  }
-
-  const gradleZip = `gradle-${gradleVersion}-all.zip`;
-  const gradleDistUrl = `https://services.gradle.org/distributions/${gradleZip}`;
-  const gradleParentDir = path.dirname(gradleHome);
-
-  // Install Gradle
-  if (!shell.which('gradle') || !fs.existsSync(gradleHome)) {
-    console.info(`--- Installing Gradle...  ${gradleHome}`);
-
-    if (!fs.existsSync(gradleParentDir)) {
-      fs.mkdirSync(gradleParentDir, {recursive: true});
-    }
-
-    if (!fs.existsSync(path.join(gradleParentDir, gradleZip))) {
-      console.info(`----- Downloading Gradle...  ${gradleDistUrl} into ${path.join(gradleParentDir, gradleZip)}`);
-      await downloadFile(gradleDistUrl, path.join(gradleParentDir, gradleZip));
-    }
-
-    let unzipTarget = path.join(gradleParentDir, `gradle-${gradleVersion}`);
-    if (!fs.existsSync(unzipTarget)) {
-      console.info(`----- Unpacking Gradle into ${unzipTarget}`);
-      await unzipFile(path.join(gradleParentDir, gradleZip), gradleParentDir);
-    }
-
-    if (!fs.existsSync(gradleHome)) {
-      await moveFiles(path.join(gradleParentDir, `gradle-${gradleVersion}`), gradleHome);
-    }
-
-    // Remove zip file
-    if (fs.existsSync(path.join(gradleParentDir, gradleZip))) {
-      fs.rmSync(path.join(gradleParentDir, gradleZip));
-    }
-
-    console.info(`--- Installing Gradle [OK]`);
-  }
-}
-
-
 async function installSdkCli(androidSdkCliRoot) {
   androidSdkCliRoot = androidSdkCliRoot || process.env.ANDROID_SDK_CLI_ROOT;
   if (!androidSdkCliRoot) {
@@ -110,10 +62,6 @@ async function installSdkCli(androidSdkCliRoot) {
       process.exit(1);
     }
   }
-
-  // Add SDK CLI to PATH
-  process.env.ANDROID_SDK_CLI_ROOT = androidSdkCliRoot;
-  process.env.PATH = `${androidSdkCliRoot}/bin:${process.env.PATH}`;
 }
 
 function sdkmanager(arg, options) {
@@ -212,20 +160,18 @@ async function main() {
   let nodesOptions = process.env.NODE_OPTIONS;
   let nodeVersion = process.versions.node;
 
-  let androidConfig = {
+  console.info('--- Preparing Android environment... using:', {
     root: projectDir,
     node: `version ${nodeVersion} - options: ${nodesOptions || 'none'}`,
     androidSdk: androidSdkRoot,
     androidCli: androidCliRoot,
-    buildTools: `${androidBuildToolsRoot}`,
+    buildTools: androidBuildToolsRoot,
     gradle: `${gradleHome} - options: ${gradleOpts || 'none'}`,
     java: javaHome
-  };
-
-  console.info('--- Preparing Android environment... using:', androidConfig);
+  });
 
   // Check if Android SDK CLI tools is installed.
-  if (!fs.existsSync(androidConfig.androidCli) || !fs.existsSync(androidConfig.buildTools)) {
+  if (!fs.existsSync(androidCliRoot) || !fs.existsSync(androidBuildToolsRoot)) {
 
     // Run CLI + SDK installation
     try {
@@ -238,19 +184,14 @@ async function main() {
     }
 
     // Verify build tools
-    if (!fs.existsSync(androidConfig.buildTools)) {
-      console.error(`ERROR: Failed to locate Android build tools at: ${androidConfig.buildTools}`);
+    if (!fs.existsSync(androidBuildToolsRoot)) {
+      console.error(`ERROR: Failed to locate Android build tools at: ${androidBuildToolsRoot}`);
       process.exit(1);
     }
-
-  } else {
-    process.env.PATH = `${androidConfig.androidCli}:${androidConfig.buildTools}:${process.env.PATH}`;
   }
 
-  // Check if Gradle is installed.
-  if (!fs.existsSync(gradleHome)) {
-    //await installGradle(gradleVersion, gradleHome);
-  }
+  // Add to path
+  process.env.PATH = `${androidCliRoot}/bin:${androidBuildToolsRoot}:${process.env.PATH}`;
 
   // If inside a capacitor project (because this script can be executed from a docker image, inside /tmp/.build-cache)
   if (fs.existsSync(`${projectDir}/capacitor.config.yml`)) {
@@ -268,7 +209,7 @@ async function main() {
     if (!fs.existsSync(path.join(projectDir, 'android', 'local.properties'))) {
       fs.writeFileSync(
         path.join(projectDir, 'android', 'local.properties'),
-        `sdk.dir=${androidConfig.androidSdk}`);
+        `sdk.dir=${androidSdkRoot}`);
     }
 
     // Check key store file exists
