@@ -78,7 +78,13 @@ build:env:
     - master
   only:
     - develop
-  when: manual
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - docker/build/Dockerfile
+        - scripts/**/*
+        - package.json
+        - package-lock.json
 
 # ---------------------------------------------------------------
 # Build jobs
