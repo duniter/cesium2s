@@ -33,22 +33,9 @@ export interface Transfer {
   blockNumber: number;
 }
 
-export class TransferComparators {
-  static sortByBlockAsc(t1: Transfer, t2: Transfer): number {
-    return t1.blockNumber === t2.blockNumber ? 0 : t1.blockNumber > t2.blockNumber ? 1 : -1;
-  }
-
-  static sortByBlockDesc(t1: Transfer, t2: Transfer): number {
-    return -1 * TransferComparators.sortByBlockAsc(t1, t2);
-  }
-}
-
 export interface TransferSearchFilter {
-  address?: string;
+  address: string;
   amount?: string;
-  limit?: number;
-  minTimestamp?: Moment;
-  maxTimestamp?: Moment;
 }
 
 export class TransferSearchFilterUtils {
@@ -57,6 +44,6 @@ export class TransferSearchFilterUtils {
   }
 
   static isEmpty(filter: TransferSearchFilter) {
-    return !filter || (isNilOrBlank(filter.address) && isNilOrBlank(filter.minTimestamp) && isNil(filter.amount));
+    return !filter || (isNilOrBlank(filter.address) && isNil(filter.amount));
   }
 }

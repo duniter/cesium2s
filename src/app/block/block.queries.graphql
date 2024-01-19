@@ -1,0 +1,24 @@
+
+fragment LightBlock on Block {
+  id
+  height
+  hash
+  timestamp
+  callsCount
+  eventsCount
+  extrinsicsCount
+  __typename
+}
+
+query BlockById($id: String!) {
+  blockById(id: $id) {
+    ...LightBlock
+  }
+}
+
+
+query Blocks($where: BlockWhereInput, $limit: Int!, $offset: Int!, $orderBy: [BlockOrderByInput!]) {
+  blocks(limit: $limit, offset: $offset, orderBy: $orderBy, where: $where) {
+    ...LightBlock
+  }
+}

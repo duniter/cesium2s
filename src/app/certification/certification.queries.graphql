@@ -1,0 +1,55 @@
+
+
+fragment Cert on Cert {
+  id
+  __typename
+  issuer {
+    ...LightIdentity
+  }
+  receiver {
+    ...LightIdentity
+  }
+  createdOn
+  creation {
+    blockNumber
+  }
+}
+
+query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
+  certsConnection(
+    first: $limit,
+    after: $after,
+    orderBy: $orderBy,
+    where: {issuer: {id_eq: $address}}
+  ) {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      node {
+        ...Cert
+      }
+    }
+  }
+}
+
+
+query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
+  certsConnection(
+    first: $limit,
+    after: $after,
+    orderBy: $orderBy,
+    where: {receiver: {id_eq: $address}}
+  ) {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      node {
+        ...Cert
+      }
+    }
+  }
+}
