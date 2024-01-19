@@ -349,7 +349,7 @@ gitlab-release:
 # ---------------------------------------------------------------
 # Deploy jobs
 # ---------------------------------------------------------------
-deploy:android:
+.deploy:android:
   <<: *android-setup
   stage: deploy
   needs: [release]
@@ -371,3 +371,19 @@ deploy:android:
       - ${CI_PROJECT_DIR}/release
     expire_in: 24 hours
   allow_failure: true
+  only:
+    - develop
+
+deploy:android:
+  extends: .deploy:android
+  needs: [release]
+
+failsafe-deploy:android:
+  extends: .deploy:android
+  needs: [failsafe-release]
+
+deploy:android:tags:
+  extends: .deploy:android
+  needs: [release:tags]
+  only:
+    - tags
