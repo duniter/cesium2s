@@ -188,7 +188,7 @@ assemble:android:
   after_script:
     # Make APK file available for next jobs
     - mkdir -p "${CI_PROJECT_DIR}/release/"
-    - cp ${CI_PROJECT_DIR}/android/app/build/outputs/apk/*/.apk $CI_PROJECT_DIR/release/
+    - mv -f ${CI_PROJECT_DIR}/android/app/build/outputs/apk/*/*.apk $CI_PROJECT_DIR/release/
   artifacts:
     paths:
       - $CI_PROJECT_DIR/release/
