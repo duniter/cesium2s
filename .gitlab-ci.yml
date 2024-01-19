@@ -197,7 +197,7 @@ assemble:android:
     expire_in: 72 hours
   only:
     - develop
-  #when: manual
+  when: manual
 
 # ---------------------------------------------------------------
 # Release jobs
