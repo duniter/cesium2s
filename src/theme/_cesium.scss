@@ -87,3 +87,16 @@ ion-list {
 .text-italic {
   font-style: italic;
 }
+
+.barcode-scanner-square {
+  position: absolute;
+  z-index: 99999;
+  border: 3px dashed var(--ion-color-secondary);
+  --max-width: calc(50vw);
+  --max-height: calc(50vh);
+  --size: calc(min(var(--max-width), var(--max-height)));
+  width: var(--size);
+  height: var(--size);
+  margin-top: calc(50vh - var(--size) / 2);
+  margin-left: calc(50vw - var(--size) / 2);
+}

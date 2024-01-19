@@ -8,10 +8,14 @@
 body {
   background-color: var(--ion-background-color);
 
-  // Workaround need by the barcode-scanner plugin - see https://github.com/capacitor-community/barcode-scanner#ionic-css-variables
-  &.scanner-active {
+  /* Barcode scanner plugin */
+  &.barcode-scanner-active {
     --background: transparent;
     --ion-background-color: transparent;
+
+    & > app-root {
+      visibility: hidden;
+    }
   }
 }
 

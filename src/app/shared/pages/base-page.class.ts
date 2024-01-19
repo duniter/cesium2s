@@ -10,6 +10,7 @@ import { map, Observable, Subscription } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { RxStateProperty, RxStateRegister, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { FormGroup } from '@angular/forms';
+import { ContextService } from '@app/shared/services/storage/context.service';
 
 export interface AppPageState {
   error: string;
@@ -34,6 +35,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   protected readonly routerOutlet = inject(IonRouterOutlet, { optional: true });
   protected readonly activatedRoute = inject(ActivatedRoute);
   protected readonly navController = inject(NavController);
+  protected readonly context = inject(ContextService);
   protected toastController = inject(ToastController);
   @RxStateRegister() protected readonly _state: RxState<S> = inject(RxState<S>, { optional: true });
 

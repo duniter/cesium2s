@@ -694,6 +694,7 @@
     "REST": "Reste du compte",
     "REST_TO": "à",
     "WARN_COMMENT_IS_PUBLIC": "Veuillez noter que <b>les commentaires sont publics</b> (non chiffrés).",
+    "BTN_SCAN_HELP": "Scanner un QR Code",
     "BTN_QR_CODE": "QR Code",
     "QR_CODE_HELP": "Demander au destinataire de flasher ce code. Il pourra alors déposer le paiement plus tard, quand il le souhaite.",
     "MODAL": {
