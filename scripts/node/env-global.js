@@ -3,7 +3,6 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const shell = require('shelljs');
 const { execSync } = require('child_process');
 
 const projectDir = path.resolve(__dirname, '../..');
@@ -14,9 +13,7 @@ const versions = {
   //ANDROID_NDK_VERSION: "25.2.9519653",
   ANDROID_SDK_VERSION: "34.0.0",
   ANDROID_SDK_CLI_VERSION: "11076708",
-  ANDROID_OUTPUT_MIN_SDK_VERSION: 22,
   ANDROID_OUTPUT_MAX_SDK_VERSION: 34,
-  GRADLE_VERSION: "8.5",
   JAVA_MAJOR_VERSION: 17,
   JAVA_MINOR_VERSION: 0,
 }
@@ -28,17 +25,12 @@ const env = {
   ANDROID_ALTERNATIVE_SDK_ROOT: "/usr/lib/android-sdk",
   ANDROID_SDK_CLI_ROOT: `${os.homedir()}/Android/Sdk/cmdline-tools/${versions.ANDROID_SDK_CLI_VERSION}`,
   ANDROID_BUILD_TOOLS_ROOT: `${os.homedir()}/Android/Sdk/build-tools/${versions.ANDROID_SDK_VERSION}`,
-  ANDROID_OUTPUT_APK_PREFIX: "app",
-  ANDROID_OUTPUT_APK: `${projectDir}/android/app/build/outputs/apk`,
-  ANDROID_OUTPUT_APK_DEBUG: `${projectDir}/android/app/build/outputs/apk/debug`,
-  ANDROID_OUTPUT_APK_RELEASE: `${projectDir}/android/app/build/outputs/apk/release`,
   JAVA_HOME: null, // This could be configured later or inside '.local/env.sh' file
-  GRADLE_HOME: `${projectDir}/android/.gradle/${versions.GRADLE_VERSION}`,
 };
 
 // Override with a local file, if any.
-if (fs.existsSync(`${projectDir}/.local/env.json`)) {
-  const localEnv = require(`${projectDir}/.local/env.json`);
+if (fs.existsSync(path.join(projectDir, '.local', 'env.json'))) {
+  const localEnv = require(path.join(projectDir, '.local', 'env.json'));
   Object.assign(env, localEnv);
 }
 
@@ -102,28 +94,27 @@ if (!fs.existsSync(process.env.ANDROID_SDK_ROOT)) {
 // Add necessary directories to the PATH.
 process.env.PATH = `${process.env.JAVA_HOME}/bin:${process.env.ANDROID_SDK_CLI_ROOT}/bin:${process.env.GRADLE_HOME}/bin:${process.env.PATH}`;
 
-if (!fs.existsSync(`${projectDir}/.local`, )) {
-  fs.mkdirSync(`${projectDir}/.local`);
+if (fs.existsSync(`${projectDir}/.local`)) {
+
+  // Write project environment variables to a .env file.
+  fs.writeFileSync(
+    path.join(projectDir, '.local', 'env.sh'),
+    '#!/bin/bash\n\n');
+  fs.appendFileSync(
+    path.join(projectDir, '.local', 'env.sh'),
+    Object.entries(process.env)
+      .map(([key, value]) => `${key}='${value}'`)
+      .join('\n')
+  );
+
+  // Append PATH to .env file
+  fs.appendFileSync(
+    path.join(projectDir, '.local', 'env.sh'),
+    `\n\n`
+    + `export ANDROID_SDK_ROOT="${process.env.ANDROID_SDK_ROOT}"\n`
+    + `export ANDROID_HOME="${process.env.ANDROID_SDK_ROOT}"\n`
+    + `export JAVA_HOME="${process.env.JAVA_HOME}"\n`
+    + `export GRADLE_HOME="${process.env.GRADLE_HOME}"\n\n`
+    + `export PATH="${process.env.PATH}"\n`
+  );
 }
-
-// Write project environment variables to a .env file.
-fs.writeFileSync(
-  path.join(projectDir, '.local', 'env.sh'),
-  '#!/bin/bash\n\n');
-fs.appendFileSync(
-  path.join(projectDir, '.local', 'env.sh'),
-  Object.entries(process.env)
-    .map(([key, value]) => `${key}='${value}'`)
-    .join('\n')
-);
-
-// Append PATH to .env file
-fs.appendFileSync(
-  path.join(projectDir, '.local', 'env.sh'),
-  `\n\n`
-  + `export ANDROID_SDK_ROOT="${process.env.ANDROID_SDK_ROOT}"\n`
-  + `export ANDROID_HOME="${process.env.ANDROID_SDK_ROOT}"\n`
-  + `export JAVA_HOME="${process.env.JAVA_HOME}"\n`
-  + `export GRADLE_HOME="${process.env.GRADLE_HOME}"\n\n`
-  + `export PATH="${process.env.PATH}"\n`
-);

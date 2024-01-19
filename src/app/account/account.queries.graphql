@@ -1,0 +1,19 @@
+
+fragment LightIdentity on Identity {
+  __typename
+  id
+  name
+  membership {
+    __typename
+    id
+  }
+}
+
+fragment LightAccount on Account {
+  id
+  __typename
+
+  identity {
+    ...LightIdentity
+  }
+}

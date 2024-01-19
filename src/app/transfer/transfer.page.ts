@@ -2,21 +2,20 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account, AccountUtils } from '@app/account/account.model';
 import { ActionSheetOptions, IonModal, ModalController, Platform, PopoverOptions } from '@ionic/angular';
-import { mergeMap, Observable, tap } from 'rxjs';
+import { firstValueFrom, mergeMap, Observable, skip, tap } from 'rxjs';
 import { isNotEmptyArray, isNotNilOrBlank } from '@app/shared/functions';
 import { filter } from 'rxjs/operators';
 import { NetworkService } from '@app/network/network.service';
 import { Currency } from '@app/currency/currency.model';
 import { NavigationEnd, Router } from '@angular/router';
-import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import { Capacitor } from '@capacitor/core';
 import { CapacitorPlugins } from '@app/shared/capacitor/plugins';
 import { RxState } from '@rx-angular/state';
 import { AccountsService } from '@app/account/accounts.service';
 import { WotController } from '@app/wot/wot.controller';
 import { TransferFormOptions } from '@app/transfer/transfer.model';
 import { PredefinedColors } from '@ionic/core';
+import { Capacitor } from '@capacitor/core';
 
 export interface TransferPageState extends AppPageState {
   currency: Currency;
@@ -146,13 +145,14 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
   async ngOnInit() {
     super.ngOnInit();
     this._isModal = !!(await this.modalCtrl.getTop()) && !this.routerOutlet;
+    this._enableScan = Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
 
-    // Hide modal when leave page
+    // Reset form when leave page
     this.registerSubscription(
       this.router.events
         .pipe(
-          filter((e) => this.loaded && e instanceof NavigationEnd),
-          tap(() => console.debug(this._logPrefix + 'Resetting page...'))
+          filter((e) => this.loaded && e instanceof NavigationEnd && e.url !== '/scan' && e.url !== '/transfer'),
+          tap(() => console.debug(this._logPrefix + 'Resetting transfer form...'))
         )
         .subscribe(() => this.unload())
     );
@@ -166,22 +166,30 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
   protected async ngOnLoad() {
     await this.accountService.ready();
 
-    this._enableScan = this.ionicPlatform.is('capacitor') && Capacitor.isPluginAvailable(CapacitorPlugins.BarcodeScanner);
-
     return {};
   }
 
   async selectAccount(event: UIEvent) {
-    event?.preventDefault();
+    if (event.defaultPrevented || this.loading) return;
 
-    const account = await this.accountService.selectAccount({
-      minBalance: this.amount || 0,
-      positiveBalanceFirst: true,
-      showBalance: true,
-    });
-    if (account) {
-      this.account = account;
-      this.markForCheck();
+    console.info('[transfer] Click to select account', event);
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.markAsLoading();
+
+    try {
+      const account = await this.accountService.selectAccount({
+        minBalance: this.amount || 0,
+        positiveBalanceFirst: true,
+        showBalance: true,
+      });
+      if (account) {
+        this.account = account;
+        this.markForCheck();
+      }
+    } finally {
+      this.markAsLoaded();
     }
   }
 
@@ -258,41 +266,40 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
     this.recipient = data;
   }
 
-  async scanRecipient(event?: Event) {
+  protected compareWith(a1: Account, a2: Account) {
+    return a1 && a1.address === a2?.address;
+  }
+
+  async scanQrCode(event?: Event) {
     if (!this._enableScan) return; // SKip
 
     event?.preventDefault();
 
+    // Mark as loading, to avoid a unload()
     this.markAsLoading();
     this.resetError();
 
     try {
-      console.info('[transfer] Hide background');
-      document.querySelector('body').classList.add('scanner-active');
-      await BarcodeScanner.hideBackground(); // make background of WebView transparent
-
-      // setTimeout(() => {
-      //   console.info('[transfer] Stopping scanner...');
-      // }, 5000);
-
       console.info('[transfer] Start scanning...');
-      const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+
+      await this.navController.navigateForward('/scan');
+
+      const result = await firstValueFrom(this.context.qrcode$.pipe(skip(1)));
+
+      console.info('[transfer] TODO: ' + result);
 
       // if the result has content
-      if (result.hasContent) {
-        this.setRecipient(result.content);
+      if (isNotNilOrBlank(result)) {
+        // TODO check address format
+
+        this.setRecipient(result);
       }
     } catch (err) {
       console.error('[transfer] Failed to scan QR code: ' + (err?.message || ''), err);
       this.setError(err);
-      this.markAsLoaded();
     } finally {
-      document.querySelector('body').classList.remove('scanner-active');
+      this.markAsLoaded();
     }
-  }
-
-  protected compareWith(a1: Account, a2: Account) {
-    return a1 && a1.address === a2?.address;
   }
 
   protected async ngOnUnload() {

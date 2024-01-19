@@ -9,8 +9,9 @@ stages:
   - environment
   - build
   - alt_build
+  - assemble
   - release
-
+  - deploy
 
 workflow:
   rules:
@@ -61,6 +62,34 @@ variables:
     - docker logout ${CI_REGISTRY}
   allow_failure: false
 
+.configure-android-template: &android-setup
+  image: ${CI_BUILD_IMAGE}
+  tags: [ kepler ]
+  before_script:
+    # Get project dependencies
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
+    # Install Android environment (e.g. will create local.properties)
+    - mkdir -p .local
+    - npm run android:install
+    - source .local/env.sh
+    # Prepare local.properties file
+    - echo "--- Preparing Android 'local.properties' file ..."
+    - if [[ "_${ANDROID_SDK_ROOT}" == "_" ]]; then echo "Missing required variable ANDROID_SDK_ROOT. Cannot prepare Android 'local.properties' file"; exit 1; fi
+    - echo 'sdk.dir=${ANDROID_SDK_ROOT}' > android/local.properties
+    # Prepare for signing
+    - echo "--- Preparing Android 'release-signing.properties' file ..."
+    - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_STORE_PASSWORD}" == "_" ]]; then echo "Missing required variable ANDROID_STORE_PASSWORD"; exit 1; fi
+    - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_KEY_ALIAS}" == "_" ]]; then echo "Missing required variable ANDROID_KEY_ALIAS"; exit 1; fi
+    - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_KEY_PASSWORD}" == "_" ]]; then echo "Missing required variable ANDROID_KEY_PASSWORD"; exit 1; fi
+    - echo "storeFile=Cesium.keystore" > android/app/release-signing.properties
+    - echo "storePassword=${ANDROID_STORE_PASSWORD}" >> android/app/release-signing.properties
+    - echo "keyAlias=${ANDROID_KEY_ALIAS}" >> android/app/release-signing.properties
+    - echo "keyPassword=${ANDROID_KEY_PASSWORD}" >> android/app/release-signing.properties
+    # Show version
+    - npm version
+    - export NODE_OPTIONS=--max-old-space-size=4096
+
 # ---------------------------------------------------------------
 # Environment jobs : Create docker image for builds/release, this
 # offers possibility to cache project dependencies so we don't
@@ -73,11 +102,14 @@ build:env:
     # Build and push the CI image
     - docker build --cache-from ${CI_BUILD_IMAGE} -t ${CI_BUILD_IMAGE} --build-arg="BUILDKIT_INLINE_CACHE=1" --build-arg="CACHE_DIR=${BUILD_CACHE_DIR}" --build-arg="IMAGE_REGISTRY=${DOCKER_IMAGE_REGISTRY}" --build-arg="IONIC_CLI_VERSION=${IONIC_CLI_VERSION}" --build-arg="ANGULAR_CLI_VERSION=${ANGULAR_CLI_VERSION}" -f docker/build/Dockerfile .
     - docker push ${CI_BUILD_IMAGE}
-  except:
-    - tags
-    - master
-  only:
-    - develop
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - .gitlab-ci.yml
+        - docker/build/Dockerfile
+        - scripts/**/*
+        - package.json
+        - package-lock.json
 
 # ---------------------------------------------------------------
 # Build jobs
@@ -87,10 +119,10 @@ build:env:
   tags: [kepler]
   before_script:
     # Get project dependencies
-    - ls -artl ${BUILD_CACHE_DIR}
-    - cp -R ${BUILD_CACHE_DIR}/node_modules .
-    # Before command
-    - ${BEFORE_BUILD}
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
+    # Show version
+    - npm version
   script:
     # Build
     - npm run build:${BUILD_ENVIRONMENT}
@@ -104,8 +136,6 @@ build:env:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
-  variables:
-    BEFORE_BUILD: npm version
 
 build:
   extends: .build
@@ -117,27 +147,57 @@ build:
 build:feature:
   extends: .build
   image: ${CI_BUILD_IMAGE}
-  variables:
-    BEFORE_BUILD: npm version && npm install
+  script:
+    # Install deps, because it may have changed since the last build image (build from develop)
+    - npm install
+    # Build
+    - npm run build:${BUILD_ENVIRONMENT}
   only:
     - /^feature\/.*/
     - /^features\/.*/
   when: manual
 
-
 failsafe-build:
   extends: .build
   stage: alt_build
   when: on_failure
-  before_script:
+  script:
     # Install global dependencies
     - npm install -g @ionic/cli@${IONIC_CLI_VERSION} @angular/cli@${ANGULAR_CLI_VERSION}
     # Update project dependencies
-    - npm install --unsafe-perm --force
+    - npm install --unsafe-perm --force --silent
+    # Build
+    - npm run build:${BUILD_ENVIRONMENT}
   only:
     - develop
     - /^feature\/.*/
     - /^features\/.*/
+
+# ---------------------------------------------------------------
+# Assemble jobs
+# ---------------------------------------------------------------
+assemble:android:
+  <<: *android-setup
+  stage: assemble
+  needs: [ build ]
+  script:
+    # Build APK
+    - echo "--- Building Android APK ..."
+    - npm run android:build:${BUILD_ENVIRONMENT}
+    - npm run android:assemble:${BUILD_ENVIRONMENT}
+  after_script:
+    # Make APK file available for next jobs
+    - mkdir -p "${CI_PROJECT_DIR}/release/"
+    - mv -f ${CI_PROJECT_DIR}/android/app/build/outputs/apk/*/*.apk $CI_PROJECT_DIR/release/
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/release/
+    reports:
+      dotenv: ${ENV_FILE}
+    expire_in: 72 hours
+  only:
+    - develop
+  #when: manual
 
 # ---------------------------------------------------------------
 # Release jobs
@@ -146,7 +206,7 @@ failsafe-build:
   <<: *git-setup
   stage: release
   script:
-    - if [[ "_${RELEASE_VERSION}" == "_" ]]; then exit 1; fi
+    - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "Missing required variable RELEASE_VERSION"; exit 1; fi
     - echo "--- Release in progress"
     - git checkout -B release/${RELEASE_VERSION}
     - echo "--- Manage app version"
@@ -173,21 +233,13 @@ failsafe-build:
     - 'sed -i "s/echo \".*\" #lastest/echo \"${RELEASE_VERSION}\" #lastest/g" install.sh'
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
-    - cp -R "${BUILD_CACHE_DIR}/node_modules" .
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     # Show version
     - npm version
-    - export NODE_OPTIONS=--max-old-space-size=4096
     # Build web (if need)
     - echo "--- Building 'www'"
+    - export NODE_OPTIONS=--max-old-space-size=4096
     - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
-    # Build android
-    - echo "--- Building 'android'"
-    - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
-    - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
-    - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
-    - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
-    #- npm run android:install
-    #- npm run android:build:prod
     # Git process for release (ISO gitflow)
     - echo "--- Fishing release"
     - git add package.json src/manifest.json android/app/build.gradle install.sh
@@ -207,23 +259,22 @@ failsafe-build:
     # Remember version
     - APP_VERSION=${RELEASE_VERSION}
     - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
+    - mkdir -p ${CI_PROJECT_DIR}/release
     # Zip output
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
-    - currentDir=$(pwd)
-    - mkdir -p ${currentDir}/dist
-    - zipFile=${currentDir}/dist/${fileName}
+    - zipFile=${CI_PROJECT_DIR}/release/${fileName}
     - if [[ -f "${zipFile}" ]]; then rm "${zipFile}"; fi
-    - cd www || exit 1
+    - cd ${CI_PROJECT_DIR}/www || exit 1
     - if ! zip -q -r "${zipFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
-    - cd ..
+    - cd ${CI_PROJECT_DIR}
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
-    - echo "Deploy to gitlab generic package :"
+    - echo "Deploy to gitlab package:"
     - echo " File= ${zipFile}"
     - echo " Url= ${targetUrl}"
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${zipFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
-      - www
+      - ${CI_PROJECT_DIR}/release
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 24 hours
@@ -247,35 +298,34 @@ release:tags:
   stage: release
   script:
     - echo "--- Release in progress"
-    - git checkout -b release/${CI_COMMIT_TAG}
+    - git checkout -b release/
+    - APP_VERSION=${CI_COMMIT_TAG}
+    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
-    - cp -R "${BUILD_CACHE_DIR}/node_modules" .
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     # Show version
-    # FIXME fail since 13/11/2023
-    #- ng version
     - npm version
-    # Build (if need)
+    # Build
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
   after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/release
     # Zip output
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
-    - currentDir=$(pwd)
-    - mkdir -p ${currentDir}/dist
-    - zipFile=${currentDir}/dist/${fileName}
-    - if [[ -f "${zipFile}" ]]; then rm "${zipFile}"; fi
-    - cd www || exit 1
-    - if ! zip -q -r "${zipFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
+    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
+    - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
+    - cd ${CI_PROJECT_DIR}/www || exit 1
+    - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
     - cd ..
+    - echo "--- Deploy to gitlab package ${targetUrl} ..."
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
-    - echo "Deploy to gitlab generic package :"
-    - echo " File= ${zipFile}"
-    - echo " Url= ${targetUrl}"
-    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${zipFile}" "${targetUrl}"; then exit 1; fi'
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
-      - www
+      - ${CI_PROJECT_DIR}/release
+    reports:
+      dotenv: ${ENV_FILE}
     expire_in: 24 hours
   allow_failure: false
   when: manual
@@ -293,5 +343,47 @@ gitlab-release:
     description: "Created using the release-cli $EXTRA_DESCRIPTION"
     tag_name: "${CI_COMMIT_TAG}"
     ref: "${CI_COMMIT_TAG}"
+  only:
+    - tags
+
+# ---------------------------------------------------------------
+# Deploy jobs
+# ---------------------------------------------------------------
+.deploy:android:
+  <<: *android-setup
+  stage: deploy
+  needs: [release]
+  script:
+    - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
+    # Build APK (if not already done)
+    - if [[ ! -f "${sourceFile}" ]]; then npm run android:build:prod; fi
+    - if [[ ! -f "${sourceFile}" ]]; then npm run android:assemble:prod; fi
+    # Deploy as a release package
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-android.apk
+    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
+    - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
+    - mv "${sourceFile}" "${releaseFile}"
+    - echo "--- Deploy to gitlab package ${targetUrl} ..."
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/release
+    expire_in: 24 hours
+  allow_failure: true
+  only:
+    - develop
+
+deploy:android:
+  extends: .deploy:android
+  needs: [release]
+
+failsafe-deploy:android:
+  extends: .deploy:android
+  needs: [failsafe-release]
+
+deploy:android:tags:
+  extends: .deploy:android
+  needs: [release:tags]
   only:
     - tags

@@ -3151,126 +3151,17 @@ export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
 
+export type LightIdentityFragment = {
+  __typename: 'Identity';
+  id: string;
+  name: string;
+  membership?: { __typename: 'Membership'; id: string } | null;
+};
+
 export type LightAccountFragment = {
   __typename: 'Account';
   id: string;
   identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-};
-
-export type WotSearchByTextQueryVariables = Exact<{
-  searchText: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
-}>;
-
-export type WotSearchByTextQuery = {
-  __typename?: 'Query';
-  accounts: Array<{
-    __typename: 'Account';
-    id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-  }>;
-};
-
-export type WotSearchByAddressQueryVariables = Exact<{
-  address: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
-}>;
-
-export type WotSearchByAddressQuery = {
-  __typename?: 'Query';
-  accounts: Array<{
-    __typename: 'Account';
-    id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-  }>;
-};
-
-export type WotSearchLastQueryVariables = Exact<{
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
-  pending: Scalars['Boolean']['input'];
-}>;
-
-export type WotSearchLastQuery = {
-  __typename?: 'Query';
-  accounts: Array<{
-    __typename: 'Account';
-    id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-  }>;
-};
-
-export type TransferFragment = {
-  __typename: 'Transfer';
-  id: string;
-  amount: any;
-  timestamp: any;
-  blockNumber: number;
-  from: {
-    __typename: 'Account';
-    id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-  };
-  to: {
-    __typename: 'Account';
-    id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-  };
-};
-
-export type TransferSearchByAddressQueryVariables = Exact<{
-  address: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-  orderBy?: InputMaybe<Array<TransferOrderByInput> | TransferOrderByInput>;
-  where?: InputMaybe<TransferWhereInput>;
-}>;
-
-export type TransferSearchByAddressQuery = {
-  __typename?: 'Query';
-  accounts: Array<{
-    __typename: 'Account';
-    id: string;
-    transfersIssued: Array<{
-      __typename: 'Transfer';
-      id: string;
-      amount: any;
-      timestamp: any;
-      blockNumber: number;
-      from: {
-        __typename: 'Account';
-        id: string;
-        identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-      };
-      to: {
-        __typename: 'Account';
-        id: string;
-        identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-      };
-    }>;
-    transfersReceived: Array<{
-      __typename: 'Transfer';
-      id: string;
-      amount: any;
-      timestamp: any;
-      blockNumber: number;
-      from: {
-        __typename: 'Account';
-        id: string;
-        identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-      };
-      to: {
-        __typename: 'Account';
-        id: string;
-        identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-      };
-    }>;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
-  }>;
 };
 
 export type LightBlockFragment = {
@@ -3323,20 +3214,219 @@ export type BlocksQuery = {
   }>;
 };
 
+export type CertFragment = {
+  __typename: 'Cert';
+  id: string;
+  createdOn: number;
+  issuer: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
+  receiver: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
+  creation: Array<{ __typename?: 'CertCreation'; blockNumber: number }>;
+};
+
+export type CertsConnectionByIssuerQueryVariables = Exact<{
+  address: Scalars['String']['input'];
+  limit: Scalars['Int']['input'];
+  orderBy: Array<CertOrderByInput> | CertOrderByInput;
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type CertsConnectionByIssuerQuery = {
+  __typename?: 'Query';
+  certsConnection: {
+    __typename?: 'CertsConnection';
+    totalCount: number;
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: 'CertEdge';
+      node: {
+        __typename: 'Cert';
+        id: string;
+        createdOn: number;
+        issuer: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
+        receiver: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
+        creation: Array<{ __typename?: 'CertCreation'; blockNumber: number }>;
+      };
+    }>;
+  };
+};
+
+export type CertsConnectionByReceiverQueryVariables = Exact<{
+  address: Scalars['String']['input'];
+  limit: Scalars['Int']['input'];
+  orderBy: Array<CertOrderByInput> | CertOrderByInput;
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type CertsConnectionByReceiverQuery = {
+  __typename?: 'Query';
+  certsConnection: {
+    __typename?: 'CertsConnection';
+    totalCount: number;
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: 'CertEdge';
+      node: {
+        __typename: 'Cert';
+        id: string;
+        createdOn: number;
+        issuer: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
+        receiver: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
+        creation: Array<{ __typename?: 'CertCreation'; blockNumber: number }>;
+      };
+    }>;
+  };
+};
+
+export type TransferFragment = {
+  __typename: 'Transfer';
+  id: string;
+  amount: any;
+  timestamp: any;
+  blockNumber: number;
+  from: {
+    __typename: 'Account';
+    id: string;
+    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+  };
+  to: {
+    __typename: 'Account';
+    id: string;
+    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+  };
+};
+
+export type TransfersConnectionByAddressQueryVariables = Exact<{
+  address: Scalars['String']['input'];
+  limit: Scalars['Int']['input'];
+  orderBy: Array<TransferOrderByInput> | TransferOrderByInput;
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type TransfersConnectionByAddressQuery = {
+  __typename?: 'Query';
+  transfersConnection: {
+    __typename?: 'TransfersConnection';
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: 'TransferEdge';
+      node: {
+        __typename: 'Transfer';
+        id: string;
+        amount: any;
+        timestamp: any;
+        blockNumber: number;
+        from: {
+          __typename: 'Account';
+          id: string;
+          identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+        };
+        to: {
+          __typename: 'Account';
+          id: string;
+          identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+        };
+      };
+    }>;
+  };
+};
+
+export type WotSearchByTextQueryVariables = Exact<{
+  searchText: Scalars['String']['input'];
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
+}>;
+
+export type WotSearchByTextQuery = {
+  __typename?: 'Query';
+  accounts: Array<{
+    __typename: 'Account';
+    id: string;
+    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+  }>;
+};
+
+export type WotSearchByAddressQueryVariables = Exact<{
+  address: Scalars['String']['input'];
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
+}>;
+
+export type WotSearchByAddressQuery = {
+  __typename?: 'Query';
+  accounts: Array<{
+    __typename: 'Account';
+    id: string;
+    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+  }>;
+};
+
+export type WotSearchLastQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
+  pending: Scalars['Boolean']['input'];
+}>;
+
+export type WotSearchLastQuery = {
+  __typename?: 'Query';
+  accounts: Array<{
+    __typename: 'Account';
+    id: string;
+    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+  }>;
+};
+
+export const LightBlockFragmentDoc = gql`
+  fragment LightBlock on Block {
+    id
+    height
+    hash
+    timestamp
+    callsCount
+    eventsCount
+    extrinsicsCount
+    __typename
+  }
+`;
+export const LightIdentityFragmentDoc = gql`
+  fragment LightIdentity on Identity {
+    __typename
+    id
+    name
+    membership {
+      __typename
+      id
+    }
+  }
+`;
+export const CertFragmentDoc = gql`
+  fragment Cert on Cert {
+    id
+    __typename
+    issuer {
+      ...LightIdentity
+    }
+    receiver {
+      ...LightIdentity
+    }
+    createdOn
+    creation {
+      blockNumber
+    }
+  }
+  ${LightIdentityFragmentDoc}
+`;
 export const LightAccountFragmentDoc = gql`
   fragment LightAccount on Account {
     id
     __typename
     identity {
-      __typename
-      id
-      name
-      membership {
-        __typename
-        id
-      }
+      ...LightIdentity
     }
   }
+  ${LightIdentityFragmentDoc}
 `;
 export const TransferFragmentDoc = gql`
   fragment Transfer on Transfer {
@@ -3354,18 +3444,127 @@ export const TransferFragmentDoc = gql`
   }
   ${LightAccountFragmentDoc}
 `;
-export const LightBlockFragmentDoc = gql`
-  fragment LightBlock on Block {
-    id
-    height
-    hash
-    timestamp
-    callsCount
-    eventsCount
-    extrinsicsCount
-    __typename
+export const BlockByIdDocument = gql`
+  query BlockById($id: String!) {
+    blockById(id: $id) {
+      ...LightBlock
+    }
   }
+  ${LightBlockFragmentDoc}
 `;
+
+@Injectable({
+  providedIn: 'root',
+})
+export class BlockByIdGQL extends Apollo.Query<BlockByIdQuery, BlockByIdQueryVariables> {
+  document = BlockByIdDocument;
+  client = 'indexer';
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo);
+  }
+}
+export const BlocksDocument = gql`
+  query Blocks($where: BlockWhereInput, $limit: Int!, $offset: Int!, $orderBy: [BlockOrderByInput!]) {
+    blocks(limit: $limit, offset: $offset, orderBy: $orderBy, where: $where) {
+      ...LightBlock
+    }
+  }
+  ${LightBlockFragmentDoc}
+`;
+
+@Injectable({
+  providedIn: 'root',
+})
+export class BlocksGQL extends Apollo.Query<BlocksQuery, BlocksQueryVariables> {
+  document = BlocksDocument;
+  client = 'indexer';
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo);
+  }
+}
+export const CertsConnectionByIssuerDocument = gql`
+  query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
+    certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { issuer: { id_eq: $address } }) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          ...Cert
+        }
+      }
+    }
+  }
+  ${CertFragmentDoc}
+`;
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CertsConnectionByIssuerGQL extends Apollo.Query<CertsConnectionByIssuerQuery, CertsConnectionByIssuerQueryVariables> {
+  document = CertsConnectionByIssuerDocument;
+  client = 'indexer';
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo);
+  }
+}
+export const CertsConnectionByReceiverDocument = gql`
+  query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
+    certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { receiver: { id_eq: $address } }) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          ...Cert
+        }
+      }
+    }
+  }
+  ${CertFragmentDoc}
+`;
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CertsConnectionByReceiverGQL extends Apollo.Query<CertsConnectionByReceiverQuery, CertsConnectionByReceiverQueryVariables> {
+  document = CertsConnectionByReceiverDocument;
+  client = 'indexer';
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo);
+  }
+}
+export const TransfersConnectionByAddressDocument = gql`
+  query TransfersConnectionByAddress($address: String!, $limit: Int!, $orderBy: [TransferOrderByInput!]!, $after: String) {
+    transfersConnection(first: $limit, after: $after, orderBy: $orderBy, where: { from: { id_eq: $address }, OR: { to: { id_eq: $address } } }) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          ...Transfer
+        }
+      }
+    }
+  }
+  ${TransferFragmentDoc}
+`;
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TransfersConnectionByAddressGQL extends Apollo.Query<TransfersConnectionByAddressQuery, TransfersConnectionByAddressQueryVariables> {
+  document = TransfersConnectionByAddressDocument;
+  client = 'indexer';
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo);
+  }
+}
 export const WotSearchByTextDocument = gql`
   query WotSearchByText($searchText: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
     accounts(
@@ -3433,70 +3632,6 @@ export class WotSearchLastGQL extends Apollo.Query<WotSearchLastQuery, WotSearch
     super(apollo);
   }
 }
-export const TransferSearchByAddressDocument = gql`
-  query TransferSearchByAddress($address: String!, $limit: Int!, $orderBy: [TransferOrderByInput!], $where: TransferWhereInput) {
-    accounts(limit: 1, where: { id_eq: $address }) {
-      ...LightAccount
-      transfersIssued(orderBy: $orderBy, where: $where, limit: $limit) {
-        ...Transfer
-      }
-      transfersReceived(orderBy: $orderBy, where: $where, limit: $limit) {
-        ...Transfer
-      }
-    }
-  }
-  ${LightAccountFragmentDoc}
-  ${TransferFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class TransferSearchByAddressGQL extends Apollo.Query<TransferSearchByAddressQuery, TransferSearchByAddressQueryVariables> {
-  document = TransferSearchByAddressDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
-  }
-}
-export const BlockByIdDocument = gql`
-  query BlockById($id: String!) {
-    blockById(id: $id) {
-      ...LightBlock
-    }
-  }
-  ${LightBlockFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class BlockByIdGQL extends Apollo.Query<BlockByIdQuery, BlockByIdQueryVariables> {
-  document = BlockByIdDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
-  }
-}
-export const BlocksDocument = gql`
-  query Blocks($where: BlockWhereInput, $limit: Int!, $offset: Int!, $orderBy: [BlockOrderByInput!]) {
-    blocks(limit: $limit, offset: $offset, orderBy: $orderBy, where: $where) {
-      ...LightBlock
-    }
-  }
-  ${LightBlockFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class BlocksGQL extends Apollo.Query<BlocksQuery, BlocksQueryVariables> {
-  document = BlocksDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
-  }
-}
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -3507,13 +3642,70 @@ interface QueryOptionsAlone<V> extends Omit<ApolloCore.QueryOptions<V>, 'query' 
 @Injectable({ providedIn: 'root' })
 export class IndexerGraphqlService {
   constructor(
+    private blockByIdGql: BlockByIdGQL,
+    private blocksGql: BlocksGQL,
+    private certsConnectionByIssuerGql: CertsConnectionByIssuerGQL,
+    private certsConnectionByReceiverGql: CertsConnectionByReceiverGQL,
+    private transfersConnectionByAddressGql: TransfersConnectionByAddressGQL,
     private wotSearchByTextGql: WotSearchByTextGQL,
     private wotSearchByAddressGql: WotSearchByAddressGQL,
-    private wotSearchLastGql: WotSearchLastGQL,
-    private transferSearchByAddressGql: TransferSearchByAddressGQL,
-    private blockByIdGql: BlockByIdGQL,
-    private blocksGql: BlocksGQL
+    private wotSearchLastGql: WotSearchLastGQL
   ) {}
+
+  blockById(variables: BlockByIdQueryVariables, options?: QueryOptionsAlone<BlockByIdQueryVariables>) {
+    return this.blockByIdGql.fetch(variables, options);
+  }
+
+  blockByIdWatch(variables: BlockByIdQueryVariables, options?: WatchQueryOptionsAlone<BlockByIdQueryVariables>) {
+    return this.blockByIdGql.watch(variables, options);
+  }
+
+  blocks(variables: BlocksQueryVariables, options?: QueryOptionsAlone<BlocksQueryVariables>) {
+    return this.blocksGql.fetch(variables, options);
+  }
+
+  blocksWatch(variables: BlocksQueryVariables, options?: WatchQueryOptionsAlone<BlocksQueryVariables>) {
+    return this.blocksGql.watch(variables, options);
+  }
+
+  certsConnectionByIssuer(variables: CertsConnectionByIssuerQueryVariables, options?: QueryOptionsAlone<CertsConnectionByIssuerQueryVariables>) {
+    return this.certsConnectionByIssuerGql.fetch(variables, options);
+  }
+
+  certsConnectionByIssuerWatch(
+    variables: CertsConnectionByIssuerQueryVariables,
+    options?: WatchQueryOptionsAlone<CertsConnectionByIssuerQueryVariables>
+  ) {
+    return this.certsConnectionByIssuerGql.watch(variables, options);
+  }
+
+  certsConnectionByReceiver(
+    variables: CertsConnectionByReceiverQueryVariables,
+    options?: QueryOptionsAlone<CertsConnectionByReceiverQueryVariables>
+  ) {
+    return this.certsConnectionByReceiverGql.fetch(variables, options);
+  }
+
+  certsConnectionByReceiverWatch(
+    variables: CertsConnectionByReceiverQueryVariables,
+    options?: WatchQueryOptionsAlone<CertsConnectionByReceiverQueryVariables>
+  ) {
+    return this.certsConnectionByReceiverGql.watch(variables, options);
+  }
+
+  transfersConnectionByAddress(
+    variables: TransfersConnectionByAddressQueryVariables,
+    options?: QueryOptionsAlone<TransfersConnectionByAddressQueryVariables>
+  ) {
+    return this.transfersConnectionByAddressGql.fetch(variables, options);
+  }
+
+  transfersConnectionByAddressWatch(
+    variables: TransfersConnectionByAddressQueryVariables,
+    options?: WatchQueryOptionsAlone<TransfersConnectionByAddressQueryVariables>
+  ) {
+    return this.transfersConnectionByAddressGql.watch(variables, options);
+  }
 
   wotSearchByText(variables: WotSearchByTextQueryVariables, options?: QueryOptionsAlone<WotSearchByTextQueryVariables>) {
     return this.wotSearchByTextGql.fetch(variables, options);
@@ -3537,33 +3729,6 @@ export class IndexerGraphqlService {
 
   wotSearchLastWatch(variables: WotSearchLastQueryVariables, options?: WatchQueryOptionsAlone<WotSearchLastQueryVariables>) {
     return this.wotSearchLastGql.watch(variables, options);
-  }
-
-  transferSearchByAddress(variables: TransferSearchByAddressQueryVariables, options?: QueryOptionsAlone<TransferSearchByAddressQueryVariables>) {
-    return this.transferSearchByAddressGql.fetch(variables, options);
-  }
-
-  transferSearchByAddressWatch(
-    variables: TransferSearchByAddressQueryVariables,
-    options?: WatchQueryOptionsAlone<TransferSearchByAddressQueryVariables>
-  ) {
-    return this.transferSearchByAddressGql.watch(variables, options);
-  }
-
-  blockById(variables: BlockByIdQueryVariables, options?: QueryOptionsAlone<BlockByIdQueryVariables>) {
-    return this.blockByIdGql.fetch(variables, options);
-  }
-
-  blockByIdWatch(variables: BlockByIdQueryVariables, options?: WatchQueryOptionsAlone<BlockByIdQueryVariables>) {
-    return this.blockByIdGql.watch(variables, options);
-  }
-
-  blocks(variables: BlocksQueryVariables, options?: QueryOptionsAlone<BlocksQueryVariables>) {
-    return this.blocksGql.fetch(variables, options);
-  }
-
-  blocksWatch(variables: BlocksQueryVariables, options?: WatchQueryOptionsAlone<BlocksQueryVariables>) {
-    return this.blocksGql.watch(variables, options);
   }
 }
 

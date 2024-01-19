@@ -14,7 +14,7 @@ android {
         compileSdkVersion rootProject.ext.compileSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 020000
-        versionName "2.0.0-alpha13"
+        versionName "2.0.0-alpha20"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

@@ -5,9 +5,10 @@ import { AppSharedModule } from '@app/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TransferController } from '@app/transfer/transfer.controller';
 import { APP_TRANSFER_CONTROLLER } from '@app/transfer/transfer.model';
+import { ScanComponent } from '@app/scan/scan.component';
 
 @NgModule({
-  imports: [AppSharedModule, TranslateModule.forChild()],
+  imports: [AppSharedModule, TranslateModule.forChild(), ScanComponent],
   declarations: [TransferPage],
 })
 export class AppTransferModule {

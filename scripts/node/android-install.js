@@ -9,55 +9,7 @@ const os = require('os');
 const {downloadFile, unzipFile, moveFiles, canExecute} = require("./utils");
 
 let projectDir = path.resolve(__dirname, '../..');
-require('./env-global.js');
-
-async function installGradle(gradleVersion, gradleHome) {
-  gradleVersion = gradleVersion || process.env.GRADLE_VERSION;
-  gradleHome = gradleHome || process.env.GRADLE_HOME;
-  // Make sure variables are set
-  if (!gradleVersion) {
-    throw new Error("Please set environment variable 'GRADLE_VERSION'.");
-  }
-  if (!gradleHome) {
-    throw new Error("Please set environment variable 'GRADLE_HOME'.");
-  }
-
-  const gradleZip = `gradle-${gradleVersion}-all.zip`;
-  const gradleDistUrl = `https://services.gradle.org/distributions/${gradleZip}`;
-  const gradleParentDir = path.dirname(gradleHome);
-
-  // Install Gradle
-  if (!shell.which('gradle') || !fs.existsSync(gradleHome)) {
-    console.info(`--- Installing Gradle...  ${gradleHome}`);
-
-    if (!fs.existsSync(gradleParentDir)) {
-      fs.mkdirSync(gradleParentDir, {recursive: true});
-    }
-
-    if (!fs.existsSync(path.join(gradleParentDir, gradleZip))) {
-      console.info(`----- Downloading Gradle...  ${gradleDistUrl} into ${path.join(gradleParentDir, gradleZip)}`);
-      await downloadFile(gradleDistUrl, path.join(gradleParentDir, gradleZip));
-    }
-
-    let unzipTarget = path.join(gradleParentDir, `gradle-${gradleVersion}`);
-    if (!fs.existsSync(unzipTarget)) {
-      console.info(`----- Unpacking Gradle into ${unzipTarget}`);
-      await unzipFile(path.join(gradleParentDir, gradleZip), gradleParentDir);
-    }
-
-    if (!fs.existsSync(gradleHome)) {
-      await moveFiles(path.join(gradleParentDir, `gradle-${gradleVersion}`), gradleHome);
-    }
-
-    // Remove zip file
-    if (fs.existsSync(path.join(gradleParentDir, gradleZip))) {
-      fs.rmSync(path.join(gradleParentDir, gradleZip));
-    }
-
-    console.info(`--- Installing Gradle [OK]`);
-  }
-}
-
+require('./env-global');
 
 async function installSdkCli(androidSdkCliRoot) {
   androidSdkCliRoot = androidSdkCliRoot || process.env.ANDROID_SDK_CLI_ROOT;
@@ -110,10 +62,6 @@ async function installSdkCli(androidSdkCliRoot) {
       process.exit(1);
     }
   }
-
-  // Add SDK CLI to PATH
-  process.env.ANDROID_SDK_CLI_ROOT = androidSdkCliRoot;
-  process.env.PATH = `${androidSdkCliRoot}/bin:${process.env.PATH}`;
 }
 
 function sdkmanager(arg, options) {
@@ -175,13 +123,16 @@ async function installSdkTools(androidSdkRoot) {
     fs.mkdirSync(path.join(os.homedir(), '.android'), { recursive: true });
     fs.closeSync(fs.openSync(path.join(os.homedir(), '.android', 'repositories.cfg'), 'w'));
 
-    // Install required packages.
-    sdkmanager("platform-tools", {skipIfInstalled: true, androidSdkRoot});
-    sdkmanager("extras;android;m2repository", {skipIfInstalled: true, androidSdkRoot});
-    sdkmanager("extras;google;m2repository", {skipIfInstalled: true, androidSdkRoot});
+    // Install latest CLI
     sdkmanager("cmdline-tools;latest", {skipIfInstalled: true, androidSdkRoot});
-    sdkmanager(`build-tools;${process.env.ANDROID_SDK_VERSION}`, {skipIfInstalled: true, androidSdkRoot})
-    sdkmanager(`platforms;android-${process.env.ANDROID_OUTPUT_MAX_SDK_VERSION}`, {skipIfInstalled: true, androidSdkRoot});
+
+    // Install required packages.
+    // Seems to be not need
+    //sdkmanager("platform-tools", {skipIfInstalled: true, androidSdkRoot});
+    //sdkmanager("extras;android;m2repository", {skipIfInstalled: true, androidSdkRoot});
+    //sdkmanager("extras;google;m2repository", {skipIfInstalled: true, androidSdkRoot});
+    //sdkmanager(`build-tools;${process.env.ANDROID_SDK_VERSION}`, {skipIfInstalled: true, androidSdkRoot})
+    //sdkmanager(`platforms;android-${process.env.ANDROID_OUTPUT_MAX_SDK_VERSION}`, {skipIfInstalled: true, androidSdkRoot});
 
     // Install Android NDK
     if (process.env.ANDROID_NDK_VERSION) {
@@ -201,10 +152,7 @@ async function installSdkTools(androidSdkRoot) {
 
 async function main() {
   // Set up environment variables.
-  let gradleVersion = process.env.GRADLE_VERSION;
-  let gradleHome = process.env.GRADLE_HOME;
   let javaHome = process.env.JAVA_HOME;
-  let gradleOpts = process.env.GRADLE_OPTS;
   let androidSdkRoot = process.env.ANDROID_SDK_ROOT;
   let androidCliVersion = process.env.ANDROID_SDK_CLI_VERSION;
   let androidCliRoot = process.env.ANDROID_SDK_CLI_ROOT || `${androidSdkRoot}/cmdline-tools/${androidCliVersion}`;
@@ -212,20 +160,17 @@ async function main() {
   let nodesOptions = process.env.NODE_OPTIONS;
   let nodeVersion = process.versions.node;
 
-  let androidConfig = {
+  console.info('--- Preparing Android environment... using:', {
     root: projectDir,
     node: `version ${nodeVersion} - options: ${nodesOptions || 'none'}`,
     androidSdk: androidSdkRoot,
     androidCli: androidCliRoot,
-    buildTools: `${androidBuildToolsRoot}`,
-    gradle: `${gradleHome} - options: ${gradleOpts || 'none'}`,
+    buildTools: androidBuildToolsRoot,
     java: javaHome
-  };
-
-  console.info('--- Preparing Android environment... using:', androidConfig);
+  });
 
   // Check if Android SDK CLI tools is installed.
-  if (!fs.existsSync(androidConfig.androidCli) || !fs.existsSync(androidConfig.buildTools)) {
+  if (!fs.existsSync(androidCliRoot) || !fs.existsSync(androidBuildToolsRoot)) {
 
     // Run CLI + SDK installation
     try {
@@ -237,50 +182,40 @@ async function main() {
       process.exit(1);
     }
 
-    // Verify build tools
-    if (!fs.existsSync(androidConfig.buildTools)) {
-      console.error(`ERROR: Failed to locate Android build tools at: ${androidConfig.buildTools}`);
+    // Verify CLI
+    if (!fs.existsSync(androidCliRoot)) {
+      console.error(`ERROR: Failed to locate Android CLI at: ${androidCliRoot}`);
+      process.exit(1);
+    }
+  }
+
+  // Add to path
+  process.env.PATH = `${androidCliRoot}/bin:${androidBuildToolsRoot}:${process.env.PATH}`;
+
+  // If inside a capacitor + Android project
+  if (fs.existsSync(`${projectDir}/capacitor.config.yml`) && fs.existsSync(path.join(projectDir, 'android'))) {
+
+    // Create file 'android/local.properties'
+    if (!fs.existsSync(path.join(projectDir, 'android', 'local.properties'))) {
+      fs.writeFileSync(
+        path.join(projectDir, 'android', 'local.properties'),
+        `sdk.dir=${androidSdkRoot}`);
+    }
+
+    // Check key store file exists
+    const keystoreFile = process.env.KEYSTORE_FILE || `${projectDir}/android/app/Cesium.keystore`;
+    if (fs.existsSync(keystoreFile)) {
+      process.env.KEYSTORE_FILE = keystoreFile;
+    }
+    else {
+      console.error(`ERROR: Keystore file node found at '${keystoreFile}'`);
       process.exit(1);
     }
 
-  } else {
-    process.env.PATH = `${androidConfig.androidCli}:${androidConfig.buildTools}:${process.env.PATH}`;
-  }
-
-  // Check if Gradle is installed.
-  if (!fs.existsSync(gradleHome)) {
-    await installGradle(gradleVersion, gradleHome);
-  }
-
-  // Check if the Android platform is prepared.
-  if (!fs.existsSync(`${projectDir}/android`)){
-    console.info("----- Adding Capacitor Android platform...");
-    execSync(
-      `npx cap add android`,
-      { stdio: 'inherit' }
-    );
-  }
-
-  // Create file 'android/local.properties'
-  if (!fs.existsSync(path.join(projectDir, 'android', 'local.properties'))) {
-    fs.writeFileSync(
-      path.join(projectDir, 'android', 'local.properties'),
-      `sdk.dir=${androidConfig.androidSdk}`);
-  }
-
-  // Create file 'android/app/release-signing.properties'
-  if (!fs.existsSync(path.join(projectDir, 'android', 'app', 'release-signing.properties'))) {
-    console.warn(`WARNING: Missing file 'android/app/release-signing.properties' - This is required for APK release signing`);
-  }
-
-  // Check key store file exists
-  const keystoreFile = process.env.KEYSTORE_FILE || `${projectDir}/android/app/Cesium.keystore`;
-  if (fs.existsSync(keystoreFile)) {
-    process.env.KEYSTORE_FILE = keystoreFile;
-  }
-  else {
-    console.error(`ERROR: Keystore file node found at '${keystoreFile}'`);
-    process.exit(1);
+    // Create file 'android/app/release-signing.properties'
+    if (!fs.existsSync(path.join(projectDir, 'android', 'app', 'release-signing.properties'))) {
+      console.warn(`WARNING: Missing file 'android/app/release-signing.properties' - This is required for APK release signing`);
+    }
   }
 
   console.log("--- Preparing Android environment [OK]");

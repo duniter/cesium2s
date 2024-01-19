@@ -7,8 +7,8 @@ import { formatAddress } from '@app/shared/currencies';
 
 export interface Account {
   address: string;
-  publicKey: Uint8Array;
-  meta: AccountMeta;
+  publicKey?: Uint8Array;
+  meta?: AccountMeta;
   data?: AccountData;
 }
 export interface AccountMeta {

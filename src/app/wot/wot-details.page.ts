@@ -8,13 +8,14 @@ import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.deco
 import { firstValueFrom, mergeMap, Observable, switchMap } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { map } from 'rxjs/operators';
-import { firstArrayValue } from '@app/shared/functions';
+import { filter, map } from 'rxjs/operators';
+import { firstArrayValue, isNotNilOrBlank } from '@app/shared/functions';
 import { IndexerService } from '@app/network/indexer.service';
 
 export interface WotDetailsPageState extends AppPageState {
   address: string;
   account: Account;
+  certReceivedCount: number;
 }
 
 @Component({
@@ -27,6 +28,7 @@ export interface WotDetailsPageState extends AppPageState {
 export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnInit {
   @RxStateSelect() address$: Observable<string>;
   @RxStateSelect() account$: Observable<Account>;
+  @RxStateSelect() certReceivedCount$: Observable<number>;
 
   @Input() showToolbar = true;
   @Input() showBalance = false;
@@ -64,6 +66,17 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
             },
           };
         })
+      )
+    );
+
+    // Watch address from route or account
+    this._state.connect(
+      'certReceivedCount',
+      this.account$.pipe(
+        map((account) => account?.address),
+        filter(isNotNilOrBlank),
+        switchMap((address) => this.indexerService.certsSearch({ receiver: address }, { limit: 0 })),
+        map(({ total }) => total)
       )
     );
   }

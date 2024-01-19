@@ -24,6 +24,10 @@ const routes: Routes = [
     loadChildren: () => import('./transfer/transfer-routing.module').then((m) => m.AppTransferRoutingModule),
   },
   {
+    path: 'scan',
+    loadChildren: () => import('./scan/scan-routing.module').then((m) => m.AppScanRoutingModule),
+  },
+  {
     path: 'wot',
     loadChildren: () => import('./wot/wot-routing.module').then((m) => m.AppWotRoutingModule),
   },

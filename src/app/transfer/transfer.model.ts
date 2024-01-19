@@ -2,6 +2,9 @@ import { InjectionToken } from '@angular/core';
 import { Account } from '@app/account/account.model';
 import { Moment } from 'moment/moment';
 import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
+import { TransferFragment } from '@app/network/indexer-types.generated';
+import { fromDateISOString } from '@app/shared/dates';
+import { AccountConverter } from '@app/account/account.converter';
 
 export interface TransferFormOptions {
   account?: Account;
@@ -33,22 +36,40 @@ export interface Transfer {
   blockNumber: number;
 }
 
-export class TransferComparators {
-  static sortByBlockAsc(t1: Transfer, t2: Transfer): number {
-    return t1.blockNumber === t2.blockNumber ? 0 : t1.blockNumber > t2.blockNumber ? 1 : -1;
+export class TransferConverter {
+  static toTransfers(accountAddress: string, inputs: TransferFragment[], debug?: boolean): Transfer[] {
+    const results = (inputs || []).map((item) => this.toTransfer(accountAddress, item));
+    if (debug) console.debug('Results:', results);
+    return results;
   }
 
-  static sortByBlockDesc(t1: Transfer, t2: Transfer): number {
-    return -1 * TransferComparators.sortByBlockAsc(t1, t2);
+  static toTransfer(accountAddress: string, item: TransferFragment): Transfer {
+    let from: Account = null;
+    let to: Account = null;
+    let amount: number;
+    // Account is the issuer
+    if (item.from?.id === accountAddress) {
+      to = AccountConverter.toAccount(item.to);
+      amount = -1 * item.amount;
+    } else if (item.to?.id === accountAddress) {
+      from = AccountConverter.toAccount(item.from);
+      amount = item.amount;
+    }
+    return <Transfer>{
+      id: item.id,
+      from,
+      to,
+      account: from || to,
+      amount,
+      blockNumber: item.blockNumber,
+      timestamp: fromDateISOString(item.timestamp),
+    };
   }
 }
 
 export interface TransferSearchFilter {
-  address?: string;
+  address: string;
   amount?: string;
-  limit?: number;
-  minTimestamp?: Moment;
-  maxTimestamp?: Moment;
 }
 
 export class TransferSearchFilterUtils {
@@ -57,6 +78,6 @@ export class TransferSearchFilterUtils {
   }
 
   static isEmpty(filter: TransferSearchFilter) {
-    return !filter || (isNilOrBlank(filter.address) && isNilOrBlank(filter.minTimestamp) && isNil(filter.amount));
+    return !filter || (isNilOrBlank(filter.address) && isNil(filter.amount));
   }
 }

@@ -1,0 +1,32 @@
+fragment Transfer on Transfer {
+  id
+  __typename
+  amount
+  timestamp
+  blockNumber
+  from {
+    ...LightAccount
+  }
+  to {
+    ...LightAccount
+  }
+}
+
+query TransfersConnectionByAddress($address: String!, $limit: Int!, $orderBy: [TransferOrderByInput!]!, $after: String) {
+  transfersConnection(
+    first: $limit,
+    after: $after,
+    orderBy: $orderBy,
+    where: {from: {id_eq: $address}, OR: {to: {id_eq: $address}}}
+  ) {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      node {
+        ...Transfer
+      }
+    }
+  }
+}
