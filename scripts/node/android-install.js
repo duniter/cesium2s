@@ -123,13 +123,16 @@ async function installSdkTools(androidSdkRoot) {
     fs.mkdirSync(path.join(os.homedir(), '.android'), { recursive: true });
     fs.closeSync(fs.openSync(path.join(os.homedir(), '.android', 'repositories.cfg'), 'w'));
 
-    // Install required packages.
-    sdkmanager("platform-tools", {skipIfInstalled: true, androidSdkRoot});
-    sdkmanager("extras;android;m2repository", {skipIfInstalled: true, androidSdkRoot});
-    sdkmanager("extras;google;m2repository", {skipIfInstalled: true, androidSdkRoot});
+    // Install latest CLI
     sdkmanager("cmdline-tools;latest", {skipIfInstalled: true, androidSdkRoot});
-    sdkmanager(`build-tools;${process.env.ANDROID_SDK_VERSION}`, {skipIfInstalled: true, androidSdkRoot})
-    sdkmanager(`platforms;android-${process.env.ANDROID_OUTPUT_MAX_SDK_VERSION}`, {skipIfInstalled: true, androidSdkRoot});
+
+    // Install required packages.
+    // Seems to be not need
+    //sdkmanager("platform-tools", {skipIfInstalled: true, androidSdkRoot});
+    //sdkmanager("extras;android;m2repository", {skipIfInstalled: true, androidSdkRoot});
+    //sdkmanager("extras;google;m2repository", {skipIfInstalled: true, androidSdkRoot});
+    //sdkmanager(`build-tools;${process.env.ANDROID_SDK_VERSION}`, {skipIfInstalled: true, androidSdkRoot})
+    //sdkmanager(`platforms;android-${process.env.ANDROID_OUTPUT_MAX_SDK_VERSION}`, {skipIfInstalled: true, androidSdkRoot});
 
     // Install Android NDK
     if (process.env.ANDROID_NDK_VERSION) {
@@ -179,9 +182,9 @@ async function main() {
       process.exit(1);
     }
 
-    // Verify build tools
-    if (!fs.existsSync(androidBuildToolsRoot)) {
-      console.error(`ERROR: Failed to locate Android build tools at: ${androidBuildToolsRoot}`);
+    // Verify CLI
+    if (!fs.existsSync(androidCliRoot)) {
+      console.error(`ERROR: Failed to locate Android CLI at: ${androidCliRoot}`);
       process.exit(1);
     }
   }
