@@ -22,6 +22,7 @@ query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOr
     orderBy: $orderBy,
     where: {issuer: {id_eq: $address}}
   ) {
+    totalCount
     pageInfo {
       endCursor
       hasNextPage
@@ -42,6 +43,7 @@ query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [Cert
     orderBy: $orderBy,
     where: {receiver: {id_eq: $address}}
   ) {
+    totalCount
     pageInfo {
       endCursor
       hasNextPage

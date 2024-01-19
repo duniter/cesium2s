@@ -99,10 +99,11 @@
         <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
       </ion-item>
 
+      <!-- Received cert count -->
       <ion-item detail (click)="notImplementedModal.present()">
         <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
         <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
-        <ion-badge color="success" slot="end">0</ion-badge>
+        <ion-badge color="success" slot="end">{{ certReceivedCount$ | push }}</ion-badge>
       </ion-item>
 
       <!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->

@@ -1,7 +1,7 @@
 import { equals, isNilOrBlank } from '@app/shared/functions';
 import { Account } from '@app/account/account.model';
-import { Moment } from 'moment';
 import { CertFragment } from '@app/network/indexer-types.generated';
+import { IdentityConverter } from '@app/account/account.converter';
 
 export interface Certification {
   id: string;
@@ -9,9 +9,6 @@ export interface Certification {
   receiver: Account;
 
   createdOn: number;
-
-  // TODO
-  timestamp?: Moment;
 }
 
 export class CertificationConverter {
@@ -24,18 +21,8 @@ export class CertificationConverter {
   static toCertification(input: CertFragment) {
     return <Certification>{
       id: input.id,
-      issuer: <Account>{
-        address: input.issuer?.id,
-        meta: {
-          uid: input.issuer?.name,
-        },
-      },
-      receiver: <Account>{
-        address: input.receiver?.id,
-        meta: {
-          uid: input.receiver?.name,
-        },
-      },
+      issuer: IdentityConverter.toAccount(input.issuer),
+      receiver: IdentityConverter.toAccount(input.receiver),
       createdOn: input.createdOn,
     };
   }

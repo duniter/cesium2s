@@ -3234,6 +3234,7 @@ export type CertsConnectionByIssuerQuery = {
   __typename?: 'Query';
   certsConnection: {
     __typename?: 'CertsConnection';
+    totalCount: number;
     pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
     edges: Array<{
       __typename?: 'CertEdge';
@@ -3260,6 +3261,7 @@ export type CertsConnectionByReceiverQuery = {
   __typename?: 'Query';
   certsConnection: {
     __typename?: 'CertsConnection';
+    totalCount: number;
     pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
     edges: Array<{
       __typename?: 'CertEdge';
@@ -3483,6 +3485,7 @@ export class BlocksGQL extends Apollo.Query<BlocksQuery, BlocksQueryVariables> {
 export const CertsConnectionByIssuerDocument = gql`
   query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
     certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { issuer: { id_eq: $address } }) {
+      totalCount
       pageInfo {
         endCursor
         hasNextPage
@@ -3510,6 +3513,7 @@ export class CertsConnectionByIssuerGQL extends Apollo.Query<CertsConnectionByIs
 export const CertsConnectionByReceiverDocument = gql`
   query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
     certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { receiver: { id_eq: $address } }) {
+      totalCount
       pageInfo {
         endCursor
         hasNextPage

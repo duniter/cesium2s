@@ -8,7 +8,7 @@ import { NetworkService } from '@app/network/network.service';
 import { ActionSheetOptions, IonModal, PopoverOptions } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import { filter, mergeMap } from 'rxjs/operators';
+import { filter, mergeMap, switchMap } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { map, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
@@ -20,6 +20,7 @@ export interface WalletState extends AppPageState {
   address: string;
   currency: string;
   balance: number;
+  certReceivedCount: number;
 }
 
 @Component({
@@ -44,6 +45,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
 
   @RxStateSelect() account$: Observable<Account>;
   @RxStateSelect() accounts$: Observable<Account[]>;
+  @RxStateSelect() certReceivedCount$: Observable<number>;
 
   get balance(): number {
     if (!this.account?.data) return undefined;
@@ -114,6 +116,17 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
           account = await this.accountService.getByName(s.address);
           return account;
         })
+      )
+    );
+
+    // Watch address from route or account
+    this._state.connect(
+      'certReceivedCount',
+      this.account$.pipe(
+        map((account) => account?.address),
+        filter(isNotNilOrBlank),
+        switchMap((address) => this.networkService.indexer.certsSearch({ receiver: address }, { limit: 0 })),
+        map(({ total }) => total)
       )
     );
   }
