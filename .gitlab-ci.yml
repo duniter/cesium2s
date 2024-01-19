@@ -75,13 +75,17 @@ variables:
     - source .local/env.sh
     # Prepare local.properties file
     - echo "--- Preparing Android 'local.properties' file ..."
+    - if [[ "_${ANDROID_SDK_ROOT}" == "_" ]]; then echo "Missing required variable ANDROID_SDK_ROOT. Cannot prepare Android 'local.properties' file"; exit 1; fi
     - echo 'sdk.dir=${ANDROID_SDK_ROOT}' > android/local.properties
     # Prepare for signing
     - echo "--- Preparing Android 'release-signing.properties' file ..."
-    - echo 'storeFile=Cesium.keystore' > android/app/release-signing.properties
-    - echo 'keyAlias=Cesium' >> android/app/release-signing.properties
-    - echo 'storePassword=${ANDROID_STORE_PASSWORD}' >> android/app/release-signing.properties
-    - echo 'keyPassword=${ANDROID_KEY_PASSWORD}' >> android/app/release-signing.properties
+    - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_STORE_PASSWORD}" == "_" ]]; then echo "Missing required variable ANDROID_STORE_PASSWORD"; exit 1; fi
+    - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_KEY_ALIAS}" == "_" ]]; then echo "Missing required variable ANDROID_KEY_ALIAS"; exit 1; fi
+    - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_KEY_PASSWORD}" == "_" ]]; then echo "Missing required variable ANDROID_KEY_PASSWORD"; exit 1; fi
+    - echo "storeFile=Cesium.keystore" > android/app/release-signing.properties
+    - echo "storePassword=${ANDROID_STORE_PASSWORD}" >> android/app/release-signing.properties
+    - echo "keyAlias=${ANDROID_KEY_ALIAS}" >> android/app/release-signing.properties
+    - echo "keyPassword=${ANDROID_KEY_PASSWORD}" >> android/app/release-signing.properties
     # Show version
     - npm version
     - export NODE_OPTIONS=--max-old-space-size=4096
@@ -202,7 +206,7 @@ assemble:android:
   <<: *git-setup
   stage: release
   script:
-    - if [[ "_${RELEASE_VERSION}" == "_" ]]; then exit 1; fi
+    - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "Missing required variable RELEASE_VERSION"; exit 1; fi
     - echo "--- Release in progress"
     - git checkout -B release/${RELEASE_VERSION}
     - echo "--- Manage app version"
