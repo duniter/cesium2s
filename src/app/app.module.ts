@@ -41,7 +41,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot({
-      name: environment.name || 'cesium',
+      name: environment.name || 'cesium2',
       ...environment.storage,
     }),
     TranslateModule.forRoot({

@@ -712,7 +712,7 @@ export abstract class GraphqlService<
     });
 
     // Add cache persistence
-    if (environment.graphql.persistCache) {
+    if (environment.graphql?.persistCache) {
       console.debug(`${this._logPrefix}Starting persistence cache...`);
       await persistCache({
         cache,
@@ -789,7 +789,7 @@ export abstract class GraphqlService<
     const client = this.apollo.use(name).client;
 
     // Enable tracked queries persistence
-    if (enableMutationTrackerLink && environment.graphql.persistCache) {
+    if (enableMutationTrackerLink && environment.graphql?.persistCache) {
       try {
         await restoreTrackedQueries({
           client,

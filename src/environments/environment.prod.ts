@@ -11,8 +11,15 @@ export const environment = <Environment>{
 
   defaultLocale: 'fr',
 
+  graphql: {
+    fetchPolicy: 'cache-first',
+    watchFetchPolicy: 'cache-and-network',
+    persistCache: false, // TODO test enabled
+  },
+
   // Storage
   storage: {
+    name: 'cesium2',
     driverOrder: [StorageDrivers.IndexedDB, StorageDrivers.WebSQL, StorageDrivers.LocalStorage],
   },
 
