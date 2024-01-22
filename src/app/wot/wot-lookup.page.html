@@ -4,15 +4,39 @@
       <ion-buttons slot="start" *ngIf="!isModal">
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
+
       <ion-title translate>MENU.WOT</ion-title>
+
       <ion-buttons slot="end">
         <ng-content select="[toolbar-end]"></ng-content>
+
+        <!-- options -->
+        <ion-button id="options-menu-trigger" *ngIf="showFilterButtons && mobile">
+          <ion-icon name="ellipsis-vertical" slot="icon-only"/>
+        </ion-button>
 
         <!-- close -->
         <ion-button fill="clear" *ngIf="closeClick.observed" (click)="closeClick.emit($event)" translate>COMMON.BTN_CLOSE</ion-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
+
+  <ion-popover trigger="options-menu-trigger" triggerAction="options-menu">
+    <ng-template>
+      <ion-content class="ion-padding">
+        <ion-list>
+          <ion-item (click)="applyFilter({ last: true, pending: false, searchText: '' })">
+            <ion-icon name="people" slot="start"></ion-icon>
+            <ion-label translate>WOT.LOOKUP.NEWCOMERS</ion-label>
+          </ion-item>
+          <ion-item (click)="applyFilter({ last: true, pending: true, searchText: '' })">
+            <ion-icon name="time-outline" slot="start"></ion-icon>
+            <ion-label translate>WOT.LOOKUP.PENDING</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
 }
 <ion-content>
   <ion-header collapse="condense" *ngIf="showToolbar">
@@ -39,7 +63,7 @@
       ></ion-searchbar>
     }
 
-    <ion-list-header *ngIf="showFilterButtons">
+    <ion-list-header *ngIf="!mobile && showFilterButtons">
       <ion-grid>
         <ion-col>&nbsp;</ion-col>
         <ion-col class="ion-float-end" size="auto">
@@ -65,11 +89,6 @@
           </ion-button>
         </ion-col>
       </ion-grid>
-      <!-- <ion-item lines="none" class="ion-float-end" style="width: 100%">
-        <ion-buttons slot="end">
-
-        </ion-buttons>
-      </ion-item>-->
     </ion-list-header>
 
     <ion-list [class.cdk-visually-hidden]="loading$ | push">
