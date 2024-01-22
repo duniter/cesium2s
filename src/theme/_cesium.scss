@@ -100,3 +100,10 @@ ion-list {
   margin-top: calc(50vh - var(--size) / 2);
   margin-left: calc(50vw - var(--size) / 2);
 }
+
+/* -- search bar -- */
+
+// Input search placeholder: ellipsis if hidden
+.searchbar-input.sc-ion-searchbar-md:placeholder-shown {
+  text-overflow: ellipsis;
+}

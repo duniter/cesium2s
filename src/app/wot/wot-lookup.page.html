@@ -12,7 +12,7 @@
 
         <!-- options -->
         <ion-button id="options-menu-trigger" *ngIf="showFilterButtons && mobile">
-          <ion-icon name="ellipsis-vertical" slot="icon-only"/>
+          <ion-icon name="filter" slot="icon-only" />
         </ion-button>
 
         <!-- close -->
@@ -21,17 +21,24 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-popover trigger="options-menu-trigger" triggerAction="options-menu">
+  <ion-popover #filterPopover trigger="options-menu-trigger" triggerAction="click">
     <ng-template>
-      <ion-content class="ion-padding">
-        <ion-list>
-          <ion-item (click)="applyFilter({ last: true, pending: false, searchText: '' })">
-            <ion-icon name="people" slot="start"></ion-icon>
-            <ion-label translate>WOT.LOOKUP.NEWCOMERS</ion-label>
+      <ion-content class="ion-no-padding">
+        <ion-list-header translate>COMMON.POPOVER_FILTER_TITLE</ion-list-header>
+        <ion-list *rxLet="filter$ as filter">
+          <ion-item
+            *rxLet="filter?.last && !filter.pending ? 'secondary' : 'dark'; let color"
+            (click)="applyFilter({ last: true, pending: false, searchText: '' })"
+          >
+            <ion-icon name="people" slot="start" [color]="color"></ion-icon>
+            <ion-label [color]="color" translate>WOT.LOOKUP.NEWCOMERS</ion-label>
           </ion-item>
-          <ion-item (click)="applyFilter({ last: true, pending: true, searchText: '' })">
-            <ion-icon name="time-outline" slot="start"></ion-icon>
-            <ion-label translate>WOT.LOOKUP.PENDING</ion-label>
+          <ion-item
+            *rxLet="filter?.last && filter.pending ? 'secondary' : 'dark'; let color"
+            (click)="applyFilter({ last: true, pending: true, searchText: '' })"
+          >
+            <ion-icon [color]="color" name="time-outline" slot="start"></ion-icon>
+            <ion-label [color]="color" translate>WOT.LOOKUP.PENDING</ion-label>
           </ion-item>
         </ion-list>
       </ion-content>
