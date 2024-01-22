@@ -5,9 +5,9 @@ import { AppAuthModule } from '@app/account/auth/auth.module';
 import { AppUnlockModule } from '@app/account/unlock/unlock.module';
 import { AppRegisterModule } from '@app/account/register/register.module';
 import { AccountsService } from '@app/account/accounts.service';
-import { AuthController } from '@app/account/auth.controller';
-import { APP_AUTH_CONTROLLER } from '@app/account/account.model';
+import { AuthController } from '@app/account/auth/auth.controller';
 import { AccountListModule } from '@app/account/list/account-list.module';
+import { APP_AUTH_CONTROLLER } from '@app/account/auth/auth.model';
 
 @NgModule({
   imports: [TranslateModule.forChild(), AppSharedModule, AppAuthModule, AppRegisterModule, AppUnlockModule, AccountListModule],

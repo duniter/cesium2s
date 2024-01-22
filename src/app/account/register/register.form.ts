@@ -6,13 +6,14 @@ import { environment } from '@environments/environment';
 import { AppForm } from '@app/shared/form.class';
 import { NetworkService } from '@app/network/network.service';
 import { Currency } from '@app/currency/currency.model';
-import { AccountMeta, AuthData } from '@app/account/account.model';
+import { AccountMeta } from '@app/account/account.model';
 import { Swiper, SwiperOptions } from 'swiper/types';
 import { IonicSlides } from '@ionic/angular';
 import { SwiperDirective } from '@app/shared/swiper/app-swiper.directive';
 import { isNilOrBlank } from '@app/shared/functions';
 import { formatAddress } from '@app/shared/currencies';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+import { AuthData } from '@app/account/auth/auth.model';
 
 export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,

@@ -7,12 +7,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthModal, AuthModalOptions } from '@app/account/auth/auth.modal';
 import { Router } from '@angular/router';
 import { RegisterModal, RegisterModalOptions } from '@app/account/register/register.modal';
-import { Account, IAuthController, LoginMethods, LoginOptions, SelectAccountOptions, UnlockOptions } from '@app/account/account.model';
+import { Account, LoginMethods, LoginOptions, SelectAccountOptions, UnlockOptions } from '@app/account/account.model';
 import { AuthV2Modal } from '@app/account/auth/authv2.modal';
 import { UnlockModal } from '@app/account/unlock/unlock.modal';
 import { AccountListComponent, AccountListComponentInputs } from '@app/account/list/account-list.component';
-import { AppEvent } from '@app/shared/types';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+import { AppEvent } from '@app/shared/types';
+import { IAuthController } from '@app/account/auth/auth.model';
 
 @Injectable()
 export class AuthController implements IAuthController {

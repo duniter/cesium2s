@@ -24,8 +24,6 @@ export declare interface IconRef {
   matSvgIcon?: string; // A mat SVG icon
 }
 
-export declare type AppEvent = MouseEvent | TouchEvent | PointerEvent | CustomEvent;
-
 export interface SimpleError {
   code?: number;
   message: string;
@@ -35,3 +33,5 @@ export interface AppError extends SimpleError {
 }
 
 export type AnyError = string | AppError;
+
+export declare type AppEvent = MouseEvent | TouchEvent | PointerEvent | CustomEvent;

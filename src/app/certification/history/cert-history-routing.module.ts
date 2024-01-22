@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuardService } from '@app/account/auth-guard.service';
+import { AuthGuardService } from '@app/account/auth/auth-guard.service';
 import { AppCertHistoryModule } from '@app/certification/history/cert-history.module';
 import { CertHistoryPage } from '@app/certification/history/cert-history.page';
 

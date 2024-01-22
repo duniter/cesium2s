@@ -1,8 +1,5 @@
 import { HexString } from '@polkadot/util/types';
-import { InjectionToken } from '@angular/core';
 import { ListItem } from '@app/shared/popover/list.popover';
-import { ScryptParams } from '@app/account/crypto.utils';
-import { AppEvent } from '@app/shared/types';
 import { formatAddress } from '@app/shared/currencies';
 
 export interface Account {
@@ -11,6 +8,7 @@ export interface Account {
   meta?: AccountMeta;
   data?: AccountData;
 }
+
 export interface AccountMeta {
   // Polkadot properties
   name: string;
@@ -79,30 +77,4 @@ export interface LoginOptions {
   loginMethod?: LoginMethodType;
   auth?: boolean;
   redirectToWalletPage?: boolean;
-}
-
-export interface IAuthController {
-  login(event?: AppEvent, opts?: LoginOptions): Promise<Account>;
-  createNew(opts?: { redirectToWalletPage?: boolean }): Promise<Account>;
-  unlock(opts?: UnlockOptions): Promise<string>;
-  selectAccount(opts?: SelectAccountOptions): Promise<Account>;
-}
-
-export const APP_AUTH_CONTROLLER = new InjectionToken<IAuthController>('AuthController');
-
-export interface AuthData {
-  address?: string;
-  password?: string;
-
-  v1?: {
-    salt: string;
-    password: string;
-    scryptParams?: ScryptParams;
-  };
-
-  v2?: {
-    mnemonic: string;
-  };
-
-  meta?: AccountMeta;
 }

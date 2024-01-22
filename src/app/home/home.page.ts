@@ -6,7 +6,7 @@ import { AccountsService } from '@app/account/accounts.service';
 import { Account } from '@app/account/account.model';
 import { fadeInAnimation } from '@app/shared/animations';
 import { Router } from '@angular/router';
-import { AuthController } from '@app/account/auth.controller';
+import { AuthController } from '@app/account/auth/auth.controller';
 import { TransferController } from '@app/transfer/send/transfer.controller';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { Observable } from 'rxjs';

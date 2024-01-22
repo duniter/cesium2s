@@ -11,13 +11,14 @@ import { FormUtils } from '@app/shared/forms';
 import { isNil, isNotNilOrBlank, toBoolean } from '@app/shared/functions';
 import { getKeyringPairFromV1 } from '@app/account/crypto.utils';
 import { base58Encode } from '@polkadot/util-crypto';
-import { Account, AuthData } from '@app/account/account.model';
+import { Account } from '@app/account/account.model';
 import { RxState } from '@rx-angular/state';
 import { RxStateProperty, RxStateRegister } from '@app/shared/decorator/state.decorator';
 import { debounceTime, map, mergeMap, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+import { AuthData } from '@app/account/auth/auth.model';
 
 export interface AuthFormState {
   account: Account;

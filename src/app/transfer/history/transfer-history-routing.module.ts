@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuardService } from '@app/account/auth-guard.service';
+import { AuthGuardService } from '@app/account/auth/auth-guard.service';
 import { AppTransferHistoryModule } from '@app/transfer/history/transfer-history.module';
 import { TransferHistoryPage } from '@app/transfer/history/transfer-history.page';
 

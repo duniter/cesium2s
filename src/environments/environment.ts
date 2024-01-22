@@ -4,7 +4,8 @@
 
 import { Environment } from './environment.class';
 import { StorageDrivers } from '@app/shared/services/storage/storage.utils';
-import { AuthData } from '@app/account/account.model';
+
+import { AuthData } from '@app/account/auth/auth.model';
 
 export const environment = <Environment>{
   production: false,

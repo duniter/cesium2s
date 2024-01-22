@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { WalletPage } from './wallet.page';
-import { AuthGuardService } from '@app/account/auth-guard.service';
+import { AuthGuardService } from '@app/account/auth/auth-guard.service';
 import { AppWalletModule } from '@app/wallet/wallet.module';
 
 const routes: Routes = [

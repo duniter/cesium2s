@@ -9,8 +9,8 @@ import { NetworkService } from '@app/network/network.service';
 import { environment } from '@environments/environment';
 import { FormUtils } from '@app/shared/forms';
 import { isNil, toBoolean } from '@app/shared/functions';
-import { AuthData } from '@app/account/account.model';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+import { AuthData } from '@app/account/auth/auth.model';
 
 @Component({
   selector: 'app-authv2-form',

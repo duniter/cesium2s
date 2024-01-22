@@ -4,7 +4,7 @@ import { AccountsService } from '@app/account/accounts.service';
 import { AuthForm } from './auth.form';
 import { firstNotNilPromise } from '@app/shared/observables';
 
-import { AuthData } from '@app/account/account.model';
+import { AuthData } from '@app/account/auth/auth.model';
 
 export interface AuthModalOptions {
   auth?: boolean;
