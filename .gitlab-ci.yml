@@ -9,7 +9,7 @@ stages:
   - environment
   - build
   - alt_build
-  - assemble
+  - package
   - release
   - deploy
 
@@ -174,11 +174,11 @@ failsafe-build:
     - /^features\/.*/
 
 # ---------------------------------------------------------------
-# Assemble jobs
+# Package jobs
 # ---------------------------------------------------------------
-assemble:android:
+package:android:
   <<: *android-setup
-  stage: assemble
+  stage: package
   needs: [ build ]
   script:
     # Build APK
