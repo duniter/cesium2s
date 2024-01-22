@@ -16,7 +16,7 @@ export interface Environment {
   defaultIndexers: string[];
 
   // GraphQL
-  graphql?: {
+  graphql: {
     fetchPolicy?: FetchPolicy;
     watchFetchPolicy?: WatchQueryFetchPolicy;
     persistCache?: boolean;

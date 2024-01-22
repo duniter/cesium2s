@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
@@ -10,7 +10,7 @@ import { debounceTime, distinctUntilChanged, filter, map, mergeMap, tap } from '
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { RxState } from '@rx-angular/state';
-import { InfiniteScrollCustomEvent, ModalController } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, IonPopover, ModalController } from '@ionic/angular';
 
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
 import { IndexerService } from '@app/network/indexer.service';
@@ -64,6 +64,8 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   @Output() itemClick = new EventEmitter<Account>();
   @Output() closeClick = new EventEmitter<Account>();
   @Output() refresh = new EventEmitter<Event>();
+
+  @ViewChild('filterPopover') filterPopover: IonPopover;
 
   constructor(
     private indexerService: IndexerService,
@@ -218,5 +220,6 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
           autoLoad: true,
         }
     );
+    this.filterPopover?.dismiss();
   }
 }

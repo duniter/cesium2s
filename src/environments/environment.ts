@@ -21,7 +21,7 @@ export const environment = <Environment>{
 
   // Storage
   storage: {
-    name: 'cesium',
+    name: 'cesium2',
     driverOrder: [StorageDrivers.IndexedDB, StorageDrivers.WebSQL, StorageDrivers.LocalStorage],
   },
 
