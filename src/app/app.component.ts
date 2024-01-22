@@ -4,7 +4,7 @@ import { AccountsService } from '@app/account/accounts.service';
 import { Router } from '@angular/router';
 import { App } from '@capacitor/app';
 import { isNotNilOrBlank } from '@app/shared/functions';
-import { TransferController } from '@app/transfer/transfer.controller';
+import { TransferController } from '@app/transfer/send/transfer.controller';
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { fadeInAnimation } from '@app/shared/animations';
 import { SettingsService } from '@app/settings/settings.service';

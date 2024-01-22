@@ -1,0 +1,143 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button *ngIf="!canGoBack"></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ title$ | push }}</ion-title>
+  </ion-toolbar>
+  <ion-progress-bar type="indeterminate" *rxIf="loading$"></ion-progress-bar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" *ngIf="mobile">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ title$ | push }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-header [translucent]="true">
+    <ion-item color="secondary" lines="none">
+      <ion-avatar slot="start" [style.background-color]="'white'">
+        <ng-container *rxIf="account$; let account">
+          <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
+          <ng-template #svgIcon>
+            <svg [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
+          </ng-template>
+        </ng-container>
+      </ion-avatar>
+
+      @if (account$ | push | isUserAccount) {
+        <ion-select
+          [(ngModel)]="account"
+          [interface]="mobile ? 'action-sheet' : 'popover'"
+          [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
+          [okText]="'COMMON.BTN_OK' | translate"
+          [cancelText]="'COMMON.BTN_CANCEL' | translate"
+        >
+          <ion-select-option *rxFor="let account of accounts$" [value]="account">
+            {{ account | accountName }}
+          </ion-select-option>
+          <ion-select-option [value]="'new'" translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
+        </ion-select>
+      } @else {
+        <ion-label>{{ account | accountName }}</ion-label>
+      }
+    </ion-item>
+  </ion-header>
+
+  <ion-list>
+    <ion-item *rxIf="error$; let error" lines="none" color="light">
+      <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
+      <ion-label color="danger">{{ error | translate }}</ion-label>
+    </ion-item>
+
+    <!-- wot identities -->
+    <ion-item *rxFor="let item of items$; index as index; trackBy: 'id'">
+      @if (item.account.meta?.avatar) {
+        <ion-avatar slot="start">
+          <ion-img [src]="item.meta.avatar"></ion-img>
+        </ion-avatar>
+      } @else {
+        <ion-avatar slot="start">
+          <svg width="40" width="40" [data-jdenticon-value]="item.account.data?.randomId || item.account.address"></svg>
+        </ion-avatar>
+      }
+      <ion-label *rxLet="item.account | isMemberAccount; let isMember">
+        <h3>
+          <a
+            [routerLink]="['/wot', item.account.address]"
+            routerDirection="forward"
+            (click)="showAccount($event, item.account)"
+            class="tx-account"
+            [class.member]="isMember"
+          >
+            <small>
+              <ion-icon [name]="item.account.meta?.uid ? 'person' : 'key'"></ion-icon>
+            </small>
+            {{ item.account | accountName }}
+          </a>
+        </h3>
+        <p>
+          <a [routerLink]="['/block', item.blockNumber]" routerDirection="forward" (click)="$event.preventDefault()" class="tx-timestamp">
+            {{ item.timestamp | dateFromNow }} | {{ item.timestamp | dateFormat }}
+          </a>
+        </p>
+      </ion-label>
+
+      <ion-badge [color]="item.amount > 0 ? 'secondary' : 'light'" slot="end">{{ item.amount | amountFormat }}</ion-badge>
+    </ion-item>
+
+    <!-- loading spinner -->
+    <ng-container *rxIf="loading$; else noResult">
+      <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+    </ng-container>
+
+    <!-- no result -->
+    <ng-template #noResult>
+      <ion-item *rxIf="(count$ | push) === 0" lines="none">
+        <ion-text color="danger" class="text-italic" translate>COMMON.SEARCH_NO_RESULT</ion-text>
+      </ion-item>
+    </ng-template>
+  </ion-list>
+
+  <!-- infinite scroll -->
+  <ion-infinite-scroll
+    [disabled]="(canFetchMore$ | async) === false"
+    [threshold]="mobile ? '100px' : '2%'"
+    position="bottom"
+    (ionInfinite)="fetchMore($event)"
+  >
+    <ion-infinite-scroll-content loading-spinner="none">
+      <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+
+<ion-modal #authModal [backdropDismiss]="false">
+  <ng-template>
+    <ion-content scrollY="false">
+      <app-auth-modal></app-auth-modal>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end" *ngIf="mobile">
+  <ion-fab-button color="danger" (click)="transfer()">
+    <ion-icon name="send"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<ng-template #itemSkeleton>
+  <ion-item>
+    <ion-icon slot="start" name="card"></ion-icon>
+    <ion-label>
+      <h3><ion-skeleton-text animated style="width: 20%"></ion-skeleton-text></h3>
+      <p><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></p>
+    </ion-label>
+  </ion-item>
+</ng-template>

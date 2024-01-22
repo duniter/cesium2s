@@ -5,15 +5,15 @@ import { NgxJdenticonModule } from 'ngx-jdenticon';
 import { AppAccountModule } from '@app/account/account.module';
 import { AppAuthModule } from '@app/account/auth/auth.module';
 import { RouterModule } from '@angular/router';
-import { WalletTxPage } from '@app/history/wallet-tx.page';
+import { TransferHistoryPage } from '@app/transfer/history/transfer-history.page';
 
 @NgModule({
   imports: [AppSharedModule, AppAuthModule, TranslateModule.forChild(), RouterModule, AppAccountModule, NgxJdenticonModule],
-  declarations: [WalletTxPage],
-  exports: [WalletTxPage],
+  declarations: [TransferHistoryPage],
+  exports: [TransferHistoryPage],
 })
-export class AppWalletTxModule {
+export class AppTransferHistoryModule {
   constructor() {
-    console.debug('[wallet-tx] Creating module');
+    console.debug('[transfer-history] Creating module');
   }
 }

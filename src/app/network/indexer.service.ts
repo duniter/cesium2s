@@ -142,7 +142,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
             address: filter.address,
             limit: options.limit,
             after: options.after,
-            orderBy: [TransferOrderByInput.BlockNumberDescNullsLast],
+            orderBy: [TransferOrderByInput.TimestampDescNullsLast],
           },
           {
             fetchPolicy: options?.fetchPolicy,

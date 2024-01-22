@@ -72,48 +72,50 @@
         </ion-button>
       </ion-item>
 
-      <!-- address -->
-      <ion-item *rxIf="account$; let account" (click)="copyToClipboard($event, account.address)" tappable>
-        <ion-icon aria-hidden="true" slot="start" name="key"></ion-icon>
-        <ion-label>
-          <h2 translate>COMMON.ADDRESS</h2>
-          <p class="ion-text-nowrap">
-            <span>{{ account.address | addressFormat }}</span>
-          </p>
-        </ion-label>
+      <ng-container *rxIf="account$; let account">
+        <!-- address -->
+        <ion-item (click)="copyToClipboard($event, account.address)" tappable>
+          <ion-icon aria-hidden="true" slot="start" name="key"></ion-icon>
+          <ion-label>
+            <h2 translate>COMMON.ADDRESS</h2>
+            <p class="ion-text-nowrap">
+              <span>{{ account.address | addressFormat }}</span>
+            </p>
+          </ion-label>
 
-        <ion-button
-          [disabled]="loading$ | async"
-          (click)="showQrCode($event, account.address, 'COMMON.ADDRESS')"
-          slot="end"
-          fill="clear"
-          shape="round"
-        >
-          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
-        </ion-button>
-      </ion-item>
+          <ion-button
+            [disabled]="loading$ | async"
+            (click)="showQrCode($event, account.address, 'COMMON.ADDRESS')"
+            slot="end"
+            fill="clear"
+            shape="round"
+          >
+            <ion-icon slot="icon-only" name="qr-code"></ion-icon>
+          </ion-button>
+        </ion-item>
 
-      <!-- TX history -->
-      <ion-item detail [routerLink]="['/history/', account?.address]" [routerDirection]="mobile ? 'forward' : 'root'">
-        <ion-icon aria-hidden="true" slot="start" name="card"></ion-icon>
-        <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
-      </ion-item>
+        <!-- TX history -->
+        <ion-item detail [routerLink]="['/history', account?.address]" [routerDirection]="mobile ? 'forward' : 'root'">
+          <ion-icon aria-hidden="true" slot="start" name="card"></ion-icon>
+          <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
+        </ion-item>
 
-      <!-- Received cert count -->
-      <ion-item detail (click)="notImplementedModal.present()">
-        <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
-        <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
-        <ion-badge color="success" slot="end">{{ certReceivedCount$ | push }}</ion-badge>
-      </ion-item>
+        <!-- Received cert count -->
+        <ion-item detail [routerLink]="['..', 'cert', account?.address]" [routerDirection]="'forward'">
+          <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
+          <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
+          <ion-badge color="success" slot="end">{{ certReceivedCount$ | push }}</ion-badge>
+        </ion-item>
 
-      <!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->
-      <!--        <ion-icon slot="start" name="ribbon"></ion-icon>-->
-      <!--        <ion-label translate>ACCOUNT.BALANCE_ACCOUNT</ion-label>-->
-      <!--        <ion-badge color="success">{{(data?.data.free || 0) | amountFormat}} {{currency}}</ion-badge>-->
-      <!--      </ion-item>-->
+        <!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->
+        <!--        <ion-icon slot="start" name="ribbon"></ion-icon>-->
+        <!--        <ion-label translate>ACCOUNT.BALANCE_ACCOUNT</ion-label>-->
+        <!--        <ion-badge color="success">{{(data?.data.free || 0) | amountFormat}} {{currency}}</ion-badge>-->
+        <!--      </ion-item>-->
 
-      <!--      <ion-item detail  -->
-      <!--                 [routerLink]="['/wot/cert/', data?.address]">-->
+        <!--      <ion-item detail  -->
+        <!--                 [routerLink]="['/wot/cert/', data?.address]">-->
+      </ng-container>
     </ion-list>
 
     <div class="ion-text-center ion-padding-top">

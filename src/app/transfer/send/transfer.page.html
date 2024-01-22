@@ -71,7 +71,7 @@
         slot="end"
         fill="clear"
         color="dark"
-        *ngIf="_enableScan && !mobile"
+        *ngIf="_enableScan"
         [disabled]="loading$ | push"
         [title]="'TRANSFER.BTN_SCAN_HELP' | translate"
         (click)="scanQrCode($event)"
@@ -119,13 +119,6 @@
     <ng-container *ngTemplateOutlet="buttons"></ng-container>
   </ion-toolbar>
 </ion-content>
-
-<ion-fab slot="fixed" vertical="bottom" horizontal="end" *ngIf="mobile">
-  <!-- Scan QR code-->
-  <ion-fab-button color="tertiary" (click)="scanQrCode($event)" *ngIf="_enableScan">
-    <ion-icon name="scan"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
 
 <ng-template #buttons>
   <ion-button (click)="cancel()" color="light" *ngIf="!mobile">

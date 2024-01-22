@@ -21,7 +21,7 @@ import {
 import { IndexerService } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 
-export interface WalletTxState extends AppPageState {
+export interface TransferHistoryPageState extends AppPageState {
   accounts: Account[];
   account: Account;
   owner: boolean; // is owned by user ?
@@ -38,13 +38,13 @@ export interface WalletTxState extends AppPageState {
 }
 
 @Component({
-  selector: 'app-wallet-tx',
-  templateUrl: './wallet-tx.page.html',
-  styleUrls: ['./wallet-tx.page.scss'],
+  selector: 'app-transfer-history',
+  templateUrl: './transfer-history.page.html',
+  styleUrls: ['./transfer-history.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [RxState],
 })
-export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
+export class TransferHistoryPage extends AppPage<TransferHistoryPageState> implements OnInit {
   @RxStateSelect() protected items$: Observable<Transfer[]>;
   @RxStateSelect() protected count$: Observable<number>;
   @RxStateSelect() protected accounts$: Observable<Account[]>;
@@ -89,7 +89,7 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     @Inject(APP_TRANSFER_CONTROLLER) protected transferController: ITransferController
   ) {
     super({
-      name: 'wallet-tx-page',
+      name: 'transfer-history-page',
       loadDueTime: accountService.started ? 0 : 250,
       initialState: {
         canFetchMore: false,
@@ -203,10 +203,10 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     }
   }
 
-  protected async ngOnLoad(): Promise<WalletTxState> {
+  protected async ngOnLoad(): Promise<TransferHistoryPageState> {
     await this.accountService.ready();
 
-    return <WalletTxState>{
+    return <TransferHistoryPageState>{
       account: null,
       address: this.activatedRoute.snapshot.paramMap.get('address'),
       currency: this.networkService.currencySymbol,

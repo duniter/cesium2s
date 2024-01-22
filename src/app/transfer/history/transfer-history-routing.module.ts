@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardService } from '@app/account/auth-guard.service';
-import { WalletTxPage } from '@app/history/wallet-tx.page';
-import { AppWalletTxModule } from '@app/history/wallet-tx.module';
+import { AppTransferHistoryModule } from '@app/transfer/history/transfer-history.module';
+import { TransferHistoryPage } from '@app/transfer/history/transfer-history.page';
 
 const routes: Routes = [
   {
@@ -12,18 +12,18 @@ const routes: Routes = [
   },
   {
     path: ':address',
-    component: WalletTxPage,
+    component: TransferHistoryPage,
     canActivate: [AuthGuardService],
   },
   {
     path: ':address/:name',
-    component: WalletTxPage,
+    component: TransferHistoryPage,
     canActivate: [AuthGuardService],
   },
 ];
 
 @NgModule({
-  imports: [AppWalletTxModule, RouterModule.forChild(routes)],
+  imports: [AppTransferHistoryModule, RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AppWalletTxRoutingModule {}
+export class AppTransferHistoryRoutingModule {}

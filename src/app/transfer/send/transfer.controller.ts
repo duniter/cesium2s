@@ -1,7 +1,7 @@
 import { ModalController, NavController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
 import { PlatformService } from '@app/shared/services/platform.service';
-import { TransferPage, TransferPageInputs } from '@app/transfer/transfer.page';
+import { TransferPage, TransferPageInputs } from '@app/transfer/send/transfer.page';
 import { ITransferController, TransferFormOptions } from '@app/transfer/transfer.model';
 
 @Injectable()

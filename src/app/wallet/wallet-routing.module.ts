@@ -17,9 +17,12 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
   },
   {
-    path: 'tx/:address',
-    component: WalletPage,
-    canActivate: [AuthGuardService],
+    path: 'tx',
+    loadChildren: () => import('@app/transfer/history/transfer-history-routing.module').then((m) => m.AppTransferHistoryRoutingModule),
+  },
+  {
+    path: 'cert',
+    loadChildren: () => import('@app/certification/history/cert-history-routing.module').then((m) => m.AppCertHistoryRoutingModule),
   },
 ];
 
