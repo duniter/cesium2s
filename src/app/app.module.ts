@@ -21,7 +21,7 @@ import { APP_STORAGE } from '@app/shared/services/storage/storage.utils';
 import { StorageService } from '@app/shared/services/storage/storage.service';
 import { AccountsService } from '@app/account/accounts.service';
 import { AppAccountModule } from '@app/account/account.module';
-import { AppTransferModule } from '@app/transfer/transfer.module';
+import { AppTransferModule } from '@app/transfer/send/transfer.module';
 import { APP_GRAPHQL_TYPE_POLICIES } from '@app/shared/services/network/graphql/graphql.service';
 import { INDEXER_GRAPHQL_TYPE_POLICIES } from '@app/network/indexer.config';
 

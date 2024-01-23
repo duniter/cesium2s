@@ -13,15 +13,15 @@ const routes: Routes = [
   },
   {
     path: 'wallet',
-    loadChildren: () => import('./wallet/wallet-routing.module').then((m) => m.AppWalletRoutingModule),
+    loadChildren: () => import('@app/account/wallet/wallet-routing.module').then((m) => m.AppWalletRoutingModule),
   },
   {
     path: 'history',
-    loadChildren: () => import('./history/wallet-tx-routing.module').then((m) => m.AppWalletTxRoutingModule),
+    loadChildren: () => import('@app/transfer/history/transfer-history-routing.module').then((m) => m.AppTransferHistoryRoutingModule),
   },
   {
     path: 'transfer',
-    loadChildren: () => import('./transfer/transfer-routing.module').then((m) => m.AppTransferRoutingModule),
+    loadChildren: () => import('./transfer/send/transfer-routing.module').then((m) => m.AppTransferRoutingModule),
   },
   {
     path: 'scan',

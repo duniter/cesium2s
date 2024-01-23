@@ -1,75 +1,63 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account, AccountUtils } from '@app/account/account.model';
-import { arraySize, isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
+import { isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
 import { NetworkService } from '@app/network/network.service';
 import { ActionSheetOptions, InfiniteScrollCustomEvent, IonModal, PopoverOptions, RefresherCustomEvent } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import { filter, map, mergeMap, tap } from 'rxjs/operators';
+import { filter, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { firstValueFrom, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
-import {
-  APP_TRANSFER_CONTROLLER,
-  ITransferController,
-  Transfer,
-  TransferFormOptions,
-  TransferSearchFilter,
-  TransferSearchFilterUtils,
-} from '@app/transfer/transfer.model';
+import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
 import { IndexerService } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
+import { Certification, CertificationSearchFilter, CertificationSearchFilterUtils } from './cert-history.model';
+import { ListItems } from '@app/shared/types';
 
-export interface WalletTxState extends AppPageState {
+export interface CertHistoryPageState extends AppPageState, ListItems<Certification, CertificationSearchFilter> {
   accounts: Account[];
   account: Account;
   owner: boolean; // is owned by user ?
   address: string;
   currency: string;
-  balance: number;
+  side: 'received' | 'given';
 
-  filter: TransferSearchFilter;
-  limit: number;
-  items: Transfer[];
-  count: number;
-  canFetchMore: boolean;
-  fetchMoreFn: FetchMoreFn<LoadResult<Transfer>>;
+  title: string;
 }
 
 @Component({
-  selector: 'app-wallet-tx',
-  templateUrl: './wallet-tx.page.html',
-  styleUrls: ['./wallet-tx.page.scss'],
+  selector: 'app-cert-history',
+  templateUrl: './cert-history.page.html',
+  styleUrls: ['./cert-history.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [RxState],
 })
-export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
-  @RxStateSelect() protected items$: Observable<Transfer[]>;
+export class CertHistoryPage extends AppPage<CertHistoryPageState> implements OnInit {
+  @RxStateSelect() protected items$: Observable<Certification[]>;
   @RxStateSelect() protected count$: Observable<number>;
   @RxStateSelect() protected accounts$: Observable<Account[]>;
   @RxStateSelect() protected account$: Observable<Account>;
   @RxStateSelect() protected address$: Observable<string>;
   @RxStateSelect() protected owner$: Observable<boolean>;
   @RxStateSelect() protected canFetchMore$: Observable<boolean>;
+  @RxStateSelect() protected title$: Observable<string>;
+  @RxStateSelect() protected side$: Observable<'received' | 'given'>;
 
   @RxStateProperty() currency: string;
   @RxStateProperty() accounts: Account[];
   @RxStateProperty() account: Account;
   @RxStateProperty() address: string;
   @RxStateProperty() count: number;
-  @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Transfer>>;
+  @RxStateProperty() side: 'received' | 'given';
+  @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Certification>>;
   @RxStateProperty() canFetchMore: boolean;
 
-  @Input() @RxStateProperty() filter: TransferSearchFilter;
+  @Input() @RxStateProperty() filter: CertificationSearchFilter;
   @Input() @RxStateProperty() limit: number;
 
   @Output() refresh = new EventEmitter<RefresherCustomEvent>();
-
-  get balance(): number {
-    if (!this.account?.data) return undefined;
-    return (this.account.data.free || 0) + (this.account.data.reserved || 0);
-  }
 
   protected actionSheetOptions: Partial<ActionSheetOptions> = {
     cssClass: 'select-account-action-sheet',
@@ -84,23 +72,32 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     protected router: Router,
     protected route: ActivatedRoute,
     protected networkService: NetworkService,
-    protected indexerService: IndexerService,
+    protected indexer: IndexerService,
     protected accountService: AccountsService,
     @Inject(APP_TRANSFER_CONTROLLER) protected transferController: ITransferController
   ) {
     super({
-      name: 'wallet-tx-page',
+      name: 'cert-history-page',
       loadDueTime: accountService.started ? 0 : 250,
       initialState: {
         canFetchMore: false,
       },
     });
 
-    // Watch address from route or account
+    // Watch address from the route or account
     this._state.connect(
       'address',
       merge(this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))), this.account$.pipe(map((a) => a?.address))).pipe(
         filter((address) => isNotNilOrBlank(address) && address !== this.address)
+      )
+    );
+
+    // Watch side from the route
+    this._state.connect(
+      'side',
+      this.route.paramMap.pipe(
+        map((paramMap) => paramMap.get('side')),
+        map((side) => (side === 'received' ? side : 'given'))
       )
     );
 
@@ -135,24 +132,35 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
                 account = await this.accountService.getByName(address);
                 return account;
               } catch (err) {
-                const { data } = await firstValueFrom(this.indexerService.wotSearch({ address }, { limit: 1 }));
+                const { data } = await firstValueFrom(this.indexer.wotSearch({ address }, { limit: 1 }));
                 if (data?.length) return data[0];
                 throw err;
               }
             } else {
-              return (await firstValueFrom(this.indexerService.wotSearch({ address }, { limit: 1 })))?.[0];
+              return (await firstValueFrom(this.indexer.wotSearch({ address }, { limit: 1 })))?.[0];
             }
           })
         )
     );
 
+    // Title
+    this._state.connect(
+      'title',
+      this.account$.pipe(
+        map(AccountUtils.getDisplayName),
+        switchMap((accountName) => this.translate.get('WOT.CERTIFICATIONS.TITLE', { uid: accountName }))
+      )
+    );
+
     // Create filter
     this._state.connect(
       'filter',
-      this.address$.pipe(
-        filter((address) => address && address !== 'default'),
-        map((address) => <TransferSearchFilter>{ address })
-      )
+      this._state
+        .select(['address', 'side'], (res) => res)
+        .pipe(
+          filter(({ address }) => address && address !== 'default'),
+          map(({ address, side }) => (side === 'received' ? { receiver: address } : { issuer: address }))
+        )
     );
 
     // Load items
@@ -164,22 +172,21 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
           map(() => ({ filter: this.filter, limit: this.limit }))
         ),
         this._state.select(['filter', 'limit', 'account'], (res) => res, {
-          filter: TransferSearchFilterUtils.isEquals,
+          filter: CertificationSearchFilterUtils.isEquals,
           limit: (l1, l2) => l1 === l2,
           account: AccountUtils.isEquals,
         })
       ).pipe(
-        filter(({ filter }) => !TransferSearchFilterUtils.isEmpty(filter)),
-        mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
-        map(({ data, fetchMore }) => {
+        filter(({ filter }) => !CertificationSearchFilterUtils.isEmpty(filter)),
+        mergeMap(({ filter, limit }) => this.search(filter, { limit })),
+        map(({ total, data, fetchMore }) => {
           this.fetchMoreFn = fetchMore;
           this.canFetchMore = !!fetchMore;
+          this.count = total;
           return data;
         })
       )
     );
-
-    this._state.connect('count', this.items$.pipe(map(arraySize)));
   }
 
   async ngOnInit() {
@@ -189,12 +196,12 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     this.limit = toNumber(this.limit, 15);
   }
 
-  search(searchFilter?: TransferSearchFilter, options?: { limit: number; offset: number }): Observable<LoadResult<Transfer>> {
+  search(searchFilter?: CertificationSearchFilter, options?: { limit: number }): Observable<LoadResult<Certification>> {
     try {
       this.markAsLoading();
 
-      return this.indexerService.transferSearch(searchFilter, options).pipe(
-        filter(() => TransferSearchFilterUtils.isEquals(this.filter, searchFilter)),
+      return this.indexer.certsSearch(searchFilter, options).pipe(
+        filter(() => CertificationSearchFilterUtils.isEquals(this.filter, searchFilter)),
         tap(() => this.markAsLoaded())
       );
     } catch (err) {
@@ -203,18 +210,18 @@ export class WalletTxPage extends AppPage<WalletTxState> implements OnInit {
     }
   }
 
-  protected async ngOnLoad(): Promise<WalletTxState> {
+  protected async ngOnLoad(): Promise<CertHistoryPageState> {
     await this.accountService.ready();
 
-    return <WalletTxState>{
+    return <CertHistoryPageState>{
       account: null,
       address: this.activatedRoute.snapshot.paramMap.get('address'),
       currency: this.networkService.currencySymbol,
     };
   }
 
-  transfer(opts?: TransferFormOptions) {
-    return this.transferController.transfer({ account: this.account, modal: true, ...opts });
+  addCertification() {
+    // TODO
   }
 
   async showAccount(event: UIEvent, account: Account) {

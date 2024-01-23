@@ -9,10 +9,10 @@
 .select-account-popover {
   --width: #{$app-popover-width} !important;
 
-  ion-item:last-of-type {
-    --color: var(--ion-color-danger) !important;
-    font-style: italic;
-  }
+  //ion-item:last-of-type {
+  //  --color: var(--ion-color-danger) !important;
+  //  font-style: italic;
+  //}
 }
 
 .cdk-visually-hidden {

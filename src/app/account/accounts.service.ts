@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { NetworkService } from '../network/network.service';
 import { ApiPromise } from '@polkadot/api';
-import { Account, AccountUtils, APP_AUTH_CONTROLLER, AuthData, IAuthController, LoginOptions, SelectAccountOptions } from './account.model';
+import { Account, AccountUtils, LoginOptions, SelectAccountOptions } from './account.model';
 import { keyring } from '@polkadot/ui-keyring';
 import { environment } from '@environments/environment';
 import { KeyringStorage } from '@app/shared/services/storage/keyring-storage';
@@ -28,8 +28,9 @@ import { RxStartableService } from '@app/shared/services/rx-startable-service.cl
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { ED25519_SEED_LENGTH, SCRYPT_PARAMS } from '@app/account/crypto.utils';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { AppEvent } from '@app/shared/types';
 import { IndexerService } from '@app/network/indexer.service';
+import { AppEvent } from '@app/shared/types';
+import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -86,7 +87,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     // Configure keyring
     keyring.setDevMode(!environment.production);
-    keyring.setSS58Format(currency.prefix || 42 /* = dev format */);
+    keyring.setSS58Format(currency.ss58Format || 42 /* = dev format */);
 
     // Restoring accounts
     const accounts = await this.restoreAccounts(currency);
@@ -144,7 +145,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     keyring.loadAll({
       store: this._store,
-      ss58Format: currency?.prefix,
+      ss58Format: currency?.ss58Format,
       genesisHash: currency?.genesis,
       isDevelopment: !environment.production,
     });

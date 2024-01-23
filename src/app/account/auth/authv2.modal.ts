@@ -4,8 +4,8 @@ import { AccountsService } from '@app/account/accounts.service';
 import { AuthV2Form } from './authv2.form';
 import { firstNotNilPromise } from '@app/shared/observables';
 
-import { AuthData } from '@app/account/account.model';
 import { AuthModalRole } from '@app/account/auth/auth.modal';
+import { AuthData } from '@app/account/auth/auth.model';
 
 export interface AuthV2ModalOptions {
   auth?: boolean;

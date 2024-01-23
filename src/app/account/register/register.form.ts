@@ -6,13 +6,14 @@ import { environment } from '@environments/environment';
 import { AppForm } from '@app/shared/form.class';
 import { NetworkService } from '@app/network/network.service';
 import { Currency } from '@app/currency/currency.model';
-import { AccountMeta, AuthData } from '@app/account/account.model';
+import { AccountMeta } from '@app/account/account.model';
 import { Swiper, SwiperOptions } from 'swiper/types';
 import { IonicSlides } from '@ionic/angular';
 import { SwiperDirective } from '@app/shared/swiper/app-swiper.directive';
 import { isNilOrBlank } from '@app/shared/functions';
 import { formatAddress } from '@app/shared/currencies';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+import { AuthData } from '@app/account/auth/auth.model';
 
 export const REGISTER_FORM_SLIDES = {
   MNEMONIC: 5,
@@ -78,8 +79,9 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   }
 
   ngOnInit() {
+    console.debug('[register] Init');
     // For DEV only ------------------------
-    if (!environment.production) {
+    /*if (!environment.production) {
       // this.form.setValue({
       //   words: 'search average amateur muffin inspire lake resist width intact viable stone barrel'.split(' '),
       //   wordNumber: 1,
@@ -88,7 +90,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
       //   name: null,
       //   address: null,
       // });
-    }
+    }*/
   }
 
   protected get swiper(): Swiper {
@@ -100,7 +102,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
     return {
       password: json.code,
       v2: {
-        mnemonic: json.words.join(' '),
+        mnemonic: json.words?.join(' '),
       },
       meta: <AccountMeta>{
         name: json.name,
@@ -113,7 +115,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   }
 
   slideNext() {
-    console.log('slideNext from slide #' + this.slideState.index);
+    console.debug('[register] slideNext from slide #' + this.slideState.index);
     this.swiper.slideNext();
   }
 
@@ -123,6 +125,7 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   }
 
   async slideTo(index: number) {
+    console.debug('[register] slideTo #' + index);
     this.swiper.slideTo(index);
     setTimeout(() => this.updateState());
   }

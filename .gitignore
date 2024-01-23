@@ -1,4 +1,3 @@
-/.angular/cache
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
@@ -20,6 +19,7 @@ log.txt
 npm-debug.log*
 yarn.lock
 
+/.angular
 /.idea
 /.gradle
 /.ionic
@@ -27,11 +27,10 @@ yarn.lock
 /.sourcemaps
 /.versions
 /.vscode
+/.local
 /coverage
 /dist
+/release
 /node_modules
-/platforms
-/plugins
 /www
-/.local-old/
 /out-tsc/

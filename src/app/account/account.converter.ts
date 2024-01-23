@@ -10,6 +10,7 @@ export class AccountConverter {
   }
 
   static toAccount(input: LightAccountFragment): Account {
+    if (!input) return undefined;
     return <Account>{
       address: input.id,
       meta: {
@@ -28,8 +29,9 @@ export class IdentityConverter {
   }
 
   static toAccount(input: LightIdentityFragment): Account {
+    if (!input) return undefined;
     return <Account>{
-      address: input.id,
+      address: input.account?.id,
       meta: {
         uid: input.name,
         isMember: isNotNil(input.membership?.id),

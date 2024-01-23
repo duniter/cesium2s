@@ -1,20 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { WotLookupPage } from './wot-lookup.page';
-import { WotDetailsPage } from '@app/wot/wot-details.page';
-import { AppWotModule } from '@app/wot/wot.module';
+import { WalletPage } from './wallet.page';
+import { AuthGuardService } from '@app/account/auth/auth-guard.service';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: WotLookupPage,
+    redirectTo: 'default',
   },
   {
     path: ':address',
-    pathMatch: 'full',
-    component: WotDetailsPage,
+    component: WalletPage,
+    canActivate: [AuthGuardService],
   },
   {
     path: 'tx',
@@ -27,7 +26,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [AppWotModule, RouterModule.forChild(routes)],
+  imports: [WalletPage, RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AppWotRoutingModule {}
+export class AppWalletRoutingModule {}

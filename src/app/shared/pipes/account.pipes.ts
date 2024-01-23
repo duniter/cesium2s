@@ -148,7 +148,8 @@ export class IsMemberAccountPipe extends AccountAbstractPipe<boolean, void> impl
   name: 'isUserAccount',
 })
 export class IsUserAccountPipePipe implements PipeTransform {
+  constructor(private accountsService: AccountsService) {}
   transform(account: Partial<Account>): boolean {
-    return account?.meta?.self === true;
+    return account && (account.meta?.self === true || this.accountsService.isAvailableSync(account.address));
   }
 }

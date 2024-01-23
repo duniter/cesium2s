@@ -3,6 +3,10 @@ fragment LightIdentity on Identity {
   __typename
   id
   name
+  account {
+    __typename
+    id
+  }
   membership {
     __typename
     id
@@ -11,9 +15,11 @@ fragment LightIdentity on Identity {
 
 fragment LightAccount on Account {
   id
-  __typename
-
   identity {
-    ...LightIdentity
+    id
+    name
+    membership {
+      id
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { StorageConfig } from '@ionic/storage';
-import { AuthData } from '@app/account/account.model';
 import { FetchPolicy } from '@apollo/client';
 import { WatchQueryFetchPolicy } from '@apollo/client/core';
+import { AuthData } from '@app/account/auth/auth.model';
 
 export interface Environment {
   name: string;

@@ -9,7 +9,7 @@ stages:
   - environment
   - build
   - alt_build
-  - assemble
+  - package
   - release
   - deploy
 
@@ -174,17 +174,17 @@ failsafe-build:
     - /^features\/.*/
 
 # ---------------------------------------------------------------
-# Assemble jobs
+# Package jobs
 # ---------------------------------------------------------------
-assemble:android:
+package:android:
   <<: *android-setup
-  stage: assemble
+  stage: package
   needs: [ build ]
   script:
     # Build APK
     - echo "--- Building Android APK ..."
     - npm run android:build:${BUILD_ENVIRONMENT}
-    - npm run android:assemble:${BUILD_ENVIRONMENT}
+    - npm run android:package:${BUILD_ENVIRONMENT}
   after_script:
     # Make APK file available for next jobs
     - mkdir -p "${CI_PROJECT_DIR}/release/"
@@ -357,7 +357,7 @@ gitlab-release:
     - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
     # Build APK (if not already done)
     - if [[ ! -f "${sourceFile}" ]]; then npm run android:build:prod; fi
-    - if [[ ! -f "${sourceFile}" ]]; then npm run android:assemble:prod; fi
+    - if [[ ! -f "${sourceFile}" ]]; then npm run android:package:prod; fi
     # Deploy as a release package
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-android.apk
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}

@@ -17,11 +17,8 @@
 
   <ion-header [translucent]="true">
     <ion-item color="secondary" lines="none">
-      <ion-avatar slot="start" *ngIf="account$ | push; let account" [style.background-color]="'white'">
-        <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
-        <ng-template #svgIcon>
-          <svg [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
-        </ng-template>
+      <ion-avatar slot="start" [style.background-color]="'white'">
+        <app-account-image [account]="account$ | push"></app-account-image>
       </ion-avatar>
 
       <ion-label>{{ account$ | push | accountName }}</ion-label>
@@ -40,15 +37,22 @@
     </ion-item>
   </ion-header>
 
+  <div class="ion-text-center" *ngIf="!mobile">
+    <ion-button (click)="transferTo()" [disabled]="loading">
+      <ion-icon slot="start" name="paper-plane"></ion-icon>
+      <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
+    </ion-button>
+  </div>
+
   <ion-list>
     <ng-container *rxIf="account$; let account; suspense: skeletons">
       <!-- pubkey -->
-      <ion-item *ngIf="account?.meta?.publicKeyV1; let pubkey" (click)="copyPubkey($event)" tappable>
+      <ion-item *ngIf="account.address | addressToPubkeyV1; let pubkey" (click)="copyPubkey($event, pubkey)" tappable>
         <ion-icon slot="start" name="key"></ion-icon>
 
         <ion-label>
           <h2 translate>COMMON.PUBKEY</h2>
-          <p class="ion-text-wrap">{{ pubkey | pubkeyFormat }}</p>
+          <p class="ion-text-wrap">{{ pubkey | pubkeyFormat: true }}</p>
         </ion-label>
 
         <ion-button slot="end" fill="clear" [title]="'COMMON.COPY' | translate">
@@ -71,28 +75,65 @@
         </ion-button>
       </ion-item>
 
+      <!-- UID -->
+      @if (account.meta?.uid) {
+        <ion-item>
+          <ion-icon aria-hidden="true" slot="start" name="calendar-clear-outline"></ion-icon>
+          <ion-label>
+            <h3 translate>COMMON.UID</h3>
+            <p>{{ 'WOT.REGISTERED_SINCE' | translate }}</p>
+          </ion-label>
+
+          <ion-badge color="warning" slot="end">{{ account.meta?.uid }}</ion-badge>
+        </ion-item>
+
+        <!-- Received cert count -->
+        <ion-item
+          detail
+          [routerLink]="['/wot', 'cert', account.address, account.meta?.uid || '', (this.mobile && 'received') || '']"
+          routerDirection="forward"
+        >
+          <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
+          <ion-label translate>WOT.CERTIFICATIONS.RECEIVED</ion-label>
+          <ion-badge color="success" slot="end">{{ receivedCertCount$ | push }}</ion-badge>
+        </ion-item>
+
+        <!-- Given cert count -->
+        <ion-item
+          detail
+          [routerLink]="['/wot', 'cert', account.address, account.meta?.uid || '', (this.mobile && 'given') || '']"
+          routerDirection="forward"
+        >
+          <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
+          <ion-label translate>WOT.GIVEN_CERTIFICATIONS.SENT</ion-label>
+          <ion-badge color="success" slot="end">{{ givenCertCount$ | push }}</ion-badge>
+        </ion-item>
+      }
+
       <!-- TX history -->
       <ion-item detail [routerLink]="['/wot', 'tx', account.address, account.meta?.uid]" routerDirection="forward">
         <ion-icon aria-hidden="true" slot="start" name="card"></ion-icon>
         <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
       </ion-item>
-
-      <!-- Received cert count -->
-      <ion-item detail [routerLink]="['/wot', 'cert', account.address, account.meta?.uid]">
-        <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
-        <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
-        <ion-badge color="success" slot="end">{{ certReceivedCount$ | push }}</ion-badge>
-      </ion-item>
     </ng-container>
   </ion-list>
 
-  <div class="ion-text-center">
-    <ion-button (click)="transferTo()" [disabled]="loading">
-      <ion-icon slot="start" name="paper-plane"></ion-icon>
-      <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
-    </ion-button>
-  </div>
+  @if (mobile) {
+    <ion-fab slot="fixed" horizontal="end" vertical="top" [edge]="true">
+      <ion-fab-button color="secondary" (click)="certify()" size="small">
+        <ion-icon name="ribbon"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  }
 </ion-content>
+
+@if (mobile) {
+  <ion-fab slot="fixed" horizontal="end" vertical="bottom">
+    <ion-fab-button color="danger" (click)="transferTo()">
+      <ion-icon name="send"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+}
 
 <ng-template #skeletons>
   <ion-item>

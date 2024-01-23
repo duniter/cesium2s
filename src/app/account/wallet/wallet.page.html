@@ -3,14 +3,36 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+
     <ion-title translate>ACCOUNT.TITLE</ion-title>
+
+    <ion-buttons slot="end">
+      <!-- options -->
+      <ion-button id="options-menu-trigger">
+        <ion-icon name="ellipsis-vertical" slot="icon-only" />
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   <ion-progress-bar type="indeterminate" *rxIf="loading$"></ion-progress-bar>
 </ion-header>
 
+<!-- options menu -->
+<ion-popover #optionsPopover trigger="options-menu-trigger" triggerAction="click">
+  <ng-template>
+    <ion-content class="ion-no-padding">
+      <ion-list-header translate>COMMON.POPOVER_ACTIONS_TITLE</ion-list-header>
+      <ion-list>
+        <ion-item (click)="addNewWallet($event)" tappable>
+          <ion-label translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-popover>
+
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
+  <ion-header collapse="condense" [translucent]="true">
+    <ion-toolbar color="primary">
       <ion-title size="large" translate>ACCOUNT.TITLE</ion-title>
     </ion-toolbar>
   </ion-header>
@@ -18,12 +40,7 @@
   <ion-header [translucent]="true">
     <ion-item color="secondary" lines="none">
       <ion-avatar slot="start" (click)="avatarModal.present()" [style.background-color]="'white'">
-        <ng-container *rxIf="account$; let account">
-          <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
-          <ng-template #svgIcon>
-            <svg [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
-          </ng-template>
-        </ng-container>
+        <app-account-image [account]="account$ | push"></app-account-image>
       </ion-avatar>
       <ion-select
         [(ngModel)]="account"
@@ -35,7 +52,6 @@
         <ion-select-option *rxFor="let account of accounts$" [value]="account">
           {{ account | accountName }}
         </ion-select-option>
-        <ion-select-option [value]="new" translate>ACCOUNT.WALLET_LIST.BTN_NEW_DOTS</ion-select-option>
       </ion-select>
 
       <div slot="end">
@@ -50,6 +66,13 @@
   </ion-header>
 
   <div id="container">
+    <div class="ion-text-center ion-padding-top" *ngIf="!mobile">
+      <ion-button *rxIf="account$; let account" (click)="transfer()" [disabled]="loading">
+        <ion-icon slot="start" name="paper-plane"></ion-icon>
+        <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
+      </ion-button>
+    </div>
+
     <ion-list>
       <ion-item *rxIf="error$; let error" lines="none" color="light">
         <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
@@ -72,58 +95,69 @@
         </ion-button>
       </ion-item>
 
-      <!-- address -->
-      <ion-item *rxIf="account$; let account" (click)="copyToClipboard($event, account.address)" tappable>
-        <ion-icon aria-hidden="true" slot="start" name="key"></ion-icon>
-        <ion-label>
-          <h2 translate>COMMON.ADDRESS</h2>
-          <p class="ion-text-nowrap">
-            <span>{{ account.address | addressFormat }}</span>
-          </p>
-        </ion-label>
+      <ng-container *rxIf="account$; let account">
+        <!-- address -->
+        <ion-item (click)="copyToClipboard($event, account.address)" tappable>
+          <ion-icon aria-hidden="true" slot="start" name="key"></ion-icon>
+          <ion-label>
+            <h2 translate>COMMON.ADDRESS</h2>
+            <p class="ion-text-nowrap">
+              <span>{{ account.address | addressFormat }}</span>
+            </p>
+          </ion-label>
 
-        <ion-button
-          [disabled]="loading$ | async"
-          (click)="showQrCode($event, account.address, 'COMMON.ADDRESS')"
-          slot="end"
-          fill="clear"
-          shape="round"
-        >
-          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
-        </ion-button>
-      </ion-item>
+          <ion-button
+            [disabled]="loading$ | async"
+            (click)="showQrCode($event, account.address, 'COMMON.ADDRESS')"
+            slot="end"
+            fill="clear"
+            shape="round"
+          >
+            <ion-icon slot="icon-only" name="qr-code"></ion-icon>
+          </ion-button>
+        </ion-item>
 
-      <!-- TX history -->
-      <ion-item detail [routerLink]="['/history/', account?.address]" [routerDirection]="mobile ? 'forward' : 'root'">
-        <ion-icon aria-hidden="true" slot="start" name="card"></ion-icon>
-        <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
-      </ion-item>
+        @if (account.meta?.uid) {
+          <!-- UID -->
+          <ion-item>
+            <ion-icon aria-hidden="true" slot="start" name="calendar-clear-outline"></ion-icon>
+            <ion-label>
+              <h3 translate>COMMON.UID</h3>
+              <p>{{ 'WOT.REGISTERED_SINCE' | translate }}</p>
+            </ion-label>
+            <ion-badge color="warning" slot="end">{{ account.meta?.uid }}</ion-badge>
+          </ion-item>
 
-      <!-- Received cert count -->
-      <ion-item detail (click)="notImplementedModal.present()">
-        <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
-        <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
-        <ion-badge color="success" slot="end">{{ certReceivedCount$ | push }}</ion-badge>
-      </ion-item>
+          <!-- Received cert count -->
+          <ion-item detail [routerLink]="['..', 'cert', account.address, account.meta?.uid || '', 'received']" [routerDirection]="'forward'">
+            <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
+            <ion-label translate>WOT.CERTIFICATIONS.RECEIVED</ion-label>
+            <ion-badge color="success" slot="end">{{ receivedCertCount$ | push }}</ion-badge>
+          </ion-item>
 
-      <!--      <ion-item  detail  [routerLink]="['/wot/cert/', data?.address]">-->
-      <!--        <ion-icon slot="start" name="ribbon"></ion-icon>-->
-      <!--        <ion-label translate>ACCOUNT.BALANCE_ACCOUNT</ion-label>-->
-      <!--        <ion-badge color="success">{{(data?.data.free || 0) | amountFormat}} {{currency}}</ion-badge>-->
-      <!--      </ion-item>-->
+          <!-- Received cert count -->
+          <ion-item detail [routerLink]="['..', 'cert', account.address, account.meta?.uid || '', 'given']" [routerDirection]="'forward'">
+            <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
+            <ion-label translate>WOT.GIVEN_CERTIFICATIONS.SENT</ion-label>
+            <ion-badge color="success" slot="end">{{ givenCertCount$ | push }}</ion-badge>
+          </ion-item>
+        }
 
-      <!--      <ion-item detail  -->
-      <!--                 [routerLink]="['/wot/cert/', data?.address]">-->
+        <!-- TX history -->
+        <ion-item detail [routerLink]="['/history', account?.address]" [routerDirection]="mobile ? 'forward' : 'root'">
+          <ion-icon aria-hidden="true" slot="start" name="card"></ion-icon>
+          <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
+        </ion-item>
+      </ng-container>
     </ion-list>
-
-    <div class="ion-text-center ion-padding-top">
-      <ion-button *rxIf="account$; let account" (click)="transfer()" [disabled]="loading">
-        <ion-icon slot="start" name="paper-plane"></ion-icon>
-        <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
-      </ion-button>
-    </div>
   </div>
 </ion-content>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end" *ngIf="mobile">
+  <ion-fab-button color="danger" (click)="transfer()">
+    <ion-icon name="send"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 
 <ion-modal #authModal [backdropDismiss]="false">
   <ng-template>

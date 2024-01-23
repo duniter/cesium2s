@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { TransferPage } from './transfer.page';
-import { AuthGuardService } from '@app/account/auth-guard.service';
-import { AppTransferModule } from '@app/transfer/transfer.module';
+import { AuthGuardService } from '@app/account/auth/auth-guard.service';
+import { AppTransferModule } from '@app/transfer/send/transfer.module';
 
 const routes: Routes = [
   {

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { SettingsService } from '../settings/settings.service';
 import { Peer, Peers } from '@app/shared/services/network/peer.model';
-import { abbreviate } from '@app/shared/currencies';
+import { abbreviate, WELL_KNOWN_CURRENCIES } from '@app/shared/currencies';
 import { Currency } from '../currency/currency.model';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
@@ -11,35 +11,7 @@ import { filter, map } from 'rxjs/operators';
 import { arrayRandomPick, isNotNilOrBlank } from '@app/shared/functions';
 import { IndexerService } from './indexer.service';
 import { fromDateISOString } from '@app/shared/dates';
-
-const WELL_KNOWN_CURRENCIES = Object.freeze({
-  GDEV: <Partial<Currency>>{
-    network: 'gdev',
-    displayName: 'ĞDev',
-    symbol: 'GD',
-    prefix: 42,
-    genesis: '0xa565a0ccbab8e5f29f0c8a901a3a062d17360a4d4f5319d03a1580fba4cbf3f6',
-    startTime: '2017-07-08T00:00:00.00Z', // TODO
-    fees: {
-      identity: 300, // = 3 Gdev
-      tx: 2, // = 0.02 Gdev
-    },
-    decimals: 2,
-  },
-  G1: <Partial<Currency>>{
-    network: 'g1',
-    displayName: 'Ğ1',
-    symbol: 'G1',
-    prefix: 4450,
-    genesis: '0x___TODO___',
-    startTime: '2017-03-08T00:00:00.00Z', // TODO
-    fees: {
-      identity: 300, // = 3G1 - FIXME
-      tx: 1, // = 0.01 G1 - FIXME
-    },
-    decimals: 2, // FIXME remove for autodetection
-  },
-});
+import { ContextService } from '@app/shared/services/storage/context.service';
 
 export interface NetworkState {
   peer: Peer;
@@ -60,7 +32,10 @@ export class NetworkService extends RxStartableService<NetworkState> {
   @RxStateSelect() peer$: Observable<Peer>;
   @RxStateSelect() currency$: Observable<Currency>;
 
-  constructor(private settings: SettingsService) {
+  constructor(
+    private settings: SettingsService,
+    private context: ContextService
+  ) {
     super(settings, {
       name: 'network-service',
     });
@@ -76,6 +51,8 @@ export class NetworkService extends RxStartableService<NetworkState> {
       ),
       () => this.restart()
     );
+
+    this.hold(this.currency$, (currency) => (this.context.currency = currency));
   }
 
   protected async ngOnStart(): Promise<NetworkState> {
@@ -139,7 +116,7 @@ export class NetworkService extends RxStartableService<NetworkState> {
     currency.symbol = currency?.symbol || properties.tokenSymbol.value?.[0].toHuman() || abbreviate(this.currency.displayName);
     currency.decimals = currency?.decimals || +properties.tokenDecimals.value?.[0].toHuman() || 0;
     currency.powBase = Math.pow(10, currency.decimals);
-    currency.prefix = currency.prefix || WELL_KNOWN_CURRENCIES.GDEV.prefix; // TODO use G1 defaults
+    currency.ss58Format = currency.ss58Format || WELL_KNOWN_CURRENCIES.GDEV.ss58Format; // TODO use G1 defaults
     currency.genesis = genesis;
     currency.startTime = fromDateISOString(currency.startTime);
     currency.fees = {
