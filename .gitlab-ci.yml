@@ -184,7 +184,7 @@ package:android:
     # Build APK
     - echo "--- Building Android APK ..."
     - npm run android:build:${BUILD_ENVIRONMENT}
-    - npm run android:assemble:${BUILD_ENVIRONMENT}
+    - npm run android:package:${BUILD_ENVIRONMENT}
   after_script:
     # Make APK file available for next jobs
     - mkdir -p "${CI_PROJECT_DIR}/release/"
@@ -357,7 +357,7 @@ gitlab-release:
     - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
     # Build APK (if not already done)
     - if [[ ! -f "${sourceFile}" ]]; then npm run android:build:prod; fi
-    - if [[ ! -f "${sourceFile}" ]]; then npm run android:assemble:prod; fi
+    - if [[ ! -f "${sourceFile}" ]]; then npm run android:package:prod; fi
     # Deploy as a release package
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-android.apk
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
