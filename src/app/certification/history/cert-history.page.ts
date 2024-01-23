@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account, AccountUtils } from '@app/account/account.model';
-import { arraySize, isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
+import { isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
 import { NetworkService } from '@app/network/network.service';
 import { ActionSheetOptions, InfiniteScrollCustomEvent, IonModal, PopoverOptions, RefresherCustomEvent } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,25 +10,21 @@ import { filter, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { firstValueFrom, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
-import { APP_TRANSFER_CONTROLLER, ITransferController, Transfer, TransferFormOptions } from '@app/transfer/transfer.model';
+import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
 import { IndexerService } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
-import { Certification, CertificationSearchFilter, CertificationSearchFilterUtils } from '@app/certification/certification.model';
+import { Certification, CertificationSearchFilter, CertificationSearchFilterUtils } from './cert-history.model';
+import { ListItems } from '@app/shared/types';
 
-export interface CertHistoryPageState extends AppPageState {
+export interface CertHistoryPageState extends AppPageState, ListItems<Certification, CertificationSearchFilter> {
   accounts: Account[];
   account: Account;
   owner: boolean; // is owned by user ?
   address: string;
   currency: string;
+  side: 'received' | 'given';
 
   title: string;
-  filter: CertificationSearchFilter;
-  limit: number;
-  items: Certification[];
-  count: number;
-  canFetchMore: boolean;
-  fetchMoreFn: FetchMoreFn<LoadResult<Certification>>;
 }
 
 @Component({
@@ -39,7 +35,7 @@ export interface CertHistoryPageState extends AppPageState {
   providers: [RxState],
 })
 export class CertHistoryPage extends AppPage<CertHistoryPageState> implements OnInit {
-  @RxStateSelect() protected items$: Observable<Transfer[]>;
+  @RxStateSelect() protected items$: Observable<Certification[]>;
   @RxStateSelect() protected count$: Observable<number>;
   @RxStateSelect() protected accounts$: Observable<Account[]>;
   @RxStateSelect() protected account$: Observable<Account>;
@@ -47,12 +43,14 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
   @RxStateSelect() protected owner$: Observable<boolean>;
   @RxStateSelect() protected canFetchMore$: Observable<boolean>;
   @RxStateSelect() protected title$: Observable<string>;
+  @RxStateSelect() protected side$: Observable<'received' | 'given'>;
 
   @RxStateProperty() currency: string;
   @RxStateProperty() accounts: Account[];
   @RxStateProperty() account: Account;
   @RxStateProperty() address: string;
   @RxStateProperty() count: number;
+  @RxStateProperty() side: 'received' | 'given';
   @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Certification>>;
   @RxStateProperty() canFetchMore: boolean;
 
@@ -86,11 +84,20 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
       },
     });
 
-    // Watch address from route or account
+    // Watch address from the route or account
     this._state.connect(
       'address',
       merge(this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))), this.account$.pipe(map((a) => a?.address))).pipe(
         filter((address) => isNotNilOrBlank(address) && address !== this.address)
+      )
+    );
+
+    // Watch side from the route
+    this._state.connect(
+      'side',
+      this.route.paramMap.pipe(
+        map((paramMap) => paramMap.get('side')),
+        map((side) => (side === 'received' ? side : 'given'))
       )
     );
 
@@ -148,10 +155,12 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
     // Create filter
     this._state.connect(
       'filter',
-      this.address$.pipe(
-        filter((address) => address && address !== 'default'),
-        map((address) => <CertificationSearchFilter>{ issuer: address })
-      )
+      this._state
+        .select(['address', 'side'], (res) => res)
+        .pipe(
+          filter(({ address }) => address && address !== 'default'),
+          map(({ address, side }) => (side === 'received' ? { receiver: address } : { issuer: address }))
+        )
     );
 
     // Load items
@@ -169,16 +178,15 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
         })
       ).pipe(
         filter(({ filter }) => !CertificationSearchFilterUtils.isEmpty(filter)),
-        mergeMap(({ filter, limit }) => this.search(filter, { offset: 0, limit })),
-        map(({ data, fetchMore }) => {
+        mergeMap(({ filter, limit }) => this.search(filter, { limit })),
+        map(({ total, data, fetchMore }) => {
           this.fetchMoreFn = fetchMore;
           this.canFetchMore = !!fetchMore;
+          this.count = total;
           return data;
         })
       )
     );
-
-    this._state.connect('count', this.items$.pipe(map(arraySize)));
   }
 
   async ngOnInit() {
@@ -188,7 +196,7 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
     this.limit = toNumber(this.limit, 15);
   }
 
-  search(searchFilter?: CertificationSearchFilter, options?: { limit: number; offset: number }): Observable<LoadResult<Certification>> {
+  search(searchFilter?: CertificationSearchFilter, options?: { limit: number }): Observable<LoadResult<Certification>> {
     try {
       this.markAsLoading();
 
@@ -212,8 +220,9 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
     };
   }
 
-  transfer(opts?: TransferFormOptions) {
-    return this.transferController.transfer({ account: this.account, modal: true, ...opts });
+  addCertification() {
+    // TODO
+    //return this.transferController.transfer({ account: this.account, modal: true, ...opts });
   }
 
   async showAccount(event: UIEvent, account: Account) {

@@ -3155,13 +3155,14 @@ export type LightIdentityFragment = {
   __typename: 'Identity';
   id: string;
   name: string;
+  account: { __typename: 'Account'; id: string };
   membership?: { __typename: 'Membership'; id: string } | null;
 };
 
 export type LightAccountFragment = {
-  __typename: 'Account';
+  __typename?: 'Account';
   id: string;
-  identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+  identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
 };
 
 export type LightBlockFragment = {
@@ -3217,10 +3218,11 @@ export type BlocksQuery = {
 export type CertFragment = {
   __typename: 'Cert';
   id: string;
+  expireOn: number;
   createdOn: number;
-  issuer: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
-  receiver: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
-  creation: Array<{ __typename?: 'CertCreation'; blockNumber: number }>;
+  creation: Array<{ __typename?: 'CertCreation'; id: string; blockNumber: number }>;
+  renewal: Array<{ __typename?: 'CertRenewal'; id: string; blockNumber: number }>;
+  removal: Array<{ __typename?: 'CertRemoval'; id: string; blockNumber: number }>;
 };
 
 export type CertsConnectionByIssuerQueryVariables = Exact<{
@@ -3241,10 +3243,18 @@ export type CertsConnectionByIssuerQuery = {
       node: {
         __typename: 'Cert';
         id: string;
+        expireOn: number;
         createdOn: number;
-        issuer: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
-        receiver: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
-        creation: Array<{ __typename?: 'CertCreation'; blockNumber: number }>;
+        identity: {
+          __typename: 'Identity';
+          id: string;
+          name: string;
+          account: { __typename: 'Account'; id: string };
+          membership?: { __typename: 'Membership'; id: string } | null;
+        };
+        creation: Array<{ __typename?: 'CertCreation'; id: string; blockNumber: number }>;
+        renewal: Array<{ __typename?: 'CertRenewal'; id: string; blockNumber: number }>;
+        removal: Array<{ __typename?: 'CertRemoval'; id: string; blockNumber: number }>;
       };
     }>;
   };
@@ -3268,10 +3278,18 @@ export type CertsConnectionByReceiverQuery = {
       node: {
         __typename: 'Cert';
         id: string;
+        expireOn: number;
         createdOn: number;
-        issuer: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
-        receiver: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null };
-        creation: Array<{ __typename?: 'CertCreation'; blockNumber: number }>;
+        identity: {
+          __typename: 'Identity';
+          id: string;
+          name: string;
+          account: { __typename: 'Account'; id: string };
+          membership?: { __typename: 'Membership'; id: string } | null;
+        };
+        creation: Array<{ __typename?: 'CertCreation'; id: string; blockNumber: number }>;
+        renewal: Array<{ __typename?: 'CertRenewal'; id: string; blockNumber: number }>;
+        removal: Array<{ __typename?: 'CertRemoval'; id: string; blockNumber: number }>;
       };
     }>;
   };
@@ -3284,14 +3302,14 @@ export type TransferFragment = {
   timestamp: any;
   blockNumber: number;
   from: {
-    __typename: 'Account';
+    __typename?: 'Account';
     id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
   };
   to: {
-    __typename: 'Account';
+    __typename?: 'Account';
     id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
   };
 };
 
@@ -3316,14 +3334,14 @@ export type TransfersConnectionByAddressQuery = {
         timestamp: any;
         blockNumber: number;
         from: {
-          __typename: 'Account';
+          __typename?: 'Account';
           id: string;
-          identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+          identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
         };
         to: {
-          __typename: 'Account';
+          __typename?: 'Account';
           id: string;
-          identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+          identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
         };
       };
     }>;
@@ -3340,9 +3358,9 @@ export type WotSearchByTextQueryVariables = Exact<{
 export type WotSearchByTextQuery = {
   __typename?: 'Query';
   accounts: Array<{
-    __typename: 'Account';
+    __typename?: 'Account';
     id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
   }>;
 };
 
@@ -3356,9 +3374,9 @@ export type WotSearchByAddressQueryVariables = Exact<{
 export type WotSearchByAddressQuery = {
   __typename?: 'Query';
   accounts: Array<{
-    __typename: 'Account';
+    __typename?: 'Account';
     id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
   }>;
 };
 
@@ -3372,12 +3390,27 @@ export type WotSearchLastQueryVariables = Exact<{
 export type WotSearchLastQuery = {
   __typename?: 'Query';
   accounts: Array<{
-    __typename: 'Account';
+    __typename?: 'Account';
     id: string;
-    identity?: { __typename: 'Identity'; id: string; name: string; membership?: { __typename: 'Membership'; id: string } | null } | null;
+    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
   }>;
 };
 
+export const LightIdentityFragmentDoc = gql`
+  fragment LightIdentity on Identity {
+    __typename
+    id
+    name
+    account {
+      __typename
+      id
+    }
+    membership {
+      __typename
+      id
+    }
+  }
+`;
 export const LightBlockFragmentDoc = gql`
   fragment LightBlock on Block {
     id
@@ -3390,43 +3423,37 @@ export const LightBlockFragmentDoc = gql`
     __typename
   }
 `;
-export const LightIdentityFragmentDoc = gql`
-  fragment LightIdentity on Identity {
-    __typename
-    id
-    name
-    membership {
-      __typename
-      id
-    }
-  }
-`;
 export const CertFragmentDoc = gql`
   fragment Cert on Cert {
-    id
     __typename
-    issuer {
-      ...LightIdentity
-    }
-    receiver {
-      ...LightIdentity
-    }
+    id
+    expireOn
     createdOn
     creation {
+      id
+      blockNumber
+    }
+    renewal {
+      id
+      blockNumber
+    }
+    removal {
+      id
       blockNumber
     }
   }
-  ${LightIdentityFragmentDoc}
 `;
 export const LightAccountFragmentDoc = gql`
   fragment LightAccount on Account {
     id
-    __typename
     identity {
-      ...LightIdentity
+      id
+      name
+      membership {
+        id
+      }
     }
   }
-  ${LightIdentityFragmentDoc}
 `;
 export const TransferFragmentDoc = gql`
   fragment Transfer on Transfer {
@@ -3484,7 +3511,7 @@ export class BlocksGQL extends Apollo.Query<BlocksQuery, BlocksQueryVariables> {
 }
 export const CertsConnectionByIssuerDocument = gql`
   query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
-    certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { issuer: { id_eq: $address } }) {
+    certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { issuer: { account: { id_eq: $address } } }) {
       totalCount
       pageInfo {
         endCursor
@@ -3493,11 +3520,15 @@ export const CertsConnectionByIssuerDocument = gql`
       edges {
         node {
           ...Cert
+          identity: receiver {
+            ...LightIdentity
+          }
         }
       }
     }
   }
   ${CertFragmentDoc}
+  ${LightIdentityFragmentDoc}
 `;
 
 @Injectable({
@@ -3512,7 +3543,7 @@ export class CertsConnectionByIssuerGQL extends Apollo.Query<CertsConnectionByIs
 }
 export const CertsConnectionByReceiverDocument = gql`
   query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
-    certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { receiver: { id_eq: $address } }) {
+    certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { receiver: { account: { id_eq: $address } } }) {
       totalCount
       pageInfo {
         endCursor
@@ -3521,11 +3552,15 @@ export const CertsConnectionByReceiverDocument = gql`
       edges {
         node {
           ...Cert
+          identity: issuer {
+            ...LightIdentity
+          }
         }
       }
     }
   }
   ${CertFragmentDoc}
+  ${LightIdentityFragmentDoc}
 `;
 
 @Injectable({

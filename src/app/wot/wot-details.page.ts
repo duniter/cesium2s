@@ -15,7 +15,8 @@ import { IndexerService } from '@app/network/indexer.service';
 export interface WotDetailsPageState extends AppPageState {
   address: string;
   account: Account;
-  certReceivedCount: number;
+  receivedCertCount: number;
+  givenCertCount: number;
 }
 
 @Component({
@@ -28,7 +29,8 @@ export interface WotDetailsPageState extends AppPageState {
 export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnInit {
   @RxStateSelect() address$: Observable<string>;
   @RxStateSelect() account$: Observable<Account>;
-  @RxStateSelect() certReceivedCount$: Observable<number>;
+  @RxStateSelect() receivedCertCount$: Observable<number>;
+  @RxStateSelect() givenCertCount$: Observable<number>;
 
   @Input() showToolbar = true;
   @Input() showBalance = false;
@@ -69,13 +71,23 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
       )
     );
 
-    // Watch address from route or account
+    const validAddress$ = this.account$.pipe(
+      map((account) => account?.address),
+      filter(isNotNilOrBlank)
+    );
+
+    // Watch certification count
     this._state.connect(
-      'certReceivedCount',
-      this.account$.pipe(
-        map((account) => account?.address),
-        filter(isNotNilOrBlank),
+      'receivedCertCount',
+      validAddress$.pipe(
         switchMap((address) => this.indexerService.certsSearch({ receiver: address }, { limit: 0 })),
+        map(({ total }) => total)
+      )
+    );
+    this._state.connect(
+      'givenCertCount',
+      validAddress$.pipe(
+        switchMap((address) => this.indexerService.certsSearch({ issuer: address }, { limit: 0 })),
         map(({ total }) => total)
       )
     );

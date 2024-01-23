@@ -8,10 +8,11 @@ import { AccountsService } from '@app/account/accounts.service';
 import { AuthController } from '@app/account/auth/auth.controller';
 import { AccountListModule } from '@app/account/list/account-list.module';
 import { APP_AUTH_CONTROLLER } from '@app/account/auth/auth.model';
+import { AccountImageModule } from '@app/account/image/account-image.module';
 
 @NgModule({
-  imports: [TranslateModule.forChild(), AppSharedModule, AppAuthModule, AppRegisterModule, AppUnlockModule, AccountListModule],
-  exports: [TranslateModule, AccountListModule],
+  imports: [TranslateModule.forChild(), AppSharedModule, AppAuthModule, AppRegisterModule, AppUnlockModule, AccountListModule, AccountImageModule],
+  exports: [TranslateModule, AccountListModule, AccountImageModule],
 })
 export class AppAccountModule {
   static forRoot(): ModuleWithProviders<AppAccountModule> {

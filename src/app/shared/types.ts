@@ -1,3 +1,5 @@
+import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
+
 export declare type KeyType = string | number;
 export declare type KeyValueType<T> = { [key in KeyType]: T };
 
@@ -35,3 +37,13 @@ export interface AppError extends SimpleError {
 export type AnyError = string | AppError;
 
 export declare type AppEvent = MouseEvent | TouchEvent | PointerEvent | CustomEvent;
+
+export interface ListItems<T, F> {
+  limit: number;
+  filter: F;
+
+  items: T[];
+  count: number;
+  canFetchMore: boolean;
+  fetchMoreFn: FetchMoreFn<LoadResult<T>>;
+}

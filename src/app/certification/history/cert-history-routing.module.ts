@@ -20,6 +20,11 @@ const routes: Routes = [
     component: CertHistoryPage,
     canActivate: [AuthGuardService],
   },
+  {
+    path: ':address/:name/:side',
+    component: CertHistoryPage,
+    canActivate: [AuthGuardService],
+  },
 ];
 
 @NgModule({

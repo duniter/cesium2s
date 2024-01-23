@@ -17,11 +17,8 @@
 
   <ion-header [translucent]="true">
     <ion-item color="secondary" lines="none">
-      <ion-avatar slot="start" *ngIf="account$ | push; let account" [style.background-color]="'white'">
-        <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
-        <ng-template #svgIcon>
-          <svg [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
-        </ng-template>
+      <ion-avatar slot="start" [style.background-color]="'white'">
+        <app-account-image [account]="account$ | push"></app-account-image>
       </ion-avatar>
 
       <ion-label>{{ account$ | push | accountName }}</ion-label>
@@ -78,10 +75,17 @@
       </ion-item>
 
       <!-- Received cert count -->
-      <ion-item detail [routerLink]="['/wot', 'cert', account.address, account.meta?.uid]">
+      <ion-item detail [routerLink]="['/wot', 'cert', account.address, account.meta?.uid || '', (this.mobile && 'received') || '']">
         <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
-        <ion-label translate>ACCOUNT.CERTIFICATION_COUNT</ion-label>
-        <ion-badge color="success" slot="end">{{ certReceivedCount$ | push }}</ion-badge>
+        <ion-label translate>WOT.CERTIFICATIONS.RECEIVED</ion-label>
+        <ion-badge color="success" slot="end">{{ receivedCertCount$ | push }}</ion-badge>
+      </ion-item>
+
+      <!-- Given cert count -->
+      <ion-item detail [routerLink]="['/wot', 'cert', account.address, account.meta?.uid || '', (this.mobile && 'given') || '']">
+        <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
+        <ion-label translate>WOT.GIVEN_CERTIFICATIONS.SENT</ion-label>
+        <ion-badge color="success" slot="end">{{ givenCertCount$ | push }}</ion-badge>
       </ion-item>
     </ng-container>
   </ion-list>

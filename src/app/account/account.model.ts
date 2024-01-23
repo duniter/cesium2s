@@ -28,7 +28,9 @@ export interface AccountMeta {
 }
 
 export interface AccountData {
-  randomId?: string;
+  // FIXME
+  //randomId?: string;
+
   free?: number;
   reserved?: number;
   feeFrozen?: number;

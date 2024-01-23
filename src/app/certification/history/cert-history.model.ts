@@ -1,29 +1,36 @@
 import { equals, isNilOrBlank } from '@app/shared/functions';
 import { Account } from '@app/account/account.model';
-import { CertFragment } from '@app/network/indexer-types.generated';
+import { CertFragment, LightIdentityFragment } from '@app/network/indexer-types.generated';
 import { IdentityConverter } from '@app/account/account.converter';
 
 export interface Certification {
   id: string;
-  issuer: Account;
-  receiver: Account;
+
+  account: Account;
 
   createdOn: number;
+  expireOn: number;
+  creationBlockNumbers: number[];
+  renewalBlockNumbers: number[];
+  removalsBlockNumbers: number[];
 }
 
 export class CertificationConverter {
-  static toCertifications(inputs: CertFragment[], debug?: boolean) {
+  static toCertifications(inputs: (CertFragment & { identity?: LightIdentityFragment })[], debug?: boolean) {
     const results = (inputs || []).map(CertificationConverter.toCertification);
     if (debug) console.debug('Results:', results);
     return results;
   }
 
-  static toCertification(input: CertFragment) {
+  static toCertification(input: CertFragment & { identity?: LightIdentityFragment }) {
     return <Certification>{
       id: input.id,
-      issuer: IdentityConverter.toAccount(input.issuer),
-      receiver: IdentityConverter.toAccount(input.receiver),
+      account: IdentityConverter.toAccount(input.identity),
       createdOn: input.createdOn,
+      expireOn: input.expireOn,
+      creationBlockNumbers: (input.creation || []).map((c) => c?.blockNumber),
+      renewalBlockNumbers: (input.renewal || []).map((c) => c?.blockNumber),
+      removalsBlockNumbers: (input.removal || []).map((c) => c?.blockNumber),
     };
   }
 }

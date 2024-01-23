@@ -1,16 +1,20 @@
 
 
 fragment Cert on Cert {
-  id
   __typename
-  issuer {
-    ...LightIdentity
-  }
-  receiver {
-    ...LightIdentity
-  }
+  id
+  expireOn
   createdOn
   creation {
+    id
+    blockNumber
+  }
+  renewal {
+    id
+    blockNumber
+  }
+  removal {
+    id
     blockNumber
   }
 }
@@ -20,7 +24,7 @@ query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOr
     first: $limit,
     after: $after,
     orderBy: $orderBy,
-    where: {issuer: {id_eq: $address}}
+    where: {issuer: {account: {id_eq: $address}}}
   ) {
     totalCount
     pageInfo {
@@ -30,6 +34,9 @@ query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOr
     edges {
       node {
         ...Cert
+        identity: receiver {
+          ...LightIdentity
+        }
       }
     }
   }
@@ -41,7 +48,7 @@ query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [Cert
     first: $limit,
     after: $after,
     orderBy: $orderBy,
-    where: {receiver: {id_eq: $address}}
+    where: {receiver: {account: {id_eq: $address}}}
   ) {
     totalCount
     pageInfo {
@@ -51,6 +58,9 @@ query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [Cert
     edges {
       node {
         ...Cert
+        identity: issuer {
+          ...LightIdentity
+        }
       }
     }
   }

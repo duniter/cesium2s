@@ -11,7 +11,7 @@
   <ion-list *rxIf="accounts$; let accounts; suspense: listSkeleton">
     <ion-item *rxFor="let account of accounts; index as index; trackBy: 'address'" (click)="selectAccount(account)" [style.--animation-order]="index">
       <ion-avatar slot="start">
-        <svg width="40" width="40" [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
+        <app-account-image [account]="account"></app-account-image>
       </ion-avatar>
 
       <ion-label>{{ account | accountName }}</ion-label>

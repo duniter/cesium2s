@@ -1,0 +1,7 @@
+@if (account) {
+  @if (account.meta?.avatar) {
+    <ion-img [src]="account.meta.avatar"></ion-img>
+  } @else {
+    <svg width="40" width="40" [data-jdenticon-value]="account.address"></svg>
+  }
+}

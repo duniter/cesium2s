@@ -18,7 +18,8 @@ import {
   BlockOrderByInput,
   CertFragment,
   CertOrderByInput,
-  CertsConnection,
+  CertsConnectionByIssuerQuery,
+  CertsConnectionByReceiverQuery,
   IndexerGraphqlService,
   TransferFragment,
   TransferOrderByInput,
@@ -38,7 +39,7 @@ import {
   CertificationConverter,
   CertificationSearchFilter,
   CertificationSearchFilterUtils,
-} from '@app/certification/certification.model';
+} from '@app/certification/history/cert-history.model';
 import { AccountConverter } from '@app/account/account.converter';
 
 export interface IndexerState extends GraphqlServiceState {
@@ -179,10 +180,10 @@ export class IndexerService extends GraphqlService<IndexerState> {
       address: filter.issuer || filter.receiver,
       limit: options.limit,
       after: options.after,
-      orderBy: [CertOrderByInput.CreatedOnDesc],
+      orderBy: [CertOrderByInput.CreatedOnDesc, CertOrderByInput.ExpireOnDesc],
     };
     const fetchOptions = { fetchPolicy: options?.fetchPolicy };
-    const toEntities = (certsConnection: Partial<CertsConnection>) => {
+    const toEntities = (certsConnection: CertsConnectionByIssuerQuery['certsConnection'] | CertsConnectionByReceiverQuery['certsConnection']) => {
       const inputs = certsConnection.edges?.map((edge) => edge.node as CertFragment);
       const data = CertificationConverter.toCertifications(inputs, true);
       const result: LoadResult<Certification> = { data, total: certsConnection.totalCount };
@@ -193,13 +194,9 @@ export class IndexerService extends GraphqlService<IndexerState> {
       return result;
     };
     if (isNotNilOrBlank(filter.issuer)) {
-      return this.indexerGraphqlService
-        .certsConnectionByIssuer(variables, fetchOptions)
-        .pipe(map(({ data }) => toEntities(data.certsConnection as CertsConnection)));
+      return this.indexerGraphqlService.certsConnectionByIssuer(variables, fetchOptions).pipe(map(({ data }) => toEntities(data.certsConnection)));
     } else {
-      return this.indexerGraphqlService
-        .certsConnectionByReceiver(variables, fetchOptions)
-        .pipe(map(({ data }) => toEntities(data.certsConnection as CertsConnection)));
+      return this.indexerGraphqlService.certsConnectionByReceiver(variables, fetchOptions).pipe(map(({ data }) => toEntities(data.certsConnection)));
     }
   }
 

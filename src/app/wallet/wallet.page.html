@@ -18,12 +18,7 @@
   <ion-header [translucent]="true">
     <ion-item color="secondary" lines="none">
       <ion-avatar slot="start" (click)="avatarModal.present()" [style.background-color]="'white'">
-        <ng-container *rxIf="account$; let account">
-          <ion-img *ngIf="account.meta?.avatar; let avatar; else: svgIcon" [src]="avatar"></ion-img>
-          <ng-template #svgIcon>
-            <svg [data-jdenticon-value]="account.data?.randomId || account.address"></svg>
-          </ng-template>
-        </ng-container>
+        <app-account-image [account]="account$ | push"></app-account-image>
       </ion-avatar>
       <ion-select
         [(ngModel)]="account"
