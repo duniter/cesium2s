@@ -34,7 +34,7 @@ import { NgInitDirective } from './ng-init.pipe';
 import { FormGetArrayPipe, FormGetControlPipe, FormGetGroupPipe, FormGetPipe, FormGetValuePipe } from './form.pipes';
 import { PropertyGetPipe } from './property.pipes';
 import { AmountFormatPipe } from '@app/shared/pipes/amount.pipe';
-import { AddressFormatPipe } from '@app/shared/pipes/address.pipes';
+import { AddressFormatPipe, AddressToPubkeyPipePipe } from '@app/shared/pipes/address.pipes';
 import {
   AccountBalancePipe,
   AccountNamePipe,
@@ -45,7 +45,6 @@ import {
 import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
 
 @NgModule({
-  imports: [CommonModule, IonicModule, TranslateModule],
   declarations: [
     PropertyGetPipe,
     DateFormatPipe,
@@ -84,6 +83,7 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
     // Currency pipes
     AmountFormatPipe,
     AddressFormatPipe,
+    AddressToPubkeyPipePipe,
     PubkeyFormatPipe,
     AbbreviatePipe,
     // Account pipes
@@ -93,6 +93,7 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
     IsMemberAccountPipe,
     IsUserAccountPipePipe,
   ],
+  imports: [CommonModule, IonicModule, TranslateModule],
   exports: [
     PropertyGetPipe,
     DateFormatPipe,
@@ -131,6 +132,7 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
     // Currency pipes
     AmountFormatPipe,
     AddressFormatPipe,
+    AddressToPubkeyPipePipe,
     PubkeyFormatPipe,
     AbbreviatePipe,
     // Account pipes

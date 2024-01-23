@@ -138,7 +138,7 @@ export class AuthController implements IAuthController {
 
     if (!data?.address) return null; // Skip
 
-    if (opts?.redirectToWalletPage) {
+    if (opts?.redirectToWalletPage !== false) {
       setTimeout(() => this.router.navigate(['/wallet', data.address]));
     }
 

@@ -11,6 +11,7 @@ import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/tran
 import { filter, map } from 'rxjs/operators';
 import { firstArrayValue, isNotNilOrBlank } from '@app/shared/functions';
 import { IndexerService } from '@app/network/indexer.service';
+import { address2PubkeyV1, pubkeyV1Checksum } from '@app/shared/currencies';
 
 export interface WotDetailsPageState extends AppPageState {
   address: string;
@@ -102,13 +103,18 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     return <WotDetailsPageState>{ account };
   }
 
-  async copyPubkey(event: UIEvent) {
-    if (this.loading || !this.data?.account?.meta?.publicKeyV1) return; // Skip
-
+  async copyPubkey(event: UIEvent, pubkey?: string) {
+    if (this.loading) return;
     event.preventDefault();
 
+    pubkey = pubkey || address2PubkeyV1(this.data?.address, this.context.currency?.ss58Format, false);
+    if (!pubkey) return; // Skip
+
+    // Append checksum
+    pubkey += ':' + pubkeyV1Checksum(pubkey);
+
     await Clipboard.write({
-      string: this.account.meta.publicKeyV1,
+      string: pubkey,
     });
     await this.showToast({ message: 'INFO.COPY_TO_CLIPBOARD_DONE' });
   }
@@ -126,5 +132,9 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
 
   async transferTo() {
     return this.transferController.transfer({ recipient: this.account });
+  }
+
+  async certify() {
+    // TODO
   }
 }

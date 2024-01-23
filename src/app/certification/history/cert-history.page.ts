@@ -222,7 +222,6 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
 
   addCertification() {
     // TODO
-    //return this.transferController.transfer({ account: this.account, modal: true, ...opts });
   }
 
   async showAccount(event: UIEvent, account: Account) {

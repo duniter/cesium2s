@@ -66,30 +66,24 @@
         required
       ></ion-textarea>
 
-      <!-- Scan QR code-->
-      <ion-button
-        slot="end"
-        fill="clear"
-        color="dark"
-        *ngIf="_enableScan"
-        [disabled]="loading$ | push"
-        [title]="'TRANSFER.BTN_SCAN_HELP' | translate"
-        (click)="scanQrCode($event)"
-      >
-        <ion-icon slot="icon-only" name="scan"></ion-icon>
-      </ion-button>
+      <div slot="end">
+        <!-- Scan QR code-->
+        <ion-button
+          fill="clear"
+          color="dark"
+          *ngIf="_enableScan"
+          [disabled]="loading$ | push"
+          [title]="'TRANSFER.BTN_SCAN_HELP' | translate"
+          (click)="scanQrCode($event)"
+        >
+          <ion-icon slot="icon-only" name="scan"></ion-icon>
+        </ion-button>
 
-      <!-- search -->
-      <ion-button
-        slot="end"
-        fill="clear"
-        color="dark"
-        [disabled]="loading$ | push"
-        [title]="'COMMON.BTN_SEARCH' | translate"
-        (click)="openWotModal($event)"
-      >
-        <ion-icon slot="icon-only" name="search"></ion-icon>
-      </ion-button>
+        <!-- search -->
+        <ion-button fill="clear" color="dark" [disabled]="loading$ | push" [title]="'COMMON.BTN_SEARCH' | translate" (click)="openWotModal($event)">
+          <ion-icon slot="icon-only" name="search"></ion-icon>
+        </ion-button>
+      </div>
 
       <ion-note slot="error" *rxIf="submitted$" translate>ERROR.FIELD_REQUIRED</ion-note>
     </ion-item>

@@ -23,7 +23,7 @@
   <ion-header [translucent]="true">
     <ion-item color="secondary" lines="none">
       <ion-avatar slot="start" [style.background-color]="'white'">
-        <app-account-image [account]="account$ | push"></app-account-image>
+        <app-account-image *rxIf="account$; let account" [account]="account"></app-account-image>
       </ion-avatar>
 
       @if (account$ | push | isUserAccount) {
@@ -68,18 +68,33 @@
 
       <ion-label *rxLet="item.account | isMemberAccount; let isMember">
         <h3>
-          <a
-            [routerLink]="['/wot', item.account.address]"
-            routerDirection="forward"
-            (click)="showAccount($event, item.account)"
-            class="tx-account"
-            [class.member]="isMember"
-          >
-            <small>
-              <ion-icon [name]="item.account.meta?.uid ? 'person' : 'key'"></ion-icon>
-            </small>
-            {{ item.account | accountName }}
-          </a>
+          @if (item.account | isUserAccount) {
+            <a
+              [routerLink]="['/wallet', item.account.address]"
+              routerDirection="root"
+              class="tx-account"
+              (click)="$event.preventDefault()"
+              [class.member]="isMember"
+            >
+              <small>
+                <ion-icon [name]="item.account.meta?.uid ? 'person' : 'key'"></ion-icon>
+              </small>
+              {{ item.account | accountName }}
+            </a>
+          } @else {
+            <a
+              [routerLink]="['/wot', item.account.address]"
+              routerDirection="forward"
+              class="tx-account"
+              (click)="$event.preventDefault()"
+              [class.member]="isMember"
+            >
+              <small>
+                <ion-icon [name]="item.account.meta?.uid ? 'person' : 'key'"></ion-icon>
+              </small>
+              {{ item.account | accountName }}
+            </a>
+          }
         </h3>
         <p>
           <a [routerLink]="['/block', item.blockNumber]" routerDirection="forward" (click)="$event.preventDefault()" class="tx-timestamp">

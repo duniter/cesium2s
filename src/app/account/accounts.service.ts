@@ -87,7 +87,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     // Configure keyring
     keyring.setDevMode(!environment.production);
-    keyring.setSS58Format(currency.prefix || 42 /* = dev format */);
+    keyring.setSS58Format(currency.ss58Format || 42 /* = dev format */);
 
     // Restoring accounts
     const accounts = await this.restoreAccounts(currency);
@@ -145,7 +145,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     keyring.loadAll({
       store: this._store,
-      ss58Format: currency?.prefix,
+      ss58Format: currency?.ss58Format,
       genesisHash: currency?.genesis,
       isDevelopment: !environment.production,
     });

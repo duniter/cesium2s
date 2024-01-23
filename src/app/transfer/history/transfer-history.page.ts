@@ -6,7 +6,7 @@ import { NetworkService } from '@app/network/network.service';
 import { ActionSheetOptions, InfiniteScrollCustomEvent, IonModal, PopoverOptions, RefresherCustomEvent } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import { filter, map, mergeMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, mergeMap, tap } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { firstValueFrom, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
@@ -99,9 +99,9 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
     // Watch address from route or account
     this._state.connect(
       'address',
-      merge(this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))), this.account$.pipe(map((a) => a?.address))).pipe(
-        filter((address) => isNotNilOrBlank(address) && address !== this.address)
-      )
+      merge(this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))), this.account$.pipe(map((a) => a?.address)))
+        .pipe(filter(isNotNilOrBlank))
+        .pipe(distinctUntilChanged())
     );
 
     // Watch accounts
@@ -110,40 +110,38 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
     // Load by address
     this._state.connect(
       'account',
-      this._state
-        .select(['accounts', 'address'], (res) => res)
-        .pipe(
-          filter(({ address }) => isNil(this.account) && isNotNilOrBlank(address)),
-          mergeMap(async ({ accounts, address }) => {
-            console.debug(this._logPrefix + 'Loading account from address: ' + address);
+      this._state.$.pipe(
+        filter((s) => isNotEmptyArray(s.accounts) && isNil(s.account) && isNotNilOrBlank(s.address)),
+        mergeMap(async ({ address, accounts }) => {
+          console.debug(this._logPrefix + 'Loading account from address: ' + address);
 
-            if (isNotEmptyArray(accounts)) {
-              let account: Account;
-              if (address === 'default') {
-                account = await this.accountService.getDefault();
-                return account;
-              }
-
-              // Load by address
-              const exists = await this.accountService.isAvailable(address);
-              if (exists) {
-                return this.accountService.getByAddress(address);
-              }
-
-              // Try by name
-              try {
-                account = await this.accountService.getByName(address);
-                return account;
-              } catch (err) {
-                const { data } = await firstValueFrom(this.indexerService.wotSearch({ address }, { limit: 1 }));
-                if (data?.length) return data[0];
-                throw err;
-              }
-            } else {
-              return (await firstValueFrom(this.indexerService.wotSearch({ address }, { limit: 1 })))?.[0];
+          if (isNotEmptyArray(accounts)) {
+            let account: Account;
+            if (address === 'default') {
+              account = await this.accountService.getDefault();
+              return account;
             }
-          })
-        )
+
+            // Load by address
+            const exists = await this.accountService.isAvailable(address, accounts);
+            if (exists) {
+              return this.accountService.getByAddress(address);
+            }
+
+            // Try by name
+            try {
+              account = await this.accountService.getByName(address);
+              return account;
+            } catch (err) {
+              const { data } = await firstValueFrom(this.indexerService.wotSearch({ address }, { limit: 1 }));
+              if (data?.length) return data[0];
+              throw err;
+            }
+          } else {
+            return (await firstValueFrom(this.indexerService.wotSearch({ address }, { limit: 1 })))?.[0];
+          }
+        })
+      )
     );
 
     // Create filter
@@ -220,10 +218,11 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
   async showAccount(event: UIEvent, account: Account) {
     if (!account.address) return; // skip
     event.preventDefault();
+    event.stopPropagation();
 
     // Self account
     if (await this.accountService.isAvailable(account?.address)) {
-      return this.navController.navigateRoot(['wallet', account.address]);
+      return this.navController.navigateForward(['wallet', account.address]);
     } else {
       return this.navController.navigateForward(['wot', account.address]);
     }

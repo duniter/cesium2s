@@ -5,7 +5,7 @@ import { formatPubkey } from '@app/shared/currencies';
   name: 'pubkeyFormat',
 })
 export class PubkeyFormatPipe implements PipeTransform {
-  transform(value: string): string {
-    return formatPubkey(value);
+  transform(value: string, withChecksum?: boolean): string {
+    return formatPubkey(value, withChecksum);
   }
 }

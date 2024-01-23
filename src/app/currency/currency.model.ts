@@ -5,7 +5,7 @@ export interface Currency {
   network: string;
   displayName: string;
   symbol: string;
-  prefix: number;
+  ss58Format: number;
   genesis: HexString | null;
   startTime: Moment | string;
   powBase: number;

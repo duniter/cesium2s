@@ -5,14 +5,18 @@ import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
 import { isNil, isNotEmptyArray, isNotNilOrBlank } from '@app/shared/functions';
 import { NetworkService } from '@app/network/network.service';
-import { ActionSheetOptions, IonModal, PopoverOptions } from '@ionic/angular';
+import { ActionSheetOptions, IonModal, IonPopover, PopoverOptions } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import { filter, mergeMap, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, mergeMap, switchMap } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { map, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController, TransferFormOptions } from '@app/transfer/transfer.model';
+import { TranslateModule } from '@ngx-translate/core';
+import { AppSharedModule } from '@app/shared/shared.module';
+import { AppAccountModule } from '@app/account/account.module';
+import { AppAuthModule } from '@app/account/auth/auth.module';
 
 export interface WalletState extends AppPageState {
   accounts: Account[];
@@ -20,7 +24,8 @@ export interface WalletState extends AppPageState {
   address: string;
   currency: string;
   balance: number;
-  certReceivedCount: number;
+  receivedCertCount: number;
+  givenCertCount: number;
 }
 
 @Component({
@@ -29,6 +34,8 @@ export interface WalletState extends AppPageState {
   styleUrls: ['./wallet.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [RxState],
+  standalone: true,
+  imports: [TranslateModule, AppSharedModule, AppAccountModule, AppAuthModule],
 })
 export class WalletPage extends AppPage<WalletState> implements OnInit {
   static NEW = Object.freeze(<Account>{
@@ -45,7 +52,8 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
 
   @RxStateSelect() account$: Observable<Account>;
   @RxStateSelect() accounts$: Observable<Account[]>;
-  @RxStateSelect() certReceivedCount$: Observable<number>;
+  @RxStateSelect() receivedCertCount$: Observable<number>;
+  @RxStateSelect() givenCertCount$: Observable<number>;
 
   get balance(): number {
     if (!this.account?.data) return undefined;
@@ -65,6 +73,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
 
   @ViewChild('authModal') authModal: IonModal;
   @ViewChild('qrCodeModal') qrCodeModal: IonModal;
+  @ViewChild('optionsPopover') optionsPopover: IonPopover;
 
   constructor(
     protected router: Router,
@@ -81,9 +90,9 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     // Watch address from route or account
     this._state.connect(
       'address',
-      merge(this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))), this.account$.pipe(map((a) => a?.address))).pipe(
-        filter((address) => isNotNilOrBlank(address) && address !== this.address)
-      )
+      merge(this.route.paramMap.pipe(map((paramMap) => paramMap.get('address'))), this.account$.pipe(map((a) => a?.address)))
+        .pipe(filter(isNotNilOrBlank))
+        .pipe(distinctUntilChanged())
     );
 
     // Watch accounts
@@ -96,7 +105,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     this._state.connect(
       'account',
       this._state.$.pipe(
-        filter((s) => isNotEmptyArray(s.accounts) && isNil(s.account) && isNotNilOrBlank(s.address) && s.account !== WalletPage.NEW),
+        filter((s) => isNotEmptyArray(s.accounts) && isNil(s.account) && isNotNilOrBlank(s.address)),
         mergeMap(async (s) => {
           console.debug(this._logPrefix + 'Loading account from address: ' + s.address);
 
@@ -119,13 +128,22 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
       )
     );
 
-    // Watch address from route or account
+    // Watch recieved/given certs
+    const validAddress$ = this.account$.pipe(
+      map((account) => account?.address),
+      filter(isNotNilOrBlank)
+    );
     this._state.connect(
-      'certReceivedCount',
-      this.account$.pipe(
-        map((account) => account?.address),
-        filter(isNotNilOrBlank),
+      'receivedCertCount',
+      validAddress$.pipe(
         switchMap((address) => this.networkService.indexer.certsSearch({ receiver: address }, { limit: 0 })),
+        map(({ total }) => total)
+      )
+    );
+    this._state.connect(
+      'givenCertCount',
+      validAddress$.pipe(
+        switchMap((address) => this.networkService.indexer.certsSearch({ issuer: address }, { limit: 0 })),
         map(({ total }) => total)
       )
     );
@@ -168,6 +186,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
   async addNewWallet(event?: Event): Promise<Account> {
     event?.preventDefault();
     event?.stopPropagation();
+    this.optionsPopover?.dismiss();
 
     const data = await this.accountService.createNew();
     if (!data) return null;

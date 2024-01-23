@@ -13,7 +13,7 @@ const routes: Routes = [
   },
   {
     path: 'wallet',
-    loadChildren: () => import('./wallet/wallet-routing.module').then((m) => m.AppWalletRoutingModule),
+    loadChildren: () => import('@app/account/wallet/wallet-routing.module').then((m) => m.AppWalletRoutingModule),
   },
   {
     path: 'history',

@@ -3,17 +3,23 @@ import { RxStartableService } from '@app/shared/services/rx-startable-service.cl
 import { Promise } from '@rx-angular/cdk/zone-less/browser';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { Observable } from 'rxjs';
+import { Currency } from '@app/currency/currency.model';
 
 export interface Context {
-  qrcode?: string;
-  address?: string;
-  amount?: number;
+  currency: Currency;
+  qrcode: string;
+
+  //address: string;
+  //amount: number;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContextService<T extends Context = Context> extends RxStartableService<T> {
+  @RxStateSelect() currency$: Observable<Currency>;
+  @RxStateProperty() currency: Currency;
+
   @RxStateSelect() qrcode$: Observable<string>;
   @RxStateProperty() qrcode: string;
 
