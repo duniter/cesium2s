@@ -124,6 +124,9 @@ build:env:
     # Show version
     - npm version
   script:
+    # This install is useful when adding dependencies in a branch (MR), those
+    # will not be in the base build image from the develop branch
+    - npm install --no-audit
     # Build
     - npm run build:${BUILD_ENVIRONMENT}
   after_script:
@@ -139,10 +142,7 @@ build:env:
 
 build:
   extends: .build
-  needs: ["build:env"]
   image: ${CI_BUILD_IMAGE}
-  only:
-    - develop
 
 build:feature:
   extends: .build
