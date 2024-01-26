@@ -2,9 +2,13 @@
   "name": "cesium",
   "version": "2.0.0-alpha22",
   "description": "Manage G1 wallet",
-  "author": "Benoit Lavenier <benoit.lavenier@e-is.pro>",
+  "author": {
+    "name": "Benoit Lavenier",
+    "email": "benoit.lavenier@e-is.pro"
+  },
   "homepage": "https://cesium.app",
   "license": "AGPL-3.0",
+  "main": "main.js",
   "repository": {
     "type": "git",
     "url": "git.duniter.org:clients/cesium-grp/cesium2.git"
@@ -43,7 +47,8 @@
     "generate:defs": "ts-node --skip-project node_modules/.bin/polkadot-types-from-defs --package @duniter/interfaces --input src/interfaces --endpoint src/interfaces/types.json",
     "generate:meta": "ts-node --skip-project node_modules/.bin/polkadot-types-from-chain --package @duniter/interfaces  --output src/interfaces --endpoint src/interfaces/types.json",
     "generate:graphql": "graphql-codegen",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "capacitor:sync": "cap sync"
   },
   "lint-staged": {
     "src/**/*.{ts,html}": [
@@ -67,6 +72,7 @@
     "@angular/router": "^17.0.4",
     "@apollo/client": "~3.8.5",
     "@capacitor-community/barcode-scanner": "~4.0.1",
+    "@capacitor-community/electron": "^5.0.1",
     "@capacitor/android": "^5.0.0",
     "@capacitor/app": "^5.0.0",
     "@capacitor/assets": "^3.0.4",
@@ -97,6 +103,7 @@
     "@rx-angular/cdk": "^17.0.0",
     "@rx-angular/state": "^17.0.0",
     "@rx-angular/template": "^17.0.0",
+    "@types/electron": "^1.6.10",
     "apollo-angular": "~6.0.0",
     "apollo-link-logger": "~2.0.1",
     "apollo-link-queue": "~3.1.0",
@@ -153,6 +160,8 @@
     "@types/react": "^18.2.47",
     "@typescript-eslint/eslint-plugin": "6.17.0",
     "@typescript-eslint/parser": "6.17.0",
+    "electron": "^28.1.4",
+    "electron-builder": "^24.9.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "~9.1.0",
     "eslint-plugin-import": "2.29.1",
@@ -178,5 +187,17 @@
     "node": ">= 18.18.2",
     "npm": ">= 9.9.1",
     "yarn": ">= 1.22.19"
+  },
+  "build": {
+    "appId": "${name}",
+    "directories": {
+      "output": "release"
+    },
+    "asar": true,
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
   }
 }

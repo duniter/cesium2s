@@ -1,0 +1,21 @@
+{
+  "name": "##APP_ID##",
+  "main": "splash.html",
+  "license": "AGPL-3.0",
+  "window": {
+    "id": "splash",
+    "icon": "icon.png",
+    "min_width": 640,
+    "min_height": 480,
+    "max_width": 640,
+    "max_height": 480,
+    "position": "center",
+    "frame": false,
+    "fullscreen": false
+  },
+  "dependencies": {
+    "bs58": "^4.0.1",
+    "cli-color": "^2.0.3",
+    "js-yaml": "^3.14.1"
+  }
+}

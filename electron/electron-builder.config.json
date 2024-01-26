@@ -1,0 +1,33 @@
+{
+  "appId": "app.cesium2s",
+  "asar": "false",
+  "directories": {
+    "buildResources": "resources"
+  },
+  "files": [
+    "assets/**/*",
+    "build/**/*",
+    "capacitor.config.*",
+    "app/**/*",
+    "LICENSE.txt"
+  ],
+  "linux": {
+    "icon": "assets/icons/",
+    "category": "Office;Finance"
+  },
+  "nsis": {
+    "allowElevation": true,
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "installerIcon": "assets/icon.ico",
+    "license": "LICENSE.txt",
+  },
+  "win": {
+    "target": "nsis",
+    "icon": "assets/icon.ico"
+  },
+  "mac": {
+    "category": "public.app-category.finance",
+    "target": "dmg"
+  }
+}

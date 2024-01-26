@@ -8,6 +8,7 @@ import { TransferController } from '@app/transfer/send/transfer.controller';
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { fadeInAnimation } from '@app/shared/animations';
 import { SettingsService } from '@app/settings/settings.service';
+import { isElectron } from './shared/services/electron.class';
 
 export interface IMenuItem {
   title: string;
@@ -62,7 +63,7 @@ export class AppComponent {
     protected settings: SettingsService,
     private accountService: AccountsService,
     private transferController: TransferController,
-    private router: Router
+    public router: Router
   ) {
     this.start();
   }
@@ -74,8 +75,12 @@ export class AppComponent {
     // Start all stuff (services, plugins, etc.)
     await this.platform.start();
 
-    console.info(`[app] Starting [OK] in ${Date.now() - now}ms`);
+    if (isElectron(window)) {
+      // window.electronAPI.on('route', (route) => this.router.navigateByUrl(route));
+      // window.electronAPI.send('ready');
+    }
 
+    console.info(`[app] Starting [OK] in ${Date.now() - now}ms`);
     // Detecting deep link
     await this.detectDeepLink();
   }

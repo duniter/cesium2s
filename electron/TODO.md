@@ -1,0 +1,1 @@
+- Remove `@types/node": "^16.18.71"` from package json when `chokidar` will be compatible with node 18 (see <https://github.com/paulmillr/chokidar/issues/1299>)
