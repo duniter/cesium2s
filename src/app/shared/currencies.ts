@@ -81,7 +81,7 @@ export const WELL_KNOWN_CURRENCIES = Object.freeze({
     symbol: 'GD',
     ss58Format: 42,
     genesis: '0xa565a0ccbab8e5f29f0c8a901a3a062d17360a4d4f5319d03a1580fba4cbf3f6',
-    startTime: '2017-07-08T00:00:00.00Z', // TODO
+    startTime: '2023-11-29T21:39:00.00Z', // TODO
     fees: {
       identity: 300, // = 3 Gdev
       tx: 2, // = 0.02 Gdev

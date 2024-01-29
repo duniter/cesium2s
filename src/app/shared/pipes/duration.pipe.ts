@@ -6,7 +6,7 @@ import { toDuration } from '../dates';
   name: 'duration',
 })
 export class DurationPipe implements PipeTransform {
-  protected dayUnit = this.translate.instant('COMMON.DAY_UNIT');
+  protected dayUnit = this.translate.instant('COMMON.DAYS');
 
   constructor(private translate: TranslateService) {}
 
