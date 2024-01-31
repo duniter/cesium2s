@@ -1,6 +1,6 @@
 {
   "appId": "app.cesium2s",
-  "asar": "false",
+  "asar": "true",
   "directories": {
     "buildResources": "resources"
   },

@@ -116,5 +116,8 @@ if (fs.existsSync(`${projectDir}/.local`)) {
     + `export JAVA_HOME="${process.env.JAVA_HOME}"\n`
     + `export GRADLE_HOME="${process.env.GRADLE_HOME}"\n\n`
     + `export PATH="${process.env.PATH}"\n`
+    + !!process.env.AMO_JWT_ISSUER ? `export AMO_JWT_ISSUER="${process.env.AMO_JWT_ISSUER}"\n` : ''
+    + !!process.env.AMO_JWT_SECRET ? `export AMO_JWT_SECRET="${process.env.AMO_JWT_SECRET}"\n` : ''
+    + !!process.env.WEB_EXT_ID ? `export WEB_EXT_ID="${process.env.WEB_EXT_ID}"\n` : ''
   );
 }
