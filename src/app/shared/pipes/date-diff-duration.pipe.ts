@@ -7,7 +7,7 @@ import { DateUtils, fromDateISOString } from '@app/shared/dates';
   name: 'dateDiffDuration',
 })
 export class DateDiffDurationPipe implements PipeTransform {
-  protected dayUnit = this.translate.instant('COMMON.DAY_UNIT');
+  protected dayUnit = this.translate.instant('COMMON.DAYS');
 
   constructor(private translate: TranslateService) {}
 
