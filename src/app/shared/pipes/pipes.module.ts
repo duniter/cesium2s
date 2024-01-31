@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { IonicModule } from '@ionic/angular';
+import { BlockTimePipe } from './block-timestamp.pipe';
 import { DateFormatPipe } from './date-format.pipe';
 import { DateDiffDurationPipe } from './date-diff-duration.pipe';
 import { DateFromNowPipe } from './date-from-now.pipe';
@@ -47,6 +48,7 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
 @NgModule({
   declarations: [
     PropertyGetPipe,
+    BlockTimePipe,
     DateFormatPipe,
     DateDiffDurationPipe,
     DurationPipe,
@@ -96,6 +98,7 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
   imports: [CommonModule, IonicModule, TranslateModule],
   exports: [
     PropertyGetPipe,
+    BlockTimePipe,
     DateFormatPipe,
     DateFromNowPipe,
     DateDiffDurationPipe,
