@@ -56,13 +56,15 @@
           </a>
         </h3>
         <p>
+          <ion-icon name="key"></ion-icon>
+          {{ item.account.address | addressToPubkeyV1 | pubkeyFormat: true }} |
           <a [routerLink]="['/block', item.createdOn]" routerDirection="forward" (click)="$event.preventDefault()" class="tx-timestamp">
             {{ 'COMMON.BLOCK' | translate }} #{{ item.createdOn }}
           </a>
         </p>
       </ion-label>
 
-      <ion-badge [color]="item.amount > 0 ? 'secondary' : 'light'" slot="end">{{ item.amount | amountFormat }}</ion-badge>
+      <ion-badge *rxIf="item.expireOn" [color]="'light'" slot="end">{{ item.expireOn | blockTime | dateFromNow }}</ion-badge>
     </ion-item>
 
     <!-- loading spinner -->
