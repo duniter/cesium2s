@@ -222,59 +222,6 @@ function replaceTextInFile(filePath, replaceItems) {
   }
 }
 
-function parseVersion(version) {
-  let maj, min, patch, type, num;
-
-  const split = version.replace('-', '.').replace(/(alpha|beta|rc)/, '$1.').split('.');
-  if (split.length === 3) [maj, min, patch] = split;
-  else if (split.length === 4) [maj, min, patch, num] = split;
-  else if (split.length === 5) [maj, min, patch, type, num] = split;
-  else throw new Error(`Bad version format ${version}`);
-
-  return {
-    maj,
-    min,
-    patch,
-    type,
-    num,
-  }
-}
-
-/**
- * Standardiser le format de version pour être compatible avec un paquet webext
- * @param {string} version - Une version au format \d+\.\d+\.\d(-(alpha|beta|rc)\d)?
- * @returns {string} Une version au format \d\.\d\.\d(\.\d)?
- *                  (si le type de version est bêta ajoute 100 au a la dérnière valleur, et si c'est rc, lui ajoute 200)
- */
-function standardizeVersionForWebExt(version) {
-  const v = parseVersion(version);
-
-  if (!!v.type) {
-    if (v.type === 'beta') v.num = (parseInt(v.num) + 100).toString();
-    if (v.type === 'rc') v.num = (parseInt(v.num) + 200).toString();
-    v.type = undefined;
-  }
-
-  return Object.values(v).filter(i => !!i).join('.');
-}
-
-/**
- * Standardiser le format de version pour être compatible android
- * @param {string} version - Une version au format \d+\.\d+\.\d(-(alpha|beta|rc)\d)?
- * @returns {string} Une version au format \d\d\d\d\d\d
- *                   Si les version majeur, mineur ou path son inferieur a 10, les préfixe avec 0
- */
-function standardizeVersionForAndroid(version) {
-  const parsedVersion = parseVersion(version);
-
-  // TODO How manage alpha, beta, rc ?
-  //      actually only keep major, minor and patch with two digit for each
-  return Object.values(parsedVersion)
-    .filter(i => !isNaN(i))
-    .slice(0, 3)
-    .map(i => (parseInt(i) < 10) ? '0' + i : i)
-    .join('');
-}
 
 module.exports = {
   canExecute,
@@ -288,7 +235,5 @@ module.exports = {
   moveFiles,
   mvFile,
   replaceTextInFile,
-  standardizeVersionForAndroid,
-  standardizeVersionForWebExt,
   unzipFile,
 };
