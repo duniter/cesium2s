@@ -4,7 +4,7 @@
   const path = require('path');
   const fs = require('fs');
   const stdio = require('stdio');
-  const {copyFiles, standardizeVersionForWebExt} = require('./utils');
+  const {copyFiles} = require('./utils');
   const webext = await import('web-ext');
 
   let projectDir = path.resolve(__dirname, '../..');
@@ -15,7 +15,6 @@
   const MKPKG_DIR = path.join(projectDir, 'release', 'web-ext');
   const MKPKG_SRC_DIR = path.join(MKPKG_DIR, 'src');
   const MKPKG_RESOURCES = path.join(projectDir, 'resources', 'web-ext');
-  const PACKAGE_JSON = require(path.join(projectDir, 'package.json'));
   const OPTIONS = stdio.getopt({
     publish: {
       description: "Publish the addon (sign the addon with 'listed' channel, see `--channel` on `web-ext sign --help`)",
@@ -56,6 +55,7 @@
     if (! fs.existsSync(APP_BUILD_DIR, 'index.html')) {
       throw new Error('App is not built');
     }
+    await copyFiles(APP_BUILD_DIR, MKPKG_SRC_DIR);
   }
 
   async function copyResources() {
