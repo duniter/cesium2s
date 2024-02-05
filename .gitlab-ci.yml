@@ -237,6 +237,8 @@ package:electron:
     expire_in: 72 hours
   only:
     - develop
+    - /^feature\/.*/
+    - /^features\/.*/
   when: manual
 
 package:webext:
@@ -255,6 +257,8 @@ package:webext:
       - release
   only:
     - develop
+    - /^feature\/.*/
+    - /^features\/.*/
   when: manual
 
 # ---------------------------------------------------------------
