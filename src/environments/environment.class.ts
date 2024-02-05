@@ -7,6 +7,7 @@ export interface Environment {
   name: string;
   version?: string;
   production: boolean;
+  webext: boolean;
 
   // Default values
   baseUrl?: string;

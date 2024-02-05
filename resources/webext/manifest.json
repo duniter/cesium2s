@@ -1,4 +1,5 @@
 {
+  "manifest_version": 2,
   "name": "cesium",
   "version": "2.0.0.22",
   "version_name": "2.0.0-alpha22",
@@ -18,21 +19,20 @@
   "browser_action": {
     "default_title": "Cesium²",
     "default_icon": {
-      "32": "img/logo_32px.png",
-      "60": "img/logo_60px.png",
-      "96": "img/logo_96px.png",
-      "128": "img/logo_128px.png",
-      "192": "img/logo_192px.png"
+      "32": "icon/logo_32px.png",
+      "60": "icon/logo_60px.png",
+      "96": "icon/logo_96px.png",
+      "128": "icon/logo_128px.png",
+      "192": "icon/logo_192px.png"
     }
   },
   "icons": {
-    "32": "img/logo_32px.png",
-    "60": "img/logo_60px.png",
-    "96": "img/logo_96px.png",
-    "128": "img/logo_128px.png",
-    "192": "img/logo_192px.png"
+    "32": "icon/logo_32px.png",
+    "60": "icon/logo_60px.png",
+    "96": "icon/logo_96px.png",
+    "128": "icon/logo_128px.png",
+    "192": "icon/logo_192px.png"
   },
-  "manifest_version": 2,
   "protocol_handlers": [
     {
       "protocol": "web+june",

@@ -90,6 +90,23 @@ variables:
     - npm version
     - export NODE_OPTIONS=--max-old-space-size=4096
 
+.configure-electron-template: &electron-setup
+  image: ${CI_BUILD_IMAGE}
+  tags: [kepler]
+  before_script:
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
+    - npm install @capacitor-community/electron
+    - npm run capacitor:sync:electron
+
+.configure-webext-template: &webext-setup
+  image: ${CI_BUILD_IMAGE}
+  tags: [kepler]
+  before_script:
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
+    - npm install web-ext
+
 # ---------------------------------------------------------------
 # Environment jobs : Create docker image for builds/release, this
 # offers possibility to cache project dependencies so we don't
@@ -191,10 +208,51 @@ package:android:
     - mv -f ${CI_PROJECT_DIR}/android/app/build/outputs/apk/*/*.apk $CI_PROJECT_DIR/release/
   artifacts:
     paths:
-      - $CI_PROJECT_DIR/release/
+      - release
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
+  only:
+    - develop
+  when: manual
+
+package:electron:
+  <<: *electron-setup
+  stage: package
+  needs: [ build ]
+  image: ${CI_BUILD_IMAGE}
+  script:
+    - echo "--- Building Electron linux package ..."
+    - cd ${CI_PROJECT_DIR}/electron
+    - npm install
+    - npm run build
+    - npm run package:linux
+    - cd -
+  after_script:
+   - mkdir -p "${CI_PROJECT_DIR}/release/"
+   - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
+  artifacts:
+    paths:
+      - release
+    expire_in: 72 hours
+  only:
+    - develop
+  when: manual
+
+package:webext:
+  <<: *webext-setup
+  stage: package
+  needs: [ build ]
+  script:
+    - echo "--- Building webext package ..."
+    - npm run webext:build
+  after_script:
+   # Make packages file available for next jobs
+   - mkdir -p "${CI_PROJECT_DIR}/release/"
+   - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
+  artifacts:
+    paths:
+      - release
   only:
     - develop
   when: manual
@@ -210,27 +268,8 @@ package:android:
     - echo "--- Release in progress"
     - git checkout -B release/${RELEASE_VERSION}
     - echo "--- Manage app version"
-    - 'current=$(grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?" package.json | grep -m 1 -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
-    - 'currentManifestVersion=$(grep -oP "version\": \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" src/manifest.json | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
-    - 'currentAndroidVersionCode=$(grep -oP "versionCode [0-9]+" android/app/build.gradle | grep -oP "\d+")'
-    - 'currentAndroidVersionName=$(grep -oP "versionName \"\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?\"" android/app/build.gradle | grep -oP "\d+.\d+.\d+(-(alpha|beta|rc)[0-9]+)?")'
-    - 'echo " Current version: $current"'
-    - 'echo " Current Manifest version: $currentManifestVersion"'
-    - 'echo " Current Android version code: $currentAndroidVersionCode"'
-    - 'echo " Current Android version name: $currentAndroidVersionName"'
-    - 'IFS="."'
-    - 'read -ra SPLITED_VERSION <<< "${RELEASE_VERSION}"'
-    - 'IFS="-"'
-    - 'read -ra SPLITED_PATCH <<< "${SPLITED_VERSION[2]}"'
-    - 'major2d=$(printf %02d ${SPLITED_VERSION[0]}) ; minor2d=$(printf %02d ${SPLITED_VERSION[1]}) ; patch2d=$(printf %02d ${SPLITED_PATCH[0]})'
-    - 'androidVersionCode=$major2d$minor2d$patch2d'
-    - 'echo " Next version: ${RELEASE_VERSION}"'
-    - 'echo " Next Android version code: $androidVersionCode"'
-    - 'sed -i "s/\"version\": \"$current\"/\"version\": \"${RELEASE_VERSION}\"/g" package.json'
-    - 'sed -i "s/\"version\": \"$currentManifestVersion\"/\"version\": \"${RELEASE_VERSION}\"/g" src/manifest.json'
-    - 'sed -i "s/versionCode $currentAndroidVersionCode\"/versionCode $androidVersionCode\"/g" android/app/build.gradle'
-    - 'sed -i "s/versionName \"$currentAndroidVersionName\"/versionName \"${RELEASE_VERSION}\"/g" android/app/build.gradle'
-    - 'sed -i "s/echo \".*\" #lastest/echo \"${RELEASE_VERSION}\" #lastest/g" install.sh'
+    - npm run get:version
+    - npm set:version ${RELEASE_VERSION}
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -242,7 +281,7 @@ package:android:
     - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
     # Git process for release (ISO gitflow)
     - echo "--- Fishing release"
-    - git add package.json src/manifest.json android/app/build.gradle install.sh
+    - git add package.json electron/package.json src/manifest.json resources/webext/manifest.json android/app/build.gradle install.sh
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git checkout master; fi
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git reset --hard origin/master
@@ -274,7 +313,7 @@ package:android:
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${zipFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
-      - ${CI_PROJECT_DIR}/release
+      - release
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 24 hours
@@ -334,7 +373,7 @@ release:tags:
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
-      - ${CI_PROJECT_DIR}/release
+      - release
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 24 hours
@@ -374,12 +413,12 @@ gitlab-release:
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
     - mv "${sourceFile}" "${releaseFile}"
-    - echo "--- Deploy to gitlab package ${targetUrl} ..."
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "--- Deploy to gitlab package ${targetUrl} ..."
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
-      - ${CI_PROJECT_DIR}/release
+      - release
     expire_in: 24 hours
   allow_failure: true
   only:
@@ -398,3 +437,84 @@ deploy:android:tags:
   needs: [release:tags]
   only:
     - tags
+
+.deploy:electron:
+  <<: *electron-setup
+  image: electronuserland/builder:18-wine
+  stage: package
+  needs: [release]
+  script:
+    - echo "--- Building Electron linux package ..."
+    - cd ${CI_PROJECT_DIR}/electron
+    - npm install
+    - npm run build
+    - npm run package:linux
+    - npm run package:windows
+    - cd -
+  after_script:
+    # - mkdir -p "${CI_PROJECT_DIR}/release/"
+    # - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
+    # TODO
+    # - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    # - echo "--- Deploy to gitlab package ${targetUrl} ..."
+    # - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
+  artifacts:
+    paths:
+      - release
+    expire_in: 24 hours
+  allow_failure: true
+  only:
+    - develop
+
+deploy:electron:
+  extends: .deploy:electron
+  needs: [release]
+
+failsafe-deploy:electron:
+  extends: .deploy:electron
+  needs: [failsafe-release]
+
+deploy:electron:tags:
+  extends: .deploy:electron
+  needs: [release:tags]
+  only:
+    - tags
+
+.deploy:webext:
+  <<: *webext-setup
+  stage: package
+  needs: [release]
+  script:
+    - npm run webext:build
+    - npm run webext:sign:listed
+  # after_script:
+    # TODO
+    # - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    # - echo "--- Deploy to gitlab package ${targetUrl} ..."
+    # - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
+  artifacts:
+    paths:
+      - release
+    expire_in: 24 hours
+  only:
+    - develop
+
+# deploy:webext:
+#   extends: .deploy:webext
+#   stage: package
+#   needs: [release]
+#   script:
+#     - npm run webext:build
+#     - npm run webext:sign:listed
+#   only:
+#     - develop
+#
+# failsafe-deploy:webext:
+#   extends: .deploy:webext
+#   needs: [failsafe-release]
+#
+# deploy:webext:tags:
+#   extends: .deploy:webext
+#   needs: [release:tags]
+#   only:
+#     - tags

@@ -8,6 +8,7 @@ export const environment = <Environment>{
   name: pkg.name as string,
   version: pkg.version as string,
   production: true,
+  webext: false,
 
   defaultLocale: 'fr',
 

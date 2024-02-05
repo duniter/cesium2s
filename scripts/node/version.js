@@ -71,7 +71,7 @@ function updateWebExtVersion(versionCode, versionName) {
   const regexpVersionCode = /(^\s+"version":)(\s+"[^"]+",$)/;
   const regexpVersionName = /(^\s+"version_name":)(\s+"[^"]+",$)/;
   [
-    path.join(PROJECT_DIR, 'resources', 'web-ext', 'manifest.json'),
+    path.join(PROJECT_DIR, 'resources', 'webext', 'manifest.json'),
   ].forEach(file => {
       console.info(`${LOG_PREFIX} update version webext in ${file}`);
       utils.replaceTextInFile(file, [
@@ -107,6 +107,17 @@ function updateAndroidVersion(versionCode, versionName) {
     });
 }
 
+function updateInstallSh(version) {
+  const file = path.join(PROJECT_DIR, 'install.sh');
+  console.info(`${LOG_PREFIX} update version in ${file}`);
+  utils.replaceTextInFile(file, [
+    {
+      searchValue: /(^\s*echo\s+")([^"]*)("\s+\#lastest$)/,
+      replaceValue: `$1${version}$3`,
+    },
+  ]);
+}
+
 async function main() {
 
   const options = stdio.getopt({
@@ -133,9 +144,10 @@ async function main() {
     updateVersion(version);
     updateWebExtVersion(versionWebext, version);
     updateAndroidVersion(versionAndroid, version);
+    updateInstallSh(version);
   }
 
-  console.info(`${LOG_PREFIX} Computed version :`,
+  console.info(`${LOG_PREFIX} Computed version ${options.set ? 'updated' : 'current'}:`,
     `\n\tstandard : ${version}`,
     `\n\twebext : ${versionWebext}`,
     `\n\tandroid : ${versionAndroid}`);

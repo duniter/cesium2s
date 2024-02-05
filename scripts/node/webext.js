@@ -11,18 +11,17 @@
   require('./env-global');
 
   const LOG_PREFIX = `[${__filename}]`;
-  const APP_BUILD_DIR = path.join(projectDir, 'www');
-  const MKPKG_DIR = path.join(projectDir, 'release', 'web-ext');
-  const MKPKG_SRC_DIR = path.join(MKPKG_DIR, 'src');
-  const MKPKG_RESOURCES = path.join(projectDir, 'resources', 'web-ext');
+  const ARTIFACTS_DIR = path.join(projectDir, 'release');
+  const MKPKG_DIR = path.join(projectDir, 'webext');
+  const MKPKG_RESOURCES = path.join(projectDir, 'resources', 'webext');
   const OPTIONS = stdio.getopt({
     publish: {
       description: "Publish the addon (sign the addon with 'listed' channel, see `--channel` on `web-ext sign --help`)",
       default: false,
     },
-    keepsrc: {
-      key: 'k',
-      description: "Keep pkg source dir (do not re-init it)",
+    init: {
+      key: 'i',
+      description: "Initialize webext source directory",
       default: false,
     },
     pkg: {
@@ -42,59 +41,34 @@
     },
   });
 
-  function clean() {
-    console.info(`${LOG_PREFIX} clean...`)
-    if (fs.existsSync(MKPKG_DIR)) {
-      fs.rmSync(MKPKG_DIR, {recursive: true});
+  function checkBuild() {
+    if (! fs.existsSync(path.join(MKPKG_DIR, 'index.html'))) {
+      throw new Error('Web ext app is not build : run `npm build:webext` before');
     }
-    fs.mkdirSync(MKPKG_SRC_DIR, { recursive: true });
-  }
-
-  async function copyAppBuild() {
-    console.info(`${LOG_PREFIX} copy app files...`)
-    if (! fs.existsSync(APP_BUILD_DIR, 'index.html')) {
-      throw new Error('App is not built');
-    }
-    await copyFiles(APP_BUILD_DIR, MKPKG_SRC_DIR);
   }
 
   async function copyResources() {
     console.info(`${LOG_PREFIX} copy web-ext resources...`)
-    await copyFiles(MKPKG_RESOURCES, MKPKG_SRC_DIR);
-  }
-
-  async function copyImg() {
-    console.info(`${LOG_PREFIX} copy web-ext img...`);
-    const src = path.join(projectDir, 'resources', 'logo', 'web-ext');
-    const dest = path.join(MKPKG_SRC_DIR, 'img');
-    fs.mkdirSync(dest);
-    await copyFiles(src, dest);
+    await copyFiles(MKPKG_RESOURCES, MKPKG_DIR);
   }
 
   async function initPkg() {
-    const exist = fs.existsSync(path.join(MKPKG_SRC_DIR, 'manifest.json'));
-    if (exist && OPTIONS.keepsrc) {
-      console.info(`${LOG_PREFIX} skip pkgInit (keepsrc)...`);
-      return;
-    }
     console.info(`${LOG_PREFIX} init pkg src...`);
-    clean();
-    await copyAppBuild();
     await copyResources();
-    await copyImg();
+    await lintPkg();
   }
 
   async function runPkg() {
     console.info(`${LOG_PREFIX} run package...`);
     const res = await webext.cmd.run({
-      sourceDir: MKPKG_SRC_DIR,
+      sourceDir: MKPKG_DIR,
     });
   }
 
   async function lintPkg() {
     console.info(`${LOG_PREFIX} lint package...`);
     const res = await webext.cmd.lint({
-      sourceDir: MKPKG_SRC_DIR,
+      sourceDir: MKPKG_DIR,
       output: 'text',
     }, {shouldExitProgram: false});
     if (res.summary.errors > 0) {
@@ -105,9 +79,9 @@
   async function mkPkg() {
     console.info(`${LOG_PREFIX} make unsigned web-ext package...`);
     await webext.cmd.build({
-      sourceDir: MKPKG_SRC_DIR,
-      artifactsDir: path.join(MKPKG_DIR),
-      filename: '{name}-{version}-webext-unsigned.zip',
+      sourceDir: MKPKG_DIR,
+      artifactsDir: path.join(ARTIFACTS_DIR),
+      filename: '{name}-v{version}-extension.zip',
     });
   }
 
@@ -124,8 +98,8 @@
     }
 
     await webext.cmd.sign({
-      sourceDir: MKPKG_SRC_DIR,
-      artifactsDir: MKPKG_DIR,
+      sourceDir: MKPKG_DIR,
+      artifactsDir: ARTIFACTS_DIR,
       apiKey,
       apiSecret,
       id,
@@ -134,8 +108,12 @@
   }
 
   async function main() {
-    if (!OPTIONS.keepsrc) await initPkg();
-    await lintPkg();
+    checkBuild();
+    if (OPTIONS.init) await initPkg();
+    if (!fs.existsSync(path.join(MKPKG_DIR, 'manifest.json'))) {
+      console.error(`${LOG_PREFIX} webext is not initialized : run \`npm run webext:init\``);
+      return;
+    }
     if (OPTIONS.run) await runPkg();
     else {
       if (OPTIONS.pkg) await mkPkg();

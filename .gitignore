@@ -35,6 +35,8 @@ yarn.lock
 /release
 /node_modules
 /www
+/webext
 /out-tsc/
 /.local/
 /release/
+/.gitlab-ci-local/

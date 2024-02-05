@@ -15,13 +15,10 @@
     "main": "build/src/index.js",
     "scripts": {
         "build": "tsc && electron-rebuild",
-        "electron:start-live": "node ./live-runner.js",
-        "electron:start": "npm run build && electron --inspect=5858 ./",
-        "electron:pack": "npm run build && electron-builder build --dir -c ./electron-builder.config.json",
-        "electron:make": "npm run build && electron-builder build -c ./electron-builder.config.json -p always",
-        "electron:build:win:setup": "electron-builder -c electron-builder.config.json --win nsis",
-        "electron:build:linux:appimage": "electron-builder -c electron-builder.config.json --linux AppImage",
-        "electron:build:linux:deb": "electron-builder -c electron-builder.config.json --linux deb"
+        "start-live": "node ./live-runner.js",
+        "start": "npm run build && electron --inspect=5858 ./",
+        "package:linux": "electron-builder build --dir -c ./electron-builder.config.json --linux AppImage deb",
+        "package:windows": "electron-builder build --dir -c ./electron-builder.config.json --windows nsis"
     },
     "dependencies": {
         "@capacitor-community/electron": "^5.0.0",
