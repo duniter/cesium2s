@@ -441,7 +441,7 @@ deploy:android:tags:
 .deploy:electron:
   <<: *electron-setup
   image: electronuserland/builder:18-wine
-  stage: package
+  stage: deploy
   needs: [release]
   script:
     - echo "--- Building Electron linux package ..."
@@ -482,7 +482,7 @@ deploy:electron:tags:
 
 .deploy:webext:
   <<: *webext-setup
-  stage: package
+  stage: deploy
   needs: [release]
   script:
     - npm run webext:build
