@@ -216,11 +216,10 @@ package:android:
     - develop
   when: manual
 
-package:electron:
+.package:electron:
   <<: *electron-setup
   stage: package
-  needs: [ build ]
-  image: ${CI_BUILD_IMAGE}
+  image: electronuserland/builder:18-wine
   script:
     - echo "--- Building Electron linux package ..."
     - cd ${CI_PROJECT_DIR}/electron
@@ -229,37 +228,55 @@ package:electron:
     - npm run package:linux
     - cd -
   after_script:
-   - mkdir -p "${CI_PROJECT_DIR}/release/"
-   - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
+    - mkdir -p "${CI_PROJECT_DIR}/release/"
+    - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
   artifacts:
     paths:
       - release
     expire_in: 72 hours
   only:
     - develop
-    - /^feature\/.*/
-    - /^features\/.*/
   when: manual
 
-package:webext:
-  <<: *webext-setup
-  stage: package
+package:electron:
+  extends: .package:electron
   needs: [ build ]
+  only:
+    - develop
+
+package:electron:feature:
+  extends: .package:electron
+  needs: [ build:feature ]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+
+.package:webext:
+  <<: *webext-setup
+  image: ${CI_BUILD_IMAGE}
+  stage: package
   script:
     - echo "--- Building webext package ..."
     - npm run webext:build
-  after_script:
-   # Make packages file available for next jobs
-   - mkdir -p "${CI_PROJECT_DIR}/release/"
-   - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
   artifacts:
     paths:
       - release
   only:
     - develop
+  when: manual
+
+package:webext:
+  extends: .package:webext
+  needs: [ build ]
+  only:
+    - develop
+
+package:webext:feature:
+  extends: .package:webext
+  needs: [ build:feature ]
+  only:
     - /^feature\/.*/
     - /^features\/.*/
-  when: manual
 
 # ---------------------------------------------------------------
 # Release jobs
