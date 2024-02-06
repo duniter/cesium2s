@@ -9,7 +9,7 @@ export const environment = <Environment>{
   version: pkg.version as string,
   production: true,
 
-  useHash: false,
+  useHash: true,
   defaultLocale: 'fr',
 
   graphql: {

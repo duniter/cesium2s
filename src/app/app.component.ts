@@ -75,7 +75,6 @@ export class AppComponent {
     await this.platform.start();
 
     console.info(`[app] Starting [OK] in ${Date.now() - now}ms`);
-
     // Detecting deep link
     await this.detectDeepLink();
   }

@@ -1,0 +1,5 @@
+- Remove `@types/node": "^16.18.71"` from package json when `chokidar` will be compatible with node 18 (see <https://github.com/paulmillr/chokidar/issues/1299>)
+- Make LICENSE.txt can include installer.
+- Fix version in `electron/package.json` (depending on cesium version ?)
+- Splash screen ?
+- Find a way to not use 'unsafe-inline' 'unsafe-eval' in CSP (see `setupContentSecurityPolicy` in `electron/src/setup.ts`)
