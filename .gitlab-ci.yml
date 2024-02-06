@@ -31,6 +31,7 @@ workflow:
 
 variables:
   CI_BUILD_IMAGE: $CI_REGISTRY_IMAGE/build:develop
+  CI_BUILD_ELECTRON_IMAGE: electronuserland/builder:18-wine
   BUILD_CACHE_DIR: /tmp/.build-cache
   BUILD_ENVIRONMENT: prod
   DOCKER_BUILDKIT: 1
@@ -43,7 +44,7 @@ variables:
 # Jobs templates
 # ---------------------------------------------------------------
 .configure-git-template: &git-setup
-  tags: [kepler]
+  tags: [ kepler ]
   before_script:
     - echo "--- Fetch origin"
     - git remote set-url origin "https://gitlab+access-token:${CI_ACCESS_TOKEN}@git.duniter.org/${CI_PROJECT_PATH}.git"
@@ -53,7 +54,7 @@ variables:
 
 .docker:
   image: docker:latest
-  tags: [kepler]
+  tags: [ kepler ]
   services:
     - docker:dind
   before_script:
@@ -91,16 +92,15 @@ variables:
     - export NODE_OPTIONS=--max-old-space-size=4096
 
 .configure-electron-template: &electron-setup
-  image: ${CI_BUILD_IMAGE}
-  tags: [kepler]
+  image: ${CI_BUILD_ELECTRON_IMAGE}
+  tags: [ kepler ]
   before_script:
-    - ls -artl "${BUILD_CACHE_DIR}"
-    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
+    - npm install
     - npm run electron:install
 
 .configure-webext-template: &webext-setup
   image: ${CI_BUILD_IMAGE}
-  tags: [kepler]
+  tags: [ kepler ]
   before_script:
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -132,7 +132,7 @@ build:env:
 # ---------------------------------------------------------------
 .build:
   stage: build
-  tags: [kepler]
+  tags: [ kepler ]
   before_script:
     # Get project dependencies
     - ls -artl "${BUILD_CACHE_DIR}"
@@ -218,7 +218,6 @@ package:android:
 .package:electron:
   <<: *electron-setup
   stage: package
-  image: electronuserland/builder:18-wine
   script:
     - echo "--- Building Electron packages ..."
     - npm run electron:build:${BUILD_ENVIRONMENT}
@@ -402,7 +401,7 @@ release:tags:
 
 gitlab-release:
   stage: release
-  tags: [kepler]
+  tags: [ kepler ]
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
     - echo "running release for ${CI_COMMIT_TAG}"
@@ -458,7 +457,6 @@ deploy:android:tags:
 
 .deploy:electron:
   <<: *electron-setup
-  image: electronuserland/builder:18-wine
   stage: deploy
   script:
     - echo "--- Building Electron linux package ..."
