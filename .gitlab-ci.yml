@@ -96,8 +96,7 @@ variables:
   before_script:
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
-    - npm install @capacitor-community/electron
-    - npm run capacitor:sync:electron
+    - npm run electron:install
 
 .configure-webext-template: &webext-setup
   image: ${CI_BUILD_IMAGE}
@@ -221,12 +220,9 @@ package:android:
   stage: package
   image: electronuserland/builder:18-wine
   script:
-    - echo "--- Building Electron linux package ..."
-    - cd ${CI_PROJECT_DIR}/electron
-    - npm install
-    - npm run build
-    - npm run package:linux
-    - cd -
+    - echo "--- Building Electron packages ..."
+    - npm run electron:build:${BUILD_ENVIRONMENT}
+    - npm run electron:package:${BUILD_ENVIRONMENT}
   after_script:
     - mkdir -p "${CI_PROJECT_DIR}/release/"
     - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
@@ -257,7 +253,8 @@ package:electron:feature:
   stage: package
   script:
     - echo "--- Building webext package ..."
-    - npm run webext:build
+    - npm run webext:build:${BUILD_ENVIRONMENT}
+    - npm run webext:package:${BUILD_ENVIRONMENT}
   artifacts:
     paths:
       - release
@@ -290,7 +287,7 @@ package:webext:feature:
     - git checkout -B release/${RELEASE_VERSION}
     - echo "--- Manage app version"
     - npm run get:version
-    - npm set:version ${RELEASE_VERSION}
+    - npm version:set ${RELEASE_VERSION}
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules

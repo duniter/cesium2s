@@ -49,7 +49,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, useHash: environment.webext })],
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, useHash: environment.useHash || false })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

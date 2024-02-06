@@ -1,6 +1,6 @@
 {
     "name": "cesium2",
-    "version": "2.0.0-alpha22",
+    "version": "2.0.0-alpha23",
     "description": "Cesium², running on Duniter v2s (Substrate).",
     "author": {
         "name": "Benoit Lavenier",
@@ -15,8 +15,8 @@
     "main": "build/src/index.js",
     "scripts": {
         "build": "tsc && electron-rebuild",
-        "start-live": "node ./live-runner.js",
-        "start": "npm run build && electron --inspect=5858 ./",
+        "electron:start-live": "node ./live-runner.js",
+        "electron:start": "npm run build && electron --inspect=5858 ./",
         "package:linux": "electron-builder build --dir -c ./electron-builder.config.json --linux AppImage deb",
         "package:windows": "electron-builder build --dir -c ./electron-builder.config.json --windows nsis"
     },

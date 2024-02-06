@@ -15,16 +15,16 @@
   const MKPKG_DIR = path.join(projectDir, 'webext');
   const MKPKG_RESOURCES = path.join(projectDir, 'resources', 'webext');
   const OPTIONS = stdio.getopt({
-    publish: {
+    listed: {
       description: "Publish the addon (sign the addon with 'listed' channel, see `--channel` on `web-ext sign --help`)",
       default: false,
     },
-    init: {
-      key: 'i',
-      description: "Initialize webext source directory",
+    lint: {
+      key: 'l',
+      description: "Lint webext directory",
       default: false,
     },
-    pkg: {
+    package: {
       key: 'p',
       description: "Make local unsigned zip package",
       default: false,
@@ -36,26 +36,15 @@
     },
     run: {
       key: 'r',
-      description: "Only run the addon (do not make package, --sign or --publish has no effect)",
+      description: "Only run the addon (do not make package, --sign or --release has no effect)",
       default: false,
     },
   });
 
   function checkBuild() {
-    if (! fs.existsSync(path.join(MKPKG_DIR, 'index.html'))) {
-      throw new Error('Web ext app is not build : run `npm build:webext` before');
+    if (! fs.existsSync(path.join(MKPKG_DIR, 'index.html')) || !fs.existsSync(path.join(MKPKG_DIR, 'manifest.json'))) {
+      console.error(`${LOG_PREFIX} webext not build: run \`npm run webext:build\``);
     }
-  }
-
-  async function copyResources() {
-    console.info(`${LOG_PREFIX} copy web-ext resources...`)
-    await copyFiles(MKPKG_RESOURCES, MKPKG_DIR);
-  }
-
-  async function initPkg() {
-    console.info(`${LOG_PREFIX} init pkg src...`);
-    await copyResources();
-    await lintPkg();
   }
 
   async function runPkg() {
@@ -91,7 +80,7 @@
     const apiKey = process.env.AMO_JWT_ISSUER;
     const apiSecret = process.env.AMO_JWT_SECRET;
     const id = process.env.WEB_EXT_ID;
-    const channel = OPTIONS.publish ? 'listed' : 'unlisted';
+    const channel = OPTIONS.listed ? 'listed' : 'unlisted';
 
     if (!apiKey || !apiSecret || !id) {
       throw new Error('Missing "AMO_JWT_ISSUER" or "AMO_JWT_SECRET" or "WEB_EXT_ID" in script env');
@@ -103,20 +92,16 @@
       apiKey,
       apiSecret,
       id,
-      channel: channel,
+      channel,
     });
   }
 
   async function main() {
     checkBuild();
-    if (OPTIONS.init) await initPkg();
-    if (!fs.existsSync(path.join(MKPKG_DIR, 'manifest.json'))) {
-      console.error(`${LOG_PREFIX} webext is not initialized : run \`npm run webext:init\``);
-      return;
-    }
+    if (OPTIONS.lint) await lintPkg();
     if (OPTIONS.run) await runPkg();
     else {
-      if (OPTIONS.pkg) await mkPkg();
+      if (OPTIONS.package) await mkPkg();
       if (OPTIONS.sign) await signPkg();
     }
   }

@@ -9,7 +9,6 @@ import { AuthData } from '@app/account/auth/auth.model';
 
 export const environment = <Environment>{
   production: false,
-  webext: false,
 
   name: 'Cesium&sup2;',
 

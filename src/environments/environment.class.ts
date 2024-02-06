@@ -7,10 +7,10 @@ export interface Environment {
   name: string;
   version?: string;
   production: boolean;
-  webext: boolean;
 
   // Default values
   baseUrl?: string;
+  useHash?: boolean;
   defaultLocale: string;
 
   defaultPeers: string[];
@@ -26,13 +26,13 @@ export interface Environment {
   // Storage
   storage?: Partial<StorageConfig>;
 
-  keyring: {
+  keyring?: {
     // default address format (e.g. 42 for development)
     ss58Format: number;
   };
 
   // /!\ For DEV only
-  dev: {
+  dev?: {
     // Default peer
     peer?: string;
 

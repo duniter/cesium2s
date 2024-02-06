@@ -2,10 +2,14 @@ import { Environment } from './environment.class';
 import { StorageDrivers } from '@app/shared/services/storage/storage.utils';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const pkg = require('../../package.json');
 
 export const environment = <Environment>{
-  webext: true,
+  name: pkg.name as string,
+  version: pkg.version as string,
+  production: true,
 
+  useHash: true,
   defaultLocale: 'fr',
 
   graphql: {

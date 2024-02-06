@@ -102,6 +102,23 @@
             "webext": {
               "outputPath": "webext",
               "baseHref": "./index.html",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "src/assets",
+                  "output": "assets"
+                },
+                {
+                  "glob": "**/*.svg",
+                  "input": "node_modules/ionicons/dist/ionicons/svg",
+                  "output": "svg"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "resources/webext",
+                  "output": "/"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
