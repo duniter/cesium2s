@@ -13,7 +13,6 @@
   const LOG_PREFIX = `[${__filename}]`;
   const ARTIFACTS_DIR = path.join(projectDir, 'release');
   const MKPKG_DIR = path.join(projectDir, 'webext');
-  const MKPKG_RESOURCES = path.join(projectDir, 'resources', 'webext');
   const OPTIONS = stdio.getopt({
     listed: {
       description: "Publish the addon (sign the addon with 'listed' channel, see `--channel` on `web-ext sign --help`)",
@@ -70,7 +69,7 @@
     await webext.cmd.build({
       sourceDir: MKPKG_DIR,
       artifactsDir: path.join(ARTIFACTS_DIR),
-      filename: '{name}-v{version}-extension.zip',
+      filename: '{name}-{version}-extension.zip',
     });
   }
 

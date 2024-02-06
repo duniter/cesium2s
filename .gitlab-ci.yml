@@ -460,7 +460,6 @@ deploy:android:tags:
   <<: *electron-setup
   image: electronuserland/builder:18-wine
   stage: deploy
-  needs: [release]
   script:
     - echo "--- Building Electron linux package ..."
     - npm run electron:build:prod
@@ -511,31 +510,38 @@ deploy:electron:tags:
 .deploy:webext:
   <<: *webext-setup
   stage: deploy
-  needs: [release]
   script:
-    - npm run webext:build
-    - npm run webext:sign:listed
-  # after_script:
-    # TODO
-    # - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
-    # - echo "--- Deploy to gitlab package ${targetUrl} ..."
-    # - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
+    - npm run webext:build:prod
+    - npm run webext:package:prod
+    - npm run webext:deploy:${DEPLOY_ENVIRONMENT}
+  after_script:
+    - ls -artl "${CI_PROJECT_DIR}/release"
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.xpi
+    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "--- Deploy to gitlab package ${targetUrl} ..."
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
       - release
     expire_in: 24 hours
   only:
     - develop
+  when: manual
 
-# deploy:webext:
-#   extends: .deploy:webext
-#   stage: package
-#   needs: [release]
-#   script:
-#     - npm run webext:build
-#     - npm run webext:sign:listed
-#   only:
-#     - develop
+deploy:webext:prerelease:
+  extends: .deploy:webext
+  needs: [release]
+  variables:
+    DEPLOY_ENVIRONMENT: 'test'
+
+#deploy:webext:release:
+#  extends: .deploy:webext
+#  stage: package
+#  needs: [release]
+#  variables:
+#    DEPLOY_ENVIRONMENT: 'prod'
+
 #
 # failsafe-deploy:webext:
 #   extends: .deploy:webext

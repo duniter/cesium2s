@@ -59,7 +59,8 @@
     "webext:i18n:build": "npm run i18n:build webext/assets/i18n",
     "webext:package:prod": "node scripts/node/webext.js --package",
     "webext:deploy": "npm run webext:build:prod && node scripts/node/webext.js --sign",
-    "webext:deploy:release": "npm run webext:deploy --release"
+    "webext:deploy:test": "npm run webext:deploy",
+    "webext:deploy:prod": "npm run webext:deploy --release"
   },
   "lint-staged": {
     "src/**/*.{ts,html}": [
@@ -117,7 +118,7 @@
     "apollo-link-logger": "~2.0.1",
     "apollo-link-queue": "~3.1.0",
     "apollo-link-serialize": "~4.0.0",
-    "apollo3-cache-persist": "~-1.14.1",
+    "apollo3-cache-persist": "~0.14.1",
     "bs58": "^5.0.0",
     "graphql-tag": "~2.12.6",
     "graphql-ws": "~5.14.3",
