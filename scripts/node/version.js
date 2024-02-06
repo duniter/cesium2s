@@ -130,7 +130,7 @@ async function main() {
 
   // This mean no version is provided as arg for set
   if (options.set && options.set === true) {
-      console.error(`${LOG_PREFIX} set require version as arguement`);
+      console.error(`${LOG_PREFIX} set require version as argument`);
       return;
   }
   const version = options.set || require(path.join(PROJECT_DIR, 'package.json')).version;
@@ -151,6 +151,6 @@ async function main() {
     `\n\tstandard : ${version}`,
     `\n\twebext : ${versionWebext}`,
     `\n\tandroid : ${versionAndroid}`);
-};
+}
 
 main();

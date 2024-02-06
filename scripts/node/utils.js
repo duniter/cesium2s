@@ -33,7 +33,7 @@ function checkValidProjectDirectory(directory) {
 function checkShellDependencies(shellDeps) {
   const envPaths = process.env.PATH.split(':');
 
-  missing = shellDeps.reduce((acc, current) => {
+  const missing = shellDeps.reduce((acc, current) => {
     const result = envPaths.some((dir) => {
       const execPath = path.join(dir, current);
       return fs.existsSync(execPath) && canExecute(execPath);
@@ -43,7 +43,7 @@ function checkShellDependencies(shellDeps) {
   }, [])
 
   if (missing.length > 0) {
-    throw new Errors(`The following sheel executable are required : "${missing.join(', ')}" but not found in current path : ${process.env.PATH}`);
+    throw new Error(`The following shell executable are required : "${missing.join(', ')}" but not found in current path : ${process.env.PATH}`);
   }
 }
 

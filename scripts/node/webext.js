@@ -7,7 +7,7 @@
   const {copyFiles} = require('./utils');
   const webext = await import('web-ext');
 
-  let projectDir = path.resolve(__dirname, '../..');
+  const projectDir = path.resolve(__dirname, '../..');
   require('./env-global');
 
   const LOG_PREFIX = `[${__filename}]`;
