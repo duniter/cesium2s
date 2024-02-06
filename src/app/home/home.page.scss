@@ -69,7 +69,7 @@ ion-content {
 @media screen and (max-width: $screen-xs-max) {
   .logo {
     height: 96px;
-    background-image: url('/assets/img/logo_96px.png');
+    background-image: url('^assets/img/logo_96px.png');
     background-size: 96px 96px;
   }
 }
@@ -77,7 +77,7 @@ ion-content {
 @media screen and (min-width: $screen-sm) and (max-width: $screen-sm-max) {
   .logo {
     height: 144px;
-    background-image: url('/assets/img/logo_144px.png');
+    background-image: url('^assets/img/logo_144px.png');
     background-size: 144px 144px;
   }
 }
@@ -85,14 +85,14 @@ ion-content {
 @media screen and (min-width: $screen-md) {
   .logo {
     height: 200px;
-    background-image: url('/assets/img/logo_200px.png');
+    background-image: url('^assets/img/logo_200px.png');
     background-size: 200px 200px;
   }
 }
 
 @media screen and (min-width: $screen-md) {
   .circle-bg-dark {
-    background-image: url('/assets/img/logo.large.empty.transparent.svg');
+    background-image: url('^assets/img/logo.large.empty.transparent.svg');
     background-repeat: no-repeat;
     background-position: -756px -100px;
     background-size: 1024px 1024px;

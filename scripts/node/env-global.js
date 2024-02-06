@@ -92,7 +92,7 @@ if (!fs.existsSync(process.env.ANDROID_SDK_ROOT)) {
 }
 
 // Add necessary directories to the PATH.
-process.env.PATH = `${process.env.JAVA_HOME}/bin:${process.env.ANDROID_SDK_CLI_ROOT}/bin:${process.env.GRADLE_HOME}/bin:${process.env.PATH}`;
+process.env.PATH = `${process.env.JAVA_HOME}/bin:${process.env.ANDROID_SDK_CLI_ROOT}/bin:${process.env.PATH}`;
 
 if (fs.existsSync(`${projectDir}/.local`)) {
 
@@ -114,7 +114,6 @@ if (fs.existsSync(`${projectDir}/.local`)) {
     + `export ANDROID_SDK_ROOT="${process.env.ANDROID_SDK_ROOT}"\n`
     + `export ANDROID_HOME="${process.env.ANDROID_SDK_ROOT}"\n`
     + `export JAVA_HOME="${process.env.JAVA_HOME}"\n`
-    + `export GRADLE_HOME="${process.env.GRADLE_HOME}"\n\n`
     + `export PATH="${process.env.PATH}"\n`
   );
 }

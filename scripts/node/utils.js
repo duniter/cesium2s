@@ -19,6 +19,34 @@ function canWrite(file) {
   return checkPermission(file, 2);
 }
 
+function checkValidProjectDirectory(directory) {
+  if (typeof directory !== 'string')
+    throw new Error(`Agument must be a string : "${typeof directory}" given.`);
+  if (! fs.existsSync(directory))
+    throw new Error(`Path does not exists : "${directory}"`);
+  if (! fs.lstatSync(directory).isDirectory())
+    throw new Error(`Path is not a directory : "${directory}"`);
+  if (! canRead(directory) && canWrite(directory) && canExecute(directory))
+    throw new Error(`Bad permission on directory : "${typeof directory}"`);
+}
+
+function checkShellDependencies(shellDeps) {
+  const envPaths = process.env.PATH.split(':');
+
+  const missing = shellDeps.reduce((acc, current) => {
+    const result = envPaths.some((dir) => {
+      const execPath = path.join(dir, current);
+      return fs.existsSync(execPath) && canExecute(execPath);
+    });
+    if (!result) acc.push(current);
+    return acc;
+  }, [])
+
+  if (missing.length > 0) {
+    throw new Error(`The following shell executable are required : "${missing.join(', ')}" but not found in current path : ${process.env.PATH}`);
+  }
+}
+
 async function copyFilePermissions(sourcePath, destPath, options) {
   try {
     const stats = fs.statSync(sourcePath);
@@ -39,7 +67,7 @@ async function copyFilePermissions(sourcePath, destPath, options) {
 }
 
 /**
- * Déplace tous les fichiers et dossiers d'un répertoire source vers un répertoire de destination.
+ * Déplace tous les
  * @returns {Promise<void>}
  * @param sourcePath
  * @param destPath
@@ -58,7 +86,7 @@ async function mvFile(sourcePath, destPath) {
 }
 
 /**
- * Déplace tous les fichiers et dossiers d'un répertoire source vers un répertoire de destination.
+ * Copie tous les fichiers et dossiers d'un répertoire source vers un répertoire de destination.
  * @param {string} sourceDir - Le répertoire source.
  * @param {string} destDir - Le répertoire de destination.
  * @returns {Promise<void>}
@@ -76,6 +104,13 @@ async function copyFiles(sourceDir, destDir) {
     throw err;
   }
 }
+
+function copyFromTemplateFile(src, dest, replaceItems) {
+  // TODO test dest exists, and readable and src parent exists and writable and if text file
+  fs.copyFileSync(src, dest);
+  replaceTextInFile(dest, replaceItems);
+}
+
 
 /**
  * Déplace tous les fichiers et dossiers d'un répertoire source vers un répertoire de destination.
@@ -158,5 +193,47 @@ async function unzipFile(zipFilePath, destDir) {
   }
 }
 
+/**
+ * Remplacer des motifs a l'interieur d'un fichier.
+ * @param {string} filePath - Chemin du fichier.
+ * @param {object} destDir - Object avec deux propriétées :
+ *                           - searchValue : une Regexp à rechercher
+ *                           - replaceValue : le texte de remplacement
+ * @returns {void}
+ */
+function replaceTextInFile(filePath, replaceItems) {
+  if (! fs.existsSync(filePath)) throw Error(`${filePath} does not exist.`)
+  if (! canRead(filePath)) throw Error(`"${filePath} is not readable.`);
+  if (! canWrite(filePath)) throw Error(`"${filePath} is not writable.`);
 
-module.exports = {moveFiles, downloadFile, unzipFile, canExecute, canRead, canWrite};
+  try {
+    const fileLines = fs.readFileSync(filePath, 'utf8')
+      .split('\n')
+      .map((line) => {
+        replaceItems.forEach(item => {
+          line = line.replace(item.searchValue, item.replaceValue);
+        });
+        return line;
+    });
+    fs.writeFileSync(filePath, fileLines.join('\n'), 'utf8')
+  } catch(err) {
+    console.error(err);
+    throw new Error(`Cannot substitute text in file : ${filePath}`);
+  }
+}
+
+
+module.exports = {
+  canExecute,
+  canRead,
+  canWrite,
+  checkShellDependencies,
+  checkValidProjectDirectory,
+  copyFiles,
+  copyFromTemplateFile,
+  downloadFile,
+  moveFiles,
+  mvFile,
+  replaceTextInFile,
+  unzipFile,
+};
