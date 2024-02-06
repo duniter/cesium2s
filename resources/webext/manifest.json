@@ -37,7 +37,7 @@
     {
       "protocol": "web+june",
       "name": "web-june",
-      "uriTemplate": "/home?uri=%s"
+      "uriTemplate": "/index.html#/home?uri=%s"
     }
   ]
 }
