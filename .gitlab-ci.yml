@@ -463,19 +463,29 @@ deploy:android:tags:
   needs: [release]
   script:
     - echo "--- Building Electron linux package ..."
-    - cd ${CI_PROJECT_DIR}/electron
-    - npm install
-    - npm run build
-    - npm run package:linux
-    - npm run package:windows
-    - cd -
+    - npm run electron:build:prod
+    - npm run electron:package:prod
   after_script:
-    # - mkdir -p "${CI_PROJECT_DIR}/release/"
-    # - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
-    # TODO
-    # - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
-    # - echo "--- Deploy to gitlab package ${targetUrl} ..."
-    # - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
+    - mkdir -p "${CI_PROJECT_DIR}/release/"
+    - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
+    # Deploy Linux Debian
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-linux-amd64.deb
+    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "--- Deploy to gitlab package ${targetUrl} ..."
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
+    # Deploy Linux AppImage
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-linux-x86_64.AppImage
+    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "--- Deploy to gitlab package ${targetUrl} ..."
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
+    # Deploy Windows exe
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-windows-amd64.exe
+    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "--- Deploy to gitlab package ${targetUrl} ..."
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
   artifacts:
     paths:
       - release
