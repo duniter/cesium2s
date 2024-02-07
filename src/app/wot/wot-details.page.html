@@ -88,14 +88,14 @@
         </ion-item>
 
         <!-- Received cert count -->
-        <ion-item detail [routerLink]="['/wot', 'cert', account.address, account.meta?.uid || '', 'received']" routerDirection="forward">
+        <ion-item detail [routerLink]="['/wot', 'cert', account.address, 'received']" routerDirection="forward">
           <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
           <ion-label translate>WOT.CERTIFICATIONS.RECEIVED</ion-label>
           <ion-badge color="success" slot="end">{{ receivedCertCount$ | push }}</ion-badge>
         </ion-item>
 
         <!-- Given cert count -->
-        <ion-item detail [routerLink]="['/wot', 'cert', account.address, account.meta?.uid || '', 'given']" routerDirection="forward">
+        <ion-item detail [routerLink]="['/wot', 'cert', account.address, 'given']" routerDirection="forward">
           <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
           <ion-label translate>WOT.GIVEN_CERTIFICATIONS.SENT</ion-label>
           <ion-badge color="success" slot="end">{{ givenCertCount$ | push }}</ion-badge>
@@ -103,7 +103,7 @@
       }
 
       <!-- TX history -->
-      <ion-item detail [routerLink]="['/wot', 'tx', account.address, account.meta?.uid]" routerDirection="forward">
+      <ion-item detail [routerLink]="['/wot', 'tx', account.address]" routerDirection="forward">
         <ion-icon aria-hidden="true" slot="start" name="card"></ion-icon>
         <ion-label translate>WOT.ACCOUNT_OPERATIONS</ion-label>
       </ion-item>

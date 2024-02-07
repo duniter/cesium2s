@@ -16,12 +16,7 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
   },
   {
-    path: ':address/:name',
-    component: CertHistoryPage,
-    canActivate: [AuthGuardService],
-  },
-  {
-    path: ':address/:name/:side',
+    path: ':address/:side',
     component: CertHistoryPage,
     canActivate: [AuthGuardService],
   },
