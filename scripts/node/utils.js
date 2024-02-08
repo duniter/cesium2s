@@ -222,6 +222,42 @@ function replaceTextInFile(filePath, replaceItems) {
   }
 }
 
+/**
+ * Loguer un message sur stderr
+ * @param {(D|I|C|W|E)} level - Log level : D = debug, I = info, C = Confirmation, W = warn, E = error
+ * @param {string} prefix - Log prefix
+ * @param {string} message - Log message
+ * @param {boolean} debug - If true debug message will be seen, else no
+ * @returns {void}
+ */
+function logMessage(level, prefix, message, debug = false) {
+  const reset = '\u001b[0m';
+  const red = '\u001b[31m';
+  const orange = '\u001b[33m';
+  const green = '\u001b[32m';
+  const blue = '\u001b[34m';
+  switch (level) {
+    case 'D':
+      if (!debug) return;
+      message = `${blue}${prefix} DEBUG :${message}`;
+      break;
+    case 'I':
+      message = `${prefix} INFO :${message}`;
+      break;
+    case 'C':
+      message = `${green}${prefix} OK :${message}`;
+      break;
+    case 'W':
+      message = `${orange}${prefix} WARN :${message}`;
+      break;
+    case 'E':
+      message = `${red}${prefix} ERR :${message}`;
+      break;
+  }
+  process.stderr.write(`${message}${reset}\n`)
+}
+
+
 
 module.exports = {
   canExecute,
@@ -232,6 +268,7 @@ module.exports = {
   copyFiles,
   copyFromTemplateFile,
   downloadFile,
+  logMessage,
   moveFiles,
   mvFile,
   replaceTextInFile,

@@ -4,13 +4,12 @@
   const path = require('path');
   const fs = require('fs');
   const stdio = require('stdio');
-  const {copyFiles} = require('./utils');
   const webext = await import('web-ext');
 
   const projectDir = path.resolve(__dirname, '../..');
   require('./env-global');
 
-  const LOG_PREFIX = `[${__filename}]`;
+  const LOG_PREFIX = `[${path.basename(__filename)}]`;
   const ARTIFACTS_DIR = path.join(projectDir, 'release');
   const MKPKG_DIR = path.join(projectDir, 'webext');
   const OPTIONS = stdio.getopt({
