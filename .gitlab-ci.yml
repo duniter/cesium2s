@@ -337,10 +337,10 @@ package:webext:feature:
     - changeLogFile="${CI_PROJECT_DIR}/release/${changeLogFileName}"
     - targetUrlChangeLog="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${changeLogFileName}"
     - node scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${RELEASE_VERSION}" > "${changeLogFile}"
-    - echo "Deploy change log:"
-    - echo " File= ${changeLogFileName}"
-    - echo " Url= ${targetUrlChangeLog}"
-    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${changeLogFile}" "${targetUrlChangeLog}"; then exit 1; fi'
+    # - echo "Deploy change log:"
+    # - echo " File= ${changeLogFileName}"
+    # - echo " Url= ${targetUrlChangeLog}"
+    # - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${changeLogFile}" "${targetUrlChangeLog}"; then exit 1; fi'
   artifacts:
     paths:
       - release
