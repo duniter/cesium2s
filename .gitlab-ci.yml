@@ -336,7 +336,7 @@ package:webext:feature:
     - changeLogFileName="${CI_PROJECT_NAME}-${APP_VERSION}-changelog.md"
     - changeLogFile="${CI_PROJECT_DIR}/release/${changeLogFileName}"
     - targetUrlChangeLog="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${changeLogFileName}"
-    - node scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${RELEASE_VERSION}" > "${changeLogFile}"
+    - node ${CI_PROJECT_DIR}/scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${RELEASE_VERSION}" > "${changeLogFile}"
     - echo "Deploy change log:"
     - echo " File= ${changeLogFileName}"
     - echo " Url= ${targetUrlChangeLog}"
