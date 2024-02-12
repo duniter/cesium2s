@@ -43,6 +43,11 @@
     jobToken: OPTIONS.token,
   });
 
+  function computeGitlabApiProjectUrl() {
+    return `https://${GITLAB_HOST_NAME}/api/v4/projects/`
+           + GITLAB_PROJECT_ID.replace(/\//g, '%2F');
+  }
+
   async function checkDescription() {
     utils.logMessage('I', LOG_PREFIX, 'check if milestone exists...');
     // Milestone is given as argument for description
@@ -52,7 +57,8 @@
       process.exit(1);
     }
     try {
-      const milestone = await GITLAB.ProjectMilestones.all(GITLAB_PROJECT_ID, {title: milestoneTag});
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/milestones?title=${milestoneTag}`);
+      const milestone = await res.json();
       if (milestone.length === 0)
         throw new Error(`Can not find milestone '${milestoneTag}' on gitlab`);
     } catch(e) {
@@ -74,11 +80,11 @@
   async function genChangesDescription() {
     utils.logMessage('I', LOG_PREFIX, 'gen changes for release description...');
     try {
-      const items = await GITLAB.MergeRequests.all({
-        projectId: GITLAB_PROJECT_ID,
-        milestone: OPTIONS.milestone,
-        state: 'merged',
-      });
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/merge_requests/?milestone?=${OPTIONS.description}&state=merged`);
+      if (res.status !== 200) {
+        throw new Error(`${res.status} ${res.statusText}`);
+      }
+      const items = await res.json();
       if (items.length === 0) return '* no changes\n';
       return items
         .map((i) => `* ${i.title} ([!${i.iid}](${i.web_url}))`)
@@ -92,11 +98,11 @@
   async function genIssuesDescription() {
     utils.logMessage('I', LOG_PREFIX, 'gen issues for release description...');
     try {
-      const items = await GITLAB.Issues.all({
-        projectId: GITLAB_PROJECT_ID,
-        milestone: OPTIONS.milestone,
-        state: 'closed',
-      });
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/issues/?milestone?=${OPTIONS.description}&state=closed`);
+      if (res.status !== 200) {
+        throw new Error(`${res.status} ${res.statusText}`);
+      }
+      const items = await res.json();
       if (items.length === 0) return '* no issues fixed\n';
       return items
         .map((i) => `* ${i.title} ([#${i.iid}](${i.web_url}) - ${i.state})`)
