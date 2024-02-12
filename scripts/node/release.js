@@ -40,16 +40,8 @@
 
   const GITLAB = new Gitlab({
     host: `https://${GITLAB_HOST_NAME}`,
-    token: OPTIONS.token,
+    jobToken: OPTIONS.token,
   });
-
-  async function checkToken() {
-    utils.logMessage('I', LOG_PREFIX, 'check gitlab private token...');
-    if (! OPTIONS.token || typeof OPTIONS.token !== 'string') {
-      utils.logMessage('E', LOG_PREFIX, 'Gitlab access token not provided');
-      process.exit(1);
-    };
-  }
 
   async function checkDescription() {
     utils.logMessage('I', LOG_PREFIX, 'check if milestone exists...');
@@ -136,8 +128,6 @@
   }
 
   async function main() {
-    await checkToken();
-
     if (OPTIONS.description) {
       await checkDescription();
       const releaseDescription = await genReleaseDescription();

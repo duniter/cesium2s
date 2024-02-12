@@ -335,8 +335,6 @@ package:webext:feature:
     - changeLogFileName="${CI_PROJECT_NAME}-${APP_VERSION}-changelog.md"
     - changeLogFile="${CI_PROJECT_DIR}/release/${changeLogFileName}"
     - targetUrlChangeLog="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${changeLogFileName}"
-    # TODO : this is a test, remove me
-    - "curl --header \"PRIVATE-TOKEN: ${CI_JOB_TOKEN}\" \"https://git.duniter.org/api/v4/projects/clients%2Fcesium-grp%2Fcesium2s/issues/?milestone?=${APP_VERSION}\""
     - node scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${RELEASE_VERSION}" > "${changeLogFile}"
     - echo "Deploy change log:"
     - echo " File= ${changeLogFileName}"
