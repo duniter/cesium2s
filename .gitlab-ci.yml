@@ -24,6 +24,7 @@ workflow:
         - package-lock.json
         - tsconfig*.json
         - angular.json
+        - scripts/**/*
 
 # ---------------------------------------------------------------
 # Global variables
