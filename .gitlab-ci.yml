@@ -302,7 +302,7 @@ package:webext:feature:
     - echo "--- Release in progress"
     - git checkout -B release/${RELEASE_VERSION}
     - echo "--- Manage app version"
-    - npm run get:version
+    - npm run version:get
     - npm version:set ${RELEASE_VERSION}
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
@@ -329,6 +329,7 @@ package:webext:feature:
     - git push origin refs/tags/${RELEASE_VERSION}
     - git branch -D "release/${RELEASE_VERSION}"
   after_script:
+    - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "Missing required variable RELEASE_VERSION"; exit 1; fi
     # Remember version
     - APP_VERSION=${RELEASE_VERSION}
     - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
