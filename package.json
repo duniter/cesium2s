@@ -38,6 +38,7 @@
     "electron:install": "npm install @capacitor-community/electron && cd electron && npm install",
     "electron:package": "cd electron && npm run package:linux",
     "electron:package:prod": "cd electron && npm run package:linux && npm run package:windows",
+    "release:link": "node scripts/node/release.js --token=${npm_config_token} --link",
     "resources": "cordova-res ios && cordova-res android && node scripts/node/resources.js",
     "test": "ng test",
     "lint": "ng lint",
