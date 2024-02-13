@@ -427,6 +427,7 @@ gitlab-release:
     - targetUrlChangeLog="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${CI_COMMIT_TAG}/${changeLogFileName}"
     - "echo \"Changelog url : ${targetUrlChangeLog}\""
     - export EXTRA_DESCRIPTION="$(wget ${targetUrlChangeLog} -O - | sed 's/$/\\n/g' | tr -d '\n')"
+    - echo "EXTRA_DESCRIPTION=\'${EXTRA_DESCRIPTION}\'" > variables.env
     - echo -e "Extra description :\n${EXTRA_DESCRIPTION}"
   release:
     name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
