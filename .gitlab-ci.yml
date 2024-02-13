@@ -311,7 +311,7 @@ package:webext:feature:
     - git reset --hard origin/${CI_COMMIT_REF_NAME}
     - git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
     - git push origin ${CI_COMMIT_REF_NAME}
-    - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; git push origin master
+    - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; git push origin master ; fi
     - git push origin refs/tags/${RELEASE_VERSION}
     - git branch -D "release/${RELEASE_VERSION}"
   after_script:
