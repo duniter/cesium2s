@@ -422,6 +422,7 @@ gitlab-release:
     - changeLogFileName="${CI_PROJECT_NAME}-${APP_VERSION}-changelog.md"
     - changeLogFile="${CI_PROJECT_DIR}/release/${changeLogFileName}"
     - targetUrlChangeLog="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${changeLogFileName}"
+    - "echo \"Changelog url : ${targetUrlChangeLog}\""
     - export EXTRA_DESCRIPTION="$(curl ${targetUrlChangeLog})"
     - echo -e "Extra description :\n${EXTRA_DESCRIPTION}"
   release:
@@ -440,6 +441,7 @@ gitlab-release:
   stage: deploy
   needs: [release]
   script:
+    - git checkout ${APP_VERSION}
     - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
     # Build APK (if not already done)
     - if [[ ! -f "${sourceFile}" ]]; then npm run android:build:prod; fi
@@ -479,6 +481,7 @@ deploy:android:tags:
   <<: *electron-setup
   stage: deploy
   script:
+    - git checkout ${APP_VERSION}
     - echo "--- Building Electron linux package ..."
     - npm run electron:build:prod
     - npm run electron:package:prod
@@ -533,6 +536,7 @@ deploy:electron:tags:
   <<: *webext-setup
   stage: deploy
   script:
+    - git checkout ${APP_VERSION}
     - npm run webext:build:prod
     - npm run webext:package:prod
     - npm run webext:deploy:${DEPLOY_ENVIRONMENT}
