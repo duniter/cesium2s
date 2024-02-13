@@ -301,7 +301,8 @@ package:webext:feature:
     - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
     # Git process for release (ISO gitflow)
     - echo "--- Fishing release"
-    - git add package.json electron/package.json src/manifest.json resources/webext/manifest.json android/app/build.gradle install.sh
+    - git status
+    - git add package.json android/app/build.gradle electron/package.json install.sh resources/webext/manifest.json src/manifest.json
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git checkout master; fi
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git reset --hard origin/master ; fi
