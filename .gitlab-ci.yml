@@ -10,6 +10,7 @@ stages:
   - build
   - alt_build
   - package
+  - prepare_release
   - release
   - deploy
 
@@ -279,6 +280,25 @@ package:webext:feature:
     - /^features\/.*/
 
 # ---------------------------------------------------------------
+# Prepare release jobs
+# ---------------------------------------------------------------
+gitlab-prepare-release:
+  stage: prepare_release
+  tags: [ kepler ]
+  before_script:
+    - npm install
+  script:
+    - node ${CI_PROJECT_DIR}/scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${CI_COMMIT_TAG}" > CHANGELOG.md
+    - echo -e "Changelog :\n$(cat CHANGELOG.md)"
+    - echo EXTRA_DESCRIPTION=\'"$(cat package.json | sed 's/$/\\n/g' | tr -d '\n')"\' >> ${ENV_FILE}
+  artifacts:
+    reports:
+      dotenv: ${ENV_FILE}
+    expire_in: 24 hours
+  only:
+    - tags
+
+# ---------------------------------------------------------------
 # Release jobs
 # ---------------------------------------------------------------
 .release:
@@ -322,27 +342,6 @@ package:webext:feature:
     - APP_VERSION=${RELEASE_VERSION}
     - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
     - mkdir -p ${CI_PROJECT_DIR}/release
-    # Zip output
-    - zipFileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
-    - zipFile=${CI_PROJECT_DIR}/release/${zipFileName}
-    - if [[ -f "${zipFile}" ]]; then rm "${zipFile}"; fi
-    - cd ${CI_PROJECT_DIR}/www || exit 1
-    - if ! zip -q -r "${zipFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
-    - cd ${CI_PROJECT_DIR}
-    - targetUrlZip="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${zipFileName}"
-    - echo "Deploy to gitlab package:"
-    - echo " File= ${zipFile}"
-    - echo " Url= ${targetUrlZip}"
-    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${zipFile}" "${targetUrlZip}"; then exit 1; fi'
-    # Changelog output
-    - changeLogFileName="${CI_PROJECT_NAME}-${APP_VERSION}-changelog.md"
-    - changeLogFile="${CI_PROJECT_DIR}/release/${changeLogFileName}"
-    - targetUrlChangeLog="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${changeLogFileName}"
-    - node ${CI_PROJECT_DIR}/scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${RELEASE_VERSION}" > "${changeLogFile}"
-    - echo "Deploy change log:"
-    - echo " File= ${changeLogFileName}"
-    - echo " Url= ${targetUrlChangeLog}"
-    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${changeLogFile}" "${targetUrlChangeLog}"; then exit 1; fi'
   artifacts:
     paths:
       - release
@@ -418,17 +417,8 @@ gitlab-release:
   stage: release
   tags: [ kepler ]
   image: registry.gitlab.com/gitlab-org/release-cli:latest
-  variables:
-    EXTRA_DESCRIPTION: ""
   script:
     - echo "running release for ${CI_COMMIT_TAG}"
-    - changeLogFileName="${CI_PROJECT_NAME}-${CI_COMMIT_TAG}-changelog.md"
-    - changeLogFile="${CI_PROJECT_DIR}/release/${changeLogFileName}"
-    - targetUrlChangeLog="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${CI_COMMIT_TAG}/${changeLogFileName}"
-    - "echo \"Changelog url : ${targetUrlChangeLog}\""
-    - export EXTRA_DESCRIPTION="$(wget ${targetUrlChangeLog} -O - | sed 's/$/\\n/g' | tr -d '\n')"
-    - echo "EXTRA_DESCRIPTION=\'${EXTRA_DESCRIPTION}\'" > variables.env
-    - echo -e "Extra description :\n${EXTRA_DESCRIPTION}"
   release:
     name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
     description: "Created using the release-cli\\n${EXTRA_DESCRIPTION}"
@@ -440,6 +430,30 @@ gitlab-release:
 # ---------------------------------------------------------------
 # Deploy jobs
 # ---------------------------------------------------------------
+
+deploy:web:
+  stage: deploy
+  needs: [release]
+  script:
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
+    - releaseFile=${CI_PROJECT_DIR}/release/${zipFileName}
+    - if [[ -f "${fileName}" ]]; then rm "${zipFile}"; fi
+    - cd ${CI_PROJECT_DIR}/www || exit 1
+    - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
+    - cd ${CI_PROJECT_DIR}
+    - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
+    - echo "Deploy to gitlab package:"
+    - echo " File= ${fileName}"
+    - echo " Url= ${targetUrl}"
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
+    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
+  artifacts:
+    paths:
+      - release
+    reports:
+      dotenv: ${ENV_FILE}
+    expire_in: 24 hours
+
 .deploy:android:
   <<: *android-setup
   stage: deploy
