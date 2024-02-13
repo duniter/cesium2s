@@ -40,7 +40,8 @@
 
   const GITLAB = new Gitlab({
     host: `https://${GITLAB_HOST_NAME}`,
-    jobToken: OPTIONS.token,
+    // jobToken: OPTIONS.token,
+    token: OPTIONS.token,
   });
 
   function computeGitlabApiProjectUrl() {
@@ -121,7 +122,7 @@
     }
     const tag = OPTIONS.link[0];
     const name = OPTIONS.link[1];
-    const url = OPTIONS.link[1];
+    const url = OPTIONS.link[2];
     const type = OPTIONS.link[3] || 'other';
     try {
       utils.logMessage('I', LOG_PREFIX,

@@ -304,8 +304,8 @@ package:webext:feature:
     - git add package.json electron/package.json src/manifest.json resources/webext/manifest.json android/app/build.gradle install.sh
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git checkout master; fi
-    - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git reset --hard origin/master
-    - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
+    - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git reset --hard origin/master ; fi
+    - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}" ; fi
     - git tag -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
     - git checkout ${CI_COMMIT_REF_NAME}
     - git reset --hard origin/${CI_COMMIT_REF_NAME}
@@ -451,7 +451,7 @@ gitlab-release:
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
     - echo "--- Deploy to gitlab package ${targetUrl} ..."
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}"
+    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
   artifacts:
     paths:
       - release
@@ -490,21 +490,21 @@ deploy:android:tags:
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
     - echo "--- Deploy to gitlab package ${targetUrl} ..."
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 0; fi'
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}"
+    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
     # Deploy Linux AppImage
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-linux-x86_64.AppImage
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
     - echo "--- Deploy to gitlab package ${targetUrl} ..."
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}"
+    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
     # Deploy Windows exe
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-windows-amd64.exe
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
     - echo "--- Deploy to gitlab package ${targetUrl} ..."
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}"
+    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
   artifacts:
     paths:
       - release
@@ -541,7 +541,7 @@ deploy:electron:tags:
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
     - echo "--- Deploy to gitlab package ${targetUrl} ..."
     - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}"
+    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
   artifacts:
     paths:
       - release
