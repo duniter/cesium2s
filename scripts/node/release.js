@@ -40,8 +40,8 @@
 
   const GITLAB = new Gitlab({
     host: `https://${GITLAB_HOST_NAME}`,
-    // jobToken: OPTIONS.token,
-    token: OPTIONS.token,
+    jobToken: OPTIONS.token,
+    // token: OPTIONS.token,
   });
 
   function computeGitlabApiProjectUrl() {
