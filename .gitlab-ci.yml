@@ -283,6 +283,7 @@ package:webext:feature:
   stage: release
   script:
     - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "Missing required variable RELEASE_VERSION"; exit 1; fi
+    # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - echo "--- Release in progress"
@@ -290,9 +291,6 @@ package:webext:feature:
     - echo "--- Manage app version"
     - npm run version:get
     - npm run version:set ${RELEASE_VERSION}
-    # Copy cached dependencies and build
-    - ls -artl "${BUILD_CACHE_DIR}"
-    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     # Show version
     - npm version
     # Build web (if need)
@@ -301,7 +299,8 @@ package:webext:feature:
     - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
     # Git process for release (ISO gitflow)
     - echo "--- Fishing release"
-    - git add package.json electron/package.json src/manifest.json resources/webext/manifest.json android/app/build.gradle install.sh
+    - git status
+    - git add .
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git checkout master; fi
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git reset --hard origin/master ; fi
