@@ -305,7 +305,7 @@ package:webext:feature:
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git checkout master; fi
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git reset --hard origin/master ; fi
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}" ; fi
-    - git tag -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
+    - git tag -f -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
     - git checkout ${CI_COMMIT_REF_NAME}
     - git reset --hard origin/${CI_COMMIT_REF_NAME}
     - git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
