@@ -37,9 +37,6 @@ RUN apt-get update && \
     apt-get -y install git zip curl python3-minimal fakeroot openjdk-17-jdk-headless \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Android dependencies
-#RUN npm run android:install
-
 RUN ls -artl
 
 WORKDIR /build

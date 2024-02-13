@@ -1,0 +1,43 @@
+{
+  "name": "cesium2s",
+  "version": "2.0.0-alpha24",
+  "description": "Cesium², running on Duniter v2s (Substrate).",
+  "author": {
+    "name": "Benoit Lavenier",
+    "email": "benoit.lavenier@e-is.pro"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git.duniter.org:clients/cesium-grp/cesium2.git"
+  },
+  "homepage": "https://git.duniter.org/clients/cesium-grp/cesium1s",
+  "license": "AGPL-3.0",
+  "main": "build/src/index.js",
+  "scripts": {
+    "build": "tsc && electron-rebuild",
+    "electron:start-live": "node ./live-runner.js",
+    "electron:start": "npm run build && electron --inspect=5858 ./",
+    "package:linux": "electron-builder build --dir -c ./electron-builder.config.json --linux AppImage deb",
+    "package:windows": "electron-builder build --dir -c ./electron-builder.config.json --windows nsis"
+  },
+  "dependencies": {
+    "@capacitor-community/electron": "^5.0.0",
+    "chokidar": "~3.5.3",
+    "electron-is-dev": "~2.0.0",
+    "electron-serve": "~1.1.0",
+    "electron-unhandled": "~4.0.1",
+    "electron-updater": "^6.1.7",
+    "electron-window-state": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.18.71",
+    "electron": "^26.2.2",
+    "electron-builder": "~23.6.0",
+    "electron-rebuild": "^3.2.9",
+    "typescript": "^5.0.4"
+  },
+  "keywords": [
+    "capacitor",
+    "electron"
+  ]
+}

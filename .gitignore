@@ -13,6 +13,8 @@
 Thumbs.db
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
+.cspell.json
+.neoconf.json
 
 *.log
 log.txt
@@ -33,4 +35,8 @@ yarn.lock
 /release
 /node_modules
 /www
+/webext
 /out-tsc/
+/.local/
+/release/
+/.gitlab-ci-local/

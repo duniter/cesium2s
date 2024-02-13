@@ -9,6 +9,7 @@ export const environment = <Environment>{
   version: pkg.version as string,
   production: true,
 
+  useHash: false,
   defaultLocale: 'fr',
 
   graphql: {
@@ -33,5 +34,5 @@ export const environment = <Environment>{
     //'wss://1000i100.fr/ws',
   ],
 
-  defaultIndexers: ['https://subsquid.gdev.coinduf.eu/graphql'],
+  defaultIndexers: ['https://subsquid.gdev.coinduf.eu/graphql', 'https://gdev-squid.axiom-team.fr/graphql'],
 };
