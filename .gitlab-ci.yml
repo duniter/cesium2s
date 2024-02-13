@@ -97,13 +97,7 @@ variables:
   image: ${CI_BUILD_ELECTRON_IMAGE}
   tags: [ kepler ]
   before_script:
-    - git status
-    - git tag
-    - git --no-pager log -n 3
-    - cat electron/package.json
     - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION}; fi
-    - ls -artl "${BUILD_CACHE_DIR}"
-    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - npm install
     - npm run electron:install
 
@@ -432,7 +426,7 @@ gitlab-release:
     - changeLogFile="${CI_PROJECT_DIR}/release/${changeLogFileName}"
     - targetUrlChangeLog="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${CI_COMMIT_TAG}/${changeLogFileName}"
     - "echo \"Changelog url : ${targetUrlChangeLog}\""
-    - export EXTRA_DESCRIPTION="$(curl ${targetUrlChangeLog})"
+    - export EXTRA_DESCRIPTION="$(wget \"${targetUrlChangeLog}\" -O -)"
     - echo -e "Extra description :\n${EXTRA_DESCRIPTION}"
   release:
     name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
