@@ -147,6 +147,7 @@ function downloadFile(url, dest) {
 
     https.get(url, (response) => {
       if (response.statusCode !== 200) {
+  allow_failure: false
         reject(new Error(`Error while downloading '${url}': Statut ${response.statusCode}`));
         return;
       }
