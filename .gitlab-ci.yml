@@ -282,24 +282,24 @@ package:webext:feature:
 # ---------------------------------------------------------------
 # Prepare release jobs
 # ---------------------------------------------------------------
-gitlab-prepare-release:
-  stage: prepare_release
-  tags: [ kepler ]
-  before_script:
-    - npm install
-  script:
-    - mkdir ${CI_PROJECT_DIR}/release/
-    - node ${CI_PROJECT_DIR}/scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${CI_COMMIT_TAG}" > ${CI_PROJECT_DIR}/release/CHANGELOG.md
-    - echo -e "Changelog :\n$(cat ${CI_PROJECT_DIR}/release/CHANGELOG.md)"
-    - echo EXTRA_DESCRIPTION=\'"$(cat ${CI_PROJECT_DIR}/release/CHANGELOG.md)"\' >> ${ENV_FILE}
-  artifacts:
-    paths:
-      - release
-    reports:
-      dotenv: ${ENV_FILE}
-    expire_in: 24 hours
-  only:
-    - tags
+# gitlab-prepare-release:
+#   stage: prepare_release
+#   tags: [ kepler ]
+#   before_script:
+#     - npm install
+#   script:
+#     - mkdir ${CI_PROJECT_DIR}/release/
+#     - node ${CI_PROJECT_DIR}/scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${CI_COMMIT_TAG}" > ${CI_PROJECT_DIR}/release/CHANGELOG.md
+#     - echo -e "Changelog :\n$(cat ${CI_PROJECT_DIR}/release/CHANGELOG.md)"
+#     - echo EXTRA_DESCRIPTION=\'"$(cat ${CI_PROJECT_DIR}/release/CHANGELOG.md)"\' >> ${ENV_FILE}
+#   artifacts:
+#     paths:
+#       - release
+#     reports:
+#       dotenv: ${ENV_FILE}
+#     expire_in: 24 hours
+#   only:
+#     - tags
 
 # ---------------------------------------------------------------
 # Release jobs
@@ -412,14 +412,17 @@ release:tags:
 gitlab-release:
   stage: release
   tags: [ kepler ]
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  # image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
     - echo "running release for ${CI_COMMIT_TAG}"
-  release:
-    name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
-    description: "Created using the release-cli\\n${EXTRA_DESCRIPTION}"
-    tag_name: "${CI_COMMIT_TAG}"
-    ref: "${CI_COMMIT_TAG}"
+    - git status
+    - cat package.json
+    - npm run release:create --token=${CI_JOB_TOKEN} "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}" ${CI_COMMIT_TAG}"
+  # release:
+  #   name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
+  #   description: "Created using the release-cli\\n${EXTRA_DESCRIPTION}"
+  #   tag_name: "${CI_COMMIT_TAG}"
+  #   ref: "${CI_COMMIT_TAG}"
   only:
     - tags
 
@@ -443,8 +446,8 @@ deploy:web:
     - export NODE_OPTIONS=--max-old-space-size=4096
     - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
-    - releaseFile=${CI_PROJECT_DIR}/release/${zipFileName}
-    - if [[ -f "${fileName}" ]]; then rm "${zipFile}"; fi
+    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
+    - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
     - cd ${CI_PROJECT_DIR}/www || exit 1
     - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
     - cd ${CI_PROJECT_DIR}
@@ -465,6 +468,8 @@ deploy:web:
   needs: [release]
   script:
     - git checkout ${APP_VERSION}
+    - git status
+    - cat package.json
     - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
     # Build APK (if not already done)
     - if [[ ! -f "${sourceFile}" ]]; then npm run android:build:prod; fi
@@ -502,11 +507,17 @@ deploy:android:tags:
   <<: *electron-setup
   stage: deploy
   script:
+    - cat package.json
+    - echo "${APP_VERSION}"
     - git checkout ${APP_VERSION}
     - echo "--- Building Electron linux package ..."
     - npm run electron:build:prod
     - npm run electron:package:prod
   after_script:
+    - git status
+    - git checkout ${APP_VERSION}
+    - git status
+    - cat package.json
     - mkdir -p "${CI_PROJECT_DIR}/release/"
     - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
     - ls -l "${CI_PROJECT_DIR}/release/"
