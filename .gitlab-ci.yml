@@ -314,12 +314,6 @@ gitlab-prepare-release:
     - echo "--- Manage app version"
     - npm run version:get
     - npm run version:set ${RELEASE_VERSION}
-    # Show version
-    - npm version
-    # Build web (if need)
-    - echo "--- Building 'www'"
-    - export NODE_OPTIONS=--max-old-space-size=4096
-    - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
     # Git process for release (ISO gitflow)
     - echo "--- Fishing release"
     - git status
@@ -434,7 +428,18 @@ gitlab-release:
 deploy:web:
   stage: deploy
   needs: [release]
+  image: ${CI_BUILD_IMAGE}
   script:
+    - git checkout ${APP_VERSION}
+    # Copy cached dependencies and build
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
+    # Show version
+    - npm version
+    # Build web (if need)
+    - echo "--- Building 'www'"
+    - export NODE_OPTIONS=--max-old-space-size=4096
+    - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
     - releaseFile=${CI_PROJECT_DIR}/release/${zipFileName}
     - if [[ -f "${fileName}" ]]; then rm "${zipFile}"; fi
@@ -453,6 +458,8 @@ deploy:web:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 24 hours
+  only:
+    - develop
 
 .deploy:android:
   <<: *android-setup
@@ -512,7 +519,7 @@ deploy:android:tags:
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - targetUrl="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${APP_VERSION}/${fileName}"
     - echo "--- Deploy to gitlab package ${targetUrl} ..."
-    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 0; fi'
+    - 'if ! curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${releaseFile}" "${targetUrl}"; then exit 1; fi'
     - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
     # Deploy Linux AppImage
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-linux-x86_64.AppImage

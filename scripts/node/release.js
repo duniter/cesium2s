@@ -57,15 +57,15 @@
       utils.logMessage('E', LOG_PREFIX, 'Milestone is not provided');
       process.exit(1);
     }
-    try {
-      const res = await fetch(`${computeGitlabApiProjectUrl()}/milestones?title=${milestoneTag}`);
-      const milestone = await res.json();
-      if (milestone.length === 0)
-        throw new Error(`Can not find milestone '${milestoneTag}' on gitlab`);
-    } catch(e) {
-      utils.logMessage('E', LOG_PREFIX, e);
-      process.exit(1);
-    }
+    // try {
+    //   const res = await fetch(`${computeGitlabApiProjectUrl()}/milestones?title=${milestoneTag}`);
+    //   const milestone = await res.json();
+    //   if (milestone.length === 0)
+    //     throw new Error(`Can not find milestone '${milestoneTag}' on gitlab`);
+    // } catch(e) {
+    //   utils.logMessage('E', LOG_PREFIX, e);
+    //   process.exit(1);
+    // }
   }
 
   async function genReleaseDescription() {
@@ -81,7 +81,7 @@
   async function genChangesDescription() {
     utils.logMessage('I', LOG_PREFIX, 'gen changes for release description...');
     try {
-      const res = await fetch(`${computeGitlabApiProjectUrl()}/merge_requests/?milestone?=${OPTIONS.description}&state=merged`);
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/merge_requests/?milestone=${OPTIONS.description}&state=merged`);
       if (res.status !== 200) {
         throw new Error(`${res.status} ${res.statusText}`);
       }
@@ -99,7 +99,7 @@
   async function genIssuesDescription() {
     utils.logMessage('I', LOG_PREFIX, 'gen issues for release description...');
     try {
-      const res = await fetch(`${computeGitlabApiProjectUrl()}/issues/?milestone?=${OPTIONS.description}&state=closed`);
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/issues/?milestone=${OPTIONS.description}&state=closed`);
       if (res.status !== 200) {
         throw new Error(`${res.status} ${res.statusText}`);
       }
