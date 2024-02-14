@@ -41,6 +41,7 @@
   const GITLAB = new Gitlab({
     host: `https://${GITLAB_HOST_NAME}`,
     jobToken: OPTIONS.token,
+    // For local testing with user token
     // token: OPTIONS.token,
   });
 
