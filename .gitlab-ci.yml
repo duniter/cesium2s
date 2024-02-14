@@ -396,6 +396,7 @@ release:tags:
     - cd ${CI_PROJECT_DIR}/www || exit 1
     - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
     - cd ..
+    - echo "npm run release:upload_file --token=${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_COMMIT_TAG} ${releaseFile}"
     - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${CI_COMMIT_TAG}" "${releaseFile}"
   artifacts:
     paths:
@@ -509,6 +510,7 @@ deploy:android:tags:
     - mkdir -p "${CI_PROJECT_DIR}/release/"
     - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
     - ls -l "${CI_PROJECT_DIR}/release/"
+    - cat "${CI_PROJECT_DIR}/package.json"
     # Deploy Linux Debian
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-linux-amd64.deb
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
