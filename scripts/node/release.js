@@ -45,6 +45,14 @@
       args: '*',
       required: false,
     },
+    release: {
+      key: 'r',
+      description: 'Create assets link. Take 3 positional arguments : '
+        + '"release name" ; "tag name" ; "commit ref"',
+      default: false,
+      args: '*',
+      required: false,
+    },
   });
 
   const GITLAB = new Gitlab({
@@ -59,7 +67,7 @@
            + GITLAB_PROJECT_ID.replace(/\//g, '%2F');
   }
 
-  async function checkDescription() {
+  async function descriptionCheck() {
     utils.logMessage('I', LOG_PREFIX, 'check if milestone exists...');
     // Milestone is given as argument for description
     const milestoneTag = OPTIONS.description;
@@ -69,7 +77,7 @@
     }
   }
 
-  async function genReleaseDescription() {
+  async function computeReleaseDescription(milestone) {
     utils.logMessage('I', LOG_PREFIX, 'get release description...');
     const issues = await genIssuesDescription();
     const changes = await genChangesDescription();
@@ -139,8 +147,6 @@
       utils.logMessage('E', LOG_PREFIX, 'Bad upload arguments');
       process.exit(1);
     }
-
-    console.log(OPTIONS);
 
     const projectName = OPTIONS.upload[0];
     const version = OPTIONS.upload[1];
@@ -224,11 +230,41 @@
     }
   }
 
+  async function releaseCreate() {
+    if (typeof OPTIONS.release !== 'object' || OPTIONS.link.length < 3) {
+      utils.logMessage('E', LOG_PREFIX, 'Bad release arguments');
+      process.exit(1);
+    }
+    const name = OPTIONS.release[0];
+    const tagName = OPTIONS.release[1];
+    const ref = OPTIONS.release[2];
+    const description = computeReleaseDescription(tagName);
+
+    utils.logMessage('E', LOG_PREFIX, `Create ${name} with tagName="${tagName}", ref="${ref}"`);
+
+    try {
+      GITLAB.ProjectReleases.create(GITLAB_PROJECT_ID, {
+        name: name,
+        tag_name: tagName,
+        description: description,
+        ref: ref,
+      });
+    } catch(e) {
+      utils.logMessage('E', LOG_PREFIX, e);
+      process.exit(1);
+    }
+
+  }
+
   async function main() {
     if (OPTIONS.description) {
-      await checkDescription();
-      const releaseDescription = await genReleaseDescription();
+      await descriptionCheck();
+      const releaseDescription = await computeReleaseDescription(OPTIONS.description);
       process.stdout.write(releaseDescription);
+    }
+
+    if (OPTIONS.release) {
+      await releaseCreate();
     }
 
     if (OPTIONS.upload) {

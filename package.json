@@ -1,6 +1,6 @@
 {
   "name": "cesium",
-  "version": "2.0.0-alpha24",
+  "version": "2.0.0-alpha22",
   "description": "Manage G1 wallet",
   "author": "Benoit Lavenier <benoit.lavenier@e-is.pro>",
   "homepage": "https://cesium.app",
@@ -38,6 +38,7 @@
     "electron:install": "npm install @capacitor-community/electron && cd electron && npm install",
     "electron:package": "cd electron && npm run package:linux",
     "electron:package:prod": "cd electron && npm run package:linux && npm run package:windows",
+    "release:create": "node scripts/node/release.js --token=${npm_config_token} --release",
     "release:upload_file": "node scripts/node/release.js --token=${npm_config_token} --upload",
     "release:link": "node scripts/node/release.js --token=${npm_config_token} --link",
     "resources": "cordova-res ios && cordova-res android && node scripts/node/resources.js",
