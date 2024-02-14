@@ -288,9 +288,10 @@ gitlab-prepare-release:
   before_script:
     - npm install
   script:
-    - node ${CI_PROJECT_DIR}/scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${CI_COMMIT_TAG}" > release/CHANGELOG.md
-    - echo -e "Changelog :\n$(cat release/CHANGELOG.md)"
-    - echo EXTRA_DESCRIPTION=\'"$(cat CHANGELOG.md)"\' >> ${ENV_FILE}
+    - mkdir ${CI_PROJECT_DIR}/release/
+    - node ${CI_PROJECT_DIR}/scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${CI_COMMIT_TAG}" > ${CI_PROJECT_DIR}/release/CHANGELOG.md
+    - echo -e "Changelog :\n$(cat ${CI_PROJECT_DIR}/release/CHANGELOG.md)"
+    - echo EXTRA_DESCRIPTION=\'"$(cat ${CI_PROJECT_DIR}/release/CHANGELOG.md)"\' >> ${ENV_FILE}
   artifacts:
     paths:
       - release
