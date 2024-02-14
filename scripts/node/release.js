@@ -73,9 +73,9 @@
     utils.logMessage('I', LOG_PREFIX, 'get release description...');
     const issues = await genIssuesDescription();
     const changes = await genChangesDescription();
-    return ('\\n# Changes\\n\\n'  +
+    return ('\n# Changes\n\n'  +
             changes +
-           '\\n# Issues\\n\\n' +
+           '\n# Issues\n\n' +
            issues).replace(/\'/g, '\\\'');
   }
 
@@ -87,10 +87,10 @@
         throw new Error(`${res.status} ${res.statusText}`);
       }
       const items = await res.json();
-      if (items.length === 0) return '* no \'changes\'\\n';
+      if (items.length === 0) return '* no \'changes\'\n';
       return items
         .map((i) => `* ${i.title} ([!${i.iid}](${i.web_url}))`)
-        .join('\\n') + '\\n';
+        .join('\n') + '\n';
     } catch(e) {
       utils.logMessage('E', LOG_PREFIX, e);
       process.exit(1);
@@ -105,10 +105,10 @@
         throw new Error(`${res.status} ${res.statusText}`);
       }
       const items = await res.json();
-      if (items.length === 0) return '* no issues fixed\\n';
+      if (items.length === 0) return '* no issues fixed\n';
       return items
         .map((i) => `* ${i.title} ([#${i.iid}](${i.web_url}) - ${i.state})`)
-        .join('\\n') + '\\n';
+        .join('\n') + '\n';
     } catch(e) {
       utils.logMessage('E', LOG_PREFIX, e);
       process.exit(1);
@@ -139,6 +139,8 @@
       utils.logMessage('E', LOG_PREFIX, 'Bad upload arguments');
       process.exit(1);
     }
+
+    console.log(OPTIONS);
 
     const projectName = OPTIONS.upload[0];
     const version = OPTIONS.upload[1];
