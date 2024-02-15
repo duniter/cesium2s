@@ -96,7 +96,7 @@
         throw new Error(`${res.status} ${res.statusText}`);
       }
       const items = await res.json();
-      if (items.length === 0) return '* no \'changes\'\n';
+      if (items.length === 0) return '* no changes\n';
       return items
         .map((i) => `* ${i.title} ([!${i.iid}](${i.web_url}))`)
         .join('\n') + '\n';
@@ -219,7 +219,7 @@
 
   async function releaseCreate(name, tagName, ref) {
     utils.logMessage('I', LOG_PREFIX, `Create ${name} with tagName="${tagName}", ref="${ref}"`);
-    const description = await computeReleaseDescription(tagName);
+    const description = 'Created using the release-cli\n\n' + (await computeReleaseDescription(tagName));
     console.log(description);
 
     try {
