@@ -31,23 +31,24 @@
     upload: {
       key: 'u',
       default: false,
-      description: 'Upload package file. Take 3 positional arguments : '
-        + 'project name ; tag version ; path to file',
+      description: 'Upload package file. Take 4 positional arguments :\n'
+        + 'First 3 are required : "project name" ; "tag version" ; "path to file"\n'
+        + 'Last is optional, if is "link_release" it also create asset link for release corresponding to the "tag version"',
       args: '*',
       required: false,
     },
     link: {
       key: 'l',
-      description: 'Create assets link. Take 4 positional arguments'
-        + 'First 3 are required : "release tag name" ; "asset name" ; "assets url"'
-        + 'Last is optional :  "link type", it can be one of "other", "runbook", "image", "package", "other" by default',
+      description: 'Create assets link. Take 4 positional arguments\n'
+        + '\tFirst 3 are required : "release tag name" ; "asset name" ; "assets url"\n'
+        + '\tLast is optional :  "link type", it can be one of "other", "runbook", "image", "package", "other" by default',
       default: false,
       args: '*',
       required: false,
     },
     release: {
       key: 'r',
-      description: 'Create assets link. Take 3 positional arguments : '
+      description: 'Create assets link. Take 3 positional arguments :\n'
         + '"release name" ; "tag name" ; "commit ref"',
       default: false,
       args: '*',
@@ -57,9 +58,9 @@
 
   const GITLAB = new Gitlab({
     host: `https://${GITLAB_HOST_NAME}`,
-    jobToken: OPTIONS.token,
+    // jobToken: OPTIONS.token,
     // For local testing with user token
-    // token: OPTIONS.token,
+    token: OPTIONS.token,
   });
 
   function computeGitlabApiProjectUrl() {
@@ -79,18 +80,18 @@
 
   async function computeReleaseDescription(milestone) {
     utils.logMessage('I', LOG_PREFIX, 'get release description...');
-    const issues = await genIssuesDescription();
-    const changes = await genChangesDescription();
+    const issues = await genIssuesDescription(milestone);
+    const changes = await genChangesDescription(milestone);
     return ('\n# Changes\n\n'  +
             changes +
            '\n# Issues\n\n' +
            issues).replace(/\'/g, '\\\'');
   }
 
-  async function genChangesDescription() {
+  async function genChangesDescription(milestone) {
     utils.logMessage('I', LOG_PREFIX, 'gen changes for release description...');
     try {
-      const res = await fetch(`${computeGitlabApiProjectUrl()}/merge_requests/?milestone=${OPTIONS.description}&state=merged`);
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/merge_requests/?milestone=${milestone}&state=merged`);
       if (res.status !== 200) {
         throw new Error(`${res.status} ${res.statusText}`);
       }
@@ -105,10 +106,10 @@
     }
   }
 
-  async function genIssuesDescription() {
+  async function genIssuesDescription(milestone) {
     utils.logMessage('I', LOG_PREFIX, 'gen issues for release description...');
     try {
-      const res = await fetch(`${computeGitlabApiProjectUrl()}/issues/?milestone=${OPTIONS.description}&state=closed`);
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/issues/?milestone=${milestone}&state=closed`);
       if (res.status !== 200) {
         throw new Error(`${res.status} ${res.statusText}`);
       }
@@ -123,18 +124,10 @@
     }
   }
 
-  async function createAssetsLink() {
-    if (typeof OPTIONS.link !== 'object' || OPTIONS.link.length < 3) {
-      utils.logMessage('E', LOG_PREFIX, 'Bad link arguments');
-      process.exit(1);
-    }
-    const tag = OPTIONS.link[0];
-    const name = OPTIONS.link[1];
-    const url = OPTIONS.link[2];
-    const type = OPTIONS.link[3] || 'other';
+  async function createAssetsLink(tag, name, url, type) {
+    utils.logMessage('I', LOG_PREFIX,
+      `Create assets_link : tag=${tag}, name=${name}, url=${url}, type=${type}`);
     try {
-      utils.logMessage('I', LOG_PREFIX,
-        `Create assets_link : tag=${tag}, name=${name}, url=${url}, type=${type}`);
       await GITLAB.ReleaseLinks.create(GITLAB_PROJECT_ID, tag, name, url, {linkType: type});
     } catch(e) {
       utils.logMessage('E', LOG_PREFIX, e);
@@ -142,18 +135,9 @@
     }
   }
 
-  async function uploadFile() {
-    if (typeof OPTIONS.upload !== 'object' || OPTIONS.link.length < 3) {
-      utils.logMessage('E', LOG_PREFIX, 'Bad upload arguments');
-      process.exit(1);
-    }
-
-    const projectName = OPTIONS.upload[0];
-    const version = OPTIONS.upload[1];
-    const filePath = OPTIONS.upload[2];
+  async function uploadPackage(projectName, version, filePath, linkRelease) {
     const fileName = path.basename(filePath);
     const uploadUrl = `${computeGitlabApiProjectUrl()}/packages/generic/${projectName}/${version}/${fileName}`;
-
     utils.logMessage('I', LOG_PREFIX, `Deploy to gitlab package "${uploadUrl}"`);
 
     if (! fs.existsSync(filePath)) {
@@ -170,8 +154,8 @@
           "Content-Length": fs.statSync(filePath).size,
           "Content-type": 'application/octet-stream',
           // For local testing with user token
-          // "PRIVATE-TOKEN": OPTIONS.token,
-          "JOB-TOKEN": OPTIONS.token,
+          "PRIVATE-TOKEN": OPTIONS.token,
+          // "JOB-TOKEN": OPTIONS.token,
         },
         body: fs.readFileSync(filePath),
       });
@@ -179,6 +163,9 @@
       utils.logMessage('E', LOG_PREFIX, e);
       process.exit(1);
     }
+
+    if (linkRelease)
+      await createAssetsLink(version, fileName, uploadUrl, "package");
   }
 
   async function packageCleanFile(projectName, version, fileName) {
@@ -230,17 +217,10 @@
     }
   }
 
-  async function releaseCreate() {
-    if (typeof OPTIONS.release !== 'object' || OPTIONS.link.length < 3) {
-      utils.logMessage('E', LOG_PREFIX, 'Bad release arguments');
-      process.exit(1);
-    }
-    const name = OPTIONS.release[0];
-    const tagName = OPTIONS.release[1];
-    const ref = OPTIONS.release[2];
-    const description = await computeReleaseDescription(tagName);
-
+  async function releaseCreate(name, tagName, ref) {
     utils.logMessage('I', LOG_PREFIX, `Create ${name} with tagName="${tagName}", ref="${ref}"`);
+    const description = await computeReleaseDescription(tagName);
+    console.log(description);
 
     try {
       GITLAB.ProjectReleases.create(GITLAB_PROJECT_ID, {
@@ -253,7 +233,6 @@
       utils.logMessage('E', LOG_PREFIX, e);
       process.exit(1);
     }
-
   }
 
   async function main() {
@@ -264,15 +243,38 @@
     }
 
     if (OPTIONS.release) {
-      await releaseCreate();
+      if (typeof OPTIONS.release !== 'object' || OPTIONS.link.length < 3) {
+        utils.logMessage('E', LOG_PREFIX, 'Bad release arguments');
+        process.exit(1);
+      }
+      const name = OPTIONS.release[0];
+      const tagName = OPTIONS.release[1];
+      const ref = OPTIONS.release[2];
+      await releaseCreate(name, tagName, ref);
     }
 
     if (OPTIONS.upload) {
-      await uploadFile();
+      if (typeof OPTIONS.upload !== 'object' || OPTIONS.link.length < 3) {
+        utils.logMessage('E', LOG_PREFIX, 'Bad upload arguments');
+        process.exit(1);
+      }
+      const projectName = OPTIONS.upload[0];
+      const version = OPTIONS.upload[1];
+      const filePath = OPTIONS.upload[2];
+      const linkRelease = OPTIONS.upload[3] === 'link_release' ? true : false;
+      await uploadPackage(projectName, version, filePath, linkRelease);
     }
 
     if (OPTIONS.link) {
-      await createAssetsLink();
+      if (typeof OPTIONS.link !== 'object' || OPTIONS.link.length < 3) {
+        utils.logMessage('E', LOG_PREFIX, 'Bad link arguments');
+        process.exit(1);
+      }
+      const tag = OPTIONS.link[0];
+      const name = OPTIONS.link[1];
+      const url = OPTIONS.link[2];
+      const type = OPTIONS.link[3] || 'other';
+      await createAssetsLink(tag, name, url, type);
     }
   };
 

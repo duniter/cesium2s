@@ -397,8 +397,7 @@ release:tags:
     - cd ${CI_PROJECT_DIR}/www || exit 1
     - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
     - cd ..
-    - echo "npm run release:upload_file --token=${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_COMMIT_TAG} ${releaseFile}"
-    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${CI_COMMIT_TAG}" "${releaseFile}"
+    - echo "npm run release:upload_file --token=${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_COMMIT_TAG} ${releaseFile}" "link_release"
   artifacts:
     paths:
       - release
@@ -457,8 +456,7 @@ deploy:web:
     - cd ${CI_PROJECT_DIR}/www || exit 1
     - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
     - cd ${CI_PROJECT_DIR}
-    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}"
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
+    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}" "link_release"
   artifacts:
     paths:
       - release
@@ -486,8 +484,7 @@ deploy:web:
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
     - mv "${sourceFile}" "${releaseFile}"
-    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}"
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
+    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}" "link_release"
   artifacts:
     paths:
       - release
@@ -528,18 +525,15 @@ deploy:android:tags:
     # Deploy Linux Debian
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-linux-amd64.deb
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
-    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}"
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
+    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}" "link_release"
     # Deploy Linux AppImage
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-linux-x86_64.AppImage
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
-    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}"
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
+    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}" "link_release"
     # Deploy Windows exe
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-windows-x64.exe
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
-    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}"
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
+    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}" "link_release"
   artifacts:
     paths:
       - release
@@ -573,8 +567,7 @@ deploy:electron:tags:
     - ls -artl "${CI_PROJECT_DIR}/release"
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.xpi
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
-    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}"
-    - npm run release:link --token=${CI_JOB_TOKEN} "${APP_VERSION}" "${fileName}" "${targetUrl}" "package"
+    - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}" "link_release"
   artifacts:
     paths:
       - release
