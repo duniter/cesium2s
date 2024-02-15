@@ -69,7 +69,8 @@ variables:
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
+    # - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
+    - git fetch origin
     # Get project dependencies
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -415,7 +416,9 @@ gitlab-release:
   image: ${CI_BUILD_IMAGE}
   script:
     - echo "running release for ${CI_COMMIT_TAG}"
-    - ls -l /tmp/
+    - '[ -d "${BUILD_CACHE_DIR}" ] || mkdir "${BUILD_CACHE_DIR}"'
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - npm install
     - npm run release:create --token=${CI_JOB_TOKEN} "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}"
   # release:
@@ -431,12 +434,14 @@ gitlab-release:
 # ---------------------------------------------------------------
 
 deploy:web:
+  <<: *git-setup
   stage: deploy
   needs: [release]
   image: ${CI_BUILD_IMAGE}
   script:
-    - git fetch origin
-    - git checkout ${APP_VERSION}
+    # - git checkout ${APP_VERSION}
+    - git status
+    - git branch
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -468,10 +473,14 @@ deploy:web:
   stage: deploy
   needs: [release]
   script:
+    - git status
+    - git branch
+    - head -n 10 package.json
     - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
     # Build APK (if not already done)
-    - if [[ ! -f "${sourceFile}" ]]; then npm run android:build:prod; fi
-    - if [[ ! -f "${sourceFile}" ]]; then npm run android:package:prod; fi
+    - echo "--- Building Android package ..."
+    - npm run android:build:prod
+    - npm run android:package:prod
     # Deploy as a release package
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-android.apk
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
@@ -509,6 +518,8 @@ deploy:android:tags:
     - npm run electron:build:prod
     - npm run electron:package:prod
   after_script:
+    - git status
+    - git branch
     - cat package.json
     - mkdir -p "${CI_PROJECT_DIR}/release/"
     - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
