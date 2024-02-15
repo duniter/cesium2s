@@ -309,22 +309,16 @@ package:webext:feature:
   stage: release
   script:
     - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "Missing required variable RELEASE_VERSION"; exit 1; fi
-    - git status
-    - cat package.json
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - echo "--- Release in progress"
     - git checkout -B release/${RELEASE_VERSION}
-    - git status
-    - cat package.json
     - echo "--- Manage app version"
     - npm run version:get
     - npm run version:set ${RELEASE_VERSION}
     # Git process for release (ISO gitflow)
     - echo "--- Fishing release"
-    - git status
-    - cat package.json
     - git add .
     - git status
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
@@ -333,16 +327,12 @@ package:webext:feature:
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}" ; fi
     - git tag -f -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
     - git checkout ${CI_COMMIT_REF_NAME}
-    - git status
-    - cat package.json
     - git reset --hard origin/${CI_COMMIT_REF_NAME}
     - git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
     - git push origin ${CI_COMMIT_REF_NAME}
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git push origin master ; fi
     - git push origin refs/tags/${RELEASE_VERSION}
     - git branch -D "release/${RELEASE_VERSION}"
-    - git status
-    - cat package.json
   after_script:
     - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "Missing required variable RELEASE_VERSION"; exit 1; fi
     # Remember version
@@ -425,9 +415,7 @@ gitlab-release:
   image: ${CI_BUILD_IMAGE}
   script:
     - echo "running release for ${CI_COMMIT_TAG}"
-    - git status
-    - cat package.json
-    - npm run release:create --token=${CI_JOB_TOKEN} "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}" ${CI_COMMIT_TAG}"
+    - npm run release:create --token=${CI_JOB_TOKEN} "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}"
   # release:
   #   name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
   #   description: "Created using the release-cli\\n${EXTRA_DESCRIPTION}"
@@ -445,6 +433,7 @@ deploy:web:
   needs: [release]
   image: ${CI_BUILD_IMAGE}
   script:
+    - git fetch origin
     - git checkout ${APP_VERSION}
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
@@ -477,9 +466,8 @@ deploy:web:
   stage: deploy
   needs: [release]
   script:
+    - git fetch origin
     - git checkout ${APP_VERSION}
-    - git status
-    - cat package.json
     - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
     # Build APK (if not already done)
     - if [[ ! -f "${sourceFile}" ]]; then npm run android:build:prod; fi
@@ -517,17 +505,12 @@ deploy:android:tags:
   <<: *electron-setup
   stage: deploy
   script:
-    - cat package.json
-    - echo "${APP_VERSION}"
+    - git fetch origin
     - git checkout ${APP_VERSION}
     - echo "--- Building Electron linux package ..."
     - npm run electron:build:prod
     - npm run electron:package:prod
   after_script:
-    - git status
-    - git checkout ${APP_VERSION}
-    - git status
-    - cat package.json
     - mkdir -p "${CI_PROJECT_DIR}/release/"
     - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
     - ls -l "${CI_PROJECT_DIR}/release/"
@@ -573,6 +556,7 @@ deploy:electron:tags:
   <<: *webext-setup
   stage: deploy
   script:
+    - git fetch origin
     - git checkout ${APP_VERSION}
     - npm run webext:build:prod
     - npm run webext:package:prod
