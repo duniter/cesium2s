@@ -69,7 +69,7 @@ variables:
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION}; fi
+    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
     # Get project dependencies
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -98,7 +98,7 @@ variables:
   image: ${CI_BUILD_ELECTRON_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION}; fi
+    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
     - npm install
     - npm run electron:install
 
@@ -106,7 +106,7 @@ variables:
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION}; fi
+    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - npm install web-ext
@@ -415,6 +415,8 @@ gitlab-release:
   image: ${CI_BUILD_IMAGE}
   script:
     - echo "running release for ${CI_COMMIT_TAG}"
+    - ls -l /tmp/
+    - npm install
     - npm run release:create --token=${CI_JOB_TOKEN} "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}"
   # release:
   #   name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
@@ -466,8 +468,6 @@ deploy:web:
   stage: deploy
   needs: [release]
   script:
-    - git fetch origin
-    - git checkout ${APP_VERSION}
     - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
     # Build APK (if not already done)
     - if [[ ! -f "${sourceFile}" ]]; then npm run android:build:prod; fi
@@ -505,12 +505,11 @@ deploy:android:tags:
   <<: *electron-setup
   stage: deploy
   script:
-    - git fetch origin
-    - git checkout ${APP_VERSION}
     - echo "--- Building Electron linux package ..."
     - npm run electron:build:prod
     - npm run electron:package:prod
   after_script:
+    - cat package.json
     - mkdir -p "${CI_PROJECT_DIR}/release/"
     - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
     - ls -l "${CI_PROJECT_DIR}/release/"
@@ -556,8 +555,6 @@ deploy:electron:tags:
   <<: *webext-setup
   stage: deploy
   script:
-    - git fetch origin
-    - git checkout ${APP_VERSION}
     - npm run webext:build:prod
     - npm run webext:package:prod
     - npm run webext:deploy:${DEPLOY_ENVIRONMENT}
