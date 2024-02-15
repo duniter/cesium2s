@@ -238,9 +238,9 @@
     const name = OPTIONS.release[0];
     const tagName = OPTIONS.release[1];
     const ref = OPTIONS.release[2];
-    const description = computeReleaseDescription(tagName);
+    const description = await computeReleaseDescription(tagName);
 
-    utils.logMessage('E', LOG_PREFIX, `Create ${name} with tagName="${tagName}", ref="${ref}"`);
+    utils.logMessage('I', LOG_PREFIX, `Create ${name} with tagName="${tagName}", ref="${ref}"`);
 
     try {
       GITLAB.ProjectReleases.create(GITLAB_PROJECT_ID, {
