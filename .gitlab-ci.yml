@@ -309,30 +309,40 @@ package:webext:feature:
   stage: release
   script:
     - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "Missing required variable RELEASE_VERSION"; exit 1; fi
+    - git status
+    - cat package.json
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - echo "--- Release in progress"
     - git checkout -B release/${RELEASE_VERSION}
+    - git status
+    - cat package.json
     - echo "--- Manage app version"
     - npm run version:get
     - npm run version:set ${RELEASE_VERSION}
     # Git process for release (ISO gitflow)
     - echo "--- Fishing release"
     - git status
+    - cat package.json
     - git add .
+    - git status
     - git commit -m "Prepare release ${RELEASE_VERSION}" --no-verify
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git checkout master; fi
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git reset --hard origin/master ; fi
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git merge --no-ff --no-edit -m "Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}" ; fi
     - git tag -f -a "${RELEASE_VERSION}" -m "${RELEASE_VERSION}"
     - git checkout ${CI_COMMIT_REF_NAME}
+    - git status
+    - cat package.json
     - git reset --hard origin/${CI_COMMIT_REF_NAME}
     - git merge --no-ff --no-edit -m "[skip ci] Release ${RELEASE_VERSION}" "release/${RELEASE_VERSION}"
     - git push origin ${CI_COMMIT_REF_NAME}
     - if [[ "$CI_COMMIT_REF_NAME" == "develop" ]]; then git push origin master ; fi
     - git push origin refs/tags/${RELEASE_VERSION}
     - git branch -D "release/${RELEASE_VERSION}"
+    - git status
+    - cat package.json
   after_script:
     - if [[ "_${RELEASE_VERSION}" == "_" ]]; then echo "Missing required variable RELEASE_VERSION"; exit 1; fi
     # Remember version
@@ -412,7 +422,7 @@ release:tags:
 gitlab-release:
   stage: release
   tags: [ kepler ]
-  # image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: ${CI_BUILD_IMAGE}
   script:
     - echo "running release for ${CI_COMMIT_TAG}"
     - git status
