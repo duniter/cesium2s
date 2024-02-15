@@ -193,6 +193,33 @@ failsafe-build:
     - /^feature\/.*/
     - /^features\/.*/
 
+build:tags:
+  image: ${CI_BUILD_IMAGE}
+  stage: build
+  script:
+    - APP_VERSION=${CI_COMMIT_TAG}
+    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
+    - echo "--- Release in progress"
+    - git checkout -b release/${CI_COMMIT_TAG}
+    # Copy cached dependencies and build
+    - ls -artl "${BUILD_CACHE_DIR}"
+    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
+    # Show version
+    - npm version
+    # Build
+    - export NODE_OPTIONS=--max-old-space-size=4096
+    - npm run build:prod
+  artifacts:
+    paths:
+      - release
+    reports:
+      dotenv: ${ENV_FILE}
+    expire_in: 24 hours
+  allow_failure: false
+  when: manual
+  only:
+    - tags
+
 # ---------------------------------------------------------------
 # Package jobs
 # ---------------------------------------------------------------
@@ -346,44 +373,6 @@ release:feature:
     - /^features\/.*/
   when: manual
 
-release:tags:
-  <<: *git-setup
-  image: ${CI_BUILD_IMAGE}
-  stage: release
-  script:
-    - APP_VERSION=${CI_COMMIT_TAG}
-    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
-    - echo "--- Release in progress"
-    - git checkout -b release/${CI_COMMIT_TAG}
-    # Copy cached dependencies and build
-    - ls -artl "${BUILD_CACHE_DIR}"
-    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
-    # Show version
-    - npm version
-    # Build
-    - export NODE_OPTIONS=--max-old-space-size=4096
-    - npm run build:prod
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/release
-    # Zip output
-    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
-    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
-    - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
-    - cd ${CI_PROJECT_DIR}/www || exit 1
-    - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
-    - cd ..
-    - echo "npm run release:upload_file --token=${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_COMMIT_TAG} ${releaseFile}" "link_release"
-  artifacts:
-    paths:
-      - release
-    reports:
-      dotenv: ${ENV_FILE}
-    expire_in: 24 hours
-  allow_failure: false
-  when: manual
-  only:
-    - tags
-
 gitlab-release:
   stage: release
   tags: [ kepler ]
@@ -402,7 +391,7 @@ gitlab-release:
 # Deploy jobs
 # ---------------------------------------------------------------
 
-deploy:web:
+.deploy:web:
   stage: deploy
   needs: [release]
   image: ${CI_BUILD_IMAGE}
@@ -431,6 +420,20 @@ deploy:web:
     expire_in: 24 hours
   only:
     - develop
+
+deploy:web:
+  extends: .deploy:web
+  needs: [release]
+
+failsafe-deploy:web:
+  extends: .deploy:web
+  needs: [failsafe-release]
+
+deploy:web:tags:
+  extends: .deploy:android
+  needs: [build:tags, gitlab-release]
+  only:
+    - tags
 
 .deploy:android:
   <<: *android-setup
@@ -466,7 +469,7 @@ failsafe-deploy:android:
 
 deploy:android:tags:
   extends: .deploy:android
-  needs: [release:tags]
+  needs: [build:tags, gitlab-release]
   only:
     - tags
 
@@ -511,7 +514,7 @@ failsafe-deploy:electron:
 
 deploy:electron:tags:
   extends: .deploy:electron
-  needs: [release:tags]
+  needs: [build:tags, gitlab-release]
   only:
     - tags
 
@@ -556,6 +559,6 @@ deploy:webext:prerelease:
 #
 # deploy:webext:tags:
 #   extends: .deploy:webext
-#   needs: [release:tags]
+#   needs: [build:tags, gitlab-release]
 #   only:
 #     - tags
