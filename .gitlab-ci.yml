@@ -8,24 +8,22 @@ image: node:18-slim
 stages:
   - environment
   - build
-  - alt_build
   - package
-  - prepare_release
   - release
   - deploy
 
 workflow:
   rules:
     - changes:
-        - docker/**/Dockerfile
-        - src/**/*
-        - android/**/*
-        - .gitlab-ci.yml
-        - package.json
-        - package-lock.json
-        - tsconfig*.json
-        - angular.json
-        - scripts/**/*
+      - docker/**/Dockerfile
+      - src/**/*
+      - android/**/*
+      - .gitlab-ci.yml
+      - package.json
+      - package-lock.json
+      - tsconfig*.json
+      - angular.json
+      - scripts/**/*
 
 # ---------------------------------------------------------------
 # Global variables
@@ -69,8 +67,7 @@ variables:
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    # - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
-    - git fetch origin
+    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     # Get project dependencies
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -99,7 +96,7 @@ variables:
   image: ${CI_BUILD_ELECTRON_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
+    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     - npm install
     - npm run electron:install
 
@@ -107,7 +104,7 @@ variables:
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
+    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - npm install web-ext
@@ -179,29 +176,13 @@ build:feature:
     - /^features\/.*/
   when: manual
 
-failsafe-build:
-  extends: .build
-  stage: alt_build
-  when: on_failure
-  script:
-    # Install global dependencies
-    - npm install -g @ionic/cli@${IONIC_CLI_VERSION} @angular/cli@${ANGULAR_CLI_VERSION}
-    # Update project dependencies
-    - npm install --unsafe-perm --force --silent
-    # Build
-    - npm run build:${BUILD_ENVIRONMENT}
-  only:
-    - develop
-    - /^feature\/.*/
-    - /^features\/.*/
-
 # ---------------------------------------------------------------
 # Package jobs
 # ---------------------------------------------------------------
-package:android:
+
+.package:android:
   <<: *android-setup
   stage: package
-  needs: [ build ]
   script:
     # Build APK
     - echo "--- Building Android APK ..."
@@ -217,9 +198,20 @@ package:android:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
+  when: manual
+
+package:android:
+  extends: .package:android
+  needs: [ build ]
   only:
     - develop
-  when: manual
+
+package:android:feature:
+  extends: .package:android
+  needs: [ build:feature ]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
 
 .package:electron:
   <<: *electron-setup
@@ -235,8 +227,6 @@ package:android:
     paths:
       - release
     expire_in: 72 hours
-  only:
-    - develop
   when: manual
 
 package:electron:
@@ -263,8 +253,6 @@ package:electron:feature:
   artifacts:
     paths:
       - release
-  only:
-    - develop
   when: manual
 
 package:webext:
@@ -279,28 +267,6 @@ package:webext:feature:
   only:
     - /^feature\/.*/
     - /^features\/.*/
-
-# ---------------------------------------------------------------
-# Prepare release jobs
-# ---------------------------------------------------------------
-# gitlab-prepare-release:
-#   stage: prepare_release
-#   tags: [ kepler ]
-#   before_script:
-#     - npm install
-#   script:
-#     - mkdir ${CI_PROJECT_DIR}/release/
-#     - node ${CI_PROJECT_DIR}/scripts/node/release.js --token=${CI_JOB_TOKEN} --description="${CI_COMMIT_TAG}" > ${CI_PROJECT_DIR}/release/CHANGELOG.md
-#     - echo -e "Changelog :\n$(cat ${CI_PROJECT_DIR}/release/CHANGELOG.md)"
-#     - echo EXTRA_DESCRIPTION=\'"$(cat ${CI_PROJECT_DIR}/release/CHANGELOG.md)"\' >> ${ENV_FILE}
-#   artifacts:
-#     paths:
-#       - release
-#     reports:
-#       dotenv: ${ENV_FILE}
-#     expire_in: 24 hours
-#   only:
-#     - tags
 
 # ---------------------------------------------------------------
 # Release jobs
@@ -356,12 +322,6 @@ release:
   only:
     - develop
 
-failsafe-release:
-  extends: .release
-  needs: [failsafe-build]
-  only:
-    - develop
-
 release:feature:
   extends: .release
   image: ${CI_BUILD_IMAGE}
@@ -370,44 +330,6 @@ release:feature:
     - /^feature\/.*/
     - /^features\/.*/
   when: manual
-
-release:tags:
-  <<: *git-setup
-  image: ${CI_BUILD_IMAGE}
-  stage: release
-  script:
-    - APP_VERSION=${CI_COMMIT_TAG}
-    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
-    - echo "--- Release in progress"
-    - git checkout -b release/${CI_COMMIT_TAG}
-    # Copy cached dependencies and build
-    - ls -artl "${BUILD_CACHE_DIR}"
-    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
-    # Show version
-    - npm version
-    # Build
-    - export NODE_OPTIONS=--max-old-space-size=4096
-    - npm run build:prod
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/release
-    # Zip output
-    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
-    - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
-    - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
-    - cd ${CI_PROJECT_DIR}/www || exit 1
-    - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
-    - cd ..
-    - echo "npm run release:upload_file --token=${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_COMMIT_TAG} ${releaseFile}" "link_release"
-  artifacts:
-    paths:
-      - release
-    reports:
-      dotenv: ${ENV_FILE}
-    expire_in: 24 hours
-  allow_failure: false
-  when: manual
-  only:
-    - tags
 
 gitlab-release:
   stage: release
@@ -420,11 +342,6 @@ gitlab-release:
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - npm install
     - npm run release:create --token=${CI_JOB_TOKEN} "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}" "${CI_COMMIT_TAG}"
-  # release:
-  #   name: "Release ${CI_PROJECT_NAME}-${CI_COMMIT_TAG}"
-  #   description: "Created using the release-cli\\n${EXTRA_DESCRIPTION}"
-  #   tag_name: "${CI_COMMIT_TAG}"
-  #   ref: "${CI_COMMIT_TAG}"
   only:
     - tags
 
@@ -432,15 +349,12 @@ gitlab-release:
 # Deploy jobs
 # ---------------------------------------------------------------
 
-deploy:web:
-  <<: *git-setup
+.deploy:web:
   stage: deploy
   needs: [release]
   image: ${CI_BUILD_IMAGE}
   script:
-    # - git checkout ${APP_VERSION}
-    - git status
-    - git branch
+    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -449,7 +363,7 @@ deploy:web:
     # Build web (if need)
     - echo "--- Building 'www'"
     - export NODE_OPTIONS=--max-old-space-size=4096
-    - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
+    - npm run build:prod
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
@@ -463,17 +377,33 @@ deploy:web:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 24 hours
+
+deploy:web:
+  extends: .deploy:web
+  needs: [release]
   only:
     - develop
+
+deploy:web:feature:
+  extends: .deploy:web
+  needs: [release:feature]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+  when: manual
+
+deploy:web:tags:
+  extends: .deploy:web
+  needs: [gitlab-release]
+  only:
+    - tags
+  when: manual
 
 .deploy:android:
   <<: *android-setup
   stage: deploy
   needs: [release]
   script:
-    - git status
-    - git branch
-    - head -n 10 package.json
     - sourceFile="${CI_PROJECT_DIR}/android/app/build/outputs/apk/release/app-release.apk"
     # Build APK (if not already done)
     - echo "--- Building Android package ..."
@@ -490,38 +420,40 @@ deploy:web:
       - release
     expire_in: 24 hours
   allow_failure: true
-  only:
-    - develop
 
 deploy:android:
   extends: .deploy:android
   needs: [release]
+  only:
+    - develop
 
-failsafe-deploy:android:
+deploy:android:feature:
   extends: .deploy:android
-  needs: [failsafe-release]
+  needs: [release:feature]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+  when: manual
 
 deploy:android:tags:
   extends: .deploy:android
-  needs: [release:tags]
+  needs: [gitlab-release]
   only:
     - tags
+  when: manual
 
 .deploy:electron:
   <<: *electron-setup
   stage: deploy
   script:
     - echo "--- Building Electron linux package ..."
+    - git checkout ${APP_VERSION}
     - npm run electron:build:prod
     - npm run electron:package:prod
   after_script:
-    - git status
-    - git branch
-    - cat package.json
     - mkdir -p "${CI_PROJECT_DIR}/release/"
     - mv -f ${CI_PROJECT_DIR}/electron/dist/*.{AppImage,deb,exe} $CI_PROJECT_DIR/release/
     - ls -l "${CI_PROJECT_DIR}/release/"
-    - cat "${CI_PROJECT_DIR}/package.json"
     # Deploy Linux Debian
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-linux-amd64.deb
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
@@ -539,22 +471,27 @@ deploy:android:tags:
       - release
     expire_in: 24 hours
   allow_failure: false
-  only:
-    - develop
 
 deploy:electron:
   extends: .deploy:electron
   needs: [release]
+  only:
+    - develop
 
-failsafe-deploy:electron:
+deploy:electron:feature:
   extends: .deploy:electron
-  needs: [failsafe-release]
+  needs: [release:feature]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+  when: manual
 
 deploy:electron:tags:
   extends: .deploy:electron
-  needs: [release:tags]
+  needs: [gitlab-release]
   only:
     - tags
+  when: manual
 
 .deploy:webext:
   <<: *webext-setup
@@ -572,8 +509,6 @@ deploy:electron:tags:
     paths:
       - release
     expire_in: 24 hours
-  only:
-    - develop
   allow_failure: false
   when: manual
 
@@ -582,21 +517,47 @@ deploy:webext:prerelease:
   needs: [release]
   variables:
     DEPLOY_ENVIRONMENT: 'test'
+  only:
+    - develop
 
-#deploy:webext:release:
-#  extends: .deploy:webext
-#  stage: package
-#  needs: [release]
-#  variables:
-#    DEPLOY_ENVIRONMENT: 'prod'
+deploy:webext:prerelease:feature:
+  extends: .deploy:webext
+  needs: [release:feature]
+  variables:
+    DEPLOY_ENVIRONMENT: 'test'
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
 
-#
-# failsafe-deploy:webext:
-#   extends: .deploy:webext
-#   needs: [failsafe-release]
-#
-# deploy:webext:tags:
-#   extends: .deploy:webext
-#   needs: [release:tags]
-#   only:
-#     - tags
+deploy:webext:prerelease:tags:
+  extends: .deploy:webext
+  needs: [gitlab-release]
+  variables:
+    DEPLOY_ENVIRONMENT: 'test'
+  only:
+    - tags
+
+deploy:webext:release:
+  extends: .deploy:webext
+  needs: [release]
+  variables:
+    DEPLOY_ENVIRONMENT: 'prod'
+  only:
+    - develop
+
+deploy:webext:release:feature:
+  extends: .deploy:webext
+  needs: [release:feature]
+  variables:
+    DEPLOY_ENVIRONMENT: 'prod'
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+
+deploy:webext:release:tags:
+  extends: .deploy:webext
+  needs: [gitlab-release]
+  variables:
+    DEPLOY_ENVIRONMENT: 'prod'
+  only:
+    - tags
