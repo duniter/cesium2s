@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const { async } = require('rxjs');
+
 (async () => {
 
   const path = require('path');
@@ -78,17 +80,17 @@
     }
   }
 
-  async function computeReleaseDescription(milestone) {
+  async function descriptionCompute(milestone) {
     utils.logMessage('I', LOG_PREFIX, 'get release description...');
-    const issues = await genIssuesDescription(milestone);
-    const changes = await genChangesDescription(milestone);
+    const issues = await descriptionGetIssues(milestone);
+    const changes = await descriptionGetChanges(milestone);
     return ('\n# Changes\n\n'  +
             changes +
            '\n# Issues\n\n' +
            issues).replace(/\'/g, '\\\'');
   }
 
-  async function genChangesDescription(milestone) {
+  async function descriptionGetChanges(milestone) {
     utils.logMessage('I', LOG_PREFIX, 'gen changes for release description...');
     try {
       const res = await fetch(`${computeGitlabApiProjectUrl()}/merge_requests/?milestone=${milestone}&state=merged`);
@@ -106,7 +108,7 @@
     }
   }
 
-  async function genIssuesDescription(milestone) {
+  async function descriptionGetIssues(milestone) {
     utils.logMessage('I', LOG_PREFIX, 'gen issues for release description...');
     try {
       const res = await fetch(`${computeGitlabApiProjectUrl()}/issues/?milestone=${milestone}&state=closed`);
@@ -124,10 +126,32 @@
     }
   }
 
-  async function createAssetsLink(tag, name, url, type) {
+  async function assetsLinkCheckExists(tag, name) {
+    utils.logMessage('I', LOG_PREFIX, 'Check if asset link "${name}" exists for tag "${tag}"');
+    try {
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/releases/${tag}/assets/links`);
+      if (res.status !== 200) {
+        throw new Error(`${res.status} ${res.statusText}`);
+      }
+      const items = await res.json();
+      const result = items.find((item) => item.name === name);
+      if (!result || result.length === 0) return false;
+      else return result.id;
+    } catch(e) {
+      utils.logMessage('E', LOG_PREFIX, e);
+      process.exit(1);
+    }
+  }
+
+  async function assetsLinkCreate(tag, name, url, type) {
     utils.logMessage('I', LOG_PREFIX,
       `Create assets_link : tag=${tag}, name=${name}, url=${url}, type=${type}`);
     try {
+      const existingId = assetsLinkCheckExists(tag, name);
+      if (existingId) {
+        utils.logMessage('I', LOG_PREFIX, `Remove previous assets link`);
+        await GITLAB.ReleaseLinks.remove(GITLAB_PROJECT_ID, tag, existingId);
+      }
       await GITLAB.ReleaseLinks.create(GITLAB_PROJECT_ID, tag, name, url, {linkType: type});
     } catch(e) {
       utils.logMessage('E', LOG_PREFIX, e);
@@ -135,7 +159,7 @@
     }
   }
 
-  async function uploadPackage(projectName, version, filePath, linkRelease) {
+  async function packageUpload(projectName, version, filePath, linkRelease) {
     const fileName = path.basename(filePath);
     const uploadUrl = `${computeGitlabApiProjectUrl()}/packages/generic/${projectName}/${version}/${fileName}`;
     utils.logMessage('I', LOG_PREFIX, `Deploy to gitlab package "${uploadUrl}"`);
@@ -165,7 +189,7 @@
     }
 
     if (linkRelease)
-      await createAssetsLink(version, fileName, uploadUrl, "package");
+      await assetsLinkCreate(version, fileName, uploadUrl, "package");
   }
 
   async function packageCleanFile(projectName, version, fileName) {
@@ -217,13 +241,23 @@
     }
   }
 
+  async function releaseCheckExist(tagName) {
+    utils.logMessage('I', LOG_PREFIX, `Check if release for tag "${tagName}" exits`);
+    try {
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/releases/${tagName}`);
+      return true;
+    } catch(e) {
+      if (res.status === 404) return false;
+      utils.logMessage('E', LOG_PREFIX, e);
+      process.exit(1);
+    }
+  }
+
   async function releaseCreate(name, tagName, ref) {
     utils.logMessage('I', LOG_PREFIX, `Create ${name} with tagName="${tagName}", ref="${ref}"`);
-    const description = 'Created using the release-cli\n\n' + (await computeReleaseDescription(tagName));
-    console.log(description);
-
+    const description = await descriptionCompute(tagName);
     try {
-      GITLAB.ProjectReleases.create(GITLAB_PROJECT_ID, {
+      await GITLAB.ProjectReleases.create(GITLAB_PROJECT_ID, {
         name: name,
         tag_name: tagName,
         description: description,
@@ -235,10 +269,23 @@
     }
   }
 
+  async function releaseUpdate(tagName) {
+    utils.logMessage('I', LOG_PREFIX, `Update release for tag "${tagName}""`);
+    const description = await descriptionCompute(tagName);
+    try {
+      await GITLAB.ProjectReleases.edit(GITLAB_PROJECT_ID, tagName, {
+        description: description,
+      });
+    } catch(e) {
+      utils.logMessage('E', LOG_PREFIX, e);
+      process.exit(1);
+    }
+  }
+
   async function main() {
     if (OPTIONS.description) {
       await descriptionCheck();
-      const releaseDescription = await computeReleaseDescription(OPTIONS.description);
+      const releaseDescription = await descriptionCompute(OPTIONS.description);
       process.stdout.write(releaseDescription);
     }
 
@@ -250,7 +297,9 @@
       const name = OPTIONS.release[0];
       const tagName = OPTIONS.release[1];
       const ref = OPTIONS.release[2];
-      await releaseCreate(name, tagName, ref);
+      const exists = await releaseCheckExist(tagName);
+      if (exists) await releaseCreate(name, tagName, ref);
+      else await releaseUpdate(tagName);
     }
 
     if (OPTIONS.upload) {
@@ -262,7 +311,7 @@
       const version = OPTIONS.upload[1];
       const filePath = OPTIONS.upload[2];
       const linkRelease = OPTIONS.upload[3] === 'link_release' ? true : false;
-      await uploadPackage(projectName, version, filePath, linkRelease);
+      await packageUpload(projectName, version, filePath, linkRelease);
     }
 
     if (OPTIONS.link) {
@@ -274,9 +323,12 @@
       const name = OPTIONS.link[1];
       const url = OPTIONS.link[2];
       const type = OPTIONS.link[3] || 'other';
-      await createAssetsLink(tag, name, url, type);
+      await assetsLinkCreate(tag, name, url, type);
     }
   };
 
   await main();
-})().catch(err => console.log(err));
+})().catch(err => {
+    console.log(err);
+    process.exit(1);
+});
