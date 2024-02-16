@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "cesium2s",
-  "version": "2.0.0.26",
-  "version_name": "2.0.0-alpha26",
+  "version": "2.0.0.30",
+  "version_name": "2.0.0-alpha30",
   "short_name": "Cesium²",
   "description": "Manage G1 wallet",
   "author": "Benoit Lavenier <benoit.lavenier@e-is.pro>",
