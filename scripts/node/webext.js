@@ -81,7 +81,10 @@
     const channel = OPTIONS.listed ? 'listed' : 'unlisted';
 
     if (!apiKey || !apiSecret || !id) {
-      throw new Error('Missing "AMO_JWT_ISSUER" or "AMO_JWT_SECRET" or "WEB_EXT_ID" in script env');
+      throw new Error(
+        'Missing "AMO_JWT_ISSUER" or "AMO_JWT_SECRET" or "WEB_EXT_ID" in script env\n'
+        + 'If run on ci job, theses variables are only available on protected branch'
+      );
     }
 
     await webext.cmd.sign({

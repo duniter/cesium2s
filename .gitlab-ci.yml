@@ -81,7 +81,7 @@ variables:
     - echo 'sdk.dir=${ANDROID_SDK_ROOT}' > android/local.properties
     # Prepare for signing
     - echo "--- Preparing Android 'release-signing.properties' file ..."
-    - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_STORE_PASSWORD}" == "_" ]]; then echo "Missing required variable ANDROID_STORE_PASSWORD"; exit 1; fi
+    - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_STORE_PASSWORD}" == "_" ]]; then echo "Missing required variable ANDROID_STORE_PASSWORD. This variable is only available on protected branch."; exit 1; fi
     - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_KEY_ALIAS}" == "_" ]]; then echo "Missing required variable ANDROID_KEY_ALIAS"; exit 1; fi
     - if [[ "$BUILD_ENVIRONMENT" == "prod" && "_${ANDROID_KEY_PASSWORD}" == "_" ]]; then echo "Missing required variable ANDROID_KEY_PASSWORD"; exit 1; fi
     - echo "storeFile=Cesium.keystore" > android/app/release-signing.properties
@@ -99,6 +99,7 @@ variables:
     - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     - npm install
     - npm run electron:install
+    - npm version
 
 .configure-webext-template: &webext-setup
   image: ${CI_BUILD_IMAGE}
@@ -108,6 +109,7 @@ variables:
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - npm install web-ext
+    - npm version
 
 # ---------------------------------------------------------------
 # Environment jobs : Create docker image for builds/release, this
@@ -447,7 +449,7 @@ deploy:android:tags:
   stage: deploy
   script:
     - echo "--- Building Electron linux package ..."
-    - git checkout ${APP_VERSION}
+    - npm version
     - npm run electron:build:prod
     - npm run electron:package:prod
   after_script:
@@ -497,12 +499,13 @@ deploy:electron:tags:
   <<: *webext-setup
   stage: deploy
   script:
+    - npm version
     - npm run webext:build:prod
     - npm run webext:package:prod
     - npm run webext:deploy:${DEPLOY_ENVIRONMENT}
   after_script:
     - ls -artl "${CI_PROJECT_DIR}/release"
-    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.xpi
+    - fileName=$(basename $(echo release/cesium-*.xpi))
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}" "link_release"
   artifacts:

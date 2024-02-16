@@ -60,9 +60,9 @@ const { async } = require('rxjs');
 
   const GITLAB = new Gitlab({
     host: `https://${GITLAB_HOST_NAME}`,
-    // jobToken: OPTIONS.token,
+    jobToken: OPTIONS.token,
     // For local testing with user token
-    token: OPTIONS.token,
+    // token: OPTIONS.token,
   });
 
   function computeGitlabApiProjectUrl() {
@@ -131,14 +131,12 @@ const { async } = require('rxjs');
     utils.logMessage('I', LOG_PREFIX, `Check if asset link "${name}" exists for tag "${tag}"`);
     try {
       const res = await fetch(`${computeGitlabApiProjectUrl()}/releases/${tag}/assets/links`);
-      if (res.status !== 200) {
-        throw new Error(`${res.status} ${res.statusText}`);
-      }
       const items = await res.json();
       const result = items.find((item) => item.name === name);
       if (!result || result.length === 0) return false;
       else return result.id;
     } catch(e) {
+      if (res.status === 404) return false;
       utils.logMessage('E', LOG_PREFIX, e);
       process.exit(1);
     }
@@ -179,8 +177,8 @@ const { async } = require('rxjs');
           "Content-Length": fs.statSync(filePath).size,
           "Content-type": 'application/octet-stream',
           // For local testing with user token
-          "PRIVATE-TOKEN": OPTIONS.token,
-          // "JOB-TOKEN": OPTIONS.token,
+          // "PRIVATE-TOKEN": OPTIONS.token,
+          "JOB-TOKEN": OPTIONS.token,
         },
         body: fs.readFileSync(filePath),
       });
