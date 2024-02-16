@@ -128,15 +128,16 @@ const { async } = require('rxjs');
 
   async function assetsLinkCheckExists(tag, name) {
     utils.logMessage('I', LOG_PREFIX, `Check if asset link "${name}" exists for tag "${tag}"`);
-    let res;
     try {
-      res = await fetch(`${computeGitlabApiProjectUrl()}/releases/${tag}/assets/links`);
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/releases/${tag}/assets/links`);
+      if (res.status === 404) return false;
+      else if (res.status !== 200)
+        throw new Error(`${res.status} ${res.statusText}`);
       const items = await res.json();
       const found = items.find((item) => item.name === name);
       if (!found || found.length === 0) return false;
       else return found.id;
     } catch(e) {
-      if (res.status === 404) return false;
       utils.logMessage('E', LOG_PREFIX, e);
       process.exit(1);
     }
@@ -242,12 +243,11 @@ const { async } = require('rxjs');
 
   async function releaseCheckExist(tagName) {
     utils.logMessage('I', LOG_PREFIX, `Check if release for tag "${tagName}" exits`);
-    let res;
     try {
-      res = await fetch(`${computeGitlabApiProjectUrl()}/releases/${tagName}`);
+      const res = await fetch(`${computeGitlabApiProjectUrl()}/releases/${tagName}`);
+      if (res.status !== 200) return false;
       return true;
     } catch(e) {
-      if (res.status === 404) return false;
       utils.logMessage('E', LOG_PREFIX, e);
       process.exit(1);
     }
