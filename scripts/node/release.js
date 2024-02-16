@@ -60,9 +60,9 @@ const { async } = require('rxjs');
 
   const GITLAB = new Gitlab({
     host: `https://${GITLAB_HOST_NAME}`,
-    jobToken: OPTIONS.token,
+    // jobToken: OPTIONS.token,
     // For local testing with user token
-    // token: OPTIONS.token,
+    token: OPTIONS.token,
   });
 
   function computeGitlabApiProjectUrl() {
@@ -127,7 +127,8 @@ const { async } = require('rxjs');
   }
 
   async function assetsLinkCheckExists(tag, name) {
-    utils.logMessage('I', LOG_PREFIX, 'Check if asset link "${name}" exists for tag "${tag}"');
+
+    utils.logMessage('I', LOG_PREFIX, `Check if asset link "${name}" exists for tag "${tag}"`);
     try {
       const res = await fetch(`${computeGitlabApiProjectUrl()}/releases/${tag}/assets/links`);
       if (res.status !== 200) {
@@ -147,9 +148,9 @@ const { async } = require('rxjs');
     utils.logMessage('I', LOG_PREFIX,
       `Create assets_link : tag=${tag}, name=${name}, url=${url}, type=${type}`);
     try {
-      const existingId = assetsLinkCheckExists(tag, name);
+      const existingId = await assetsLinkCheckExists(tag, name);
       if (existingId) {
-        utils.logMessage('I', LOG_PREFIX, `Remove previous assets link`);
+        utils.logMessage('I', LOG_PREFIX, `Remove previous assets link with id=${existingId}`);
         await GITLAB.ReleaseLinks.remove(GITLAB_PROJECT_ID, tag, existingId);
       }
       await GITLAB.ReleaseLinks.create(GITLAB_PROJECT_ID, tag, name, url, {linkType: type});
@@ -178,8 +179,8 @@ const { async } = require('rxjs');
           "Content-Length": fs.statSync(filePath).size,
           "Content-type": 'application/octet-stream',
           // For local testing with user token
-          // "PRIVATE-TOKEN": OPTIONS.token,
-          "JOB-TOKEN": OPTIONS.token,
+          "PRIVATE-TOKEN": OPTIONS.token,
+          // "JOB-TOKEN": OPTIONS.token,
         },
         body: fs.readFileSync(filePath),
       });
@@ -298,8 +299,8 @@ const { async } = require('rxjs');
       const tagName = OPTIONS.release[1];
       const ref = OPTIONS.release[2];
       const exists = await releaseCheckExist(tagName);
-      if (exists) await releaseCreate(name, tagName, ref);
-      else await releaseUpdate(tagName);
+      if (exists) await releaseUpdate(tagName);
+      else await releaseCreate(name, tagName, ref);
     }
 
     if (OPTIONS.upload) {
