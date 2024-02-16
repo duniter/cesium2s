@@ -16,15 +16,15 @@ stages:
 workflow:
   rules:
     - changes:
-        - docker/**/Dockerfile
-        - src/**/*
-        - android/**/*
-        - .gitlab-ci.yml
-        - package.json
-        - package-lock.json
-        - tsconfig*.json
-        - angular.json
-        - scripts/**/*
+      - docker/**/Dockerfile
+      - src/**/*
+      - android/**/*
+      - .gitlab-ci.yml
+      - package.json
+      - package-lock.json
+      - tsconfig*.json
+      - angular.json
+      - scripts/**/*
 
 # ---------------------------------------------------------------
 # Global variables
@@ -193,40 +193,13 @@ failsafe-build:
     - /^feature\/.*/
     - /^features\/.*/
 
-build:tags:
-  image: ${CI_BUILD_IMAGE}
-  stage: build
-  script:
-    - APP_VERSION=${CI_COMMIT_TAG}
-    - echo "APP_VERSION=${APP_VERSION}" > ${ENV_FILE}
-    - echo "--- Release in progress"
-    - git checkout -b release/${CI_COMMIT_TAG}
-    # Copy cached dependencies and build
-    - ls -artl "${BUILD_CACHE_DIR}"
-    - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
-    # Show version
-    - npm version
-    # Build
-    - export NODE_OPTIONS=--max-old-space-size=4096
-    - npm run build:prod
-  artifacts:
-    paths:
-      - release
-    reports:
-      dotenv: ${ENV_FILE}
-    expire_in: 24 hours
-  allow_failure: false
-  when: manual
-  only:
-    - tags
-
 # ---------------------------------------------------------------
 # Package jobs
 # ---------------------------------------------------------------
-package:android:
+
+.package:android:
   <<: *android-setup
   stage: package
-  needs: [ build ]
   script:
     # Build APK
     - echo "--- Building Android APK ..."
@@ -242,9 +215,20 @@ package:android:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 72 hours
+  when: manual
+
+package:android:
+  extends: .package:android
+  needs: [ build ]
   only:
     - develop
-  when: manual
+
+package:android:feature:
+  extends: .package:android
+  needs: [ build:feature ]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
 
 .package:electron:
   <<: *electron-setup
@@ -260,8 +244,6 @@ package:android:
     paths:
       - release
     expire_in: 72 hours
-  only:
-    - develop
   when: manual
 
 package:electron:
@@ -288,8 +270,6 @@ package:electron:feature:
   artifacts:
     paths:
       - release
-  only:
-    - develop
   when: manual
 
 package:webext:
@@ -351,16 +331,11 @@ package:webext:feature:
     expire_in: 24 hours
   allow_failure: false
   when: manual
+
 release:
   extends: .release
   image: ${CI_BUILD_IMAGE}
   needs: [build]
-  only:
-    - develop
-
-failsafe-release:
-  extends: .release
-  needs: [failsafe-build]
   only:
     - develop
 
@@ -404,7 +379,7 @@ gitlab-release:
     # Build web (if need)
     - echo "--- Building 'www'"
     - export NODE_OPTIONS=--max-old-space-size=4096
-    - if [[ "$BUILD_ENVIRONMENT" != "prod" || ! -d "www" ]]; then npm run build:prod; fi
+    - npm run build:prod
     - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
@@ -418,22 +393,27 @@ gitlab-release:
     reports:
       dotenv: ${ENV_FILE}
     expire_in: 24 hours
-  only:
-    - develop
 
 deploy:web:
   extends: .deploy:web
   needs: [release]
+  only:
+    - develop
 
-failsafe-deploy:web:
+deploy:web:feature:
   extends: .deploy:web
-  needs: [failsafe-release]
+  needs: [release:feature]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+  when: manual
 
 deploy:web:tags:
-  extends: .deploy:android
-  needs: [build:tags, gitlab-release]
+  extends: .deploy:web
+  needs: [gitlab-release]
   only:
     - tags
+  when: manual
 
 .deploy:android:
   <<: *android-setup
@@ -456,22 +436,27 @@ deploy:web:tags:
       - release
     expire_in: 24 hours
   allow_failure: true
-  only:
-    - develop
 
 deploy:android:
   extends: .deploy:android
   needs: [release]
+  only:
+    - develop
 
-failsafe-deploy:android:
+deploy:android:feature:
   extends: .deploy:android
-  needs: [failsafe-release]
+  needs: [release:feature]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+  when: manual
 
 deploy:android:tags:
   extends: .deploy:android
-  needs: [build:tags, gitlab-release]
+  needs: [gitlab-release]
   only:
     - tags
+  when: manual
 
 .deploy:electron:
   <<: *electron-setup
@@ -501,22 +486,27 @@ deploy:android:tags:
       - release
     expire_in: 24 hours
   allow_failure: false
-  only:
-    - develop
 
 deploy:electron:
   extends: .deploy:electron
   needs: [release]
+  only:
+    - develop
 
-failsafe-deploy:electron:
+deploy:electron:feature:
   extends: .deploy:electron
-  needs: [failsafe-release]
+  needs: [release:feature]
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+  when: manual
 
 deploy:electron:tags:
   extends: .deploy:electron
-  needs: [build:tags, gitlab-release]
+  needs: [gitlab-release]
   only:
     - tags
+  when: manual
 
 .deploy:webext:
   <<: *webext-setup
@@ -534,8 +524,6 @@ deploy:electron:tags:
     paths:
       - release
     expire_in: 24 hours
-  only:
-    - develop
   allow_failure: false
   when: manual
 
@@ -544,21 +532,47 @@ deploy:webext:prerelease:
   needs: [release]
   variables:
     DEPLOY_ENVIRONMENT: 'test'
+  only:
+    - develop
 
-#deploy:webext:release:
-#  extends: .deploy:webext
-#  stage: package
-#  needs: [release]
-#  variables:
-#    DEPLOY_ENVIRONMENT: 'prod'
+deploy:webext:prerelease:feature:
+  extends: .deploy:webext
+  needs: [release:feature]
+  variables:
+    DEPLOY_ENVIRONMENT: 'test'
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
 
-#
-# failsafe-deploy:webext:
-#   extends: .deploy:webext
-#   needs: [failsafe-release]
-#
-# deploy:webext:tags:
-#   extends: .deploy:webext
-#   needs: [build:tags, gitlab-release]
-#   only:
-#     - tags
+deploy:webext:prerelease:tags:
+  extends: .deploy:webext
+  needs: [gitlab-release]
+  variables:
+    DEPLOY_ENVIRONMENT: 'test'
+  only:
+    - tags
+
+deploy:webext:release:
+  extends: .deploy:webext
+  needs: [release]
+  variables:
+    DEPLOY_ENVIRONMENT: 'prod'
+  only:
+    - develop
+
+deploy:webext:release:feature:
+  extends: .deploy:webext
+  needs: [release:feature]
+  variables:
+    DEPLOY_ENVIRONMENT: 'prod'
+  only:
+    - /^feature\/.*/
+    - /^features\/.*/
+
+deploy:webext:release:tags:
+  extends: .deploy:webext
+  needs: [gitlab-release]
+  variables:
+    DEPLOY_ENVIRONMENT: 'prod'
+  only:
+    - tags
