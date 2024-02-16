@@ -14,7 +14,7 @@ INSTALL_DIR=${1:-$(pwd)/${PROJECT_NAME}}
 INSTALL_ENV=testing
 
 latest_version() {
-  echo "2.0.0-alpha32" #lastest
+  echo "2.0.0-alpha33" #lastest
 }
 
 api_release_url() {
