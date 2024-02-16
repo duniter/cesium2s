@@ -67,7 +67,7 @@ variables:
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
+    # - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     # Get project dependencies
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -96,18 +96,20 @@ variables:
   image: ${CI_BUILD_ELECTRON_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
+    # - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     - npm install
     - npm run electron:install
+    - npm version
 
 .configure-webext-template: &webext-setup
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
+    # - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - npm install web-ext
+    - npm version
 
 # ---------------------------------------------------------------
 # Environment jobs : Create docker image for builds/release, this
@@ -354,7 +356,7 @@ gitlab-release:
   needs: [release]
   image: ${CI_BUILD_IMAGE}
   script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
+    # - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -371,6 +373,7 @@ gitlab-release:
     - if ! zip -q -r "${releaseFile}" . ; then echo "Cannot create the archive for the web artifact"; exit 1; fi
     - cd ${CI_PROJECT_DIR}
     - npm run release:upload_file --token=${CI_JOB_TOKEN} "${CI_PROJECT_NAME}" "${APP_VERSION}" "${releaseFile}" "link_release"
+    - npm version
   artifacts:
     paths:
       - release
