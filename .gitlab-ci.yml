@@ -67,7 +67,7 @@ variables:
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
+    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
     # Get project dependencies
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
@@ -96,7 +96,7 @@ variables:
   image: ${CI_BUILD_ELECTRON_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
+    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
     - npm install
     - npm run electron:install
     - npm version
@@ -105,7 +105,7 @@ variables:
   image: ${CI_BUILD_IMAGE}
   tags: [ kepler ]
   before_script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
+    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
     - npm install web-ext
@@ -356,7 +356,7 @@ gitlab-release:
   needs: [release]
   image: ${CI_BUILD_IMAGE}
   script:
-    - if [[ -n ${APP_VERSION} ]]; then git checkout ${APP_VERSION} ; fi
+    - if [[ -n ${APP_VERSION} ]]; then git fetch origin ; git checkout ${APP_VERSION} ; fi
     # Copy cached dependencies and build
     - ls -artl "${BUILD_CACHE_DIR}"
     - ln -s "${BUILD_CACHE_DIR}/node_modules" node_modules
