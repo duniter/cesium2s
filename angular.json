@@ -29,6 +29,7 @@
               "crypto",
               "store",
               "bn.js",
+              "bs58",
               "ip-regexp",
               "tweetnacl",
               "eventemitter3",

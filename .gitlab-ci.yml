@@ -160,7 +160,6 @@ build:env:
 
 build:
   extends: .build
-  needs: ["build:env"]
   image: ${CI_BUILD_IMAGE}
   only:
     - develop
