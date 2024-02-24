@@ -6,7 +6,7 @@ is_installed() {
   type "$1" > /dev/null 2>&1
 }
 
-PROJECT_NAME=cesium
+PROJECT_NAME=cesium2s
 PROJECT_REPO="duniter/cesium2s"
 INSTALL_DIR=${1:-$(pwd)/${PROJECT_NAME}}
 
