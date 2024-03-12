@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title translate>CURRENCY.VIEW.TITLE</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large" translate>CURRENCY.VIEW.TITLE</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <ion-list *rxIf="loaded$; else listSkeleton" lines="none">
+      <ion-item-divider translate>CURRENCY.VIEW.TITLE</ion-item-divider>
+
+      <ion-item>
+        <ion-icon slot="start" name="bookmark"></ion-icon>
+        <ion-label color="dark" translate>CURRENCY.VIEW.CURRENCY_NAME</ion-label>
+        <ion-badge color="light">{{ currency.displayName }}</ion-badge>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="pie-chart"></ion-icon>
+        <ion-label color="dark" translate>CURRENCY.VIEW.SHARE</ion-label>
+        <ion-badge color="secondary">[TBD] {{ currency.displayName }}</ion-badge>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="ellipse"></ion-icon>
+        <ion-label color="dark" translate>CURRENCY.VIEW.MASS</ion-label>
+        <ion-badge color="warning">[TBD] {{ currency.displayName }}</ion-badge>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="trending-up"></ion-icon>
+        <ion-label color="dark" translate>CURRENCY.VIEW.C_ACTUAL</ion-label>
+        <ion-badge color="light">[TBD] / day</ion-badge>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="reload"></ion-icon>
+        <ion-label color="dark" translate>CURRENCY.VIEW.UD</ion-label>
+        <ion-badge color="tertiary">[TBD] {{ currency.displayName }} / day</ion-badge>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+
+<ng-template #listSkeleton>
+  <app-skeleton-list [avatar]="true" size="5"></app-skeleton-list>
+</ng-template>

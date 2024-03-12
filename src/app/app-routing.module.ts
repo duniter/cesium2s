@@ -37,6 +37,10 @@ const routes: Routes = [
     loadChildren: () => import('./block/block-routing.module').then((m) => m.AppBlockRoutingModule),
   },
   {
+    path: 'currency',
+    loadChildren: () => import('./currency/currency-routing.module').then((m) => m.AppCurrencyRoutingModule),
+  },
+  {
     path: 'settings',
     loadChildren: () => import('./settings/settings-routing.module').then((m) => m.AppSettingsRoutingModule),
   },
