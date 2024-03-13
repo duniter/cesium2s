@@ -15,7 +15,7 @@ export class AccountConverter {
       address: input.id,
       meta: {
         uid: input.identity?.name,
-        isMember: isNotNil(input.identity?.membership?.id),
+        isMember: input.identity?.membershipHistory?.some((h) => isNotNil(h.id)) || false,
       },
     };
   }
@@ -34,7 +34,7 @@ export class IdentityConverter {
       address: input.account?.id,
       meta: {
         uid: input.name,
-        isMember: isNotNil(input.membership?.id),
+        isMember: input.membershipHistory?.some((h) => isNotNil(h.id)) || false,
       },
     };
   }

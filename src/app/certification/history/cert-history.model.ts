@@ -28,9 +28,6 @@ export class CertificationConverter {
       account: IdentityConverter.toAccount(input.identity),
       createdOn: input.createdOn,
       expireOn: input.expireOn,
-      creationBlockNumbers: (input.creation || []).map((c) => c?.blockNumber),
-      renewalBlockNumbers: (input.renewal || []).map((c) => c?.blockNumber),
-      removalsBlockNumbers: (input.removal || []).map((c) => c?.blockNumber),
     };
   }
 }

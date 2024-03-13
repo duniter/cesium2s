@@ -21,12 +21,15 @@ query WotSearchByAddress($address: String!, $limit: Int!, $offset: Int!, $orderB
   }
 }
 
-query WotSearchLast($limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!], $pending: Boolean!) {
+query WotSearchLast($limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!], $pending: Boolean!
+) {
   accounts(
     limit: $limit
     offset: $offset
     orderBy: $orderBy
-    where: {identity: {id_isNull: false}, AND: {identity: {membership_isNull: $pending} }}
+    where: {identity: {id_isNull: false}
+      , AND: {identity: {membershipHistory_some: {id_isNull: $pending}} }
+    }
   ) {
     ...LightAccount
   }

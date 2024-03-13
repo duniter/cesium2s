@@ -123,81 +123,36 @@ export type CallsConnectionFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CertKeySpecifier = (
-  | 'active'
-  | 'createdOn'
-  | 'creation'
-  | 'expireOn'
-  | 'id'
-  | 'issuer'
-  | 'receiver'
-  | 'removal'
-  | 'renewal'
-  | CertKeySpecifier
-)[];
+export type CertKeySpecifier = ('certHistory' | 'createdOn' | 'expireOn' | 'id' | 'isActive' | 'issuer' | 'receiver' | CertKeySpecifier)[];
 export type CertFieldPolicy = {
-  active?: FieldPolicy<any> | FieldReadFunction<any>;
+  certHistory?: FieldPolicy<any> | FieldReadFunction<any>;
   createdOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  creation?: FieldPolicy<any> | FieldReadFunction<any>;
   expireOn?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isActive?: FieldPolicy<any> | FieldReadFunction<any>;
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
   receiver?: FieldPolicy<any> | FieldReadFunction<any>;
-  removal?: FieldPolicy<any> | FieldReadFunction<any>;
-  renewal?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CertCreationKeySpecifier = ('blockNumber' | 'cert' | 'id' | CertCreationKeySpecifier)[];
-export type CertCreationFieldPolicy = {
-  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
-  cert?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CertCreationEdgeKeySpecifier = ('cursor' | 'node' | CertCreationEdgeKeySpecifier)[];
-export type CertCreationEdgeFieldPolicy = {
-  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CertCreationsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | CertCreationsConnectionKeySpecifier)[];
-export type CertCreationsConnectionFieldPolicy = {
-  edges?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
-  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CertEdgeKeySpecifier = ('cursor' | 'node' | CertEdgeKeySpecifier)[];
 export type CertEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CertRemovalKeySpecifier = ('blockNumber' | 'cert' | 'id' | CertRemovalKeySpecifier)[];
-export type CertRemovalFieldPolicy = {
+export type CertEventKeySpecifier = ('blockNumber' | 'cert' | 'event' | 'eventType' | 'id' | CertEventKeySpecifier)[];
+export type CertEventFieldPolicy = {
   blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
   cert?: FieldPolicy<any> | FieldReadFunction<any>;
+  event?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CertRemovalEdgeKeySpecifier = ('cursor' | 'node' | CertRemovalEdgeKeySpecifier)[];
-export type CertRemovalEdgeFieldPolicy = {
+export type CertEventEdgeKeySpecifier = ('cursor' | 'node' | CertEventEdgeKeySpecifier)[];
+export type CertEventEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CertRemovalsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | CertRemovalsConnectionKeySpecifier)[];
-export type CertRemovalsConnectionFieldPolicy = {
-  edges?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
-  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CertRenewalKeySpecifier = ('blockNumber' | 'cert' | 'id' | CertRenewalKeySpecifier)[];
-export type CertRenewalFieldPolicy = {
-  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
-  cert?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CertRenewalEdgeKeySpecifier = ('cursor' | 'node' | CertRenewalEdgeKeySpecifier)[];
-export type CertRenewalEdgeFieldPolicy = {
-  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CertRenewalsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | CertRenewalsConnectionKeySpecifier)[];
-export type CertRenewalsConnectionFieldPolicy = {
+export type CertEventsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | CertEventsConnectionKeySpecifier)[];
+export type CertEventsConnectionFieldPolicy = {
   edges?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -321,30 +276,44 @@ export type IdentityKeySpecifier = (
   | 'account'
   | 'certIssued'
   | 'certReceived'
+  | 'createdIn'
+  | 'createdOn'
+  | 'expireOn'
   | 'id'
   | 'index'
+  | 'isMember'
+  | 'lastChangeOn'
   | 'linkedAccount'
-  | 'membership'
+  | 'membershipHistory'
   | 'name'
   | 'ownerKeyChange'
   | 'smithCertIssued'
   | 'smithCertReceived'
-  | 'smithMembership'
+  | 'smithStatus'
+  | 'status'
+  | 'udHistory'
   | IdentityKeySpecifier
 )[];
 export type IdentityFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   certIssued?: FieldPolicy<any> | FieldReadFunction<any>;
   certReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdIn?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  expireOn?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   index?: FieldPolicy<any> | FieldReadFunction<any>;
+  isMember?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastChangeOn?: FieldPolicy<any> | FieldReadFunction<any>;
   linkedAccount?: FieldPolicy<any> | FieldReadFunction<any>;
-  membership?: FieldPolicy<any> | FieldReadFunction<any>;
+  membershipHistory?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   ownerKeyChange?: FieldPolicy<any> | FieldReadFunction<any>;
   smithCertIssued?: FieldPolicy<any> | FieldReadFunction<any>;
   smithCertReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  smithStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+  udHistory?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type IdentityEdgeKeySpecifier = ('cursor' | 'node' | IdentityEdgeKeySpecifier)[];
 export type IdentityEdgeFieldPolicy = {
@@ -369,19 +338,21 @@ export type ItemsCountersConnectionFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MembershipKeySpecifier = ('expireOn' | 'id' | 'identity' | MembershipKeySpecifier)[];
-export type MembershipFieldPolicy = {
-  expireOn?: FieldPolicy<any> | FieldReadFunction<any>;
+export type MembershipEventKeySpecifier = ('blockNumber' | 'event' | 'eventType' | 'id' | 'identity' | MembershipEventKeySpecifier)[];
+export type MembershipEventFieldPolicy = {
+  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
+  event?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   identity?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MembershipEdgeKeySpecifier = ('cursor' | 'node' | MembershipEdgeKeySpecifier)[];
-export type MembershipEdgeFieldPolicy = {
+export type MembershipEventEdgeKeySpecifier = ('cursor' | 'node' | MembershipEventEdgeKeySpecifier)[];
+export type MembershipEventEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MembershipsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | MembershipsConnectionKeySpecifier)[];
-export type MembershipsConnectionFieldPolicy = {
+export type MembershipEventsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | MembershipEventsConnectionKeySpecifier)[];
+export type MembershipEventsConnectionFieldPolicy = {
   edges?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -408,18 +379,10 @@ export type QueryKeySpecifier = (
   | 'callsConnection'
   | 'certById'
   | 'certByUniqueInput'
-  | 'certCreationById'
-  | 'certCreationByUniqueInput'
-  | 'certCreations'
-  | 'certCreationsConnection'
-  | 'certRemovalById'
-  | 'certRemovalByUniqueInput'
-  | 'certRemovals'
-  | 'certRemovalsConnection'
-  | 'certRenewalById'
-  | 'certRenewalByUniqueInput'
-  | 'certRenewals'
-  | 'certRenewalsConnection'
+  | 'certEventById'
+  | 'certEventByUniqueInput'
+  | 'certEvents'
+  | 'certEventsConnection'
   | 'certs'
   | 'certsConnection'
   | 'changeOwnerKeyById'
@@ -434,6 +397,7 @@ export type QueryKeySpecifier = (
   | 'extrinsicByUniqueInput'
   | 'extrinsics'
   | 'extrinsicsConnection'
+  | 'galuel'
   | 'identities'
   | 'identitiesConnection'
   | 'identityById'
@@ -442,35 +406,31 @@ export type QueryKeySpecifier = (
   | 'itemsCounterByUniqueInput'
   | 'itemsCounters'
   | 'itemsCountersConnection'
-  | 'membershipById'
-  | 'membershipByUniqueInput'
-  | 'memberships'
-  | 'membershipsConnection'
+  | 'membershipEventById'
+  | 'membershipEventByUniqueInput'
+  | 'membershipEvents'
+  | 'membershipEventsConnection'
   | 'smithCertById'
   | 'smithCertByUniqueInput'
-  | 'smithCertCreationById'
-  | 'smithCertCreationByUniqueInput'
-  | 'smithCertCreations'
-  | 'smithCertCreationsConnection'
-  | 'smithCertRemovalById'
-  | 'smithCertRemovalByUniqueInput'
-  | 'smithCertRemovals'
-  | 'smithCertRemovalsConnection'
-  | 'smithCertRenewalById'
-  | 'smithCertRenewalByUniqueInput'
-  | 'smithCertRenewals'
-  | 'smithCertRenewalsConnection'
   | 'smithCerts'
   | 'smithCertsConnection'
-  | 'smithMembershipById'
-  | 'smithMembershipByUniqueInput'
-  | 'smithMemberships'
-  | 'smithMembershipsConnection'
   | 'squidStatus'
   | 'transferById'
   | 'transferByUniqueInput'
   | 'transfers'
   | 'transfersConnection'
+  | 'udHistories'
+  | 'udHistoriesConnection'
+  | 'udHistoryById'
+  | 'udHistoryByUniqueInput'
+  | 'udReevalById'
+  | 'udReevalByUniqueInput'
+  | 'udReevals'
+  | 'udReevalsConnection'
+  | 'universalDividendById'
+  | 'universalDividendByUniqueInput'
+  | 'universalDividends'
+  | 'universalDividendsConnection'
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
@@ -488,18 +448,10 @@ export type QueryFieldPolicy = {
   callsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
   certById?: FieldPolicy<any> | FieldReadFunction<any>;
   certByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  certCreationById?: FieldPolicy<any> | FieldReadFunction<any>;
-  certCreationByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  certCreations?: FieldPolicy<any> | FieldReadFunction<any>;
-  certCreationsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
-  certRemovalById?: FieldPolicy<any> | FieldReadFunction<any>;
-  certRemovalByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  certRemovals?: FieldPolicy<any> | FieldReadFunction<any>;
-  certRemovalsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
-  certRenewalById?: FieldPolicy<any> | FieldReadFunction<any>;
-  certRenewalByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  certRenewals?: FieldPolicy<any> | FieldReadFunction<any>;
-  certRenewalsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
+  certEventById?: FieldPolicy<any> | FieldReadFunction<any>;
+  certEventByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
+  certEvents?: FieldPolicy<any> | FieldReadFunction<any>;
+  certEventsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
   certs?: FieldPolicy<any> | FieldReadFunction<any>;
   certsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
   changeOwnerKeyById?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -514,6 +466,7 @@ export type QueryFieldPolicy = {
   extrinsicByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
   extrinsics?: FieldPolicy<any> | FieldReadFunction<any>;
   extrinsicsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
+  galuel?: FieldPolicy<any> | FieldReadFunction<any>;
   identities?: FieldPolicy<any> | FieldReadFunction<any>;
   identitiesConnection?: FieldPolicy<any> | FieldReadFunction<any>;
   identityById?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -522,114 +475,43 @@ export type QueryFieldPolicy = {
   itemsCounterByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
   itemsCounters?: FieldPolicy<any> | FieldReadFunction<any>;
   itemsCountersConnection?: FieldPolicy<any> | FieldReadFunction<any>;
-  membershipById?: FieldPolicy<any> | FieldReadFunction<any>;
-  membershipByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  memberships?: FieldPolicy<any> | FieldReadFunction<any>;
-  membershipsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
+  membershipEventById?: FieldPolicy<any> | FieldReadFunction<any>;
+  membershipEventByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
+  membershipEvents?: FieldPolicy<any> | FieldReadFunction<any>;
+  membershipEventsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
   smithCertById?: FieldPolicy<any> | FieldReadFunction<any>;
   smithCertByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertCreationById?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertCreationByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertCreations?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertCreationsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertRemovalById?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertRemovalByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertRemovals?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertRemovalsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertRenewalById?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertRenewalByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertRenewals?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithCertRenewalsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
   smithCerts?: FieldPolicy<any> | FieldReadFunction<any>;
   smithCertsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithMembershipById?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithMembershipByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
-  smithMembershipsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
   squidStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   transferById?: FieldPolicy<any> | FieldReadFunction<any>;
   transferByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
   transfers?: FieldPolicy<any> | FieldReadFunction<any>;
   transfersConnection?: FieldPolicy<any> | FieldReadFunction<any>;
+  udHistories?: FieldPolicy<any> | FieldReadFunction<any>;
+  udHistoriesConnection?: FieldPolicy<any> | FieldReadFunction<any>;
+  udHistoryById?: FieldPolicy<any> | FieldReadFunction<any>;
+  udHistoryByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
+  udReevalById?: FieldPolicy<any> | FieldReadFunction<any>;
+  udReevalByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
+  udReevals?: FieldPolicy<any> | FieldReadFunction<any>;
+  udReevalsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
+  universalDividendById?: FieldPolicy<any> | FieldReadFunction<any>;
+  universalDividendByUniqueInput?: FieldPolicy<any> | FieldReadFunction<any>;
+  universalDividends?: FieldPolicy<any> | FieldReadFunction<any>;
+  universalDividendsConnection?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SmithCertKeySpecifier = (
-  | 'active'
-  | 'createdOn'
-  | 'creation'
-  | 'expireOn'
-  | 'id'
-  | 'issuer'
-  | 'receiver'
-  | 'removal'
-  | 'renewal'
-  | SmithCertKeySpecifier
-)[];
+export type SmithCertKeySpecifier = ('createdOn' | 'id' | 'issuer' | 'receiver' | SmithCertKeySpecifier)[];
 export type SmithCertFieldPolicy = {
-  active?: FieldPolicy<any> | FieldReadFunction<any>;
   createdOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  creation?: FieldPolicy<any> | FieldReadFunction<any>;
-  expireOn?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
   receiver?: FieldPolicy<any> | FieldReadFunction<any>;
-  removal?: FieldPolicy<any> | FieldReadFunction<any>;
-  renewal?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertCreationKeySpecifier = ('blockNumber' | 'cert' | 'id' | SmithCertCreationKeySpecifier)[];
-export type SmithCertCreationFieldPolicy = {
-  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
-  cert?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertCreationEdgeKeySpecifier = ('cursor' | 'node' | SmithCertCreationEdgeKeySpecifier)[];
-export type SmithCertCreationEdgeFieldPolicy = {
-  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertCreationsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | SmithCertCreationsConnectionKeySpecifier)[];
-export type SmithCertCreationsConnectionFieldPolicy = {
-  edges?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
-  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SmithCertEdgeKeySpecifier = ('cursor' | 'node' | SmithCertEdgeKeySpecifier)[];
 export type SmithCertEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertRemovalKeySpecifier = ('blockNumber' | 'cert' | 'id' | SmithCertRemovalKeySpecifier)[];
-export type SmithCertRemovalFieldPolicy = {
-  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
-  cert?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertRemovalEdgeKeySpecifier = ('cursor' | 'node' | SmithCertRemovalEdgeKeySpecifier)[];
-export type SmithCertRemovalEdgeFieldPolicy = {
-  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertRemovalsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | SmithCertRemovalsConnectionKeySpecifier)[];
-export type SmithCertRemovalsConnectionFieldPolicy = {
-  edges?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
-  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertRenewalKeySpecifier = ('blockNumber' | 'cert' | 'id' | SmithCertRenewalKeySpecifier)[];
-export type SmithCertRenewalFieldPolicy = {
-  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
-  cert?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertRenewalEdgeKeySpecifier = ('cursor' | 'node' | SmithCertRenewalEdgeKeySpecifier)[];
-export type SmithCertRenewalEdgeFieldPolicy = {
-  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithCertRenewalsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | SmithCertRenewalsConnectionKeySpecifier)[];
-export type SmithCertRenewalsConnectionFieldPolicy = {
-  edges?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
-  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SmithCertsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | SmithCertsConnectionKeySpecifier)[];
 export type SmithCertsConnectionFieldPolicy = {
@@ -637,26 +519,78 @@ export type SmithCertsConnectionFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SmithMembershipKeySpecifier = ('expireOn' | 'id' | 'identity' | SmithMembershipKeySpecifier)[];
-export type SmithMembershipFieldPolicy = {
-  expireOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  identity?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithMembershipEdgeKeySpecifier = ('cursor' | 'node' | SmithMembershipEdgeKeySpecifier)[];
-export type SmithMembershipEdgeFieldPolicy = {
-  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SmithMembershipsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | SmithMembershipsConnectionKeySpecifier)[];
-export type SmithMembershipsConnectionFieldPolicy = {
-  edges?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
-  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type SquidStatusKeySpecifier = ('height' | SquidStatusKeySpecifier)[];
 export type SquidStatusFieldPolicy = {
   height?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SubscriptionKeySpecifier = (
+  | 'accountById'
+  | 'accounts'
+  | 'blockById'
+  | 'blocks'
+  | 'callById'
+  | 'calls'
+  | 'certById'
+  | 'certEventById'
+  | 'certEvents'
+  | 'certs'
+  | 'changeOwnerKeyById'
+  | 'changeOwnerKeys'
+  | 'eventById'
+  | 'events'
+  | 'extrinsicById'
+  | 'extrinsics'
+  | 'identities'
+  | 'identityById'
+  | 'itemsCounterById'
+  | 'itemsCounters'
+  | 'membershipEventById'
+  | 'membershipEvents'
+  | 'smithCertById'
+  | 'smithCerts'
+  | 'transferById'
+  | 'transfers'
+  | 'udHistories'
+  | 'udHistoryById'
+  | 'udReevalById'
+  | 'udReevals'
+  | 'universalDividendById'
+  | 'universalDividends'
+  | SubscriptionKeySpecifier
+)[];
+export type SubscriptionFieldPolicy = {
+  accountById?: FieldPolicy<any> | FieldReadFunction<any>;
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  blockById?: FieldPolicy<any> | FieldReadFunction<any>;
+  blocks?: FieldPolicy<any> | FieldReadFunction<any>;
+  callById?: FieldPolicy<any> | FieldReadFunction<any>;
+  calls?: FieldPolicy<any> | FieldReadFunction<any>;
+  certById?: FieldPolicy<any> | FieldReadFunction<any>;
+  certEventById?: FieldPolicy<any> | FieldReadFunction<any>;
+  certEvents?: FieldPolicy<any> | FieldReadFunction<any>;
+  certs?: FieldPolicy<any> | FieldReadFunction<any>;
+  changeOwnerKeyById?: FieldPolicy<any> | FieldReadFunction<any>;
+  changeOwnerKeys?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventById?: FieldPolicy<any> | FieldReadFunction<any>;
+  events?: FieldPolicy<any> | FieldReadFunction<any>;
+  extrinsicById?: FieldPolicy<any> | FieldReadFunction<any>;
+  extrinsics?: FieldPolicy<any> | FieldReadFunction<any>;
+  identities?: FieldPolicy<any> | FieldReadFunction<any>;
+  identityById?: FieldPolicy<any> | FieldReadFunction<any>;
+  itemsCounterById?: FieldPolicy<any> | FieldReadFunction<any>;
+  itemsCounters?: FieldPolicy<any> | FieldReadFunction<any>;
+  membershipEventById?: FieldPolicy<any> | FieldReadFunction<any>;
+  membershipEvents?: FieldPolicy<any> | FieldReadFunction<any>;
+  smithCertById?: FieldPolicy<any> | FieldReadFunction<any>;
+  smithCerts?: FieldPolicy<any> | FieldReadFunction<any>;
+  transferById?: FieldPolicy<any> | FieldReadFunction<any>;
+  transfers?: FieldPolicy<any> | FieldReadFunction<any>;
+  udHistories?: FieldPolicy<any> | FieldReadFunction<any>;
+  udHistoryById?: FieldPolicy<any> | FieldReadFunction<any>;
+  udReevalById?: FieldPolicy<any> | FieldReadFunction<any>;
+  udReevals?: FieldPolicy<any> | FieldReadFunction<any>;
+  universalDividendById?: FieldPolicy<any> | FieldReadFunction<any>;
+  universalDividends?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TransferKeySpecifier = ('amount' | 'blockNumber' | 'comment' | 'from' | 'id' | 'timestamp' | 'to' | TransferKeySpecifier)[];
 export type TransferFieldPolicy = {
@@ -675,6 +609,86 @@ export type TransferEdgeFieldPolicy = {
 };
 export type TransfersConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | TransfersConnectionKeySpecifier)[];
 export type TransfersConnectionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UDHistoriesConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | UDHistoriesConnectionKeySpecifier)[];
+export type UDHistoriesConnectionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UDHistoryKeySpecifier = ('amount' | 'blockNumber' | 'event' | 'id' | 'identity' | 'timestamp' | UDHistoryKeySpecifier)[];
+export type UDHistoryFieldPolicy = {
+  amount?: FieldPolicy<any> | FieldReadFunction<any>;
+  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
+  event?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  identity?: FieldPolicy<any> | FieldReadFunction<any>;
+  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UDHistoryEdgeKeySpecifier = ('cursor' | 'node' | UDHistoryEdgeKeySpecifier)[];
+export type UDHistoryEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UDReevalKeySpecifier = (
+  | 'blockNumber'
+  | 'event'
+  | 'id'
+  | 'membersCount'
+  | 'monetaryMass'
+  | 'newUdAmount'
+  | 'timestamp'
+  | UDReevalKeySpecifier
+)[];
+export type UDReevalFieldPolicy = {
+  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
+  event?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  membersCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  monetaryMass?: FieldPolicy<any> | FieldReadFunction<any>;
+  newUdAmount?: FieldPolicy<any> | FieldReadFunction<any>;
+  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UDReevalEdgeKeySpecifier = ('cursor' | 'node' | UDReevalEdgeKeySpecifier)[];
+export type UDReevalEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UDReevalsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | UDReevalsConnectionKeySpecifier)[];
+export type UDReevalsConnectionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UniversalDividendKeySpecifier = (
+  | 'amount'
+  | 'blockNumber'
+  | 'event'
+  | 'id'
+  | 'membersCount'
+  | 'monetaryMass'
+  | 'timestamp'
+  | UniversalDividendKeySpecifier
+)[];
+export type UniversalDividendFieldPolicy = {
+  amount?: FieldPolicy<any> | FieldReadFunction<any>;
+  blockNumber?: FieldPolicy<any> | FieldReadFunction<any>;
+  event?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  membersCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  monetaryMass?: FieldPolicy<any> | FieldReadFunction<any>;
+  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UniversalDividendEdgeKeySpecifier = ('cursor' | 'node' | UniversalDividendEdgeKeySpecifier)[];
+export type UniversalDividendEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UniversalDividendsConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalCount' | UniversalDividendsConnectionKeySpecifier)[];
+export type UniversalDividendsConnectionFieldPolicy = {
   edges?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -720,45 +734,21 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CertKeySpecifier | (() => undefined | CertKeySpecifier);
     fields?: CertFieldPolicy;
   };
-  CertCreation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertCreationKeySpecifier | (() => undefined | CertCreationKeySpecifier);
-    fields?: CertCreationFieldPolicy;
-  };
-  CertCreationEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertCreationEdgeKeySpecifier | (() => undefined | CertCreationEdgeKeySpecifier);
-    fields?: CertCreationEdgeFieldPolicy;
-  };
-  CertCreationsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertCreationsConnectionKeySpecifier | (() => undefined | CertCreationsConnectionKeySpecifier);
-    fields?: CertCreationsConnectionFieldPolicy;
-  };
   CertEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CertEdgeKeySpecifier | (() => undefined | CertEdgeKeySpecifier);
     fields?: CertEdgeFieldPolicy;
   };
-  CertRemoval?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertRemovalKeySpecifier | (() => undefined | CertRemovalKeySpecifier);
-    fields?: CertRemovalFieldPolicy;
+  CertEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CertEventKeySpecifier | (() => undefined | CertEventKeySpecifier);
+    fields?: CertEventFieldPolicy;
   };
-  CertRemovalEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertRemovalEdgeKeySpecifier | (() => undefined | CertRemovalEdgeKeySpecifier);
-    fields?: CertRemovalEdgeFieldPolicy;
+  CertEventEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CertEventEdgeKeySpecifier | (() => undefined | CertEventEdgeKeySpecifier);
+    fields?: CertEventEdgeFieldPolicy;
   };
-  CertRemovalsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertRemovalsConnectionKeySpecifier | (() => undefined | CertRemovalsConnectionKeySpecifier);
-    fields?: CertRemovalsConnectionFieldPolicy;
-  };
-  CertRenewal?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertRenewalKeySpecifier | (() => undefined | CertRenewalKeySpecifier);
-    fields?: CertRenewalFieldPolicy;
-  };
-  CertRenewalEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertRenewalEdgeKeySpecifier | (() => undefined | CertRenewalEdgeKeySpecifier);
-    fields?: CertRenewalEdgeFieldPolicy;
-  };
-  CertRenewalsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CertRenewalsConnectionKeySpecifier | (() => undefined | CertRenewalsConnectionKeySpecifier);
-    fields?: CertRenewalsConnectionFieldPolicy;
+  CertEventsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CertEventsConnectionKeySpecifier | (() => undefined | CertEventsConnectionKeySpecifier);
+    fields?: CertEventsConnectionFieldPolicy;
   };
   CertsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CertsConnectionKeySpecifier | (() => undefined | CertsConnectionKeySpecifier);
@@ -828,17 +818,17 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ItemsCountersConnectionKeySpecifier | (() => undefined | ItemsCountersConnectionKeySpecifier);
     fields?: ItemsCountersConnectionFieldPolicy;
   };
-  Membership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MembershipKeySpecifier | (() => undefined | MembershipKeySpecifier);
-    fields?: MembershipFieldPolicy;
+  MembershipEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MembershipEventKeySpecifier | (() => undefined | MembershipEventKeySpecifier);
+    fields?: MembershipEventFieldPolicy;
   };
-  MembershipEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MembershipEdgeKeySpecifier | (() => undefined | MembershipEdgeKeySpecifier);
-    fields?: MembershipEdgeFieldPolicy;
+  MembershipEventEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MembershipEventEdgeKeySpecifier | (() => undefined | MembershipEventEdgeKeySpecifier);
+    fields?: MembershipEventEdgeFieldPolicy;
   };
-  MembershipsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MembershipsConnectionKeySpecifier | (() => undefined | MembershipsConnectionKeySpecifier);
-    fields?: MembershipsConnectionFieldPolicy;
+  MembershipEventsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MembershipEventsConnectionKeySpecifier | (() => undefined | MembershipEventsConnectionKeySpecifier);
+    fields?: MembershipEventsConnectionFieldPolicy;
   };
   PageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
@@ -852,65 +842,21 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SmithCertKeySpecifier | (() => undefined | SmithCertKeySpecifier);
     fields?: SmithCertFieldPolicy;
   };
-  SmithCertCreation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertCreationKeySpecifier | (() => undefined | SmithCertCreationKeySpecifier);
-    fields?: SmithCertCreationFieldPolicy;
-  };
-  SmithCertCreationEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertCreationEdgeKeySpecifier | (() => undefined | SmithCertCreationEdgeKeySpecifier);
-    fields?: SmithCertCreationEdgeFieldPolicy;
-  };
-  SmithCertCreationsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertCreationsConnectionKeySpecifier | (() => undefined | SmithCertCreationsConnectionKeySpecifier);
-    fields?: SmithCertCreationsConnectionFieldPolicy;
-  };
   SmithCertEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SmithCertEdgeKeySpecifier | (() => undefined | SmithCertEdgeKeySpecifier);
     fields?: SmithCertEdgeFieldPolicy;
-  };
-  SmithCertRemoval?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertRemovalKeySpecifier | (() => undefined | SmithCertRemovalKeySpecifier);
-    fields?: SmithCertRemovalFieldPolicy;
-  };
-  SmithCertRemovalEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertRemovalEdgeKeySpecifier | (() => undefined | SmithCertRemovalEdgeKeySpecifier);
-    fields?: SmithCertRemovalEdgeFieldPolicy;
-  };
-  SmithCertRemovalsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertRemovalsConnectionKeySpecifier | (() => undefined | SmithCertRemovalsConnectionKeySpecifier);
-    fields?: SmithCertRemovalsConnectionFieldPolicy;
-  };
-  SmithCertRenewal?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertRenewalKeySpecifier | (() => undefined | SmithCertRenewalKeySpecifier);
-    fields?: SmithCertRenewalFieldPolicy;
-  };
-  SmithCertRenewalEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertRenewalEdgeKeySpecifier | (() => undefined | SmithCertRenewalEdgeKeySpecifier);
-    fields?: SmithCertRenewalEdgeFieldPolicy;
-  };
-  SmithCertRenewalsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithCertRenewalsConnectionKeySpecifier | (() => undefined | SmithCertRenewalsConnectionKeySpecifier);
-    fields?: SmithCertRenewalsConnectionFieldPolicy;
   };
   SmithCertsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SmithCertsConnectionKeySpecifier | (() => undefined | SmithCertsConnectionKeySpecifier);
     fields?: SmithCertsConnectionFieldPolicy;
   };
-  SmithMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithMembershipKeySpecifier | (() => undefined | SmithMembershipKeySpecifier);
-    fields?: SmithMembershipFieldPolicy;
-  };
-  SmithMembershipEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithMembershipEdgeKeySpecifier | (() => undefined | SmithMembershipEdgeKeySpecifier);
-    fields?: SmithMembershipEdgeFieldPolicy;
-  };
-  SmithMembershipsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SmithMembershipsConnectionKeySpecifier | (() => undefined | SmithMembershipsConnectionKeySpecifier);
-    fields?: SmithMembershipsConnectionFieldPolicy;
-  };
   SquidStatus?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SquidStatusKeySpecifier | (() => undefined | SquidStatusKeySpecifier);
     fields?: SquidStatusFieldPolicy;
+  };
+  Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);
+    fields?: SubscriptionFieldPolicy;
   };
   Transfer?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TransferKeySpecifier | (() => undefined | TransferKeySpecifier);
@@ -923,6 +869,42 @@ export type StrictTypedTypePolicies = {
   TransfersConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TransfersConnectionKeySpecifier | (() => undefined | TransfersConnectionKeySpecifier);
     fields?: TransfersConnectionFieldPolicy;
+  };
+  UDHistoriesConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UDHistoriesConnectionKeySpecifier | (() => undefined | UDHistoriesConnectionKeySpecifier);
+    fields?: UDHistoriesConnectionFieldPolicy;
+  };
+  UDHistory?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UDHistoryKeySpecifier | (() => undefined | UDHistoryKeySpecifier);
+    fields?: UDHistoryFieldPolicy;
+  };
+  UDHistoryEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UDHistoryEdgeKeySpecifier | (() => undefined | UDHistoryEdgeKeySpecifier);
+    fields?: UDHistoryEdgeFieldPolicy;
+  };
+  UDReeval?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UDReevalKeySpecifier | (() => undefined | UDReevalKeySpecifier);
+    fields?: UDReevalFieldPolicy;
+  };
+  UDReevalEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UDReevalEdgeKeySpecifier | (() => undefined | UDReevalEdgeKeySpecifier);
+    fields?: UDReevalEdgeFieldPolicy;
+  };
+  UDReevalsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UDReevalsConnectionKeySpecifier | (() => undefined | UDReevalsConnectionKeySpecifier);
+    fields?: UDReevalsConnectionFieldPolicy;
+  };
+  UniversalDividend?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UniversalDividendKeySpecifier | (() => undefined | UniversalDividendKeySpecifier);
+    fields?: UniversalDividendFieldPolicy;
+  };
+  UniversalDividendEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UniversalDividendEdgeKeySpecifier | (() => undefined | UniversalDividendEdgeKeySpecifier);
+    fields?: UniversalDividendEdgeFieldPolicy;
+  };
+  UniversalDividendsConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UniversalDividendsConnectionKeySpecifier | (() => undefined | UniversalDividendsConnectionKeySpecifier);
+    fields?: UniversalDividendsConnectionFieldPolicy;
   };
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

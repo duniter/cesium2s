@@ -74,6 +74,14 @@ export enum AccountOrderByInput {
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IdentityCreatedOnAsc = 'identity_createdOn_ASC',
+  IdentityCreatedOnAscNullsFirst = 'identity_createdOn_ASC_NULLS_FIRST',
+  IdentityCreatedOnDesc = 'identity_createdOn_DESC',
+  IdentityCreatedOnDescNullsLast = 'identity_createdOn_DESC_NULLS_LAST',
+  IdentityExpireOnAsc = 'identity_expireOn_ASC',
+  IdentityExpireOnAscNullsFirst = 'identity_expireOn_ASC_NULLS_FIRST',
+  IdentityExpireOnDesc = 'identity_expireOn_DESC',
+  IdentityExpireOnDescNullsLast = 'identity_expireOn_DESC_NULLS_LAST',
   IdentityIdAsc = 'identity_id_ASC',
   IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
   IdentityIdDesc = 'identity_id_DESC',
@@ -82,10 +90,34 @@ export enum AccountOrderByInput {
   IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
   IdentityIndexDesc = 'identity_index_DESC',
   IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
+  IdentityIsMemberAsc = 'identity_isMember_ASC',
+  IdentityIsMemberAscNullsFirst = 'identity_isMember_ASC_NULLS_FIRST',
+  IdentityIsMemberDesc = 'identity_isMember_DESC',
+  IdentityIsMemberDescNullsLast = 'identity_isMember_DESC_NULLS_LAST',
+  IdentityLastChangeOnAsc = 'identity_lastChangeOn_ASC',
+  IdentityLastChangeOnAscNullsFirst = 'identity_lastChangeOn_ASC_NULLS_FIRST',
+  IdentityLastChangeOnDesc = 'identity_lastChangeOn_DESC',
+  IdentityLastChangeOnDescNullsLast = 'identity_lastChangeOn_DESC_NULLS_LAST',
   IdentityNameAsc = 'identity_name_ASC',
   IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
   IdentityNameDesc = 'identity_name_DESC',
   IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
+  IdentitySmithStatusAsc = 'identity_smithStatus_ASC',
+  IdentitySmithStatusAscNullsFirst = 'identity_smithStatus_ASC_NULLS_FIRST',
+  IdentitySmithStatusDesc = 'identity_smithStatus_DESC',
+  IdentitySmithStatusDescNullsLast = 'identity_smithStatus_DESC_NULLS_LAST',
+  IdentityStatusAsc = 'identity_status_ASC',
+  IdentityStatusAscNullsFirst = 'identity_status_ASC_NULLS_FIRST',
+  IdentityStatusDesc = 'identity_status_DESC',
+  IdentityStatusDescNullsLast = 'identity_status_DESC_NULLS_LAST',
+  LinkedIdentityCreatedOnAsc = 'linkedIdentity_createdOn_ASC',
+  LinkedIdentityCreatedOnAscNullsFirst = 'linkedIdentity_createdOn_ASC_NULLS_FIRST',
+  LinkedIdentityCreatedOnDesc = 'linkedIdentity_createdOn_DESC',
+  LinkedIdentityCreatedOnDescNullsLast = 'linkedIdentity_createdOn_DESC_NULLS_LAST',
+  LinkedIdentityExpireOnAsc = 'linkedIdentity_expireOn_ASC',
+  LinkedIdentityExpireOnAscNullsFirst = 'linkedIdentity_expireOn_ASC_NULLS_FIRST',
+  LinkedIdentityExpireOnDesc = 'linkedIdentity_expireOn_DESC',
+  LinkedIdentityExpireOnDescNullsLast = 'linkedIdentity_expireOn_DESC_NULLS_LAST',
   LinkedIdentityIdAsc = 'linkedIdentity_id_ASC',
   LinkedIdentityIdAscNullsFirst = 'linkedIdentity_id_ASC_NULLS_FIRST',
   LinkedIdentityIdDesc = 'linkedIdentity_id_DESC',
@@ -94,10 +126,26 @@ export enum AccountOrderByInput {
   LinkedIdentityIndexAscNullsFirst = 'linkedIdentity_index_ASC_NULLS_FIRST',
   LinkedIdentityIndexDesc = 'linkedIdentity_index_DESC',
   LinkedIdentityIndexDescNullsLast = 'linkedIdentity_index_DESC_NULLS_LAST',
+  LinkedIdentityIsMemberAsc = 'linkedIdentity_isMember_ASC',
+  LinkedIdentityIsMemberAscNullsFirst = 'linkedIdentity_isMember_ASC_NULLS_FIRST',
+  LinkedIdentityIsMemberDesc = 'linkedIdentity_isMember_DESC',
+  LinkedIdentityIsMemberDescNullsLast = 'linkedIdentity_isMember_DESC_NULLS_LAST',
+  LinkedIdentityLastChangeOnAsc = 'linkedIdentity_lastChangeOn_ASC',
+  LinkedIdentityLastChangeOnAscNullsFirst = 'linkedIdentity_lastChangeOn_ASC_NULLS_FIRST',
+  LinkedIdentityLastChangeOnDesc = 'linkedIdentity_lastChangeOn_DESC',
+  LinkedIdentityLastChangeOnDescNullsLast = 'linkedIdentity_lastChangeOn_DESC_NULLS_LAST',
   LinkedIdentityNameAsc = 'linkedIdentity_name_ASC',
   LinkedIdentityNameAscNullsFirst = 'linkedIdentity_name_ASC_NULLS_FIRST',
   LinkedIdentityNameDesc = 'linkedIdentity_name_DESC',
   LinkedIdentityNameDescNullsLast = 'linkedIdentity_name_DESC_NULLS_LAST',
+  LinkedIdentitySmithStatusAsc = 'linkedIdentity_smithStatus_ASC',
+  LinkedIdentitySmithStatusAscNullsFirst = 'linkedIdentity_smithStatus_ASC_NULLS_FIRST',
+  LinkedIdentitySmithStatusDesc = 'linkedIdentity_smithStatus_DESC',
+  LinkedIdentitySmithStatusDescNullsLast = 'linkedIdentity_smithStatus_DESC_NULLS_LAST',
+  LinkedIdentityStatusAsc = 'linkedIdentity_status_ASC',
+  LinkedIdentityStatusAscNullsFirst = 'linkedIdentity_status_ASC_NULLS_FIRST',
+  LinkedIdentityStatusDesc = 'linkedIdentity_status_DESC',
+  LinkedIdentityStatusDescNullsLast = 'linkedIdentity_status_DESC_NULLS_LAST',
 }
 
 export type AccountWhereInput = {
@@ -664,67 +712,53 @@ export type CallsConnection = {
 /** Certification */
 export type Cert = {
   __typename?: 'Cert';
-  /** whether the certification is currently active or not */
-  active: Scalars['Boolean']['output'];
+  certHistory: Array<CertEvent>;
   /** the last createdOn value */
   createdOn: Scalars['Int']['output'];
-  creation: Array<CertCreation>;
   /** the current expireOn value */
   expireOn: Scalars['Int']['output'];
   id: Scalars['String']['output'];
+  /** whether the certification is currently active or not */
+  isActive: Scalars['Boolean']['output'];
   issuer: Identity;
   receiver: Identity;
-  removal: Array<CertRemoval>;
-  renewal: Array<CertRenewal>;
 };
 
 /** Certification */
-export type CertCreationArgs = {
+export type CertCertHistoryArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertCreationOrderByInput>>;
-  where?: InputMaybe<CertCreationWhereInput>;
+  orderBy?: InputMaybe<Array<CertEventOrderByInput>>;
+  where?: InputMaybe<CertEventWhereInput>;
 };
 
-/** Certification */
-export type CertRemovalArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertRemovalOrderByInput>>;
-  where?: InputMaybe<CertRemovalWhereInput>;
+export type CertEdge = {
+  __typename?: 'CertEdge';
+  cursor: Scalars['String']['output'];
+  node: Cert;
 };
 
-/** Certification */
-export type CertRenewalArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertRenewalOrderByInput>>;
-  where?: InputMaybe<CertRenewalWhereInput>;
-};
-
-/** Certification creation */
-export type CertCreation = {
-  __typename?: 'CertCreation';
+/** Certification event */
+export type CertEvent = {
+  __typename?: 'CertEvent';
   blockNumber: Scalars['Int']['output'];
   cert: Cert;
+  event: Event;
+  eventType: EventType;
   id: Scalars['String']['output'];
 };
 
-export type CertCreationEdge = {
-  __typename?: 'CertCreationEdge';
+export type CertEventEdge = {
+  __typename?: 'CertEventEdge';
   cursor: Scalars['String']['output'];
-  node: CertCreation;
+  node: CertEvent;
 };
 
-export enum CertCreationOrderByInput {
+export enum CertEventOrderByInput {
   BlockNumberAsc = 'blockNumber_ASC',
   BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
   BlockNumberDesc = 'blockNumber_DESC',
   BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  CertActiveAsc = 'cert_active_ASC',
-  CertActiveAscNullsFirst = 'cert_active_ASC_NULLS_FIRST',
-  CertActiveDesc = 'cert_active_DESC',
-  CertActiveDescNullsLast = 'cert_active_DESC_NULLS_LAST',
   CertCreatedOnAsc = 'cert_createdOn_ASC',
   CertCreatedOnAscNullsFirst = 'cert_createdOn_ASC_NULLS_FIRST',
   CertCreatedOnDesc = 'cert_createdOn_DESC',
@@ -737,15 +771,43 @@ export enum CertCreationOrderByInput {
   CertIdAscNullsFirst = 'cert_id_ASC_NULLS_FIRST',
   CertIdDesc = 'cert_id_DESC',
   CertIdDescNullsLast = 'cert_id_DESC_NULLS_LAST',
+  CertIsActiveAsc = 'cert_isActive_ASC',
+  CertIsActiveAscNullsFirst = 'cert_isActive_ASC_NULLS_FIRST',
+  CertIsActiveDesc = 'cert_isActive_DESC',
+  CertIsActiveDescNullsLast = 'cert_isActive_DESC_NULLS_LAST',
+  EventTypeAsc = 'eventType_ASC',
+  EventTypeAscNullsFirst = 'eventType_ASC_NULLS_FIRST',
+  EventTypeDesc = 'eventType_DESC',
+  EventTypeDescNullsLast = 'eventType_DESC_NULLS_LAST',
+  EventIdAsc = 'event_id_ASC',
+  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
+  EventIdDesc = 'event_id_DESC',
+  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
+  EventIndexAsc = 'event_index_ASC',
+  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
+  EventIndexDesc = 'event_index_DESC',
+  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
+  EventNameAsc = 'event_name_ASC',
+  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
+  EventNameDesc = 'event_name_DESC',
+  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
+  EventPalletAsc = 'event_pallet_ASC',
+  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
+  EventPalletDesc = 'event_pallet_DESC',
+  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
+  EventPhaseAsc = 'event_phase_ASC',
+  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
+  EventPhaseDesc = 'event_phase_DESC',
+  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
 }
 
-export type CertCreationWhereInput = {
-  AND?: InputMaybe<Array<CertCreationWhereInput>>;
-  OR?: InputMaybe<Array<CertCreationWhereInput>>;
+export type CertEventWhereInput = {
+  AND?: InputMaybe<Array<CertEventWhereInput>>;
+  OR?: InputMaybe<Array<CertEventWhereInput>>;
   blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
   blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
   blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
@@ -757,6 +819,13 @@ export type CertCreationWhereInput = {
   blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   cert?: InputMaybe<CertWhereInput>;
   cert_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  event?: InputMaybe<EventWhereInput>;
+  eventType_eq?: InputMaybe<EventType>;
+  eventType_in?: InputMaybe<Array<EventType>>;
+  eventType_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  eventType_not_eq?: InputMaybe<EventType>;
+  eventType_not_in?: InputMaybe<Array<EventType>>;
+  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   id_contains?: InputMaybe<Scalars['String']['input']>;
   id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   id_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -776,24 +845,14 @@ export type CertCreationWhereInput = {
   id_startsWith?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type CertCreationsConnection = {
-  __typename?: 'CertCreationsConnection';
-  edges: Array<CertCreationEdge>;
+export type CertEventsConnection = {
+  __typename?: 'CertEventsConnection';
+  edges: Array<CertEventEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
 };
 
-export type CertEdge = {
-  __typename?: 'CertEdge';
-  cursor: Scalars['String']['output'];
-  node: Cert;
-};
-
 export enum CertOrderByInput {
-  ActiveAsc = 'active_ASC',
-  ActiveAscNullsFirst = 'active_ASC_NULLS_FIRST',
-  ActiveDesc = 'active_DESC',
-  ActiveDescNullsLast = 'active_DESC_NULLS_LAST',
   CreatedOnAsc = 'createdOn_ASC',
   CreatedOnAscNullsFirst = 'createdOn_ASC_NULLS_FIRST',
   CreatedOnDesc = 'createdOn_DESC',
@@ -806,6 +865,18 @@ export enum CertOrderByInput {
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IsActiveAsc = 'isActive_ASC',
+  IsActiveAscNullsFirst = 'isActive_ASC_NULLS_FIRST',
+  IsActiveDesc = 'isActive_DESC',
+  IsActiveDescNullsLast = 'isActive_DESC_NULLS_LAST',
+  IssuerCreatedOnAsc = 'issuer_createdOn_ASC',
+  IssuerCreatedOnAscNullsFirst = 'issuer_createdOn_ASC_NULLS_FIRST',
+  IssuerCreatedOnDesc = 'issuer_createdOn_DESC',
+  IssuerCreatedOnDescNullsLast = 'issuer_createdOn_DESC_NULLS_LAST',
+  IssuerExpireOnAsc = 'issuer_expireOn_ASC',
+  IssuerExpireOnAscNullsFirst = 'issuer_expireOn_ASC_NULLS_FIRST',
+  IssuerExpireOnDesc = 'issuer_expireOn_DESC',
+  IssuerExpireOnDescNullsLast = 'issuer_expireOn_DESC_NULLS_LAST',
   IssuerIdAsc = 'issuer_id_ASC',
   IssuerIdAscNullsFirst = 'issuer_id_ASC_NULLS_FIRST',
   IssuerIdDesc = 'issuer_id_DESC',
@@ -814,10 +885,34 @@ export enum CertOrderByInput {
   IssuerIndexAscNullsFirst = 'issuer_index_ASC_NULLS_FIRST',
   IssuerIndexDesc = 'issuer_index_DESC',
   IssuerIndexDescNullsLast = 'issuer_index_DESC_NULLS_LAST',
+  IssuerIsMemberAsc = 'issuer_isMember_ASC',
+  IssuerIsMemberAscNullsFirst = 'issuer_isMember_ASC_NULLS_FIRST',
+  IssuerIsMemberDesc = 'issuer_isMember_DESC',
+  IssuerIsMemberDescNullsLast = 'issuer_isMember_DESC_NULLS_LAST',
+  IssuerLastChangeOnAsc = 'issuer_lastChangeOn_ASC',
+  IssuerLastChangeOnAscNullsFirst = 'issuer_lastChangeOn_ASC_NULLS_FIRST',
+  IssuerLastChangeOnDesc = 'issuer_lastChangeOn_DESC',
+  IssuerLastChangeOnDescNullsLast = 'issuer_lastChangeOn_DESC_NULLS_LAST',
   IssuerNameAsc = 'issuer_name_ASC',
   IssuerNameAscNullsFirst = 'issuer_name_ASC_NULLS_FIRST',
   IssuerNameDesc = 'issuer_name_DESC',
   IssuerNameDescNullsLast = 'issuer_name_DESC_NULLS_LAST',
+  IssuerSmithStatusAsc = 'issuer_smithStatus_ASC',
+  IssuerSmithStatusAscNullsFirst = 'issuer_smithStatus_ASC_NULLS_FIRST',
+  IssuerSmithStatusDesc = 'issuer_smithStatus_DESC',
+  IssuerSmithStatusDescNullsLast = 'issuer_smithStatus_DESC_NULLS_LAST',
+  IssuerStatusAsc = 'issuer_status_ASC',
+  IssuerStatusAscNullsFirst = 'issuer_status_ASC_NULLS_FIRST',
+  IssuerStatusDesc = 'issuer_status_DESC',
+  IssuerStatusDescNullsLast = 'issuer_status_DESC_NULLS_LAST',
+  ReceiverCreatedOnAsc = 'receiver_createdOn_ASC',
+  ReceiverCreatedOnAscNullsFirst = 'receiver_createdOn_ASC_NULLS_FIRST',
+  ReceiverCreatedOnDesc = 'receiver_createdOn_DESC',
+  ReceiverCreatedOnDescNullsLast = 'receiver_createdOn_DESC_NULLS_LAST',
+  ReceiverExpireOnAsc = 'receiver_expireOn_ASC',
+  ReceiverExpireOnAscNullsFirst = 'receiver_expireOn_ASC_NULLS_FIRST',
+  ReceiverExpireOnDesc = 'receiver_expireOn_DESC',
+  ReceiverExpireOnDescNullsLast = 'receiver_expireOn_DESC_NULLS_LAST',
   ReceiverIdAsc = 'receiver_id_ASC',
   ReceiverIdAscNullsFirst = 'receiver_id_ASC_NULLS_FIRST',
   ReceiverIdDesc = 'receiver_id_DESC',
@@ -826,180 +921,34 @@ export enum CertOrderByInput {
   ReceiverIndexAscNullsFirst = 'receiver_index_ASC_NULLS_FIRST',
   ReceiverIndexDesc = 'receiver_index_DESC',
   ReceiverIndexDescNullsLast = 'receiver_index_DESC_NULLS_LAST',
+  ReceiverIsMemberAsc = 'receiver_isMember_ASC',
+  ReceiverIsMemberAscNullsFirst = 'receiver_isMember_ASC_NULLS_FIRST',
+  ReceiverIsMemberDesc = 'receiver_isMember_DESC',
+  ReceiverIsMemberDescNullsLast = 'receiver_isMember_DESC_NULLS_LAST',
+  ReceiverLastChangeOnAsc = 'receiver_lastChangeOn_ASC',
+  ReceiverLastChangeOnAscNullsFirst = 'receiver_lastChangeOn_ASC_NULLS_FIRST',
+  ReceiverLastChangeOnDesc = 'receiver_lastChangeOn_DESC',
+  ReceiverLastChangeOnDescNullsLast = 'receiver_lastChangeOn_DESC_NULLS_LAST',
   ReceiverNameAsc = 'receiver_name_ASC',
   ReceiverNameAscNullsFirst = 'receiver_name_ASC_NULLS_FIRST',
   ReceiverNameDesc = 'receiver_name_DESC',
   ReceiverNameDescNullsLast = 'receiver_name_DESC_NULLS_LAST',
+  ReceiverSmithStatusAsc = 'receiver_smithStatus_ASC',
+  ReceiverSmithStatusAscNullsFirst = 'receiver_smithStatus_ASC_NULLS_FIRST',
+  ReceiverSmithStatusDesc = 'receiver_smithStatus_DESC',
+  ReceiverSmithStatusDescNullsLast = 'receiver_smithStatus_DESC_NULLS_LAST',
+  ReceiverStatusAsc = 'receiver_status_ASC',
+  ReceiverStatusAscNullsFirst = 'receiver_status_ASC_NULLS_FIRST',
+  ReceiverStatusDesc = 'receiver_status_DESC',
+  ReceiverStatusDescNullsLast = 'receiver_status_DESC_NULLS_LAST',
 }
-
-/** Certification removal */
-export type CertRemoval = {
-  __typename?: 'CertRemoval';
-  blockNumber: Scalars['Int']['output'];
-  cert: Cert;
-  id: Scalars['String']['output'];
-};
-
-export type CertRemovalEdge = {
-  __typename?: 'CertRemovalEdge';
-  cursor: Scalars['String']['output'];
-  node: CertRemoval;
-};
-
-export enum CertRemovalOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  CertActiveAsc = 'cert_active_ASC',
-  CertActiveAscNullsFirst = 'cert_active_ASC_NULLS_FIRST',
-  CertActiveDesc = 'cert_active_DESC',
-  CertActiveDescNullsLast = 'cert_active_DESC_NULLS_LAST',
-  CertCreatedOnAsc = 'cert_createdOn_ASC',
-  CertCreatedOnAscNullsFirst = 'cert_createdOn_ASC_NULLS_FIRST',
-  CertCreatedOnDesc = 'cert_createdOn_DESC',
-  CertCreatedOnDescNullsLast = 'cert_createdOn_DESC_NULLS_LAST',
-  CertExpireOnAsc = 'cert_expireOn_ASC',
-  CertExpireOnAscNullsFirst = 'cert_expireOn_ASC_NULLS_FIRST',
-  CertExpireOnDesc = 'cert_expireOn_DESC',
-  CertExpireOnDescNullsLast = 'cert_expireOn_DESC_NULLS_LAST',
-  CertIdAsc = 'cert_id_ASC',
-  CertIdAscNullsFirst = 'cert_id_ASC_NULLS_FIRST',
-  CertIdDesc = 'cert_id_DESC',
-  CertIdDescNullsLast = 'cert_id_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-}
-
-export type CertRemovalWhereInput = {
-  AND?: InputMaybe<Array<CertRemovalWhereInput>>;
-  OR?: InputMaybe<Array<CertRemovalWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  cert?: InputMaybe<CertWhereInput>;
-  cert_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type CertRemovalsConnection = {
-  __typename?: 'CertRemovalsConnection';
-  edges: Array<CertRemovalEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-/** Certification renewal */
-export type CertRenewal = {
-  __typename?: 'CertRenewal';
-  blockNumber: Scalars['Int']['output'];
-  cert: Cert;
-  id: Scalars['String']['output'];
-};
-
-export type CertRenewalEdge = {
-  __typename?: 'CertRenewalEdge';
-  cursor: Scalars['String']['output'];
-  node: CertRenewal;
-};
-
-export enum CertRenewalOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  CertActiveAsc = 'cert_active_ASC',
-  CertActiveAscNullsFirst = 'cert_active_ASC_NULLS_FIRST',
-  CertActiveDesc = 'cert_active_DESC',
-  CertActiveDescNullsLast = 'cert_active_DESC_NULLS_LAST',
-  CertCreatedOnAsc = 'cert_createdOn_ASC',
-  CertCreatedOnAscNullsFirst = 'cert_createdOn_ASC_NULLS_FIRST',
-  CertCreatedOnDesc = 'cert_createdOn_DESC',
-  CertCreatedOnDescNullsLast = 'cert_createdOn_DESC_NULLS_LAST',
-  CertExpireOnAsc = 'cert_expireOn_ASC',
-  CertExpireOnAscNullsFirst = 'cert_expireOn_ASC_NULLS_FIRST',
-  CertExpireOnDesc = 'cert_expireOn_DESC',
-  CertExpireOnDescNullsLast = 'cert_expireOn_DESC_NULLS_LAST',
-  CertIdAsc = 'cert_id_ASC',
-  CertIdAscNullsFirst = 'cert_id_ASC_NULLS_FIRST',
-  CertIdDesc = 'cert_id_DESC',
-  CertIdDescNullsLast = 'cert_id_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-}
-
-export type CertRenewalWhereInput = {
-  AND?: InputMaybe<Array<CertRenewalWhereInput>>;
-  OR?: InputMaybe<Array<CertRenewalWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  cert?: InputMaybe<CertWhereInput>;
-  cert_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type CertRenewalsConnection = {
-  __typename?: 'CertRenewalsConnection';
-  edges: Array<CertRenewalEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
 
 export type CertWhereInput = {
   AND?: InputMaybe<Array<CertWhereInput>>;
   OR?: InputMaybe<Array<CertWhereInput>>;
-  active_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  active_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  active_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  certHistory_every?: InputMaybe<CertEventWhereInput>;
+  certHistory_none?: InputMaybe<CertEventWhereInput>;
+  certHistory_some?: InputMaybe<CertEventWhereInput>;
   createdOn_eq?: InputMaybe<Scalars['Int']['input']>;
   createdOn_gt?: InputMaybe<Scalars['Int']['input']>;
   createdOn_gte?: InputMaybe<Scalars['Int']['input']>;
@@ -1009,9 +958,6 @@ export type CertWhereInput = {
   createdOn_lte?: InputMaybe<Scalars['Int']['input']>;
   createdOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
   createdOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  creation_every?: InputMaybe<CertCreationWhereInput>;
-  creation_none?: InputMaybe<CertCreationWhereInput>;
-  creation_some?: InputMaybe<CertCreationWhereInput>;
   expireOn_eq?: InputMaybe<Scalars['Int']['input']>;
   expireOn_gt?: InputMaybe<Scalars['Int']['input']>;
   expireOn_gte?: InputMaybe<Scalars['Int']['input']>;
@@ -1038,16 +984,13 @@ export type CertWhereInput = {
   id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  isActive_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  isActive_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  isActive_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
   issuer?: InputMaybe<IdentityWhereInput>;
   issuer_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   receiver?: InputMaybe<IdentityWhereInput>;
   receiver_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  removal_every?: InputMaybe<CertRemovalWhereInput>;
-  removal_none?: InputMaybe<CertRemovalWhereInput>;
-  removal_some?: InputMaybe<CertRemovalWhereInput>;
-  renewal_every?: InputMaybe<CertRenewalWhereInput>;
-  renewal_none?: InputMaybe<CertRenewalWhereInput>;
-  renewal_some?: InputMaybe<CertRenewalWhereInput>;
 };
 
 export type CertsConnection = {
@@ -1082,6 +1025,14 @@ export enum ChangeOwnerKeyOrderByInput {
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IdentityCreatedOnAsc = 'identity_createdOn_ASC',
+  IdentityCreatedOnAscNullsFirst = 'identity_createdOn_ASC_NULLS_FIRST',
+  IdentityCreatedOnDesc = 'identity_createdOn_DESC',
+  IdentityCreatedOnDescNullsLast = 'identity_createdOn_DESC_NULLS_LAST',
+  IdentityExpireOnAsc = 'identity_expireOn_ASC',
+  IdentityExpireOnAscNullsFirst = 'identity_expireOn_ASC_NULLS_FIRST',
+  IdentityExpireOnDesc = 'identity_expireOn_DESC',
+  IdentityExpireOnDescNullsLast = 'identity_expireOn_DESC_NULLS_LAST',
   IdentityIdAsc = 'identity_id_ASC',
   IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
   IdentityIdDesc = 'identity_id_DESC',
@@ -1090,10 +1041,26 @@ export enum ChangeOwnerKeyOrderByInput {
   IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
   IdentityIndexDesc = 'identity_index_DESC',
   IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
+  IdentityIsMemberAsc = 'identity_isMember_ASC',
+  IdentityIsMemberAscNullsFirst = 'identity_isMember_ASC_NULLS_FIRST',
+  IdentityIsMemberDesc = 'identity_isMember_DESC',
+  IdentityIsMemberDescNullsLast = 'identity_isMember_DESC_NULLS_LAST',
+  IdentityLastChangeOnAsc = 'identity_lastChangeOn_ASC',
+  IdentityLastChangeOnAscNullsFirst = 'identity_lastChangeOn_ASC_NULLS_FIRST',
+  IdentityLastChangeOnDesc = 'identity_lastChangeOn_DESC',
+  IdentityLastChangeOnDescNullsLast = 'identity_lastChangeOn_DESC_NULLS_LAST',
   IdentityNameAsc = 'identity_name_ASC',
   IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
   IdentityNameDesc = 'identity_name_DESC',
   IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
+  IdentitySmithStatusAsc = 'identity_smithStatus_ASC',
+  IdentitySmithStatusAscNullsFirst = 'identity_smithStatus_ASC_NULLS_FIRST',
+  IdentitySmithStatusDesc = 'identity_smithStatus_DESC',
+  IdentitySmithStatusDescNullsLast = 'identity_smithStatus_DESC_NULLS_LAST',
+  IdentityStatusAsc = 'identity_status_ASC',
+  IdentityStatusAscNullsFirst = 'identity_status_ASC_NULLS_FIRST',
+  IdentityStatusDesc = 'identity_status_DESC',
+  IdentityStatusDescNullsLast = 'identity_status_DESC_NULLS_LAST',
   NextIdAsc = 'next_id_ASC',
   NextIdAscNullsFirst = 'next_id_ASC_NULLS_FIRST',
   NextIdDesc = 'next_id_DESC',
@@ -1300,6 +1267,12 @@ export enum EventOrderByInput {
   PhaseAscNullsFirst = 'phase_ASC_NULLS_FIRST',
   PhaseDesc = 'phase_DESC',
   PhaseDescNullsLast = 'phase_DESC_NULLS_LAST',
+}
+
+export enum EventType {
+  Creation = 'CREATION',
+  Removal = 'REMOVAL',
+  Renewal = 'RENEWAL',
 }
 
 export type EventWhereInput = {
@@ -1679,13 +1652,23 @@ export type Identity = {
   certIssued: Array<Cert>;
   /** Certifications received */
   certReceived: Array<Cert>;
+  /** Event corresponding of identity creation event */
+  createdIn: Event;
+  /** Block number of identity creation event */
+  createdOn: Scalars['Int']['output'];
+  /** the current expireOn value */
+  expireOn: Scalars['Int']['output'];
   id: Scalars['String']['output'];
   /** Identity index */
   index: Scalars['Int']['output'];
+  /** True if the identity is a member */
+  isMember: Scalars['Boolean']['output'];
+  /** Block number of last identity, changeOwnerKey and membership event */
+  lastChangeOn: Scalars['Int']['output'];
   /** linked accounts */
   linkedAccount: Array<Account>;
-  /** Membership of the identity */
-  membership?: Maybe<Membership>;
+  /** history of the membership changes events */
+  membershipHistory: Array<MembershipEvent>;
   /** Name */
   name: Scalars['String']['output'];
   /** Owner key changes */
@@ -1694,8 +1677,12 @@ export type Identity = {
   smithCertIssued: Array<SmithCert>;
   /** Smith certifications received */
   smithCertReceived: Array<SmithCert>;
-  /** Smith Membership of the identity */
-  smithMembership?: Maybe<SmithMembership>;
+  /** Smith status of the identity */
+  smithStatus?: Maybe<SmithStatus>;
+  /** Status of the identity */
+  status: IdentityStatus;
+  /** Universal Dividend history */
+  udHistory: Array<UdHistory>;
 };
 
 /** Identity */
@@ -1723,6 +1710,14 @@ export type IdentityLinkedAccountArgs = {
 };
 
 /** Identity */
+export type IdentityMembershipHistoryArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MembershipEventOrderByInput>>;
+  where?: InputMaybe<MembershipEventWhereInput>;
+};
+
+/** Identity */
 export type IdentityOwnerKeyChangeArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -1746,6 +1741,14 @@ export type IdentitySmithCertReceivedArgs = {
   where?: InputMaybe<SmithCertWhereInput>;
 };
 
+/** Identity */
+export type IdentityUdHistoryArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: Scalars['Int']['input'];
+  orderBy?: InputMaybe<OrderByEnum>;
+  where?: InputMaybe<UdHistoryFilterInput>;
+};
+
 export type IdentityEdge = {
   __typename?: 'IdentityEdge';
   cursor: Scalars['String']['output'];
@@ -1757,6 +1760,34 @@ export enum IdentityOrderByInput {
   AccountIdAscNullsFirst = 'account_id_ASC_NULLS_FIRST',
   AccountIdDesc = 'account_id_DESC',
   AccountIdDescNullsLast = 'account_id_DESC_NULLS_LAST',
+  CreatedInIdAsc = 'createdIn_id_ASC',
+  CreatedInIdAscNullsFirst = 'createdIn_id_ASC_NULLS_FIRST',
+  CreatedInIdDesc = 'createdIn_id_DESC',
+  CreatedInIdDescNullsLast = 'createdIn_id_DESC_NULLS_LAST',
+  CreatedInIndexAsc = 'createdIn_index_ASC',
+  CreatedInIndexAscNullsFirst = 'createdIn_index_ASC_NULLS_FIRST',
+  CreatedInIndexDesc = 'createdIn_index_DESC',
+  CreatedInIndexDescNullsLast = 'createdIn_index_DESC_NULLS_LAST',
+  CreatedInNameAsc = 'createdIn_name_ASC',
+  CreatedInNameAscNullsFirst = 'createdIn_name_ASC_NULLS_FIRST',
+  CreatedInNameDesc = 'createdIn_name_DESC',
+  CreatedInNameDescNullsLast = 'createdIn_name_DESC_NULLS_LAST',
+  CreatedInPalletAsc = 'createdIn_pallet_ASC',
+  CreatedInPalletAscNullsFirst = 'createdIn_pallet_ASC_NULLS_FIRST',
+  CreatedInPalletDesc = 'createdIn_pallet_DESC',
+  CreatedInPalletDescNullsLast = 'createdIn_pallet_DESC_NULLS_LAST',
+  CreatedInPhaseAsc = 'createdIn_phase_ASC',
+  CreatedInPhaseAscNullsFirst = 'createdIn_phase_ASC_NULLS_FIRST',
+  CreatedInPhaseDesc = 'createdIn_phase_DESC',
+  CreatedInPhaseDescNullsLast = 'createdIn_phase_DESC_NULLS_LAST',
+  CreatedOnAsc = 'createdOn_ASC',
+  CreatedOnAscNullsFirst = 'createdOn_ASC_NULLS_FIRST',
+  CreatedOnDesc = 'createdOn_DESC',
+  CreatedOnDescNullsLast = 'createdOn_DESC_NULLS_LAST',
+  ExpireOnAsc = 'expireOn_ASC',
+  ExpireOnAscNullsFirst = 'expireOn_ASC_NULLS_FIRST',
+  ExpireOnDesc = 'expireOn_DESC',
+  ExpireOnDescNullsLast = 'expireOn_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
@@ -1765,26 +1796,36 @@ export enum IdentityOrderByInput {
   IndexAscNullsFirst = 'index_ASC_NULLS_FIRST',
   IndexDesc = 'index_DESC',
   IndexDescNullsLast = 'index_DESC_NULLS_LAST',
-  MembershipExpireOnAsc = 'membership_expireOn_ASC',
-  MembershipExpireOnAscNullsFirst = 'membership_expireOn_ASC_NULLS_FIRST',
-  MembershipExpireOnDesc = 'membership_expireOn_DESC',
-  MembershipExpireOnDescNullsLast = 'membership_expireOn_DESC_NULLS_LAST',
-  MembershipIdAsc = 'membership_id_ASC',
-  MembershipIdAscNullsFirst = 'membership_id_ASC_NULLS_FIRST',
-  MembershipIdDesc = 'membership_id_DESC',
-  MembershipIdDescNullsLast = 'membership_id_DESC_NULLS_LAST',
+  IsMemberAsc = 'isMember_ASC',
+  IsMemberAscNullsFirst = 'isMember_ASC_NULLS_FIRST',
+  IsMemberDesc = 'isMember_DESC',
+  IsMemberDescNullsLast = 'isMember_DESC_NULLS_LAST',
+  LastChangeOnAsc = 'lastChangeOn_ASC',
+  LastChangeOnAscNullsFirst = 'lastChangeOn_ASC_NULLS_FIRST',
+  LastChangeOnDesc = 'lastChangeOn_DESC',
+  LastChangeOnDescNullsLast = 'lastChangeOn_DESC_NULLS_LAST',
   NameAsc = 'name_ASC',
   NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
   NameDesc = 'name_DESC',
   NameDescNullsLast = 'name_DESC_NULLS_LAST',
-  SmithMembershipExpireOnAsc = 'smithMembership_expireOn_ASC',
-  SmithMembershipExpireOnAscNullsFirst = 'smithMembership_expireOn_ASC_NULLS_FIRST',
-  SmithMembershipExpireOnDesc = 'smithMembership_expireOn_DESC',
-  SmithMembershipExpireOnDescNullsLast = 'smithMembership_expireOn_DESC_NULLS_LAST',
-  SmithMembershipIdAsc = 'smithMembership_id_ASC',
-  SmithMembershipIdAscNullsFirst = 'smithMembership_id_ASC_NULLS_FIRST',
-  SmithMembershipIdDesc = 'smithMembership_id_DESC',
-  SmithMembershipIdDescNullsLast = 'smithMembership_id_DESC_NULLS_LAST',
+  SmithStatusAsc = 'smithStatus_ASC',
+  SmithStatusAscNullsFirst = 'smithStatus_ASC_NULLS_FIRST',
+  SmithStatusDesc = 'smithStatus_DESC',
+  SmithStatusDescNullsLast = 'smithStatus_DESC_NULLS_LAST',
+  StatusAsc = 'status_ASC',
+  StatusAscNullsFirst = 'status_ASC_NULLS_FIRST',
+  StatusDesc = 'status_DESC',
+  StatusDescNullsLast = 'status_DESC_NULLS_LAST',
+}
+
+/** identity status directly linked to Duniter IdtyStatus */
+export enum IdentityStatus {
+  Member = 'Member',
+  NotMember = 'NotMember',
+  Removed = 'Removed',
+  Revoked = 'Revoked',
+  Unconfirmed = 'Unconfirmed',
+  Unvalidated = 'Unvalidated',
 }
 
 export type IdentityWhereInput = {
@@ -1798,6 +1839,26 @@ export type IdentityWhereInput = {
   certReceived_every?: InputMaybe<CertWhereInput>;
   certReceived_none?: InputMaybe<CertWhereInput>;
   certReceived_some?: InputMaybe<CertWhereInput>;
+  createdIn?: InputMaybe<EventWhereInput>;
+  createdIn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  createdOn_eq?: InputMaybe<Scalars['Int']['input']>;
+  createdOn_gt?: InputMaybe<Scalars['Int']['input']>;
+  createdOn_gte?: InputMaybe<Scalars['Int']['input']>;
+  createdOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  createdOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  createdOn_lt?: InputMaybe<Scalars['Int']['input']>;
+  createdOn_lte?: InputMaybe<Scalars['Int']['input']>;
+  createdOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  createdOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  expireOn_eq?: InputMaybe<Scalars['Int']['input']>;
+  expireOn_gt?: InputMaybe<Scalars['Int']['input']>;
+  expireOn_gte?: InputMaybe<Scalars['Int']['input']>;
+  expireOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  expireOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  expireOn_lt?: InputMaybe<Scalars['Int']['input']>;
+  expireOn_lte?: InputMaybe<Scalars['Int']['input']>;
+  expireOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  expireOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   id_contains?: InputMaybe<Scalars['String']['input']>;
   id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   id_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -1824,11 +1885,24 @@ export type IdentityWhereInput = {
   index_lte?: InputMaybe<Scalars['Int']['input']>;
   index_not_eq?: InputMaybe<Scalars['Int']['input']>;
   index_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  isMember_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  isMember_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  isMember_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  lastChangeOn_eq?: InputMaybe<Scalars['Int']['input']>;
+  lastChangeOn_gt?: InputMaybe<Scalars['Int']['input']>;
+  lastChangeOn_gte?: InputMaybe<Scalars['Int']['input']>;
+  lastChangeOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  lastChangeOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  lastChangeOn_lt?: InputMaybe<Scalars['Int']['input']>;
+  lastChangeOn_lte?: InputMaybe<Scalars['Int']['input']>;
+  lastChangeOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  lastChangeOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   linkedAccount_every?: InputMaybe<AccountWhereInput>;
   linkedAccount_none?: InputMaybe<AccountWhereInput>;
   linkedAccount_some?: InputMaybe<AccountWhereInput>;
-  membership?: InputMaybe<MembershipWhereInput>;
-  membership_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  membershipHistory_every?: InputMaybe<MembershipEventWhereInput>;
+  membershipHistory_none?: InputMaybe<MembershipEventWhereInput>;
+  membershipHistory_some?: InputMaybe<MembershipEventWhereInput>;
   name_contains?: InputMaybe<Scalars['String']['input']>;
   name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   name_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -1855,8 +1929,19 @@ export type IdentityWhereInput = {
   smithCertReceived_every?: InputMaybe<SmithCertWhereInput>;
   smithCertReceived_none?: InputMaybe<SmithCertWhereInput>;
   smithCertReceived_some?: InputMaybe<SmithCertWhereInput>;
-  smithMembership?: InputMaybe<SmithMembershipWhereInput>;
-  smithMembership_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  smithStatus_eq?: InputMaybe<SmithStatus>;
+  smithStatus_in?: InputMaybe<Array<SmithStatus>>;
+  smithStatus_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  smithStatus_not_eq?: InputMaybe<SmithStatus>;
+  smithStatus_not_in?: InputMaybe<Array<SmithStatus>>;
+  status_eq?: InputMaybe<IdentityStatus>;
+  status_in?: InputMaybe<Array<IdentityStatus>>;
+  status_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  status_not_eq?: InputMaybe<IdentityStatus>;
+  status_not_in?: InputMaybe<Array<IdentityStatus>>;
+  udHistory_every?: InputMaybe<UdHistoryWhereInput>;
+  udHistory_none?: InputMaybe<UdHistoryWhereInput>;
+  udHistory_some?: InputMaybe<UdHistoryWhereInput>;
 };
 
 export enum ItemType {
@@ -1946,29 +2031,62 @@ export type ItemsCountersConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
-/** Membership */
-export type Membership = {
-  __typename?: 'Membership';
-  expireOn: Scalars['Int']['output'];
+export type MembershipEvent = {
+  __typename?: 'MembershipEvent';
+  blockNumber: Scalars['Int']['output'];
+  event: Event;
+  eventType: EventType;
   id: Scalars['String']['output'];
   identity: Identity;
 };
 
-export type MembershipEdge = {
-  __typename?: 'MembershipEdge';
+export type MembershipEventEdge = {
+  __typename?: 'MembershipEventEdge';
   cursor: Scalars['String']['output'];
-  node: Membership;
+  node: MembershipEvent;
 };
 
-export enum MembershipOrderByInput {
-  ExpireOnAsc = 'expireOn_ASC',
-  ExpireOnAscNullsFirst = 'expireOn_ASC_NULLS_FIRST',
-  ExpireOnDesc = 'expireOn_DESC',
-  ExpireOnDescNullsLast = 'expireOn_DESC_NULLS_LAST',
+export enum MembershipEventOrderByInput {
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  EventTypeAsc = 'eventType_ASC',
+  EventTypeAscNullsFirst = 'eventType_ASC_NULLS_FIRST',
+  EventTypeDesc = 'eventType_DESC',
+  EventTypeDescNullsLast = 'eventType_DESC_NULLS_LAST',
+  EventIdAsc = 'event_id_ASC',
+  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
+  EventIdDesc = 'event_id_DESC',
+  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
+  EventIndexAsc = 'event_index_ASC',
+  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
+  EventIndexDesc = 'event_index_DESC',
+  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
+  EventNameAsc = 'event_name_ASC',
+  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
+  EventNameDesc = 'event_name_DESC',
+  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
+  EventPalletAsc = 'event_pallet_ASC',
+  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
+  EventPalletDesc = 'event_pallet_DESC',
+  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
+  EventPhaseAsc = 'event_phase_ASC',
+  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
+  EventPhaseDesc = 'event_phase_DESC',
+  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IdentityCreatedOnAsc = 'identity_createdOn_ASC',
+  IdentityCreatedOnAscNullsFirst = 'identity_createdOn_ASC_NULLS_FIRST',
+  IdentityCreatedOnDesc = 'identity_createdOn_DESC',
+  IdentityCreatedOnDescNullsLast = 'identity_createdOn_DESC_NULLS_LAST',
+  IdentityExpireOnAsc = 'identity_expireOn_ASC',
+  IdentityExpireOnAscNullsFirst = 'identity_expireOn_ASC_NULLS_FIRST',
+  IdentityExpireOnDesc = 'identity_expireOn_DESC',
+  IdentityExpireOnDescNullsLast = 'identity_expireOn_DESC_NULLS_LAST',
   IdentityIdAsc = 'identity_id_ASC',
   IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
   IdentityIdDesc = 'identity_id_DESC',
@@ -1977,24 +2095,47 @@ export enum MembershipOrderByInput {
   IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
   IdentityIndexDesc = 'identity_index_DESC',
   IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
+  IdentityIsMemberAsc = 'identity_isMember_ASC',
+  IdentityIsMemberAscNullsFirst = 'identity_isMember_ASC_NULLS_FIRST',
+  IdentityIsMemberDesc = 'identity_isMember_DESC',
+  IdentityIsMemberDescNullsLast = 'identity_isMember_DESC_NULLS_LAST',
+  IdentityLastChangeOnAsc = 'identity_lastChangeOn_ASC',
+  IdentityLastChangeOnAscNullsFirst = 'identity_lastChangeOn_ASC_NULLS_FIRST',
+  IdentityLastChangeOnDesc = 'identity_lastChangeOn_DESC',
+  IdentityLastChangeOnDescNullsLast = 'identity_lastChangeOn_DESC_NULLS_LAST',
   IdentityNameAsc = 'identity_name_ASC',
   IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
   IdentityNameDesc = 'identity_name_DESC',
   IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
+  IdentitySmithStatusAsc = 'identity_smithStatus_ASC',
+  IdentitySmithStatusAscNullsFirst = 'identity_smithStatus_ASC_NULLS_FIRST',
+  IdentitySmithStatusDesc = 'identity_smithStatus_DESC',
+  IdentitySmithStatusDescNullsLast = 'identity_smithStatus_DESC_NULLS_LAST',
+  IdentityStatusAsc = 'identity_status_ASC',
+  IdentityStatusAscNullsFirst = 'identity_status_ASC_NULLS_FIRST',
+  IdentityStatusDesc = 'identity_status_DESC',
+  IdentityStatusDescNullsLast = 'identity_status_DESC_NULLS_LAST',
 }
 
-export type MembershipWhereInput = {
-  AND?: InputMaybe<Array<MembershipWhereInput>>;
-  OR?: InputMaybe<Array<MembershipWhereInput>>;
-  expireOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  expireOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  expireOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+export type MembershipEventWhereInput = {
+  AND?: InputMaybe<Array<MembershipEventWhereInput>>;
+  OR?: InputMaybe<Array<MembershipEventWhereInput>>;
+  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  event?: InputMaybe<EventWhereInput>;
+  eventType_eq?: InputMaybe<EventType>;
+  eventType_in?: InputMaybe<Array<EventType>>;
+  eventType_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  eventType_not_eq?: InputMaybe<EventType>;
+  eventType_not_in?: InputMaybe<Array<EventType>>;
+  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   id_contains?: InputMaybe<Scalars['String']['input']>;
   id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   id_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -2016,12 +2157,26 @@ export type MembershipWhereInput = {
   identity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type MembershipsConnection = {
-  __typename?: 'MembershipsConnection';
-  edges: Array<MembershipEdge>;
+export type MembershipEventsConnection = {
+  __typename?: 'MembershipEventsConnection';
+  edges: Array<MembershipEventEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
 };
+
+export type NumberFilter = {
+  eq?: InputMaybe<Scalars['Int']['input']>;
+  gt?: InputMaybe<Scalars['Int']['input']>;
+  gte?: InputMaybe<Scalars['Int']['input']>;
+  lt?: InputMaybe<Scalars['Int']['input']>;
+  lte?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The basic directions for order by */
+export enum OrderByEnum {
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberDesc = 'blockNumber_DESC',
+}
 
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -2051,21 +2206,11 @@ export type Query = {
   certById?: Maybe<Cert>;
   /** @deprecated Use certById */
   certByUniqueInput?: Maybe<Cert>;
-  certCreationById?: Maybe<CertCreation>;
-  /** @deprecated Use certCreationById */
-  certCreationByUniqueInput?: Maybe<CertCreation>;
-  certCreations: Array<CertCreation>;
-  certCreationsConnection: CertCreationsConnection;
-  certRemovalById?: Maybe<CertRemoval>;
-  /** @deprecated Use certRemovalById */
-  certRemovalByUniqueInput?: Maybe<CertRemoval>;
-  certRemovals: Array<CertRemoval>;
-  certRemovalsConnection: CertRemovalsConnection;
-  certRenewalById?: Maybe<CertRenewal>;
-  /** @deprecated Use certRenewalById */
-  certRenewalByUniqueInput?: Maybe<CertRenewal>;
-  certRenewals: Array<CertRenewal>;
-  certRenewalsConnection: CertRenewalsConnection;
+  certEventById?: Maybe<CertEvent>;
+  /** @deprecated Use certEventById */
+  certEventByUniqueInput?: Maybe<CertEvent>;
+  certEvents: Array<CertEvent>;
+  certEventsConnection: CertEventsConnection;
   certs: Array<Cert>;
   certsConnection: CertsConnection;
   changeOwnerKeyById?: Maybe<ChangeOwnerKey>;
@@ -2083,6 +2228,7 @@ export type Query = {
   extrinsicByUniqueInput?: Maybe<Extrinsic>;
   extrinsics: Array<Extrinsic>;
   extrinsicsConnection: ExtrinsicsConnection;
+  galuel: Scalars['String']['output'];
   identities: Array<Identity>;
   identitiesConnection: IdentitiesConnection;
   identityById?: Maybe<Identity>;
@@ -2093,42 +2239,37 @@ export type Query = {
   itemsCounterByUniqueInput?: Maybe<ItemsCounter>;
   itemsCounters: Array<ItemsCounter>;
   itemsCountersConnection: ItemsCountersConnection;
-  membershipById?: Maybe<Membership>;
-  /** @deprecated Use membershipById */
-  membershipByUniqueInput?: Maybe<Membership>;
-  memberships: Array<Membership>;
-  membershipsConnection: MembershipsConnection;
+  membershipEventById?: Maybe<MembershipEvent>;
+  /** @deprecated Use membershipEventById */
+  membershipEventByUniqueInput?: Maybe<MembershipEvent>;
+  membershipEvents: Array<MembershipEvent>;
+  membershipEventsConnection: MembershipEventsConnection;
   smithCertById?: Maybe<SmithCert>;
   /** @deprecated Use smithCertById */
   smithCertByUniqueInput?: Maybe<SmithCert>;
-  smithCertCreationById?: Maybe<SmithCertCreation>;
-  /** @deprecated Use smithCertCreationById */
-  smithCertCreationByUniqueInput?: Maybe<SmithCertCreation>;
-  smithCertCreations: Array<SmithCertCreation>;
-  smithCertCreationsConnection: SmithCertCreationsConnection;
-  smithCertRemovalById?: Maybe<SmithCertRemoval>;
-  /** @deprecated Use smithCertRemovalById */
-  smithCertRemovalByUniqueInput?: Maybe<SmithCertRemoval>;
-  smithCertRemovals: Array<SmithCertRemoval>;
-  smithCertRemovalsConnection: SmithCertRemovalsConnection;
-  smithCertRenewalById?: Maybe<SmithCertRenewal>;
-  /** @deprecated Use smithCertRenewalById */
-  smithCertRenewalByUniqueInput?: Maybe<SmithCertRenewal>;
-  smithCertRenewals: Array<SmithCertRenewal>;
-  smithCertRenewalsConnection: SmithCertRenewalsConnection;
   smithCerts: Array<SmithCert>;
   smithCertsConnection: SmithCertsConnection;
-  smithMembershipById?: Maybe<SmithMembership>;
-  /** @deprecated Use smithMembershipById */
-  smithMembershipByUniqueInput?: Maybe<SmithMembership>;
-  smithMemberships: Array<SmithMembership>;
-  smithMembershipsConnection: SmithMembershipsConnection;
   squidStatus?: Maybe<SquidStatus>;
   transferById?: Maybe<Transfer>;
   /** @deprecated Use transferById */
   transferByUniqueInput?: Maybe<Transfer>;
   transfers: Array<Transfer>;
   transfersConnection: TransfersConnection;
+  udHistories: Array<UdHistory>;
+  udHistoriesConnection: UdHistoriesConnection;
+  udHistoryById?: Maybe<UdHistory>;
+  /** @deprecated Use udHistoryById */
+  udHistoryByUniqueInput?: Maybe<UdHistory>;
+  udReevalById?: Maybe<UdReeval>;
+  /** @deprecated Use udReevalById */
+  udReevalByUniqueInput?: Maybe<UdReeval>;
+  udReevals: Array<UdReeval>;
+  udReevalsConnection: UdReevalsConnection;
+  universalDividendById?: Maybe<UniversalDividend>;
+  /** @deprecated Use universalDividendById */
+  universalDividendByUniqueInput?: Maybe<UniversalDividend>;
+  universalDividends: Array<UniversalDividend>;
+  universalDividendsConnection: UniversalDividendsConnection;
 };
 
 export type QueryAccountByIdArgs = {
@@ -2205,70 +2346,26 @@ export type QueryCertByUniqueInputArgs = {
   where: WhereIdInput;
 };
 
-export type QueryCertCreationByIdArgs = {
+export type QueryCertEventByIdArgs = {
   id: Scalars['String']['input'];
 };
 
-export type QueryCertCreationByUniqueInputArgs = {
+export type QueryCertEventByUniqueInputArgs = {
   where: WhereIdInput;
 };
 
-export type QueryCertCreationsArgs = {
+export type QueryCertEventsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertCreationOrderByInput>>;
-  where?: InputMaybe<CertCreationWhereInput>;
+  orderBy?: InputMaybe<Array<CertEventOrderByInput>>;
+  where?: InputMaybe<CertEventWhereInput>;
 };
 
-export type QueryCertCreationsConnectionArgs = {
+export type QueryCertEventsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<CertCreationOrderByInput>;
-  where?: InputMaybe<CertCreationWhereInput>;
-};
-
-export type QueryCertRemovalByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryCertRemovalByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryCertRemovalsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertRemovalOrderByInput>>;
-  where?: InputMaybe<CertRemovalWhereInput>;
-};
-
-export type QueryCertRemovalsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<CertRemovalOrderByInput>;
-  where?: InputMaybe<CertRemovalWhereInput>;
-};
-
-export type QueryCertRenewalByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryCertRenewalByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryCertRenewalsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertRenewalOrderByInput>>;
-  where?: InputMaybe<CertRenewalWhereInput>;
-};
-
-export type QueryCertRenewalsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<CertRenewalOrderByInput>;
-  where?: InputMaybe<CertRenewalWhereInput>;
+  orderBy: Array<CertEventOrderByInput>;
+  where?: InputMaybe<CertEventWhereInput>;
 };
 
 export type QueryCertsArgs = {
@@ -2395,26 +2492,26 @@ export type QueryItemsCountersConnectionArgs = {
   where?: InputMaybe<ItemsCounterWhereInput>;
 };
 
-export type QueryMembershipByIdArgs = {
+export type QueryMembershipEventByIdArgs = {
   id: Scalars['String']['input'];
 };
 
-export type QueryMembershipByUniqueInputArgs = {
+export type QueryMembershipEventByUniqueInputArgs = {
   where: WhereIdInput;
 };
 
-export type QueryMembershipsArgs = {
+export type QueryMembershipEventsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<MembershipOrderByInput>>;
-  where?: InputMaybe<MembershipWhereInput>;
+  orderBy?: InputMaybe<Array<MembershipEventOrderByInput>>;
+  where?: InputMaybe<MembershipEventWhereInput>;
 };
 
-export type QueryMembershipsConnectionArgs = {
+export type QueryMembershipEventsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<MembershipOrderByInput>;
-  where?: InputMaybe<MembershipWhereInput>;
+  orderBy: Array<MembershipEventOrderByInput>;
+  where?: InputMaybe<MembershipEventWhereInput>;
 };
 
 export type QuerySmithCertByIdArgs = {
@@ -2423,72 +2520,6 @@ export type QuerySmithCertByIdArgs = {
 
 export type QuerySmithCertByUniqueInputArgs = {
   where: WhereIdInput;
-};
-
-export type QuerySmithCertCreationByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QuerySmithCertCreationByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QuerySmithCertCreationsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertCreationOrderByInput>>;
-  where?: InputMaybe<SmithCertCreationWhereInput>;
-};
-
-export type QuerySmithCertCreationsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<SmithCertCreationOrderByInput>;
-  where?: InputMaybe<SmithCertCreationWhereInput>;
-};
-
-export type QuerySmithCertRemovalByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QuerySmithCertRemovalByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QuerySmithCertRemovalsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertRemovalOrderByInput>>;
-  where?: InputMaybe<SmithCertRemovalWhereInput>;
-};
-
-export type QuerySmithCertRemovalsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<SmithCertRemovalOrderByInput>;
-  where?: InputMaybe<SmithCertRemovalWhereInput>;
-};
-
-export type QuerySmithCertRenewalByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QuerySmithCertRenewalByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QuerySmithCertRenewalsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertRenewalOrderByInput>>;
-  where?: InputMaybe<SmithCertRenewalWhereInput>;
-};
-
-export type QuerySmithCertRenewalsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<SmithCertRenewalOrderByInput>;
-  where?: InputMaybe<SmithCertRenewalWhereInput>;
 };
 
 export type QuerySmithCertsArgs = {
@@ -2503,28 +2534,6 @@ export type QuerySmithCertsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<SmithCertOrderByInput>;
   where?: InputMaybe<SmithCertWhereInput>;
-};
-
-export type QuerySmithMembershipByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QuerySmithMembershipByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QuerySmithMembershipsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithMembershipOrderByInput>>;
-  where?: InputMaybe<SmithMembershipWhereInput>;
-};
-
-export type QuerySmithMembershipsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<SmithMembershipOrderByInput>;
-  where?: InputMaybe<SmithMembershipWhereInput>;
 };
 
 export type QueryTransferByIdArgs = {
@@ -2549,122 +2558,79 @@ export type QueryTransfersConnectionArgs = {
   where?: InputMaybe<TransferWhereInput>;
 };
 
+export type QueryUdHistoriesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdHistoryOrderByInput>>;
+  where?: InputMaybe<UdHistoryWhereInput>;
+};
+
+export type QueryUdHistoriesConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<UdHistoryOrderByInput>;
+  where?: InputMaybe<UdHistoryWhereInput>;
+};
+
+export type QueryUdHistoryByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type QueryUdHistoryByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+export type QueryUdReevalByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type QueryUdReevalByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+export type QueryUdReevalsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdReevalOrderByInput>>;
+  where?: InputMaybe<UdReevalWhereInput>;
+};
+
+export type QueryUdReevalsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<UdReevalOrderByInput>;
+  where?: InputMaybe<UdReevalWhereInput>;
+};
+
+export type QueryUniversalDividendByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type QueryUniversalDividendByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+export type QueryUniversalDividendsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UniversalDividendOrderByInput>>;
+  where?: InputMaybe<UniversalDividendWhereInput>;
+};
+
+export type QueryUniversalDividendsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<UniversalDividendOrderByInput>;
+  where?: InputMaybe<UniversalDividendWhereInput>;
+};
+
 /** Smith certification */
 export type SmithCert = {
   __typename?: 'SmithCert';
-  active: Scalars['Boolean']['output'];
   createdOn: Scalars['Int']['output'];
-  creation: Array<SmithCertCreation>;
-  expireOn: Scalars['Int']['output'];
   id: Scalars['String']['output'];
   issuer: Identity;
   receiver: Identity;
-  removal: Array<SmithCertRemoval>;
-  renewal: Array<SmithCertRenewal>;
-};
-
-/** Smith certification */
-export type SmithCertCreationArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertCreationOrderByInput>>;
-  where?: InputMaybe<SmithCertCreationWhereInput>;
-};
-
-/** Smith certification */
-export type SmithCertRemovalArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertRemovalOrderByInput>>;
-  where?: InputMaybe<SmithCertRemovalWhereInput>;
-};
-
-/** Smith certification */
-export type SmithCertRenewalArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertRenewalOrderByInput>>;
-  where?: InputMaybe<SmithCertRenewalWhereInput>;
-};
-
-export type SmithCertCreation = {
-  __typename?: 'SmithCertCreation';
-  blockNumber: Scalars['Int']['output'];
-  cert: SmithCert;
-  id: Scalars['String']['output'];
-};
-
-export type SmithCertCreationEdge = {
-  __typename?: 'SmithCertCreationEdge';
-  cursor: Scalars['String']['output'];
-  node: SmithCertCreation;
-};
-
-export enum SmithCertCreationOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  CertActiveAsc = 'cert_active_ASC',
-  CertActiveAscNullsFirst = 'cert_active_ASC_NULLS_FIRST',
-  CertActiveDesc = 'cert_active_DESC',
-  CertActiveDescNullsLast = 'cert_active_DESC_NULLS_LAST',
-  CertCreatedOnAsc = 'cert_createdOn_ASC',
-  CertCreatedOnAscNullsFirst = 'cert_createdOn_ASC_NULLS_FIRST',
-  CertCreatedOnDesc = 'cert_createdOn_DESC',
-  CertCreatedOnDescNullsLast = 'cert_createdOn_DESC_NULLS_LAST',
-  CertExpireOnAsc = 'cert_expireOn_ASC',
-  CertExpireOnAscNullsFirst = 'cert_expireOn_ASC_NULLS_FIRST',
-  CertExpireOnDesc = 'cert_expireOn_DESC',
-  CertExpireOnDescNullsLast = 'cert_expireOn_DESC_NULLS_LAST',
-  CertIdAsc = 'cert_id_ASC',
-  CertIdAscNullsFirst = 'cert_id_ASC_NULLS_FIRST',
-  CertIdDesc = 'cert_id_DESC',
-  CertIdDescNullsLast = 'cert_id_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-}
-
-export type SmithCertCreationWhereInput = {
-  AND?: InputMaybe<Array<SmithCertCreationWhereInput>>;
-  OR?: InputMaybe<Array<SmithCertCreationWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  cert?: InputMaybe<SmithCertWhereInput>;
-  cert_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type SmithCertCreationsConnection = {
-  __typename?: 'SmithCertCreationsConnection';
-  edges: Array<SmithCertCreationEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
 };
 
 export type SmithCertEdge = {
@@ -2674,22 +2640,22 @@ export type SmithCertEdge = {
 };
 
 export enum SmithCertOrderByInput {
-  ActiveAsc = 'active_ASC',
-  ActiveAscNullsFirst = 'active_ASC_NULLS_FIRST',
-  ActiveDesc = 'active_DESC',
-  ActiveDescNullsLast = 'active_DESC_NULLS_LAST',
   CreatedOnAsc = 'createdOn_ASC',
   CreatedOnAscNullsFirst = 'createdOn_ASC_NULLS_FIRST',
   CreatedOnDesc = 'createdOn_DESC',
   CreatedOnDescNullsLast = 'createdOn_DESC_NULLS_LAST',
-  ExpireOnAsc = 'expireOn_ASC',
-  ExpireOnAscNullsFirst = 'expireOn_ASC_NULLS_FIRST',
-  ExpireOnDesc = 'expireOn_DESC',
-  ExpireOnDescNullsLast = 'expireOn_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IssuerCreatedOnAsc = 'issuer_createdOn_ASC',
+  IssuerCreatedOnAscNullsFirst = 'issuer_createdOn_ASC_NULLS_FIRST',
+  IssuerCreatedOnDesc = 'issuer_createdOn_DESC',
+  IssuerCreatedOnDescNullsLast = 'issuer_createdOn_DESC_NULLS_LAST',
+  IssuerExpireOnAsc = 'issuer_expireOn_ASC',
+  IssuerExpireOnAscNullsFirst = 'issuer_expireOn_ASC_NULLS_FIRST',
+  IssuerExpireOnDesc = 'issuer_expireOn_DESC',
+  IssuerExpireOnDescNullsLast = 'issuer_expireOn_DESC_NULLS_LAST',
   IssuerIdAsc = 'issuer_id_ASC',
   IssuerIdAscNullsFirst = 'issuer_id_ASC_NULLS_FIRST',
   IssuerIdDesc = 'issuer_id_DESC',
@@ -2698,10 +2664,34 @@ export enum SmithCertOrderByInput {
   IssuerIndexAscNullsFirst = 'issuer_index_ASC_NULLS_FIRST',
   IssuerIndexDesc = 'issuer_index_DESC',
   IssuerIndexDescNullsLast = 'issuer_index_DESC_NULLS_LAST',
+  IssuerIsMemberAsc = 'issuer_isMember_ASC',
+  IssuerIsMemberAscNullsFirst = 'issuer_isMember_ASC_NULLS_FIRST',
+  IssuerIsMemberDesc = 'issuer_isMember_DESC',
+  IssuerIsMemberDescNullsLast = 'issuer_isMember_DESC_NULLS_LAST',
+  IssuerLastChangeOnAsc = 'issuer_lastChangeOn_ASC',
+  IssuerLastChangeOnAscNullsFirst = 'issuer_lastChangeOn_ASC_NULLS_FIRST',
+  IssuerLastChangeOnDesc = 'issuer_lastChangeOn_DESC',
+  IssuerLastChangeOnDescNullsLast = 'issuer_lastChangeOn_DESC_NULLS_LAST',
   IssuerNameAsc = 'issuer_name_ASC',
   IssuerNameAscNullsFirst = 'issuer_name_ASC_NULLS_FIRST',
   IssuerNameDesc = 'issuer_name_DESC',
   IssuerNameDescNullsLast = 'issuer_name_DESC_NULLS_LAST',
+  IssuerSmithStatusAsc = 'issuer_smithStatus_ASC',
+  IssuerSmithStatusAscNullsFirst = 'issuer_smithStatus_ASC_NULLS_FIRST',
+  IssuerSmithStatusDesc = 'issuer_smithStatus_DESC',
+  IssuerSmithStatusDescNullsLast = 'issuer_smithStatus_DESC_NULLS_LAST',
+  IssuerStatusAsc = 'issuer_status_ASC',
+  IssuerStatusAscNullsFirst = 'issuer_status_ASC_NULLS_FIRST',
+  IssuerStatusDesc = 'issuer_status_DESC',
+  IssuerStatusDescNullsLast = 'issuer_status_DESC_NULLS_LAST',
+  ReceiverCreatedOnAsc = 'receiver_createdOn_ASC',
+  ReceiverCreatedOnAscNullsFirst = 'receiver_createdOn_ASC_NULLS_FIRST',
+  ReceiverCreatedOnDesc = 'receiver_createdOn_DESC',
+  ReceiverCreatedOnDescNullsLast = 'receiver_createdOn_DESC_NULLS_LAST',
+  ReceiverExpireOnAsc = 'receiver_expireOn_ASC',
+  ReceiverExpireOnAscNullsFirst = 'receiver_expireOn_ASC_NULLS_FIRST',
+  ReceiverExpireOnDesc = 'receiver_expireOn_DESC',
+  ReceiverExpireOnDescNullsLast = 'receiver_expireOn_DESC_NULLS_LAST',
   ReceiverIdAsc = 'receiver_id_ASC',
   ReceiverIdAscNullsFirst = 'receiver_id_ASC_NULLS_FIRST',
   ReceiverIdDesc = 'receiver_id_DESC',
@@ -2710,178 +2700,31 @@ export enum SmithCertOrderByInput {
   ReceiverIndexAscNullsFirst = 'receiver_index_ASC_NULLS_FIRST',
   ReceiverIndexDesc = 'receiver_index_DESC',
   ReceiverIndexDescNullsLast = 'receiver_index_DESC_NULLS_LAST',
+  ReceiverIsMemberAsc = 'receiver_isMember_ASC',
+  ReceiverIsMemberAscNullsFirst = 'receiver_isMember_ASC_NULLS_FIRST',
+  ReceiverIsMemberDesc = 'receiver_isMember_DESC',
+  ReceiverIsMemberDescNullsLast = 'receiver_isMember_DESC_NULLS_LAST',
+  ReceiverLastChangeOnAsc = 'receiver_lastChangeOn_ASC',
+  ReceiverLastChangeOnAscNullsFirst = 'receiver_lastChangeOn_ASC_NULLS_FIRST',
+  ReceiverLastChangeOnDesc = 'receiver_lastChangeOn_DESC',
+  ReceiverLastChangeOnDescNullsLast = 'receiver_lastChangeOn_DESC_NULLS_LAST',
   ReceiverNameAsc = 'receiver_name_ASC',
   ReceiverNameAscNullsFirst = 'receiver_name_ASC_NULLS_FIRST',
   ReceiverNameDesc = 'receiver_name_DESC',
   ReceiverNameDescNullsLast = 'receiver_name_DESC_NULLS_LAST',
+  ReceiverSmithStatusAsc = 'receiver_smithStatus_ASC',
+  ReceiverSmithStatusAscNullsFirst = 'receiver_smithStatus_ASC_NULLS_FIRST',
+  ReceiverSmithStatusDesc = 'receiver_smithStatus_DESC',
+  ReceiverSmithStatusDescNullsLast = 'receiver_smithStatus_DESC_NULLS_LAST',
+  ReceiverStatusAsc = 'receiver_status_ASC',
+  ReceiverStatusAscNullsFirst = 'receiver_status_ASC_NULLS_FIRST',
+  ReceiverStatusDesc = 'receiver_status_DESC',
+  ReceiverStatusDescNullsLast = 'receiver_status_DESC_NULLS_LAST',
 }
-
-export type SmithCertRemoval = {
-  __typename?: 'SmithCertRemoval';
-  blockNumber: Scalars['Int']['output'];
-  cert: SmithCert;
-  id: Scalars['String']['output'];
-};
-
-export type SmithCertRemovalEdge = {
-  __typename?: 'SmithCertRemovalEdge';
-  cursor: Scalars['String']['output'];
-  node: SmithCertRemoval;
-};
-
-export enum SmithCertRemovalOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  CertActiveAsc = 'cert_active_ASC',
-  CertActiveAscNullsFirst = 'cert_active_ASC_NULLS_FIRST',
-  CertActiveDesc = 'cert_active_DESC',
-  CertActiveDescNullsLast = 'cert_active_DESC_NULLS_LAST',
-  CertCreatedOnAsc = 'cert_createdOn_ASC',
-  CertCreatedOnAscNullsFirst = 'cert_createdOn_ASC_NULLS_FIRST',
-  CertCreatedOnDesc = 'cert_createdOn_DESC',
-  CertCreatedOnDescNullsLast = 'cert_createdOn_DESC_NULLS_LAST',
-  CertExpireOnAsc = 'cert_expireOn_ASC',
-  CertExpireOnAscNullsFirst = 'cert_expireOn_ASC_NULLS_FIRST',
-  CertExpireOnDesc = 'cert_expireOn_DESC',
-  CertExpireOnDescNullsLast = 'cert_expireOn_DESC_NULLS_LAST',
-  CertIdAsc = 'cert_id_ASC',
-  CertIdAscNullsFirst = 'cert_id_ASC_NULLS_FIRST',
-  CertIdDesc = 'cert_id_DESC',
-  CertIdDescNullsLast = 'cert_id_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-}
-
-export type SmithCertRemovalWhereInput = {
-  AND?: InputMaybe<Array<SmithCertRemovalWhereInput>>;
-  OR?: InputMaybe<Array<SmithCertRemovalWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  cert?: InputMaybe<SmithCertWhereInput>;
-  cert_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type SmithCertRemovalsConnection = {
-  __typename?: 'SmithCertRemovalsConnection';
-  edges: Array<SmithCertRemovalEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type SmithCertRenewal = {
-  __typename?: 'SmithCertRenewal';
-  blockNumber: Scalars['Int']['output'];
-  cert: SmithCert;
-  id: Scalars['String']['output'];
-};
-
-export type SmithCertRenewalEdge = {
-  __typename?: 'SmithCertRenewalEdge';
-  cursor: Scalars['String']['output'];
-  node: SmithCertRenewal;
-};
-
-export enum SmithCertRenewalOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  CertActiveAsc = 'cert_active_ASC',
-  CertActiveAscNullsFirst = 'cert_active_ASC_NULLS_FIRST',
-  CertActiveDesc = 'cert_active_DESC',
-  CertActiveDescNullsLast = 'cert_active_DESC_NULLS_LAST',
-  CertCreatedOnAsc = 'cert_createdOn_ASC',
-  CertCreatedOnAscNullsFirst = 'cert_createdOn_ASC_NULLS_FIRST',
-  CertCreatedOnDesc = 'cert_createdOn_DESC',
-  CertCreatedOnDescNullsLast = 'cert_createdOn_DESC_NULLS_LAST',
-  CertExpireOnAsc = 'cert_expireOn_ASC',
-  CertExpireOnAscNullsFirst = 'cert_expireOn_ASC_NULLS_FIRST',
-  CertExpireOnDesc = 'cert_expireOn_DESC',
-  CertExpireOnDescNullsLast = 'cert_expireOn_DESC_NULLS_LAST',
-  CertIdAsc = 'cert_id_ASC',
-  CertIdAscNullsFirst = 'cert_id_ASC_NULLS_FIRST',
-  CertIdDesc = 'cert_id_DESC',
-  CertIdDescNullsLast = 'cert_id_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-}
-
-export type SmithCertRenewalWhereInput = {
-  AND?: InputMaybe<Array<SmithCertRenewalWhereInput>>;
-  OR?: InputMaybe<Array<SmithCertRenewalWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  cert?: InputMaybe<SmithCertWhereInput>;
-  cert_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type SmithCertRenewalsConnection = {
-  __typename?: 'SmithCertRenewalsConnection';
-  edges: Array<SmithCertRenewalEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
 
 export type SmithCertWhereInput = {
   AND?: InputMaybe<Array<SmithCertWhereInput>>;
   OR?: InputMaybe<Array<SmithCertWhereInput>>;
-  active_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  active_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  active_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
   createdOn_eq?: InputMaybe<Scalars['Int']['input']>;
   createdOn_gt?: InputMaybe<Scalars['Int']['input']>;
   createdOn_gte?: InputMaybe<Scalars['Int']['input']>;
@@ -2891,18 +2734,6 @@ export type SmithCertWhereInput = {
   createdOn_lte?: InputMaybe<Scalars['Int']['input']>;
   createdOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
   createdOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  creation_every?: InputMaybe<SmithCertCreationWhereInput>;
-  creation_none?: InputMaybe<SmithCertCreationWhereInput>;
-  creation_some?: InputMaybe<SmithCertCreationWhereInput>;
-  expireOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  expireOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  expireOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   id_contains?: InputMaybe<Scalars['String']['input']>;
   id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   id_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -2924,12 +2755,6 @@ export type SmithCertWhereInput = {
   issuer_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   receiver?: InputMaybe<IdentityWhereInput>;
   receiver_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  removal_every?: InputMaybe<SmithCertRemovalWhereInput>;
-  removal_none?: InputMaybe<SmithCertRemovalWhereInput>;
-  removal_some?: InputMaybe<SmithCertRemovalWhereInput>;
-  renewal_every?: InputMaybe<SmithCertRenewalWhereInput>;
-  renewal_none?: InputMaybe<SmithCertRenewalWhereInput>;
-  renewal_some?: InputMaybe<SmithCertRenewalWhereInput>;
 };
 
 export type SmithCertsConnection = {
@@ -2939,87 +2764,230 @@ export type SmithCertsConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
-/** Smith membership */
-export type SmithMembership = {
-  __typename?: 'SmithMembership';
-  expireOn: Scalars['Int']['output'];
-  id: Scalars['String']['output'];
-  identity: Identity;
-};
-
-export type SmithMembershipEdge = {
-  __typename?: 'SmithMembershipEdge';
-  cursor: Scalars['String']['output'];
-  node: SmithMembership;
-};
-
-export enum SmithMembershipOrderByInput {
-  ExpireOnAsc = 'expireOn_ASC',
-  ExpireOnAscNullsFirst = 'expireOn_ASC_NULLS_FIRST',
-  ExpireOnDesc = 'expireOn_DESC',
-  ExpireOnDescNullsLast = 'expireOn_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IdentityIdAsc = 'identity_id_ASC',
-  IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
-  IdentityIdDesc = 'identity_id_DESC',
-  IdentityIdDescNullsLast = 'identity_id_DESC_NULLS_LAST',
-  IdentityIndexAsc = 'identity_index_ASC',
-  IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
-  IdentityIndexDesc = 'identity_index_DESC',
-  IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
-  IdentityNameAsc = 'identity_name_ASC',
-  IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
-  IdentityNameDesc = 'identity_name_DESC',
-  IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
+/** smith status directly linked to Duniter SmithStatus */
+export enum SmithStatus {
+  Excluded = 'Excluded',
+  Invited = 'Invited',
+  Pending = 'Pending',
+  Smith = 'Smith',
 }
-
-export type SmithMembershipWhereInput = {
-  AND?: InputMaybe<Array<SmithMembershipWhereInput>>;
-  OR?: InputMaybe<Array<SmithMembershipWhereInput>>;
-  expireOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  expireOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  expireOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  identity?: InputMaybe<IdentityWhereInput>;
-  identity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type SmithMembershipsConnection = {
-  __typename?: 'SmithMembershipsConnection';
-  edges: Array<SmithMembershipEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
 
 export type SquidStatus = {
   __typename?: 'SquidStatus';
   /** The height of the processed part of the chain */
   height?: Maybe<Scalars['Int']['output']>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  accountById?: Maybe<Account>;
+  accounts: Array<Account>;
+  blockById?: Maybe<Block>;
+  blocks: Array<Block>;
+  callById?: Maybe<Call>;
+  calls: Array<Call>;
+  certById?: Maybe<Cert>;
+  certEventById?: Maybe<CertEvent>;
+  certEvents: Array<CertEvent>;
+  certs: Array<Cert>;
+  changeOwnerKeyById?: Maybe<ChangeOwnerKey>;
+  changeOwnerKeys: Array<ChangeOwnerKey>;
+  eventById?: Maybe<Event>;
+  events: Array<Event>;
+  extrinsicById?: Maybe<Extrinsic>;
+  extrinsics: Array<Extrinsic>;
+  identities: Array<Identity>;
+  identityById?: Maybe<Identity>;
+  itemsCounterById?: Maybe<ItemsCounter>;
+  itemsCounters: Array<ItemsCounter>;
+  membershipEventById?: Maybe<MembershipEvent>;
+  membershipEvents: Array<MembershipEvent>;
+  smithCertById?: Maybe<SmithCert>;
+  smithCerts: Array<SmithCert>;
+  transferById?: Maybe<Transfer>;
+  transfers: Array<Transfer>;
+  udHistories: Array<UdHistory>;
+  udHistoryById?: Maybe<UdHistory>;
+  udReevalById?: Maybe<UdReeval>;
+  udReevals: Array<UdReeval>;
+  universalDividendById?: Maybe<UniversalDividend>;
+  universalDividends: Array<UniversalDividend>;
+};
+
+export type SubscriptionAccountByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionAccountsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderByInput>>;
+  where?: InputMaybe<AccountWhereInput>;
+};
+
+export type SubscriptionBlockByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionBlocksArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<BlockOrderByInput>>;
+  where?: InputMaybe<BlockWhereInput>;
+};
+
+export type SubscriptionCallByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionCallsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderByInput>>;
+  where?: InputMaybe<CallWhereInput>;
+};
+
+export type SubscriptionCertByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionCertEventByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionCertEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertEventOrderByInput>>;
+  where?: InputMaybe<CertEventWhereInput>;
+};
+
+export type SubscriptionCertsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderByInput>>;
+  where?: InputMaybe<CertWhereInput>;
+};
+
+export type SubscriptionChangeOwnerKeyByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionChangeOwnerKeysArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderByInput>>;
+  where?: InputMaybe<ChangeOwnerKeyWhereInput>;
+};
+
+export type SubscriptionEventByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderByInput>>;
+  where?: InputMaybe<EventWhereInput>;
+};
+
+export type SubscriptionExtrinsicByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionExtrinsicsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
+  where?: InputMaybe<ExtrinsicWhereInput>;
+};
+
+export type SubscriptionIdentitiesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<IdentityOrderByInput>>;
+  where?: InputMaybe<IdentityWhereInput>;
+};
+
+export type SubscriptionIdentityByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionItemsCounterByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionItemsCountersArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ItemsCounterOrderByInput>>;
+  where?: InputMaybe<ItemsCounterWhereInput>;
+};
+
+export type SubscriptionMembershipEventByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionMembershipEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MembershipEventOrderByInput>>;
+  where?: InputMaybe<MembershipEventWhereInput>;
+};
+
+export type SubscriptionSmithCertByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionSmithCertsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderByInput>>;
+  where?: InputMaybe<SmithCertWhereInput>;
+};
+
+export type SubscriptionTransferByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionTransfersArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TransferOrderByInput>>;
+  where?: InputMaybe<TransferWhereInput>;
+};
+
+export type SubscriptionUdHistoriesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdHistoryOrderByInput>>;
+  where?: InputMaybe<UdHistoryWhereInput>;
+};
+
+export type SubscriptionUdHistoryByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionUdReevalByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionUdReevalsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdReevalOrderByInput>>;
+  where?: InputMaybe<UdReevalWhereInput>;
+};
+
+export type SubscriptionUniversalDividendByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type SubscriptionUniversalDividendsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UniversalDividendOrderByInput>>;
+  where?: InputMaybe<UniversalDividendWhereInput>;
 };
 
 export type Transfer = {
@@ -3147,22 +3115,468 @@ export type TransfersConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
+export type UdHistoriesConnection = {
+  __typename?: 'UDHistoriesConnection';
+  edges: Array<UdHistoryEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** History of Universal Dividend received by an member identity. */
+export type UdHistory = {
+  __typename?: 'UDHistory';
+  amount: Scalars['Int']['output'];
+  blockNumber: Scalars['Int']['output'];
+  event: Event;
+  id: Scalars['String']['output'];
+  identity: Identity;
+  timestamp: Scalars['DateTime']['output'];
+};
+
+export type UdHistoryEdge = {
+  __typename?: 'UDHistoryEdge';
+  cursor: Scalars['String']['output'];
+  node: UdHistory;
+};
+
+export enum UdHistoryOrderByInput {
+  AmountAsc = 'amount_ASC',
+  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
+  AmountDesc = 'amount_DESC',
+  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  EventIdAsc = 'event_id_ASC',
+  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
+  EventIdDesc = 'event_id_DESC',
+  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
+  EventIndexAsc = 'event_index_ASC',
+  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
+  EventIndexDesc = 'event_index_DESC',
+  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
+  EventNameAsc = 'event_name_ASC',
+  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
+  EventNameDesc = 'event_name_DESC',
+  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
+  EventPalletAsc = 'event_pallet_ASC',
+  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
+  EventPalletDesc = 'event_pallet_DESC',
+  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
+  EventPhaseAsc = 'event_phase_ASC',
+  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
+  EventPhaseDesc = 'event_phase_DESC',
+  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IdentityCreatedOnAsc = 'identity_createdOn_ASC',
+  IdentityCreatedOnAscNullsFirst = 'identity_createdOn_ASC_NULLS_FIRST',
+  IdentityCreatedOnDesc = 'identity_createdOn_DESC',
+  IdentityCreatedOnDescNullsLast = 'identity_createdOn_DESC_NULLS_LAST',
+  IdentityExpireOnAsc = 'identity_expireOn_ASC',
+  IdentityExpireOnAscNullsFirst = 'identity_expireOn_ASC_NULLS_FIRST',
+  IdentityExpireOnDesc = 'identity_expireOn_DESC',
+  IdentityExpireOnDescNullsLast = 'identity_expireOn_DESC_NULLS_LAST',
+  IdentityIdAsc = 'identity_id_ASC',
+  IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
+  IdentityIdDesc = 'identity_id_DESC',
+  IdentityIdDescNullsLast = 'identity_id_DESC_NULLS_LAST',
+  IdentityIndexAsc = 'identity_index_ASC',
+  IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
+  IdentityIndexDesc = 'identity_index_DESC',
+  IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
+  IdentityIsMemberAsc = 'identity_isMember_ASC',
+  IdentityIsMemberAscNullsFirst = 'identity_isMember_ASC_NULLS_FIRST',
+  IdentityIsMemberDesc = 'identity_isMember_DESC',
+  IdentityIsMemberDescNullsLast = 'identity_isMember_DESC_NULLS_LAST',
+  IdentityLastChangeOnAsc = 'identity_lastChangeOn_ASC',
+  IdentityLastChangeOnAscNullsFirst = 'identity_lastChangeOn_ASC_NULLS_FIRST',
+  IdentityLastChangeOnDesc = 'identity_lastChangeOn_DESC',
+  IdentityLastChangeOnDescNullsLast = 'identity_lastChangeOn_DESC_NULLS_LAST',
+  IdentityNameAsc = 'identity_name_ASC',
+  IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
+  IdentityNameDesc = 'identity_name_DESC',
+  IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
+  IdentitySmithStatusAsc = 'identity_smithStatus_ASC',
+  IdentitySmithStatusAscNullsFirst = 'identity_smithStatus_ASC_NULLS_FIRST',
+  IdentitySmithStatusDesc = 'identity_smithStatus_DESC',
+  IdentitySmithStatusDescNullsLast = 'identity_smithStatus_DESC_NULLS_LAST',
+  IdentityStatusAsc = 'identity_status_ASC',
+  IdentityStatusAscNullsFirst = 'identity_status_ASC_NULLS_FIRST',
+  IdentityStatusDesc = 'identity_status_DESC',
+  IdentityStatusDescNullsLast = 'identity_status_DESC_NULLS_LAST',
+  TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
+  TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
+}
+
+export type UdHistoryWhereInput = {
+  AND?: InputMaybe<Array<UdHistoryWhereInput>>;
+  OR?: InputMaybe<Array<UdHistoryWhereInput>>;
+  amount_eq?: InputMaybe<Scalars['Int']['input']>;
+  amount_gt?: InputMaybe<Scalars['Int']['input']>;
+  amount_gte?: InputMaybe<Scalars['Int']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  amount_lt?: InputMaybe<Scalars['Int']['input']>;
+  amount_lte?: InputMaybe<Scalars['Int']['input']>;
+  amount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  event?: InputMaybe<EventWhereInput>;
+  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  identity?: InputMaybe<IdentityWhereInput>;
+  identity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+};
+
+/** List of reevaluation of Universal Dividend based on changes in monetary mass and number of members. Every 6 months in Ğ1 */
+export type UdReeval = {
+  __typename?: 'UDReeval';
+  blockNumber: Scalars['Int']['output'];
+  event: Event;
+  id: Scalars['String']['output'];
+  membersCount: Scalars['Int']['output'];
+  monetaryMass: Scalars['BigInt']['output'];
+  newUdAmount: Scalars['Int']['output'];
+  timestamp: Scalars['DateTime']['output'];
+};
+
+export type UdReevalEdge = {
+  __typename?: 'UDReevalEdge';
+  cursor: Scalars['String']['output'];
+  node: UdReeval;
+};
+
+export enum UdReevalOrderByInput {
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  EventIdAsc = 'event_id_ASC',
+  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
+  EventIdDesc = 'event_id_DESC',
+  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
+  EventIndexAsc = 'event_index_ASC',
+  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
+  EventIndexDesc = 'event_index_DESC',
+  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
+  EventNameAsc = 'event_name_ASC',
+  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
+  EventNameDesc = 'event_name_DESC',
+  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
+  EventPalletAsc = 'event_pallet_ASC',
+  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
+  EventPalletDesc = 'event_pallet_DESC',
+  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
+  EventPhaseAsc = 'event_phase_ASC',
+  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
+  EventPhaseDesc = 'event_phase_DESC',
+  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  MembersCountAsc = 'membersCount_ASC',
+  MembersCountAscNullsFirst = 'membersCount_ASC_NULLS_FIRST',
+  MembersCountDesc = 'membersCount_DESC',
+  MembersCountDescNullsLast = 'membersCount_DESC_NULLS_LAST',
+  MonetaryMassAsc = 'monetaryMass_ASC',
+  MonetaryMassAscNullsFirst = 'monetaryMass_ASC_NULLS_FIRST',
+  MonetaryMassDesc = 'monetaryMass_DESC',
+  MonetaryMassDescNullsLast = 'monetaryMass_DESC_NULLS_LAST',
+  NewUdAmountAsc = 'newUdAmount_ASC',
+  NewUdAmountAscNullsFirst = 'newUdAmount_ASC_NULLS_FIRST',
+  NewUdAmountDesc = 'newUdAmount_DESC',
+  NewUdAmountDescNullsLast = 'newUdAmount_DESC_NULLS_LAST',
+  TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
+  TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
+}
+
+export type UdReevalWhereInput = {
+  AND?: InputMaybe<Array<UdReevalWhereInput>>;
+  OR?: InputMaybe<Array<UdReevalWhereInput>>;
+  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  event?: InputMaybe<EventWhereInput>;
+  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  membersCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  membersCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  membersCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  monetaryMass_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  monetaryMass_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  monetaryMass_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  newUdAmount_eq?: InputMaybe<Scalars['Int']['input']>;
+  newUdAmount_gt?: InputMaybe<Scalars['Int']['input']>;
+  newUdAmount_gte?: InputMaybe<Scalars['Int']['input']>;
+  newUdAmount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  newUdAmount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  newUdAmount_lt?: InputMaybe<Scalars['Int']['input']>;
+  newUdAmount_lte?: InputMaybe<Scalars['Int']['input']>;
+  newUdAmount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  newUdAmount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+};
+
+export type UdReevalsConnection = {
+  __typename?: 'UDReevalsConnection';
+  edges: Array<UdReevalEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type UdHistoryFilterInput = {
+  amount?: InputMaybe<NumberFilter>;
+  blockNumber?: InputMaybe<NumberFilter>;
+};
+
+/** Each Universal Dividend created since the beginning of the blockchain */
+export type UniversalDividend = {
+  __typename?: 'UniversalDividend';
+  amount: Scalars['Int']['output'];
+  blockNumber: Scalars['Int']['output'];
+  event: Event;
+  id: Scalars['String']['output'];
+  membersCount: Scalars['Int']['output'];
+  monetaryMass: Scalars['BigInt']['output'];
+  timestamp: Scalars['DateTime']['output'];
+};
+
+export type UniversalDividendEdge = {
+  __typename?: 'UniversalDividendEdge';
+  cursor: Scalars['String']['output'];
+  node: UniversalDividend;
+};
+
+export enum UniversalDividendOrderByInput {
+  AmountAsc = 'amount_ASC',
+  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
+  AmountDesc = 'amount_DESC',
+  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  EventIdAsc = 'event_id_ASC',
+  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
+  EventIdDesc = 'event_id_DESC',
+  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
+  EventIndexAsc = 'event_index_ASC',
+  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
+  EventIndexDesc = 'event_index_DESC',
+  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
+  EventNameAsc = 'event_name_ASC',
+  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
+  EventNameDesc = 'event_name_DESC',
+  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
+  EventPalletAsc = 'event_pallet_ASC',
+  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
+  EventPalletDesc = 'event_pallet_DESC',
+  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
+  EventPhaseAsc = 'event_phase_ASC',
+  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
+  EventPhaseDesc = 'event_phase_DESC',
+  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  MembersCountAsc = 'membersCount_ASC',
+  MembersCountAscNullsFirst = 'membersCount_ASC_NULLS_FIRST',
+  MembersCountDesc = 'membersCount_DESC',
+  MembersCountDescNullsLast = 'membersCount_DESC_NULLS_LAST',
+  MonetaryMassAsc = 'monetaryMass_ASC',
+  MonetaryMassAscNullsFirst = 'monetaryMass_ASC_NULLS_FIRST',
+  MonetaryMassDesc = 'monetaryMass_DESC',
+  MonetaryMassDescNullsLast = 'monetaryMass_DESC_NULLS_LAST',
+  TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
+  TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
+}
+
+export type UniversalDividendWhereInput = {
+  AND?: InputMaybe<Array<UniversalDividendWhereInput>>;
+  OR?: InputMaybe<Array<UniversalDividendWhereInput>>;
+  amount_eq?: InputMaybe<Scalars['Int']['input']>;
+  amount_gt?: InputMaybe<Scalars['Int']['input']>;
+  amount_gte?: InputMaybe<Scalars['Int']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  amount_lt?: InputMaybe<Scalars['Int']['input']>;
+  amount_lte?: InputMaybe<Scalars['Int']['input']>;
+  amount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  event?: InputMaybe<EventWhereInput>;
+  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  membersCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  membersCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  membersCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  membersCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  monetaryMass_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  monetaryMass_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  monetaryMass_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  monetaryMass_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+};
+
+export type UniversalDividendsConnection = {
+  __typename?: 'UniversalDividendsConnection';
+  edges: Array<UniversalDividendEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
 
 export type LightIdentityFragment = {
-  __typename: 'Identity';
+  __typename?: 'Identity';
   id: string;
   name: string;
-  account: { __typename: 'Account'; id: string };
-  membership?: { __typename: 'Membership'; id: string } | null;
+  isMember: boolean;
+  account: { __typename?: 'Account'; id: string };
+  membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
 };
 
 export type LightAccountFragment = {
   __typename?: 'Account';
   id: string;
-  identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
+  identity?: {
+    __typename?: 'Identity';
+    id: string;
+    name: string;
+    isMember: boolean;
+    membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+  } | null;
 };
 
 export type LightBlockFragment = {
@@ -3220,9 +3634,22 @@ export type CertFragment = {
   id: string;
   expireOn: number;
   createdOn: number;
-  creation: Array<{ __typename?: 'CertCreation'; id: string; blockNumber: number }>;
-  renewal: Array<{ __typename?: 'CertRenewal'; id: string; blockNumber: number }>;
-  removal: Array<{ __typename?: 'CertRemoval'; id: string; blockNumber: number }>;
+  receiver: {
+    __typename?: 'Identity';
+    id: string;
+    name: string;
+    isMember: boolean;
+    account: { __typename?: 'Account'; id: string };
+    membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+  };
+  issuer: {
+    __typename?: 'Identity';
+    id: string;
+    name: string;
+    isMember: boolean;
+    account: { __typename?: 'Account'; id: string };
+    membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+  };
 };
 
 export type CertsConnectionByIssuerQueryVariables = Exact<{
@@ -3246,15 +3673,29 @@ export type CertsConnectionByIssuerQuery = {
         expireOn: number;
         createdOn: number;
         identity: {
-          __typename: 'Identity';
+          __typename?: 'Identity';
           id: string;
           name: string;
-          account: { __typename: 'Account'; id: string };
-          membership?: { __typename: 'Membership'; id: string } | null;
+          isMember: boolean;
+          account: { __typename?: 'Account'; id: string };
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
         };
-        creation: Array<{ __typename?: 'CertCreation'; id: string; blockNumber: number }>;
-        renewal: Array<{ __typename?: 'CertRenewal'; id: string; blockNumber: number }>;
-        removal: Array<{ __typename?: 'CertRemoval'; id: string; blockNumber: number }>;
+        receiver: {
+          __typename?: 'Identity';
+          id: string;
+          name: string;
+          isMember: boolean;
+          account: { __typename?: 'Account'; id: string };
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        };
+        issuer: {
+          __typename?: 'Identity';
+          id: string;
+          name: string;
+          isMember: boolean;
+          account: { __typename?: 'Account'; id: string };
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        };
       };
     }>;
   };
@@ -3281,15 +3722,29 @@ export type CertsConnectionByReceiverQuery = {
         expireOn: number;
         createdOn: number;
         identity: {
-          __typename: 'Identity';
+          __typename?: 'Identity';
           id: string;
           name: string;
-          account: { __typename: 'Account'; id: string };
-          membership?: { __typename: 'Membership'; id: string } | null;
+          isMember: boolean;
+          account: { __typename?: 'Account'; id: string };
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
         };
-        creation: Array<{ __typename?: 'CertCreation'; id: string; blockNumber: number }>;
-        renewal: Array<{ __typename?: 'CertRenewal'; id: string; blockNumber: number }>;
-        removal: Array<{ __typename?: 'CertRemoval'; id: string; blockNumber: number }>;
+        receiver: {
+          __typename?: 'Identity';
+          id: string;
+          name: string;
+          isMember: boolean;
+          account: { __typename?: 'Account'; id: string };
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        };
+        issuer: {
+          __typename?: 'Identity';
+          id: string;
+          name: string;
+          isMember: boolean;
+          account: { __typename?: 'Account'; id: string };
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        };
       };
     }>;
   };
@@ -3304,12 +3759,24 @@ export type TransferFragment = {
   from: {
     __typename?: 'Account';
     id: string;
-    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
+    identity?: {
+      __typename?: 'Identity';
+      id: string;
+      name: string;
+      isMember: boolean;
+      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+    } | null;
   };
   to: {
     __typename?: 'Account';
     id: string;
-    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
+    identity?: {
+      __typename?: 'Identity';
+      id: string;
+      name: string;
+      isMember: boolean;
+      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+    } | null;
   };
 };
 
@@ -3336,12 +3803,24 @@ export type TransfersConnectionByAddressQuery = {
         from: {
           __typename?: 'Account';
           id: string;
-          identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
+          identity?: {
+            __typename?: 'Identity';
+            id: string;
+            name: string;
+            isMember: boolean;
+            membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+          } | null;
         };
         to: {
           __typename?: 'Account';
           id: string;
-          identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
+          identity?: {
+            __typename?: 'Identity';
+            id: string;
+            name: string;
+            isMember: boolean;
+            membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+          } | null;
         };
       };
     }>;
@@ -3360,7 +3839,13 @@ export type WotSearchByTextQuery = {
   accounts: Array<{
     __typename?: 'Account';
     id: string;
-    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
+    identity?: {
+      __typename?: 'Identity';
+      id: string;
+      name: string;
+      isMember: boolean;
+      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+    } | null;
   }>;
 };
 
@@ -3376,7 +3861,13 @@ export type WotSearchByAddressQuery = {
   accounts: Array<{
     __typename?: 'Account';
     id: string;
-    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
+    identity?: {
+      __typename?: 'Identity';
+      id: string;
+      name: string;
+      isMember: boolean;
+      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+    } | null;
   }>;
 };
 
@@ -3392,25 +3883,16 @@ export type WotSearchLastQuery = {
   accounts: Array<{
     __typename?: 'Account';
     id: string;
-    identity?: { __typename?: 'Identity'; id: string; name: string; membership?: { __typename?: 'Membership'; id: string } | null } | null;
+    identity?: {
+      __typename?: 'Identity';
+      id: string;
+      name: string;
+      isMember: boolean;
+      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+    } | null;
   }>;
 };
 
-export const LightIdentityFragmentDoc = gql`
-  fragment LightIdentity on Identity {
-    __typename
-    id
-    name
-    account {
-      __typename
-      id
-    }
-    membership {
-      __typename
-      id
-    }
-  }
-`;
 export const LightBlockFragmentDoc = gql`
   fragment LightBlock on Block {
     id
@@ -3423,25 +3905,34 @@ export const LightBlockFragmentDoc = gql`
     __typename
   }
 `;
+export const LightIdentityFragmentDoc = gql`
+  fragment LightIdentity on Identity {
+    id
+    name
+    isMember
+    account {
+      id
+    }
+    membershipHistory {
+      __typename
+      id
+    }
+  }
+`;
 export const CertFragmentDoc = gql`
   fragment Cert on Cert {
     __typename
     id
     expireOn
     createdOn
-    creation {
-      id
-      blockNumber
+    receiver {
+      ...LightIdentity
     }
-    renewal {
-      id
-      blockNumber
-    }
-    removal {
-      id
-      blockNumber
+    issuer {
+      ...LightIdentity
     }
   }
+  ${LightIdentityFragmentDoc}
 `;
 export const LightAccountFragmentDoc = gql`
   fragment LightAccount on Account {
@@ -3449,7 +3940,8 @@ export const LightAccountFragmentDoc = gql`
     identity {
       id
       name
-      membership {
+      isMember
+      membershipHistory {
         id
       }
     }
@@ -3649,7 +4141,7 @@ export const WotSearchLastDocument = gql`
       limit: $limit
       offset: $offset
       orderBy: $orderBy
-      where: { identity: { id_isNull: false }, AND: { identity: { membership_isNull: $pending } } }
+      where: { identity: { id_isNull: false }, AND: { identity: { membershipHistory_some: { id_isNull: $pending } } } }
     ) {
       ...LightAccount
     }

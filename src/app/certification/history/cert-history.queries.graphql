@@ -5,17 +5,11 @@ fragment Cert on Cert {
   id
   expireOn
   createdOn
-  creation {
-    id
-    blockNumber
+  receiver {
+    ...LightIdentity
   }
-  renewal {
-    id
-    blockNumber
-  }
-  removal {
-    id
-    blockNumber
+  issuer {
+    ...LightIdentity
   }
 }
 
