@@ -52,6 +52,12 @@
               <ion-badge color="tertiary">[TBD] {{ currency.displayName }} / day</ion-badge>
             </ion-item>
 
+            <ion-item>
+              <ion-toggle justify="end">
+                <ion-label color="medium" translate>COMMON.BTN_RELATIVE_UNIT</ion-label>
+              </ion-toggle>
+            </ion-item>
+
             <ion-item-divider translate>CURRENCY.VIEW.MONEY_RULES_DIVIDER</ion-item-divider>
 
             <ion-item>
@@ -73,6 +79,12 @@
               <ion-icon slot="start" name="calculator"></ion-icon>
               <ion-label color="dark" translate>CURRENCY.VIEW.UD_RULE</ion-label>
               <ion-badge color="light">...</ion-badge>
+            </ion-item>
+
+            <ion-item>
+              <ion-toggle justify="end">
+                <ion-label color="medium" translate>CURRENCY.VIEW.DISPLAY_ALL_RULES</ion-label>
+              </ion-toggle>
             </ion-item>
           </ion-list>
         </ion-col>
