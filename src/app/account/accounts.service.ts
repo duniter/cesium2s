@@ -450,7 +450,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
       return this.accounts$.pipe(map((accounts) => accounts?.find((a) => a.address === address)));
     }
 
-    return this.indexer.wotSearch({ address }, { limit: 1 }).pipe(
+    return this.indexer.wotSearch({ address }, { first: 1 }).pipe(
       map(({ data }) => firstArrayValue(data)),
       mergeMap(async (account) => this.loadData(account, { ...opts, withMembership: false }))
     );
@@ -586,7 +586,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
       if (opts.withMembership === true && (isNil(account.meta.isMember) || opts.reload === true)) {
         const indexedAccount = await firstValueFrom(
           this.indexer
-            .wotSearch({ address: account.address }, { limit: 1, fetchPolicy: 'network-only' })
+            .wotSearch({ address: account.address }, { first: 1, fetchPolicy: 'network-only' })
             .pipe(map(({ data }) => firstArrayValue(data)))
         );
         account.meta = {

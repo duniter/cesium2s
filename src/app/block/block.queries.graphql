@@ -1,24 +1,30 @@
-
-fragment LightBlock on Block {
-  id
-  height
-  hash
-  timestamp
-  callsCount
-  eventsCount
-  extrinsicsCount
-  __typename
+fragment LightBlock on BlockConnection {
+  edges {
+    node {
+      id
+      height
+      hash
+      timestamp
+      callsCount
+      eventsCount
+      extrinsicsCount
+      __typename
+    }
+  }
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
 }
 
 query BlockById($id: String!) {
-  blockById(id: $id) {
+  blockConnection(where: { id: { _eq: $id } }) {
     ...LightBlock
   }
 }
 
-
-query Blocks($where: BlockWhereInput, $limit: Int!, $offset: Int!, $orderBy: [BlockOrderByInput!]) {
-  blocks(limit: $limit, offset: $offset, orderBy: $orderBy, where: $where) {
+query Blocks($where: BlockBoolExp, $first: Int!, $after: String, $orderBy: [BlockOrderBy!]) {
+  blockConnection(first: $first, after: $after, orderBy: $orderBy, where: $where) {
     ...LightBlock
   }
 }

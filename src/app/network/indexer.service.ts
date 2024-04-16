@@ -14,15 +14,14 @@ import { DocumentNode } from 'graphql/index';
 import { StorageService } from '@app/shared/services/storage/storage.service';
 import { Account } from '@app/account/account.model';
 import {
-  AccountOrderByInput,
-  BlockOrderByInput,
   CertFragment,
-  CertOrderByInput,
   CertsConnectionByIssuerQuery,
   CertsConnectionByReceiverQuery,
   IndexerGraphqlService,
+  OrderBy,
   TransferFragment,
-  TransferOrderByInput,
+  BlockOrderBy,
+  BlockEdge,
 } from './indexer-types.generated';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -64,12 +63,12 @@ export class IndexerService extends GraphqlService<IndexerState> {
     });
   }
 
-  wotSearch(filter: WotSearchFilter, options: { offset?: number; limit?: number; fetchPolicy?: FetchPolicy }): Observable<LoadResult<Account>> {
+  wotSearch(filter: WotSearchFilter, options: { after?: string; first?: number; fetchPolicy?: FetchPolicy }): Observable<LoadResult<Account>> {
     console.info(`${this._logPrefix}Searching wot by filter...`, filter);
 
     options = {
-      offset: 0,
-      limit: 10,
+      after: null,
+      first: 10,
       ...options,
     };
 
@@ -79,45 +78,45 @@ export class IndexerService extends GraphqlService<IndexerState> {
         .wotSearchByAddress(
           {
             address: filter.address,
-            offset: options.offset,
-            limit: options.limit + 1, // Add 1 item, to check if can fetch more
-            orderBy: [AccountOrderByInput.IdAsc],
+            after: options.after,
+            first: options.first,
+            orderBy: { identity: { index: OrderBy.Asc } },
           },
           {
             fetchPolicy: options.fetchPolicy,
           }
         )
-        .pipe(map(({ data }) => AccountConverter.toAccounts(data?.accounts)));
+        .pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
     } else if (isNotNilOrBlank(filter.searchText)) {
       data$ = this.indexerGraphqlService
         .wotSearchByText({
-          searchText: filter.searchText,
-          offset: options.offset,
-          limit: options.limit + 1, // Add 1 item, to check if can fetch more
-          orderBy: [AccountOrderByInput.IdentityNameAsc],
+          searchText: `%${filter.searchText}%`,
+          after: options.after,
+          first: options.first,
+          orderBy: { identity: { index: OrderBy.Asc } },
         })
-        .pipe(map(({ data }) => AccountConverter.toAccounts(data?.accounts)));
+        .pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
     } else {
       data$ = this.indexerGraphqlService
         .wotSearchLastWatch({
-          offset: options.offset,
-          limit: options.limit + 1, // Add 1 item, to check if can fetch more
-          orderBy: [AccountOrderByInput.IdentityIndexDesc],
+          after: options.after,
+          first: options.first,
+          orderBy: { identity: { index: OrderBy.Asc } },
           pending: toBoolean(filter.pending, false),
         })
-        .valueChanges.pipe(map(({ data }) => AccountConverter.toAccounts(data?.accounts)));
+        .valueChanges.pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
     }
 
     return data$.pipe(
       map((items) => {
         const result: LoadResult<Account> = { data: items };
-        if (items.length > options.limit) {
-          items = items.slice(0, options.limit);
-          const nextOffset = options.offset + options.limit;
+        if (items.length > options.first) {
+          items = items.slice(0, options.first);
+          const nextCursor = options.after + options.first;
           result.data = items;
-          result.fetchMore = (limit) => {
-            console.debug(`${this._logPrefix}Fetching more accounts - offset: ${nextOffset}`);
-            return firstValueFrom(this.wotSearch(filter, { ...options, offset: nextOffset, limit: toNumber(limit, options.limit) }));
+          result.fetchMore = (first) => {
+            console.debug(`${this._logPrefix}Fetching more accounts - offset: ${nextCursor}`);
+            return firstValueFrom(this.wotSearch(filter, { ...options, after: nextCursor, first: toNumber(first, options.first) }));
           };
         }
         return result;
@@ -127,11 +126,11 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
   transferSearch(
     filter: TransferSearchFilter,
-    options: { limit?: number; after?: string; fetchPolicy?: FetchPolicy }
+    options: { first?: number; after?: string; fetchPolicy?: FetchPolicy }
   ): Observable<LoadResult<Transfer>> {
     console.info(`${this._logPrefix}Searching transfers...`, filter && JSON.stringify(filter));
     options = {
-      limit: 10,
+      first: 10,
       after: null,
       ...options,
     };
@@ -141,22 +140,22 @@ export class IndexerService extends GraphqlService<IndexerState> {
         .transfersConnectionByAddress(
           {
             address: filter.address,
-            limit: options.limit,
+            first: options.first,
             after: options.after,
-            orderBy: [TransferOrderByInput.TimestampDescNullsLast],
+            orderBy: { timestamp: OrderBy.DescNullsLast },
           },
           {
             fetchPolicy: options?.fetchPolicy,
           }
         )
         .pipe(
-          map(({ data: { transfersConnection } }) => {
-            const inputs = transfersConnection.edges?.map((edge: { node: TransferFragment }) => edge.node);
+          map(({ data: { transferConnection } }) => {
+            const inputs = transferConnection.edges?.map((edge: { node: TransferFragment }) => edge.node);
             const data = TransferConverter.toTransfers(filter.address, inputs, true);
             const result: LoadResult<Transfer> = { data };
-            if (transfersConnection.pageInfo.hasNextPage) {
-              const after = transfersConnection.pageInfo.endCursor;
-              result.fetchMore = (limit) => firstValueFrom(this.transferSearch(filter, { ...options, after, limit: toNumber(limit, options.limit) }));
+            if (transferConnection.pageInfo.hasNextPage) {
+              const after = transferConnection.pageInfo.endCursor;
+              result.fetchMore = (first) => firstValueFrom(this.transferSearch(filter, { ...options, after, first: toNumber(first, options.first) }));
             }
             return result;
           })
@@ -166,11 +165,11 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
   certsSearch(
     filter: CertificationSearchFilter,
-    options?: { limit?: number; after?: string; fetchPolicy?: FetchPolicy }
+    options?: { first?: number; after?: string; fetchPolicy?: FetchPolicy }
   ): Observable<LoadResult<Certification>> {
     console.info(`${this._logPrefix}Searching certifications...`, filter && JSON.stringify(filter));
     options = {
-      limit: 10,
+      first: 10,
       after: null,
       ...options,
     };
@@ -178,35 +177,35 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
     const variables = {
       address: filter.issuer || filter.receiver,
-      limit: options.limit,
+      first: options.first,
       after: options.after,
-      orderBy: [CertOrderByInput.CreatedOnDesc, CertOrderByInput.ExpireOnDesc],
+      orderBy: { createdOn: OrderBy.DescNullsLast },
     };
     const fetchOptions = { fetchPolicy: options?.fetchPolicy };
-    const toEntities = (certsConnection: CertsConnectionByIssuerQuery['certsConnection'] | CertsConnectionByReceiverQuery['certsConnection']) => {
+    const toEntities = (certsConnection: CertsConnectionByIssuerQuery['certConnection'] | CertsConnectionByReceiverQuery['certConnection']) => {
       const inputs = certsConnection.edges?.map((edge) => edge.node as CertFragment);
       const data = CertificationConverter.toCertifications(inputs, true);
-      const result: LoadResult<Certification> = { data, total: certsConnection.totalCount };
+      const result: LoadResult<Certification> = { data, total: certsConnection.edges.length }; //FIXME(poka): totalCount is not length of edges
       if (certsConnection.pageInfo.hasNextPage) {
         const after = certsConnection.pageInfo.endCursor;
-        result.fetchMore = (limit) => firstValueFrom(this.certsSearch(filter, { ...options, after, limit: toNumber(limit, options.limit) }));
+        result.fetchMore = (first) => firstValueFrom(this.certsSearch(filter, { ...options, after, first: toNumber(first, options.first) }));
       }
       return result;
     };
     if (isNotNilOrBlank(filter.issuer)) {
-      return this.indexerGraphqlService.certsConnectionByIssuer(variables, fetchOptions).pipe(map(({ data }) => toEntities(data.certsConnection)));
+      return this.indexerGraphqlService.certsConnectionByIssuer(variables, fetchOptions).pipe(map(({ data }) => toEntities(data.certConnection)));
     } else {
-      return this.indexerGraphqlService.certsConnectionByReceiver(variables, fetchOptions).pipe(map(({ data }) => toEntities(data.certsConnection)));
+      return this.indexerGraphqlService.certsConnectionByReceiver(variables, fetchOptions).pipe(map(({ data }) => toEntities(data.certConnection)));
     }
   }
 
-  blockSearch(filter: BlockSearchFilter, options?: { limit: number; offset: number; orderBy?: BlockOrderByInput[] }): Observable<Block[]> {
+  blockSearch(filter: BlockSearchFilter, options?: { first: number; after?: string; orderBy?: BlockOrderBy }): Observable<Block[]> {
     console.info(`${this._logPrefix}Searching block...`, filter);
 
     options = {
-      limit: 10,
-      offset: 0,
-      orderBy: [BlockOrderByInput.HeightDesc],
+      first: 10,
+      after: null,
+      orderBy: { height: OrderBy.Desc },
       ...options,
     };
 
@@ -218,9 +217,11 @@ export class IndexerService extends GraphqlService<IndexerState> {
       return this.indexerGraphqlService
         .blocks({
           ...options,
-          where: { height_eq: filter.height },
+          where: { height: { _eq: filter.height } },
+          first: 0,
+          after: null,
         })
-        .pipe(map(({ data: { blocks } }) => BlockConverter.toBlocks(blocks, true)));
+        .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlocks(blockConnection.edges as BlockEdge[], true)));
     }
 
     return of(<Block[]>[]); // TODO
@@ -228,11 +229,13 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
   blockById(id: string): Observable<Block> {
     console.info(`${this._logPrefix}Loading block #${id}`);
-    return this.indexerGraphqlService.blockById({ id }).pipe(map(({ data: { blockById } }) => BlockConverter.toBlock(blockById)));
+    return this.indexerGraphqlService
+      .blockById({ id })
+      .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlock(blockConnection.edges[0] as BlockEdge)));
   }
 
   blockByHeight(height: number): Observable<Block> {
-    return this.blockSearch({ height }, { limit: 1, offset: 0 }).pipe(map(firstArrayValue));
+    return this.blockSearch({ height }, { first: 1, after: null }).pipe(map(firstArrayValue));
   }
 
   protected async ngOnStart(): Promise<IndexerState> {

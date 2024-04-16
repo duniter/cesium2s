@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { Account } from '@app/account/account.model';
+import { Account, parseAddressSquid } from '@app/account/account.model';
 import { Moment } from 'moment/moment';
 import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
 import { TransferFragment } from '@app/network/indexer-types.generated';
@@ -47,11 +47,15 @@ export class TransferConverter {
     let from: Account = null;
     let to: Account = null;
     let amount: number;
+
+    // We need to convert base64 json from squid to ss58 address
+    const fromAddress = parseAddressSquid(item.from?.id).address;
+    const toAddress = parseAddressSquid(item.to?.id).address;
     // Account is the issuer
-    if (item.from?.id === accountAddress) {
+    if (fromAddress === accountAddress) {
       to = AccountConverter.toAccount(item.to);
       amount = -1 * item.amount;
-    } else if (item.to?.id === accountAddress) {
+    } else if (toAddress === accountAddress) {
       from = AccountConverter.toAccount(item.from);
       amount = item.amount;
     }

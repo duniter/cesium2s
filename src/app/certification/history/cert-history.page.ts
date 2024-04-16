@@ -55,7 +55,7 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
   @RxStateProperty() canFetchMore: boolean;
 
   @Input() @RxStateProperty() filter: CertificationSearchFilter;
-  @Input() @RxStateProperty() limit: number;
+  @Input() @RxStateProperty() first: number;
 
   @Output() refresh = new EventEmitter<RefresherCustomEvent>();
 
@@ -132,12 +132,12 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
                 account = await this.accountService.getByName(address);
                 return account;
               } catch (err) {
-                const { data } = await firstValueFrom(this.indexer.wotSearch({ address }, { limit: 1 }));
+                const { data } = await firstValueFrom(this.indexer.wotSearch({ address }, { first: 1 }));
                 if (data?.length) return data[0];
                 throw err;
               }
             } else {
-              return (await firstValueFrom(this.indexer.wotSearch({ address }, { limit: 1 })))?.[0];
+              return (await firstValueFrom(this.indexer.wotSearch({ address }, { first: 1 })))?.[0];
             }
           })
         )
@@ -169,16 +169,16 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
       merge(
         this.refresh.pipe(
           filter(() => !this.loading),
-          map(() => ({ filter: this.filter, limit: this.limit }))
+          map(() => ({ filter: this.filter, first: this.first }))
         ),
-        this._state.select(['filter', 'limit', 'account'], (res) => res, {
+        this._state.select(['filter', 'first', 'account'], (res) => res, {
           filter: CertificationSearchFilterUtils.isEquals,
-          limit: (l1, l2) => l1 === l2,
+          first: (l1, l2) => l1 === l2,
           account: AccountUtils.isEquals,
         })
       ).pipe(
         filter(({ filter }) => !CertificationSearchFilterUtils.isEmpty(filter)),
-        mergeMap(({ filter, limit }) => this.search(filter, { limit })),
+        mergeMap(({ filter, first }) => this.search(filter, { first })),
         map(({ total, data, fetchMore }) => {
           this.fetchMoreFn = fetchMore;
           this.canFetchMore = !!fetchMore;
@@ -193,10 +193,10 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
     console.info(this._logPrefix + 'Initializing...');
     super.ngOnInit();
 
-    this.limit = toNumber(this.limit, 15);
+    this.first = toNumber(this.first, 15);
   }
 
-  search(searchFilter?: CertificationSearchFilter, options?: { limit: number }): Observable<LoadResult<Certification>> {
+  search(searchFilter?: CertificationSearchFilter, options?: { first: number }): Observable<LoadResult<Certification>> {
     try {
       this.markAsLoading();
 
@@ -246,8 +246,8 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
       let { data, fetchMore } = await this.fetchMoreFn();
 
       // Fetch more again, since we fetch using a timestamp
-      while (data.length < this.limit && fetchMore) {
-        const res = await fetchMore(this.limit);
+      while (data.length < this.first && fetchMore) {
+        const res = await fetchMore(this.first);
         if (res.data?.length) data = [...data, ...res.data];
         fetchMore = res.fetchMore;
       }

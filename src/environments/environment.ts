@@ -59,7 +59,7 @@ export const environment = <Environment>{
   ],
 
   defaultIndexers: [
-    'https://subsquid.gdev.coinduf.eu/graphql',
+    'https://gdev-squid.axiom-team.fr/v1beta1/relay',
     //'https://gdev-squid.axiom-team.fr/graphql'
   ],
 };

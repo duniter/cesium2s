@@ -12,13 +12,8 @@ fragment Transfer on Transfer {
   }
 }
 
-query TransfersConnectionByAddress($address: String!, $limit: Int!, $orderBy: [TransferOrderByInput!]!, $after: String) {
-  transfersConnection(
-    first: $limit,
-    after: $after,
-    orderBy: $orderBy,
-    where: {from: {id_eq: $address}, OR: {to: {id_eq: $address}}}
-  ) {
+query TransfersConnectionByAddress($address: String!, $first: Int!, $orderBy: [TransferOrderBy!]!, $after: String) {
+  transferConnection(first: $first, after: $after, orderBy: $orderBy, where: { _or: [{ fromId: { _eq: $address } }, { toId: { _eq: $address } }] }) {
     pageInfo {
       endCursor
       hasNextPage

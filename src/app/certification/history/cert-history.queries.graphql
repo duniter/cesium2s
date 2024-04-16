@@ -1,5 +1,3 @@
-
-
 fragment Cert on Cert {
   __typename
   id
@@ -13,14 +11,8 @@ fragment Cert on Cert {
   }
 }
 
-query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
-  certsConnection(
-    first: $limit,
-    after: $after,
-    orderBy: $orderBy,
-    where: {issuer: {account: {id_eq: $address}}}
-  ) {
-    totalCount
+query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
+  certConnection(first: $first, after: $after, orderBy: $orderBy, where: { issuer: { account: { id: { _eq: $address } } } }) {
     pageInfo {
       endCursor
       hasNextPage
@@ -36,15 +28,8 @@ query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOr
   }
 }
 
-
-query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
-  certsConnection(
-    first: $limit,
-    after: $after,
-    orderBy: $orderBy,
-    where: {receiver: {account: {id_eq: $address}}}
-  ) {
-    totalCount
+query CertsConnectionByReceiver($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
+  certConnection(first: $first, after: $after, orderBy: $orderBy, where: { receiver: { account: { id: { _eq: $address } } } }) {
     pageInfo {
       endCursor
       hasNextPage

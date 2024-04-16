@@ -2,7 +2,7 @@ schema: src/app/network/indexer-schema.graphql
 extensions:
   endpoints:
     Gdev GraphQL Endpoint:
-      url: https://subsquid.gdev.coinduf.eu/graphql
+      url: https://gdev-squid.axiom-team.fr/v1beta1/relay
       headers:
         user-agent: JS GraphQL
       introspect: false
