@@ -4655,40 +4655,42 @@ export type CertsConnectionByIssuerQueryVariables = Exact<{
 
 export type CertsConnectionByIssuerQuery = {
   __typename?: 'query_root';
-  certConnection: {
-    __typename?: 'CertConnection';
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+  identityConnection: {
+    __typename?: 'IdentityConnection';
     edges: Array<{
-      __typename?: 'CertEdge';
+      __typename?: 'IdentityEdge';
       node: {
-        __typename: 'Cert';
-        id: string;
-        expireOn: number;
-        createdOn: number;
-        identity?: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-        receiver?: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-        issuer?: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
+        __typename?: 'Identity';
+        certIssuedAggregate: { __typename?: 'CertAggregate'; aggregate?: { __typename?: 'CertAggregateFields'; count: number } | null };
+        certIssued_connection: {
+          __typename?: 'CertConnection';
+          edges: Array<{
+            __typename?: 'CertEdge';
+            node: {
+              __typename: 'Cert';
+              id: string;
+              expireOn: number;
+              createdOn: number;
+              receiver?: {
+                __typename?: 'Identity';
+                id: string;
+                name: string;
+                isMember: boolean;
+                accountId?: string | null;
+                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+              } | null;
+              issuer?: {
+                __typename?: 'Identity';
+                id: string;
+                name: string;
+                isMember: boolean;
+                accountId?: string | null;
+                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+              } | null;
+            };
+          }>;
+          pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+        };
       };
     }>;
   };
@@ -4703,40 +4705,42 @@ export type CertsConnectionByReceiverQueryVariables = Exact<{
 
 export type CertsConnectionByReceiverQuery = {
   __typename?: 'query_root';
-  certConnection: {
-    __typename?: 'CertConnection';
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+  identityConnection: {
+    __typename?: 'IdentityConnection';
     edges: Array<{
-      __typename?: 'CertEdge';
+      __typename?: 'IdentityEdge';
       node: {
-        __typename: 'Cert';
-        id: string;
-        expireOn: number;
-        createdOn: number;
-        identity?: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-        receiver?: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-        issuer?: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
+        __typename?: 'Identity';
+        certReceivedAggregate: { __typename?: 'CertAggregate'; aggregate?: { __typename?: 'CertAggregateFields'; count: number } | null };
+        certReceived_connection: {
+          __typename?: 'CertConnection';
+          edges: Array<{
+            __typename?: 'CertEdge';
+            node: {
+              __typename: 'Cert';
+              id: string;
+              expireOn: number;
+              createdOn: number;
+              issuer?: {
+                __typename?: 'Identity';
+                id: string;
+                name: string;
+                isMember: boolean;
+                accountId?: string | null;
+                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+              } | null;
+              receiver?: {
+                __typename?: 'Identity';
+                id: string;
+                name: string;
+                isMember: boolean;
+                accountId?: string | null;
+                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+              } | null;
+            };
+          }>;
+          pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+        };
       };
     }>;
   };
@@ -5025,16 +5029,27 @@ export class BlocksGQL extends Apollo.Query<BlocksQuery, BlocksQueryVariables> {
 }
 export const CertsConnectionByIssuerDocument = gql`
   query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
-    certConnection(first: $first, after: $after, orderBy: $orderBy, where: { issuer: { account: { id: { _eq: $address } } } }) {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
+    identityConnection(where: { accountId: { _eq: $address } }) {
       edges {
         node {
-          ...Cert
-          identity: receiver {
-            ...LightIdentity
+          certIssuedAggregate {
+            aggregate {
+              count
+            }
+          }
+          certIssued_connection(first: $first, after: $after, orderBy: $orderBy) {
+            edges {
+              node {
+                ...Cert
+                receiver {
+                  ...LightIdentity
+                }
+              }
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
           }
         }
       }
@@ -5056,16 +5071,27 @@ export class CertsConnectionByIssuerGQL extends Apollo.Query<CertsConnectionByIs
 }
 export const CertsConnectionByReceiverDocument = gql`
   query CertsConnectionByReceiver($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
-    certConnection(first: $first, after: $after, orderBy: $orderBy, where: { receiver: { account: { id: { _eq: $address } } } }) {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
+    identityConnection(where: { accountId: { _eq: $address } }) {
       edges {
         node {
-          ...Cert
-          identity: issuer {
-            ...LightIdentity
+          certReceivedAggregate {
+            aggregate {
+              count
+            }
+          }
+          certReceived_connection(first: $first, after: $after, orderBy: $orderBy) {
+            edges {
+              node {
+                ...Cert
+                issuer {
+                  ...LightIdentity
+                }
+              }
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
           }
         }
       }

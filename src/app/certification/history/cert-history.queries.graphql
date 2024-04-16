@@ -12,16 +12,27 @@ fragment Cert on Cert {
 }
 
 query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
-  certConnection(first: $first, after: $after, orderBy: $orderBy, where: { issuer: { account: { id: { _eq: $address } } } }) {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
+  identityConnection(where: { accountId: { _eq: $address } }) {
     edges {
       node {
-        ...Cert
-        identity: receiver {
-          ...LightIdentity
+        certIssuedAggregate {
+          aggregate {
+            count
+          }
+        }
+        certIssued_connection(first: $first, after: $after, orderBy: $orderBy) {
+          edges {
+            node {
+              ...Cert
+              receiver {
+                ...LightIdentity
+              }
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
         }
       }
     }
@@ -29,16 +40,27 @@ query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOr
 }
 
 query CertsConnectionByReceiver($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
-  certConnection(first: $first, after: $after, orderBy: $orderBy, where: { receiver: { account: { id: { _eq: $address } } } }) {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
+  identityConnection(where: { accountId: { _eq: $address } }) {
     edges {
       node {
-        ...Cert
-        identity: issuer {
-          ...LightIdentity
+        certReceivedAggregate {
+          aggregate {
+            count
+          }
+        }
+        certReceived_connection(first: $first, after: $after, orderBy: $orderBy) {
+          edges {
+            node {
+              ...Cert
+              issuer {
+                ...LightIdentity
+              }
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
         }
       }
     }

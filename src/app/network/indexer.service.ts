@@ -45,6 +45,14 @@ export interface IndexerState extends GraphqlServiceState {
   currency: Currency;
 }
 
+function isIssuerConnection(connection: any): connection is CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node'] {
+  return (connection as CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node']).certIssuedAggregate !== undefined;
+}
+
+function isReceiverConnection(connection: any): connection is CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node'] {
+  return (connection as CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node']).certReceivedAggregate !== undefined;
+}
+
 @Injectable({ providedIn: 'root' })
 export class IndexerService extends GraphqlService<IndexerState> {
   @RxStateSelect() currency$: Observable<Currency>;
@@ -182,20 +190,41 @@ export class IndexerService extends GraphqlService<IndexerState> {
       orderBy: { createdOn: OrderBy.DescNullsLast },
     };
     const fetchOptions = { fetchPolicy: options?.fetchPolicy };
-    const toEntities = (certsConnection: CertsConnectionByIssuerQuery['certConnection'] | CertsConnectionByReceiverQuery['certConnection']) => {
-      const inputs = certsConnection.edges?.map((edge) => edge.node as CertFragment);
-      const data = CertificationConverter.toCertifications(inputs, true);
-      const result: LoadResult<Certification> = { data, total: certsConnection.edges.length }; //FIXME(poka): totalCount is not length of edges
-      if (certsConnection.pageInfo.hasNextPage) {
-        const after = certsConnection.pageInfo.endCursor;
+    const toEntities = (
+      certsConnection:
+        | CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node']
+        | CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node']
+    ) => {
+      let certsConnectionData: any;
+      let totalCount: number;
+
+      if (isIssuerConnection(certsConnection)) {
+        certsConnectionData = certsConnection.certIssued_connection;
+        totalCount = certsConnection.certIssuedAggregate.aggregate.count;
+      } else if (isReceiverConnection(certsConnection)) {
+        certsConnectionData = certsConnection.certReceived_connection;
+        totalCount = certsConnection.certReceivedAggregate.aggregate.count;
+      } else {
+        throw new Error('Unrecognized connection type');
+      }
+
+      const inputs = certsConnectionData.edges?.map((edge) => edge.node as CertFragment);
+      const data = CertificationConverter.toCertifications(inputs, isNotNilOrBlank(filter.receiver), true);
+      const result: LoadResult<Certification> = { data, total: totalCount };
+      if (certsConnectionData.pageInfo.hasNextPage) {
+        const after = certsConnectionData.pageInfo.endCursor;
         result.fetchMore = (first) => firstValueFrom(this.certsSearch(filter, { ...options, after, first: toNumber(first, options.first) }));
       }
       return result;
     };
     if (isNotNilOrBlank(filter.issuer)) {
-      return this.indexerGraphqlService.certsConnectionByIssuer(variables, fetchOptions).pipe(map(({ data }) => toEntities(data.certConnection)));
+      return this.indexerGraphqlService
+        .certsConnectionByIssuer(variables, fetchOptions)
+        .pipe(map(({ data }) => toEntities(data.identityConnection.edges[0].node)));
     } else {
-      return this.indexerGraphqlService.certsConnectionByReceiver(variables, fetchOptions).pipe(map(({ data }) => toEntities(data.certConnection)));
+      return this.indexerGraphqlService
+        .certsConnectionByReceiver(variables, fetchOptions)
+        .pipe(map(({ data }) => toEntities(data.identityConnection.edges[0].node)));
     }
   }
 

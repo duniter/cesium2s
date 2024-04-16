@@ -1,6 +1,6 @@
 import { equals, isNilOrBlank } from '@app/shared/functions';
 import { Account } from '@app/account/account.model';
-import { CertFragment, LightIdentityFragment } from '@app/network/indexer-types.generated';
+import { CertFragment } from '@app/network/indexer-types.generated';
 import { IdentityConverter } from '@app/account/account.converter';
 
 export interface Certification {
@@ -16,16 +16,17 @@ export interface Certification {
 }
 
 export class CertificationConverter {
-  static toCertifications(inputs: (CertFragment & { identity?: LightIdentityFragment })[], debug?: boolean) {
-    const results = (inputs || []).map(CertificationConverter.toCertification);
+  static toCertifications(inputs: CertFragment[], isIssuer: boolean, debug?: boolean) {
+    const results = (inputs || []).map((input) => CertificationConverter.toCertification(input, isIssuer));
     if (debug) console.debug('Results:', results);
     return results;
   }
 
-  static toCertification(input: CertFragment & { identity?: LightIdentityFragment }) {
+  static toCertification(input: CertFragment, isIssuer: boolean) {
+    const address = isIssuer ? input.issuer : input.receiver;
     return <Certification>{
       id: input.id,
-      account: IdentityConverter.toAccount(input.identity),
+      account: IdentityConverter.toAccount(address),
       createdOn: input.createdOn,
       expireOn: input.expireOn,
     };
