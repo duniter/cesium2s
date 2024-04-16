@@ -23,7 +23,7 @@ import {
   BlockOrderBy,
   BlockEdge,
 } from './indexer-types.generated';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Transfer, TransferConverter, TransferSearchFilter } from '@app/transfer/transfer.model';
 import { WotSearchFilter } from '@app/wot/wot.model';
@@ -247,13 +247,13 @@ export class IndexerService extends GraphqlService<IndexerState> {
         .blocks({
           ...options,
           where: { height: { _eq: filter.height } },
-          first: 0,
+          first: 1,
           after: null,
         })
         .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlocks(blockConnection.edges as BlockEdge[], true)));
     }
 
-    return of(<Block[]>[]); // TODO
+    throw new Error('Invalid block filter');
   }
 
   blockById(id: string): Observable<Block> {
