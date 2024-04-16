@@ -45,14 +45,6 @@ export interface IndexerState extends GraphqlServiceState {
   currency: Currency;
 }
 
-function isIssuerConnection(connection: any): connection is CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node'] {
-  return (connection as CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node']).certIssuedAggregate !== undefined;
-}
-
-function isReceiverConnection(connection: any): connection is CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node'] {
-  return (connection as CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node']).certReceivedAggregate !== undefined;
-}
-
 @Injectable({ providedIn: 'root' })
 export class IndexerService extends GraphqlService<IndexerState> {
   @RxStateSelect() currency$: Observable<Currency>;
@@ -198,10 +190,10 @@ export class IndexerService extends GraphqlService<IndexerState> {
       let certsConnectionData: any;
       let totalCount: number;
 
-      if (isIssuerConnection(certsConnection)) {
+      if (CertificationSearchFilterUtils.isIssuerConnection(certsConnection)) {
         certsConnectionData = certsConnection.certIssued_connection;
         totalCount = certsConnection.certIssuedAggregate.aggregate.count;
-      } else if (isReceiverConnection(certsConnection)) {
+      } else if (CertificationSearchFilterUtils.isReceiverConnection(certsConnection)) {
         certsConnectionData = certsConnection.certReceived_connection;
         totalCount = certsConnection.certReceivedAggregate.aggregate.count;
       } else {

@@ -1,6 +1,6 @@
 import { equals, isNilOrBlank } from '@app/shared/functions';
 import { Account } from '@app/account/account.model';
-import { CertFragment } from '@app/network/indexer-types.generated';
+import { CertFragment, CertsConnectionByIssuerQuery, CertsConnectionByReceiverQuery } from '@app/network/indexer-types.generated';
 import { IdentityConverter } from '@app/account/account.converter';
 
 export interface Certification {
@@ -45,5 +45,13 @@ export class CertificationSearchFilterUtils {
 
   static isEmpty(filter: CertificationSearchFilter) {
     return !filter || (isNilOrBlank(filter.issuer) && isNilOrBlank(filter.receiver));
+  }
+
+  static isIssuerConnection(connection: any): connection is CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node'] {
+    return (connection as CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node']).certIssuedAggregate !== undefined;
+  }
+
+  static isReceiverConnection(connection: any): connection is CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node'] {
+    return (connection as CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node']).certReceivedAggregate !== undefined;
   }
 }
