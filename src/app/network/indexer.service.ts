@@ -41,6 +41,8 @@ import {
 } from '@app/certification/history/cert-history.model';
 import { AccountConverter } from '@app/account/account.converter';
 
+export const PAGE_SIZE: number = 30; // TODO(poka): Move to GraphqlServiceState?
+
 export interface IndexerState extends GraphqlServiceState {
   currency: Currency;
 }
@@ -68,7 +70,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
     options = {
       after: null,
-      first: 10,
+      first: PAGE_SIZE,
       ...options,
     };
 
@@ -130,7 +132,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
   ): Observable<LoadResult<Transfer>> {
     console.info(`${this._logPrefix}Searching transfers...`, filter && JSON.stringify(filter));
     options = {
-      first: 10,
+      first: PAGE_SIZE,
       after: null,
       ...options,
     };
@@ -169,7 +171,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
   ): Observable<LoadResult<Certification>> {
     console.info(`${this._logPrefix}Searching certifications...`, filter && JSON.stringify(filter));
     options = {
-      first: 10,
+      first: PAGE_SIZE,
       after: null,
       ...options,
     };
@@ -224,7 +226,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
     console.info(`${this._logPrefix}Searching block...`, filter);
 
     options = {
-      first: 10,
+      first: PAGE_SIZE,
       after: null,
       orderBy: { height: OrderBy.Desc },
       ...options,

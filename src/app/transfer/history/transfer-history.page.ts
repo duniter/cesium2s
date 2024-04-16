@@ -18,7 +18,7 @@ import {
   TransferSearchFilter,
   TransferSearchFilterUtils,
 } from '@app/transfer/transfer.model';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService, PAGE_SIZE } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 
 export interface TransferHistoryPageState extends AppPageState {
@@ -184,7 +184,7 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
     console.info(this._logPrefix + 'Initializing...');
     super.ngOnInit();
 
-    this.first = toNumber(this.first, 15);
+    this.first = toNumber(this.first, PAGE_SIZE);
   }
 
   search(searchFilter?: TransferSearchFilter, options?: { first: number; offset: number }): Observable<LoadResult<Transfer>> {

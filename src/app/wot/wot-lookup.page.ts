@@ -13,7 +13,7 @@ import { RxState } from '@rx-angular/state';
 import { InfiniteScrollCustomEvent, IonPopover, ModalController } from '@ionic/angular';
 
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService, PAGE_SIZE } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 
 export interface WotLookupState extends AppPageState {
@@ -122,7 +122,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     this.showItemActions = toBoolean(this.showItemActions, !this.itemClick.observed);
     this.showFilterButtons = toBoolean(this.showFilterButtons, true);
     this.autoLoad = toBoolean(this.autoLoad, this.showFilterButtons);
-    this.first = toNumber(this.first, 20);
+    this.first = toNumber(this.first, PAGE_SIZE);
 
     if (this.isModal) {
       this.registerSubscription(this.itemClick.subscribe((item) => this.modalCtrl.dismiss(item)));

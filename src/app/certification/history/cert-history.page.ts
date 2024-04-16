@@ -11,7 +11,7 @@ import { AccountsService } from '@app/account/accounts.service';
 import { firstValueFrom, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService, PAGE_SIZE } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 import { Certification, CertificationSearchFilter, CertificationSearchFilterUtils } from './cert-history.model';
 import { ListItems } from '@app/shared/types';
@@ -193,7 +193,7 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
     console.info(this._logPrefix + 'Initializing...');
     super.ngOnInit();
 
-    this.first = toNumber(this.first, 15);
+    this.first = toNumber(this.first, PAGE_SIZE);
   }
 
   search(searchFilter?: CertificationSearchFilter, options?: { first: number }): Observable<LoadResult<Certification>> {
