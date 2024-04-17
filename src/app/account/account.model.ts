@@ -87,6 +87,7 @@ export interface SelectAccountOptions {
   minBalance?: number;
   showBalance?: boolean;
   positiveBalanceFirst?: boolean;
+  isMember?: boolean;
 }
 
 export declare type LoginMethodType = 'v1' | 'v2' | 'keyfile-v1';

@@ -33,6 +33,7 @@ export interface AccountListComponentInputs extends SelectAccountOptions {}
 export class AccountListComponent extends AppPage<AccountListComponentState> implements AccountListComponentInputs {
   @Input() @RxStateProperty() accounts: Account[];
   @Input() minBalance: number;
+  @Input() isMember = null;
   @Input() showBalance = false;
   @Input() positiveBalanceFirst = false;
 

@@ -38,9 +38,16 @@
   </ion-header>
 
   <div class="ion-text-center" *ngIf="!mobile">
+    <!-- transfer -->
     <ion-button (click)="transferTo()" [disabled]="loading">
       <ion-icon slot="start" name="paper-plane"></ion-icon>
       <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
+    </ion-button>
+
+    <!-- certify -->
+    <ion-button (click)="certifyTo()" [disabled]="loading">
+      <ion-icon slot="start" name="ribbon"></ion-icon>
+      <ion-label translate>WOT.BTN_CERTIFY</ion-label>
     </ion-button>
   </div>
 

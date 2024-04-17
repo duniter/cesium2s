@@ -134,7 +134,8 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     return this.transferController.transfer({ recipient: this.account });
   }
 
-  async certify() {
-    // TODO
+  async certifyTo() {
+    const issuer = await this.accountsService.selectAccount({ isMember: true });
+    return this.accountsService.cert(issuer, this.account);
   }
 }
