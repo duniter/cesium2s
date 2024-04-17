@@ -174,7 +174,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
       // Load account's data
       try {
-        await Promise.all(accounts.map((a) => this.loadData(a)));
+        await Promise.all(accounts.map((a) => this.loadData(a, { withMembership: true })));
 
         // DEBUG
         console.info(this._logPrefix + `Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
@@ -568,6 +568,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
    */
   async cert(from: Partial<Account>, to: Partial<Account>): Promise<string> {
     if (!from || !to) throw new Error("Missing argument 'from' or 'to' !");
+    if (isNil(to.meta?.index)) throw new Error("Missing argument 'to.meta.index' !");
 
     // Check currency
     const currency = this.network.currency;
@@ -594,7 +595,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     try {
       await this.ready();
-      const certHash = await this.api.tx.certification.addCert(issuerPair.address, to.address).signAndSend(issuerPair, async ({ status, events }) => {
+      const certHash = await this.api.tx.certification.addCert(to.meta?.index).signAndSend(issuerPair, async ({ status, events }) => {
         if (status.isInBlock) {
           console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
           console.info(`${this._logPrefix}Certifying completed at block hash #${status.hash.toHuman()}`);
@@ -652,12 +653,14 @@ export class AccountsService extends RxStartableService<AccountsState> {
             .wotSearch({ address: account.address }, { first: 1, fetchPolicy: 'network-only' })
             .pipe(map(({ data }) => firstArrayValue(data)))
         );
-        account.meta = {
-          ...account.meta,
-          uid: indexedAccount.meta?.uid,
-          isMember: indexedAccount.meta?.isMember,
-        };
-        changed = true;
+        if (indexedAccount) {
+          account.meta = {
+            ...account.meta,
+            uid: indexedAccount.meta?.uid,
+            isMember: indexedAccount.meta?.isMember,
+          };
+          changed = true;
+        }
       }
 
       // Load TX

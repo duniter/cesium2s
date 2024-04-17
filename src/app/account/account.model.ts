@@ -28,6 +28,8 @@ export interface AccountMeta {
   uid?: string;
 
   // Cesium properties
+  id?: string;
+  index?: number;
   self?: boolean;
   default?: boolean;
   publicKeyV1?: string;
