@@ -1,8 +1,15 @@
-import { LightAccountFragment, LightIdentityFragment } from '@app/network/indexer-types.generated';
+import { LightAccountConnectionFragment, LightAccountFragment, LightIdentityFragment } from '@app/network/indexer-types.generated';
 import { Account, parseAddressSquid } from '@app/account/account.model';
 import { isNotNil } from '@app/shared/functions';
 
 export class AccountConverter {
+  static connectionToAccounts(accountConnection: LightAccountConnectionFragment, debug?: boolean): Account[] {
+    const inputs = accountConnection.edges?.map((edge) => edge.node) as LightAccountFragment[];
+    const results = (inputs || []).map(this.toAccount);
+    if (debug) console.debug('Results:', results);
+    return results;
+  }
+
   static toAccounts(inputs: LightAccountFragment[], debug?: boolean): Account[] {
     const results = (inputs || []).map(this.toAccount);
     if (debug) console.debug('Results:', results);

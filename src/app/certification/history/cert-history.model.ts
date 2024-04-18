@@ -1,6 +1,6 @@
 import { equals, isNilOrBlank } from '@app/shared/functions';
 import { Account } from '@app/account/account.model';
-import { CertFragment, CertsConnectionByIssuerQuery, CertsConnectionByReceiverQuery } from '@app/network/indexer-types.generated';
+import { CertConnection, CertFragment } from '@app/network/indexer-types.generated';
 import { IdentityConverter } from '@app/account/account.converter';
 
 export interface Certification {
@@ -16,6 +16,14 @@ export interface Certification {
 }
 
 export class CertificationConverter {
+  static connectionToCertifications(connection: CertConnection, isIssuer: boolean, debug?: boolean) {
+    const results = (connection.edges?.map((edge) => edge.node as CertFragment) || []).map((input) =>
+      CertificationConverter.toCertification(input, isIssuer)
+    );
+    if (debug) console.debug('Results:', results);
+    return results;
+  }
+
   static toCertifications(inputs: CertFragment[], isIssuer: boolean, debug?: boolean) {
     const results = (inputs || []).map((input) => CertificationConverter.toCertification(input, isIssuer));
     if (debug) console.debug('Results:', results);
@@ -45,13 +53,5 @@ export class CertificationSearchFilterUtils {
 
   static isEmpty(filter: CertificationSearchFilter) {
     return !filter || (isNilOrBlank(filter.issuer) && isNilOrBlank(filter.receiver));
-  }
-
-  static isIssuerConnection(connection: any): connection is CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node'] {
-    return (connection as CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node']).certIssuedAggregate !== undefined;
-  }
-
-  static isReceiverConnection(connection: any): connection is CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node'] {
-    return (connection as CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node']).certReceivedAggregate !== undefined;
   }
 }

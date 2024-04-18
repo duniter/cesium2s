@@ -89,6 +89,7 @@ export interface GraphqlServiceState {
   peer: Peer;
   client: ApolloClient<any>;
   offline: boolean;
+  fetchSize: number;
 }
 
 @Directive()
@@ -100,6 +101,7 @@ export abstract class GraphqlService<
 
   protected readonly defaultFetchPolicy: FetchPolicy = environment.graphql?.fetchPolicy;
   protected readonly defaultWatchFetchPolicy: WatchQueryFetchPolicy = environment.graphql?.watchFetchPolicy;
+  protected defaultFetchSize: number = environment.graphql?.fetchSize || 10;
   protected apollo = inject(Apollo);
 
   private platform = inject(Platform);
@@ -116,6 +118,7 @@ export abstract class GraphqlService<
   @RxStateProperty() peer: Peer;
   @RxStateProperty() client: ApolloClient<never>;
   @RxStateProperty() offline: boolean;
+  @RxStateProperty() fetchSize: number;
 
   get online(): boolean {
     return !this.offline;

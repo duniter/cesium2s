@@ -18,7 +18,7 @@ import {
   TransferSearchFilter,
   TransferSearchFilterUtils,
 } from '@app/transfer/transfer.model';
-import { IndexerService, PAGE_SIZE } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 
 export interface TransferHistoryPageState extends AppPageState {
@@ -30,11 +30,11 @@ export interface TransferHistoryPageState extends AppPageState {
   balance: number;
 
   filter: TransferSearchFilter;
-  first: number;
   items: Transfer[];
   count: number;
   canFetchMore: boolean;
   fetchMoreFn: FetchMoreFn<LoadResult<Transfer>>;
+  fetchSize: number;
 }
 
 @Component({
@@ -61,8 +61,8 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
   @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Transfer>>;
   @RxStateProperty() canFetchMore: boolean;
 
+  @Input() @RxStateProperty() fetchSize: number;
   @Input() @RxStateProperty() filter: TransferSearchFilter;
-  @Input() @RxStateProperty() first: number;
 
   @Output() refresh = new EventEmitter<RefresherCustomEvent>();
 
@@ -159,16 +159,16 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
       merge(
         this.refresh.pipe(
           filter(() => !this.loading),
-          map(() => ({ filter: this.filter, first: this.first }))
+          map(() => ({ filter: this.filter, fetchSize: this.fetchSize }))
         ),
-        this._state.select(['filter', 'first', 'account'], (res) => res, {
+        this._state.select(['filter', 'fetchSize', 'account'], (res) => res, {
           filter: TransferSearchFilterUtils.isEquals,
-          first: (l1, l2) => l1 === l2,
+          fetchSize: (l1, l2) => l1 === l2,
           account: AccountUtils.isEquals,
         })
       ).pipe(
         filter(({ filter }) => !TransferSearchFilterUtils.isEmpty(filter)),
-        mergeMap(({ filter, first }) => this.search(filter, { offset: 0, first })),
+        mergeMap(({ filter, fetchSize }) => this.search(filter, { offset: 0, first: fetchSize })),
         map(({ data, fetchMore }) => {
           this.fetchMoreFn = fetchMore;
           this.canFetchMore = !!fetchMore;
@@ -184,7 +184,7 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
     console.info(this._logPrefix + 'Initializing...');
     super.ngOnInit();
 
-    this.first = toNumber(this.first, PAGE_SIZE);
+    this.fetchSize = toNumber(this.fetchSize, this.indexerService.fetchSize);
   }
 
   search(searchFilter?: TransferSearchFilter, options?: { first: number; offset: number }): Observable<LoadResult<Transfer>> {
@@ -238,8 +238,8 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
       let { data, fetchMore } = await this.fetchMoreFn();
 
       // Fetch more again, since we fetch using a timestamp
-      while (data.length < this.first && fetchMore) {
-        const res = await fetchMore(this.first);
+      while (data.length < this.fetchSize && fetchMore) {
+        const res = await fetchMore(this.fetchSize);
         if (res.data?.length) data = [...data, ...res.data];
         fetchMore = res.fetchMore;
       }

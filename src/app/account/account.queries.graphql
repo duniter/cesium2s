@@ -16,3 +16,15 @@ fragment LightAccount on Account {
     ...LightIdentity
   }
 }
+
+fragment LightAccountConnection on AccountConnection {
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+  edges {
+    node {
+      ...LightAccount
+    }
+  }
+}
