@@ -7,33 +7,48 @@
 
           <ion-note></ion-note>
 
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item
-              routerDirection="root"
-              *ngIf="p.url && (!p.visible || p.visible())"
-              [disabled]="p.disabled"
-              [routerLink]="p.url"
-              lines="none"
-              detail="false"
-              routerLinkActive="selected"
-            >
-              <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-              <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
-            </ion-item>
-            <ion-item
-              routerDirection="root"
-              *ngIf="p.handle && (!p.visible || p.visible())"
-              (click)="p.handle($event)"
-              lines="none"
-              detail="false"
-              class="ion-activatable ion-focusable"
-              tappable
-              @fadeInAnimation
-            >
-              <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-              <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+          @for (p of appPages; track $index) {
+            @if (p.divider) {
+              <!-- divider -->
+              <ion-item-divider class="{{ p.cssClass }} {{ p.color }}" @fadeInAnimation>
+                <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+                @if (p.cssClass !== 'flex-spacer') {
+                  <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
+                }
+              </ion-item-divider>
+            } @else {
+              <ion-menu-toggle auto-hide="false">
+                @if (p.url && (!p.visible || p.visible())) {
+                  <!-- link button -->
+                  <ion-item
+                    routerDirection="root"
+                    [disabled]="p.disabled"
+                    [routerLink]="p.url"
+                    lines="none"
+                    detail="false"
+                    routerLinkActive="selected"
+                  >
+                    <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+                    <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
+                  </ion-item>
+                } @else if (p.handle && (!p.visible || p.visible())) {
+                  <!-- action button -->
+                  <ion-item
+                    routerDirection="root"
+                    (click)="p.handle($event)"
+                    lines="none"
+                    detail="false"
+                    class="ion-activatable ion-focusable"
+                    tappable
+                    @fadeInAnimation
+                  >
+                    <ion-icon slot="start" [color]="p.color" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+                    <ion-label [color]="p.color">{{ p.title | translate }}</ion-label>
+                  </ion-item>
+                }
+              </ion-menu-toggle>
+            }
+          }
         </ion-list>
       </ion-content>
     </ion-menu>

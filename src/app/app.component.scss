@@ -10,6 +10,23 @@ ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
   --background-color: var(--background);
 
+  ion-list {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    ion-item-divider {
+      background: transparent;
+    }
+    .flex-spacer {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+  }
+
   &.dark {
     --background: transparent;
     --background-color: rgba(var(--ion-color-primary900-rgb), 0.4) !important;

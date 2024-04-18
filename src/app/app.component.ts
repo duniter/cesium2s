@@ -12,11 +12,13 @@ import { SettingsService } from '@app/settings/settings.service';
 export interface IMenuItem {
   title: string;
   url?: string;
-  icon: string;
+  icon?: string;
   disabled?: () => boolean;
   handle?: (event: Event) => Promise<void | unknown>;
   visible?: () => boolean;
   color?: PredefinedColors;
+  divider?: boolean;
+  cssClass?: string;
 }
 
 @Component({
@@ -42,6 +44,8 @@ export class AppComponent {
     },
 
     // { title: 'Messages', url: '/message/inbox', icon: 'mail' },
+
+    { title: '', divider: true, cssClass: 'flex-spacer' },
 
     { title: 'MENU.WOT', url: '/wot', icon: 'people' },
 
