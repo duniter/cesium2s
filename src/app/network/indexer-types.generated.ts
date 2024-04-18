@@ -4533,6 +4533,7 @@ export type TransferAggregateBoolExpCount = {
 export type LightIdentityFragment = {
   __typename?: 'Identity';
   id: string;
+  index: number;
   name: string;
   isMember: boolean;
   accountId?: string | null;
@@ -4545,6 +4546,7 @@ export type LightAccountFragment = {
   identity?: {
     __typename?: 'Identity';
     id: string;
+    index: number;
     name: string;
     isMember: boolean;
     accountId?: string | null;
@@ -4553,7 +4555,19 @@ export type LightAccountFragment = {
 };
 
 export type LightBlockFragment = {
+  __typename: 'Block';
+  id: string;
+  height: number;
+  hash: any;
+  timestamp: any;
+  callsCount: number;
+  eventsCount: number;
+  extrinsicsCount: number;
+};
+
+export type LightBlockConnectionFragment = {
   __typename?: 'BlockConnection';
+  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
   edges: Array<{
     __typename?: 'BlockEdge';
     node: {
@@ -4567,7 +4581,6 @@ export type LightBlockFragment = {
       extrinsicsCount: number;
     };
   }>;
-  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
 };
 
 export type BlockByIdQueryVariables = Exact<{
@@ -4578,6 +4591,7 @@ export type BlockByIdQuery = {
   __typename?: 'query_root';
   blockConnection: {
     __typename?: 'BlockConnection';
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
     edges: Array<{
       __typename?: 'BlockEdge';
       node: {
@@ -4591,7 +4605,6 @@ export type BlockByIdQuery = {
         extrinsicsCount: number;
       };
     }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
   };
 };
 
@@ -4606,6 +4619,7 @@ export type BlocksQuery = {
   __typename?: 'query_root';
   blockConnection: {
     __typename?: 'BlockConnection';
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
     edges: Array<{
       __typename?: 'BlockEdge';
       node: {
@@ -4619,7 +4633,6 @@ export type BlocksQuery = {
         extrinsicsCount: number;
       };
     }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
   };
 };
 
@@ -4631,6 +4644,7 @@ export type CertFragment = {
   receiver?: {
     __typename?: 'Identity';
     id: string;
+    index: number;
     name: string;
     isMember: boolean;
     accountId?: string | null;
@@ -4639,6 +4653,7 @@ export type CertFragment = {
   issuer?: {
     __typename?: 'Identity';
     id: string;
+    index: number;
     name: string;
     isMember: boolean;
     accountId?: string | null;
@@ -4674,6 +4689,7 @@ export type CertsConnectionByIssuerQuery = {
               receiver?: {
                 __typename?: 'Identity';
                 id: string;
+                index: number;
                 name: string;
                 isMember: boolean;
                 accountId?: string | null;
@@ -4682,6 +4698,7 @@ export type CertsConnectionByIssuerQuery = {
               issuer?: {
                 __typename?: 'Identity';
                 id: string;
+                index: number;
                 name: string;
                 isMember: boolean;
                 accountId?: string | null;
@@ -4724,6 +4741,7 @@ export type CertsConnectionByReceiverQuery = {
               issuer?: {
                 __typename?: 'Identity';
                 id: string;
+                index: number;
                 name: string;
                 isMember: boolean;
                 accountId?: string | null;
@@ -4732,6 +4750,7 @@ export type CertsConnectionByReceiverQuery = {
               receiver?: {
                 __typename?: 'Identity';
                 id: string;
+                index: number;
                 name: string;
                 isMember: boolean;
                 accountId?: string | null;
@@ -4758,6 +4777,7 @@ export type TransferFragment = {
     identity?: {
       __typename?: 'Identity';
       id: string;
+      index: number;
       name: string;
       isMember: boolean;
       accountId?: string | null;
@@ -4770,6 +4790,7 @@ export type TransferFragment = {
     identity?: {
       __typename?: 'Identity';
       id: string;
+      index: number;
       name: string;
       isMember: boolean;
       accountId?: string | null;
@@ -4778,14 +4799,55 @@ export type TransferFragment = {
   } | null;
 };
 
-export type TransfersConnectionByAddressQueryVariables = Exact<{
+export type TransferConnectionFragment = {
+  __typename?: 'TransferConnection';
+  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+  edges: Array<{
+    __typename?: 'TransferEdge';
+    node: {
+      __typename: 'Transfer';
+      id: string;
+      amount: any;
+      timestamp: any;
+      blockNumber: number;
+      from?: {
+        __typename?: 'Account';
+        id: string;
+        identity?: {
+          __typename?: 'Identity';
+          id: string;
+          index: number;
+          name: string;
+          isMember: boolean;
+          accountId?: string | null;
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        } | null;
+      } | null;
+      to?: {
+        __typename?: 'Account';
+        id: string;
+        identity?: {
+          __typename?: 'Identity';
+          id: string;
+          index: number;
+          name: string;
+          isMember: boolean;
+          accountId?: string | null;
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        } | null;
+      } | null;
+    };
+  }>;
+};
+
+export type TransferConnectionByAddressQueryVariables = Exact<{
   address: Scalars['String']['input'];
   first: Scalars['Int']['input'];
   orderBy: Array<TransferOrderBy> | TransferOrderBy;
   after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
-export type TransfersConnectionByAddressQuery = {
+export type TransferConnectionByAddressQuery = {
   __typename?: 'query_root';
   transferConnection: {
     __typename?: 'TransferConnection';
@@ -4804,6 +4866,7 @@ export type TransfersConnectionByAddressQuery = {
           identity?: {
             __typename?: 'Identity';
             id: string;
+            index: number;
             name: string;
             isMember: boolean;
             accountId?: string | null;
@@ -4816,6 +4879,7 @@ export type TransfersConnectionByAddressQuery = {
           identity?: {
             __typename?: 'Identity';
             id: string;
+            index: number;
             name: string;
             isMember: boolean;
             accountId?: string | null;
@@ -4847,6 +4911,7 @@ export type WotSearchByTextQuery = {
         identity?: {
           __typename?: 'Identity';
           id: string;
+          index: number;
           name: string;
           isMember: boolean;
           accountId?: string | null;
@@ -4877,6 +4942,7 @@ export type WotSearchByAddressQuery = {
         identity?: {
           __typename?: 'Identity';
           id: string;
+          index: number;
           name: string;
           isMember: boolean;
           accountId?: string | null;
@@ -4907,6 +4973,7 @@ export type WotSearchLastQuery = {
         identity?: {
           __typename?: 'Identity';
           id: string;
+          index: number;
           name: string;
           isMember: boolean;
           accountId?: string | null;
@@ -4918,28 +4985,35 @@ export type WotSearchLastQuery = {
 };
 
 export const LightBlockFragmentDoc = gql`
-  fragment LightBlock on BlockConnection {
-    edges {
-      node {
-        id
-        height
-        hash
-        timestamp
-        callsCount
-        eventsCount
-        extrinsicsCount
-        __typename
-      }
-    }
+  fragment LightBlock on Block {
+    id
+    height
+    hash
+    timestamp
+    callsCount
+    eventsCount
+    extrinsicsCount
+    __typename
+  }
+`;
+export const LightBlockConnectionFragmentDoc = gql`
+  fragment LightBlockConnection on BlockConnection {
     pageInfo {
       endCursor
       hasNextPage
     }
+    edges {
+      node {
+        ...LightBlock
+      }
+    }
   }
+  ${LightBlockFragmentDoc}
 `;
 export const LightIdentityFragmentDoc = gql`
   fragment LightIdentity on Identity {
     id
+    index
     name
     isMember
     accountId
@@ -4989,13 +5063,27 @@ export const TransferFragmentDoc = gql`
   }
   ${LightAccountFragmentDoc}
 `;
+export const TransferConnectionFragmentDoc = gql`
+  fragment TransferConnection on TransferConnection {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      node {
+        ...Transfer
+      }
+    }
+  }
+  ${TransferFragmentDoc}
+`;
 export const BlockByIdDocument = gql`
   query BlockById($id: String!) {
     blockConnection(where: { id: { _eq: $id } }) {
-      ...LightBlock
+      ...LightBlockConnection
     }
   }
-  ${LightBlockFragmentDoc}
+  ${LightBlockConnectionFragmentDoc}
 `;
 
 @Injectable({
@@ -5011,10 +5099,10 @@ export class BlockByIdGQL extends Apollo.Query<BlockByIdQuery, BlockByIdQueryVar
 export const BlocksDocument = gql`
   query Blocks($where: BlockBoolExp, $first: Int!, $after: String, $orderBy: [BlockOrderBy!]) {
     blockConnection(first: $first, after: $after, orderBy: $orderBy, where: $where) {
-      ...LightBlock
+      ...LightBlockConnection
     }
   }
-  ${LightBlockFragmentDoc}
+  ${LightBlockConnectionFragmentDoc}
 `;
 
 @Injectable({
@@ -5111,33 +5199,25 @@ export class CertsConnectionByReceiverGQL extends Apollo.Query<CertsConnectionBy
     super(apollo);
   }
 }
-export const TransfersConnectionByAddressDocument = gql`
-  query TransfersConnectionByAddress($address: String!, $first: Int!, $orderBy: [TransferOrderBy!]!, $after: String) {
+export const TransferConnectionByAddressDocument = gql`
+  query TransferConnectionByAddress($address: String!, $first: Int!, $orderBy: [TransferOrderBy!]!, $after: String) {
     transferConnection(
       first: $first
       after: $after
       orderBy: $orderBy
       where: { _or: [{ fromId: { _eq: $address } }, { toId: { _eq: $address } }] }
     ) {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-      edges {
-        node {
-          ...Transfer
-        }
-      }
+      ...TransferConnection
     }
   }
-  ${TransferFragmentDoc}
+  ${TransferConnectionFragmentDoc}
 `;
 
 @Injectable({
   providedIn: 'root',
 })
-export class TransfersConnectionByAddressGQL extends Apollo.Query<TransfersConnectionByAddressQuery, TransfersConnectionByAddressQueryVariables> {
-  document = TransfersConnectionByAddressDocument;
+export class TransferConnectionByAddressGQL extends Apollo.Query<TransferConnectionByAddressQuery, TransferConnectionByAddressQueryVariables> {
+  document = TransferConnectionByAddressDocument;
   client = 'indexer';
   constructor(apollo: Apollo.Apollo) {
     super(apollo);
@@ -5248,7 +5328,7 @@ export class IndexerGraphqlService {
     private blocksGql: BlocksGQL,
     private certsConnectionByIssuerGql: CertsConnectionByIssuerGQL,
     private certsConnectionByReceiverGql: CertsConnectionByReceiverGQL,
-    private transfersConnectionByAddressGql: TransfersConnectionByAddressGQL,
+    private transferConnectionByAddressGql: TransferConnectionByAddressGQL,
     private wotSearchByTextGql: WotSearchByTextGQL,
     private wotSearchByAddressGql: WotSearchByAddressGQL,
     private wotSearchLastGql: WotSearchLastGQL
@@ -5295,18 +5375,18 @@ export class IndexerGraphqlService {
     return this.certsConnectionByReceiverGql.watch(variables, options);
   }
 
-  transfersConnectionByAddress(
-    variables: TransfersConnectionByAddressQueryVariables,
-    options?: QueryOptionsAlone<TransfersConnectionByAddressQueryVariables>
+  transferConnectionByAddress(
+    variables: TransferConnectionByAddressQueryVariables,
+    options?: QueryOptionsAlone<TransferConnectionByAddressQueryVariables>
   ) {
-    return this.transfersConnectionByAddressGql.fetch(variables, options);
+    return this.transferConnectionByAddressGql.fetch(variables, options);
   }
 
-  transfersConnectionByAddressWatch(
-    variables: TransfersConnectionByAddressQueryVariables,
-    options?: WatchQueryOptionsAlone<TransfersConnectionByAddressQueryVariables>
+  transferConnectionByAddressWatch(
+    variables: TransferConnectionByAddressQueryVariables,
+    options?: WatchQueryOptionsAlone<TransferConnectionByAddressQueryVariables>
   ) {
-    return this.transfersConnectionByAddressGql.watch(variables, options);
+    return this.transferConnectionByAddressGql.watch(variables, options);
   }
 
   wotSearchByText(variables: WotSearchByTextQueryVariables, options?: QueryOptionsAlone<WotSearchByTextQueryVariables>) {

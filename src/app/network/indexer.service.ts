@@ -14,14 +14,14 @@ import { DocumentNode } from 'graphql/index';
 import { StorageService } from '@app/shared/services/storage/storage.service';
 import { Account } from '@app/account/account.model';
 import {
+  BlockEdge,
+  BlockOrderBy,
   CertFragment,
   CertsConnectionByIssuerQuery,
   CertsConnectionByReceiverQuery,
   IndexerGraphqlService,
   OrderBy,
   TransferFragment,
-  BlockOrderBy,
-  BlockEdge,
 } from './indexer-types.generated';
 import { firstValueFrom, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -139,7 +139,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
     if (filter?.address) {
       return this.indexerGraphqlService
-        .transfersConnectionByAddress(
+        .transferConnectionByAddress(
           {
             address: filter.address,
             first: options.first,

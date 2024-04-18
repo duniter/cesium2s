@@ -1,5 +1,6 @@
 fragment LightIdentity on Identity {
   id
+  index
   name
   isMember
   accountId

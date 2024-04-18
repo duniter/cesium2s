@@ -15,6 +15,8 @@ export class AccountConverter {
     return <Account>{
       address: addressSquid.address,
       meta: {
+        id: input.identity?.id,
+        index: input.identity?.index,
         uid: input.identity?.name,
         isMember: input.identity?.membershipHistory?.some((h) => isNotNil(h.id)) || false,
       },
@@ -34,6 +36,8 @@ export class IdentityConverter {
     return <Account>{
       address: input.accountId,
       meta: {
+        id: input.id,
+        index: input.index,
         uid: input.name,
         isMember: input.membershipHistory?.some((h) => isNotNil(h.id)) || false,
       },

@@ -22,11 +22,15 @@ export interface AccountMeta {
   genesisHash?: HexString | null;
   isTesting?: boolean;
 
+  // Duniter properties
+  id?: string;
+  index?: number; // member index
+  uid?: string;
+
   // Cesium properties
   self?: boolean;
   default?: boolean;
   publicKeyV1?: string;
-  uid?: string;
   avatar?: string;
   email?: string;
   isMember?: boolean;
