@@ -61,7 +61,12 @@
     </ion-item>
 
     <!-- Transfer items -->
-    <ion-item *rxFor="let item of items$; index as index; trackBy: 'id'">
+    <ion-item
+      *rxFor="let item of items$; index as index; trackBy: 'id'"
+      (click)="showAccount($event, item.account)"
+      class="ion-activatable ion-focusable"
+      tappable
+    >
       <ion-avatar slot="start">
         <app-account-image [account]="item.account"></app-account-image>
       </ion-avatar>

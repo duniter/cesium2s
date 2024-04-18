@@ -225,7 +225,7 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
   }
 
   async showAccount(event: UIEvent, account: Account) {
-    if (!account.address) return; // skip
+    if (!account.address || event.defaultPrevented) return; // skip
     event.preventDefault();
 
     // Self account

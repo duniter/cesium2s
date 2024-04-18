@@ -106,7 +106,7 @@
 
       <ng-template #items>
         <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
-          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)">
+          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)" class="ion-activatable ion-focusable" tappable>
             <ion-avatar slot="start">
               <app-account-image [account]="item"></app-account-image>
             </ion-avatar>
@@ -114,7 +114,11 @@
               <h2>
                 <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
                   <small><ion-icon name="person"></ion-icon></small>
-                  {{ item.meta?.uid }}
+                  @if (filter?.last) {
+                    {{ item.meta?.uid }}
+                  } @else {
+                    <span [innerHTML]="item.meta?.uid | highlight: { search: searchText }"></span>
+                  }
                 </ion-text>
               </h2>
               <p>
