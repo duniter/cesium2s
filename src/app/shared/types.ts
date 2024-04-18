@@ -39,7 +39,7 @@ export type AnyError = string | AppError;
 export declare type AppEvent = MouseEvent | TouchEvent | PointerEvent | CustomEvent;
 
 export interface ListItems<T, F> {
-  limit: number;
+  first: number;
   filter: F;
 
   items: T[];

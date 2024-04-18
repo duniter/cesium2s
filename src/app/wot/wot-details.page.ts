@@ -57,7 +57,7 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
           if (ownedAddress) {
             return this.accountsService.watchByAddress(address);
           }
-          return this.indexerService.wotSearch({ address }, { limit: 1 }).pipe(map(({ data }) => firstArrayValue(data)));
+          return this.indexerService.wotSearch({ address }, { first: 1 }).pipe(map(({ data }) => firstArrayValue(data)));
         }),
         mergeMap(async (account) => {
           if (account.data) return account;
@@ -81,14 +81,14 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     this._state.connect(
       'receivedCertCount',
       validAddress$.pipe(
-        switchMap((address) => this.indexerService.certsSearch({ receiver: address }, { limit: 0 })),
+        switchMap((address) => this.indexerService.certsSearch({ receiver: address }, { first: 0 })),
         map(({ total }) => total)
       )
     );
     this._state.connect(
       'givenCertCount',
       validAddress$.pipe(
-        switchMap((address) => this.indexerService.certsSearch({ issuer: address }, { limit: 0 })),
+        switchMap((address) => this.indexerService.certsSearch({ issuer: address }, { first: 0 })),
         map(({ total }) => total)
       )
     );

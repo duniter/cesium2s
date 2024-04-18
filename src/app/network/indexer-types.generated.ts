@@ -18,49 +18,183 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** Big number integer */
-  BigInt: { input: any; output: any };
-  /** Binary data encoded as a hex string always prefixed with 0x */
-  Bytes: { input: any; output: any };
-  /** A date-time string in simplified extended ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ) */
-  DateTime: { input: any; output: any };
-  /** A scalar that can represent any JSON value */
-  JSON: { input: any; output: any };
+  bytea: { input: any; output: any };
+  identity_scalar: { input: any; output: any };
+  jsonb: { input: any; output: any };
+  numeric: { input: any; output: any };
+  timestamptz: { input: any; output: any };
 };
 
-export type Account = {
+/** columns and relationships of "account" */
+export type Account = Node & {
   __typename?: 'Account';
-  /** Account address is SS58 format */
-  id: Scalars['String']['output'];
-  /** current account for the identity */
+  id: Scalars['ID']['output'];
+  /** An object relationship */
   identity?: Maybe<Identity>;
-  /** linked to the identity */
+  /** An object relationship */
   linkedIdentity?: Maybe<Identity>;
+  linkedIdentityId?: Maybe<Scalars['String']['output']>;
+  /** An array relationship */
   transfersIssued: Array<Transfer>;
+  /** An aggregate relationship */
+  transfersIssuedAggregate: TransferAggregate;
+  /** An array relationship connection */
+  transfersIssued_connection: TransferConnection;
+  /** An array relationship */
   transfersReceived: Array<Transfer>;
-  /** was once account of the identity */
+  /** An aggregate relationship */
+  transfersReceivedAggregate: TransferAggregate;
+  /** An array relationship connection */
+  transfersReceived_connection: TransferConnection;
+  /** An array relationship */
   wasIdentity: Array<ChangeOwnerKey>;
+  /** An aggregate relationship */
+  wasIdentityAggregate: ChangeOwnerKeyAggregate;
+  /** An array relationship connection */
+  wasIdentity_connection: ChangeOwnerKeyConnection;
 };
 
+/** columns and relationships of "account" */
 export type AccountTransfersIssuedArgs = {
+  distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<TransferOrderByInput>>;
-  where?: InputMaybe<TransferWhereInput>;
+  orderBy?: InputMaybe<Array<TransferOrderBy>>;
+  where?: InputMaybe<TransferBoolExp>;
 };
 
+/** columns and relationships of "account" */
+export type AccountTransfersIssuedAggregateArgs = {
+  distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TransferOrderBy>>;
+  where?: InputMaybe<TransferBoolExp>;
+};
+
+/** columns and relationships of "account" */
+export type AccountTransfersIssued_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TransferOrderBy>>;
+  where?: InputMaybe<TransferBoolExp>;
+};
+
+/** columns and relationships of "account" */
 export type AccountTransfersReceivedArgs = {
+  distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<TransferOrderByInput>>;
-  where?: InputMaybe<TransferWhereInput>;
+  orderBy?: InputMaybe<Array<TransferOrderBy>>;
+  where?: InputMaybe<TransferBoolExp>;
 };
 
-export type AccountWasIdentityArgs = {
+/** columns and relationships of "account" */
+export type AccountTransfersReceivedAggregateArgs = {
+  distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderByInput>>;
-  where?: InputMaybe<ChangeOwnerKeyWhereInput>;
+  orderBy?: InputMaybe<Array<TransferOrderBy>>;
+  where?: InputMaybe<TransferBoolExp>;
+};
+
+/** columns and relationships of "account" */
+export type AccountTransfersReceived_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TransferOrderBy>>;
+  where?: InputMaybe<TransferBoolExp>;
+};
+
+/** columns and relationships of "account" */
+export type AccountWasIdentityArgs = {
+  distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
+  where?: InputMaybe<ChangeOwnerKeyBoolExp>;
+};
+
+/** columns and relationships of "account" */
+export type AccountWasIdentityAggregateArgs = {
+  distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
+  where?: InputMaybe<ChangeOwnerKeyBoolExp>;
+};
+
+/** columns and relationships of "account" */
+export type AccountWasIdentity_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
+  where?: InputMaybe<ChangeOwnerKeyBoolExp>;
+};
+
+/** aggregated selection of "account" */
+export type AccountAggregate = {
+  __typename?: 'AccountAggregate';
+  aggregate?: Maybe<AccountAggregateFields>;
+  nodes: Array<Account>;
+};
+
+export type AccountAggregateBoolExp = {
+  count?: InputMaybe<AccountAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "account" */
+export type AccountAggregateFields = {
+  __typename?: 'AccountAggregateFields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<AccountMaxFields>;
+  min?: Maybe<AccountMinFields>;
+};
+
+/** aggregate fields of "account" */
+export type AccountAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<AccountSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "account" */
+export type AccountAggregateOrderBy = {
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<AccountMaxOrderBy>;
+  min?: InputMaybe<AccountMinOrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "account". All fields are combined with a logical 'AND'. */
+export type AccountBoolExp = {
+  _and?: InputMaybe<Array<AccountBoolExp>>;
+  _not?: InputMaybe<AccountBoolExp>;
+  _or?: InputMaybe<Array<AccountBoolExp>>;
+  id?: InputMaybe<StringComparisonExp>;
+  identity?: InputMaybe<IdentityBoolExp>;
+  linkedIdentity?: InputMaybe<IdentityBoolExp>;
+  linkedIdentityId?: InputMaybe<StringComparisonExp>;
+  transfersIssued?: InputMaybe<TransferBoolExp>;
+  transfersIssuedAggregate?: InputMaybe<TransferAggregateBoolExp>;
+  transfersReceived?: InputMaybe<TransferBoolExp>;
+  transfersReceivedAggregate?: InputMaybe<TransferAggregateBoolExp>;
+  wasIdentity?: InputMaybe<ChangeOwnerKeyBoolExp>;
+  wasIdentityAggregate?: InputMaybe<ChangeOwnerKeyAggregateBoolExp>;
+};
+
+/** A Relay connection object on "account" */
+export type AccountConnection = {
+  __typename?: 'AccountConnection';
+  edges: Array<AccountEdge>;
+  pageInfo: PageInfo;
 };
 
 export type AccountEdge = {
@@ -69,169 +203,209 @@ export type AccountEdge = {
   node: Account;
 };
 
-export enum AccountOrderByInput {
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IdentityCreatedOnAsc = 'identity_createdOn_ASC',
-  IdentityCreatedOnAscNullsFirst = 'identity_createdOn_ASC_NULLS_FIRST',
-  IdentityCreatedOnDesc = 'identity_createdOn_DESC',
-  IdentityCreatedOnDescNullsLast = 'identity_createdOn_DESC_NULLS_LAST',
-  IdentityExpireOnAsc = 'identity_expireOn_ASC',
-  IdentityExpireOnAscNullsFirst = 'identity_expireOn_ASC_NULLS_FIRST',
-  IdentityExpireOnDesc = 'identity_expireOn_DESC',
-  IdentityExpireOnDescNullsLast = 'identity_expireOn_DESC_NULLS_LAST',
-  IdentityIdAsc = 'identity_id_ASC',
-  IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
-  IdentityIdDesc = 'identity_id_DESC',
-  IdentityIdDescNullsLast = 'identity_id_DESC_NULLS_LAST',
-  IdentityIndexAsc = 'identity_index_ASC',
-  IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
-  IdentityIndexDesc = 'identity_index_DESC',
-  IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
-  IdentityIsMemberAsc = 'identity_isMember_ASC',
-  IdentityIsMemberAscNullsFirst = 'identity_isMember_ASC_NULLS_FIRST',
-  IdentityIsMemberDesc = 'identity_isMember_DESC',
-  IdentityIsMemberDescNullsLast = 'identity_isMember_DESC_NULLS_LAST',
-  IdentityLastChangeOnAsc = 'identity_lastChangeOn_ASC',
-  IdentityLastChangeOnAscNullsFirst = 'identity_lastChangeOn_ASC_NULLS_FIRST',
-  IdentityLastChangeOnDesc = 'identity_lastChangeOn_DESC',
-  IdentityLastChangeOnDescNullsLast = 'identity_lastChangeOn_DESC_NULLS_LAST',
-  IdentityNameAsc = 'identity_name_ASC',
-  IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
-  IdentityNameDesc = 'identity_name_DESC',
-  IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
-  IdentitySmithStatusAsc = 'identity_smithStatus_ASC',
-  IdentitySmithStatusAscNullsFirst = 'identity_smithStatus_ASC_NULLS_FIRST',
-  IdentitySmithStatusDesc = 'identity_smithStatus_DESC',
-  IdentitySmithStatusDescNullsLast = 'identity_smithStatus_DESC_NULLS_LAST',
-  IdentityStatusAsc = 'identity_status_ASC',
-  IdentityStatusAscNullsFirst = 'identity_status_ASC_NULLS_FIRST',
-  IdentityStatusDesc = 'identity_status_DESC',
-  IdentityStatusDescNullsLast = 'identity_status_DESC_NULLS_LAST',
-  LinkedIdentityCreatedOnAsc = 'linkedIdentity_createdOn_ASC',
-  LinkedIdentityCreatedOnAscNullsFirst = 'linkedIdentity_createdOn_ASC_NULLS_FIRST',
-  LinkedIdentityCreatedOnDesc = 'linkedIdentity_createdOn_DESC',
-  LinkedIdentityCreatedOnDescNullsLast = 'linkedIdentity_createdOn_DESC_NULLS_LAST',
-  LinkedIdentityExpireOnAsc = 'linkedIdentity_expireOn_ASC',
-  LinkedIdentityExpireOnAscNullsFirst = 'linkedIdentity_expireOn_ASC_NULLS_FIRST',
-  LinkedIdentityExpireOnDesc = 'linkedIdentity_expireOn_DESC',
-  LinkedIdentityExpireOnDescNullsLast = 'linkedIdentity_expireOn_DESC_NULLS_LAST',
-  LinkedIdentityIdAsc = 'linkedIdentity_id_ASC',
-  LinkedIdentityIdAscNullsFirst = 'linkedIdentity_id_ASC_NULLS_FIRST',
-  LinkedIdentityIdDesc = 'linkedIdentity_id_DESC',
-  LinkedIdentityIdDescNullsLast = 'linkedIdentity_id_DESC_NULLS_LAST',
-  LinkedIdentityIndexAsc = 'linkedIdentity_index_ASC',
-  LinkedIdentityIndexAscNullsFirst = 'linkedIdentity_index_ASC_NULLS_FIRST',
-  LinkedIdentityIndexDesc = 'linkedIdentity_index_DESC',
-  LinkedIdentityIndexDescNullsLast = 'linkedIdentity_index_DESC_NULLS_LAST',
-  LinkedIdentityIsMemberAsc = 'linkedIdentity_isMember_ASC',
-  LinkedIdentityIsMemberAscNullsFirst = 'linkedIdentity_isMember_ASC_NULLS_FIRST',
-  LinkedIdentityIsMemberDesc = 'linkedIdentity_isMember_DESC',
-  LinkedIdentityIsMemberDescNullsLast = 'linkedIdentity_isMember_DESC_NULLS_LAST',
-  LinkedIdentityLastChangeOnAsc = 'linkedIdentity_lastChangeOn_ASC',
-  LinkedIdentityLastChangeOnAscNullsFirst = 'linkedIdentity_lastChangeOn_ASC_NULLS_FIRST',
-  LinkedIdentityLastChangeOnDesc = 'linkedIdentity_lastChangeOn_DESC',
-  LinkedIdentityLastChangeOnDescNullsLast = 'linkedIdentity_lastChangeOn_DESC_NULLS_LAST',
-  LinkedIdentityNameAsc = 'linkedIdentity_name_ASC',
-  LinkedIdentityNameAscNullsFirst = 'linkedIdentity_name_ASC_NULLS_FIRST',
-  LinkedIdentityNameDesc = 'linkedIdentity_name_DESC',
-  LinkedIdentityNameDescNullsLast = 'linkedIdentity_name_DESC_NULLS_LAST',
-  LinkedIdentitySmithStatusAsc = 'linkedIdentity_smithStatus_ASC',
-  LinkedIdentitySmithStatusAscNullsFirst = 'linkedIdentity_smithStatus_ASC_NULLS_FIRST',
-  LinkedIdentitySmithStatusDesc = 'linkedIdentity_smithStatus_DESC',
-  LinkedIdentitySmithStatusDescNullsLast = 'linkedIdentity_smithStatus_DESC_NULLS_LAST',
-  LinkedIdentityStatusAsc = 'linkedIdentity_status_ASC',
-  LinkedIdentityStatusAscNullsFirst = 'linkedIdentity_status_ASC_NULLS_FIRST',
-  LinkedIdentityStatusDesc = 'linkedIdentity_status_DESC',
-  LinkedIdentityStatusDescNullsLast = 'linkedIdentity_status_DESC_NULLS_LAST',
+/** aggregate max on columns */
+export type AccountMaxFields = {
+  __typename?: 'AccountMaxFields';
+  id?: Maybe<Scalars['String']['output']>;
+  linkedIdentityId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "account" */
+export type AccountMaxOrderBy = {
+  id?: InputMaybe<OrderBy>;
+  linkedIdentityId?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type AccountMinFields = {
+  __typename?: 'AccountMinFields';
+  id?: Maybe<Scalars['String']['output']>;
+  linkedIdentityId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "account" */
+export type AccountMinOrderBy = {
+  id?: InputMaybe<OrderBy>;
+  linkedIdentityId?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "account". */
+export type AccountOrderBy = {
+  id?: InputMaybe<OrderBy>;
+  identity?: InputMaybe<IdentityOrderBy>;
+  linkedIdentity?: InputMaybe<IdentityOrderBy>;
+  linkedIdentityId?: InputMaybe<OrderBy>;
+  transfersIssuedAggregate?: InputMaybe<TransferAggregateOrderBy>;
+  transfersReceivedAggregate?: InputMaybe<TransferAggregateOrderBy>;
+  wasIdentityAggregate?: InputMaybe<ChangeOwnerKeyAggregateOrderBy>;
+};
+
+/** select columns of table "account" */
+export enum AccountSelectColumn {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LinkedIdentityId = 'linkedIdentityId',
 }
 
-export type AccountWhereInput = {
-  AND?: InputMaybe<Array<AccountWhereInput>>;
-  OR?: InputMaybe<Array<AccountWhereInput>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  identity?: InputMaybe<IdentityWhereInput>;
-  identity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  linkedIdentity?: InputMaybe<IdentityWhereInput>;
-  linkedIdentity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  transfersIssued_every?: InputMaybe<TransferWhereInput>;
-  transfersIssued_none?: InputMaybe<TransferWhereInput>;
-  transfersIssued_some?: InputMaybe<TransferWhereInput>;
-  transfersReceived_every?: InputMaybe<TransferWhereInput>;
-  transfersReceived_none?: InputMaybe<TransferWhereInput>;
-  transfersReceived_some?: InputMaybe<TransferWhereInput>;
-  wasIdentity_every?: InputMaybe<ChangeOwnerKeyWhereInput>;
-  wasIdentity_none?: InputMaybe<ChangeOwnerKeyWhereInput>;
-  wasIdentity_some?: InputMaybe<ChangeOwnerKeyWhereInput>;
-};
-
-export type AccountsConnection = {
-  __typename?: 'AccountsConnection';
-  edges: Array<AccountEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type Block = {
+/** columns and relationships of "block" */
+export type Block = Node & {
   __typename?: 'Block';
+  /** An array relationship */
   calls: Array<Call>;
+  /** An aggregate relationship */
+  callsAggregate: CallAggregate;
   callsCount: Scalars['Int']['output'];
+  /** An array relationship connection */
+  calls_connection: CallConnection;
+  /** An array relationship */
   events: Array<Event>;
+  /** An aggregate relationship */
+  eventsAggregate: EventAggregate;
   eventsCount: Scalars['Int']['output'];
+  /** An array relationship connection */
+  events_connection: EventConnection;
+  /** An array relationship */
   extrinsics: Array<Extrinsic>;
+  /** An aggregate relationship */
+  extrinsicsAggregate: ExtrinsicAggregate;
   extrinsicsCount: Scalars['Int']['output'];
-  extrinsicsicRoot: Scalars['Bytes']['output'];
-  hash: Scalars['Bytes']['output'];
+  /** An array relationship connection */
+  extrinsics_connection: ExtrinsicConnection;
+  extrinsicsicRoot: Scalars['bytea']['output'];
+  hash: Scalars['bytea']['output'];
   height: Scalars['Int']['output'];
-  /** BlockHeight-blockHash - e.g. 0001812319-0001c */
-  id: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
   implName: Scalars['String']['output'];
   implVersion: Scalars['Int']['output'];
-  parentHash: Scalars['Bytes']['output'];
+  parentHash: Scalars['bytea']['output'];
   specName: Scalars['String']['output'];
   specVersion: Scalars['Int']['output'];
-  stateRoot: Scalars['Bytes']['output'];
-  timestamp: Scalars['DateTime']['output'];
-  validator?: Maybe<Scalars['Bytes']['output']>;
+  stateRoot: Scalars['bytea']['output'];
+  timestamp: Scalars['timestamptz']['output'];
+  validator?: Maybe<Scalars['bytea']['output']>;
 };
 
+/** columns and relationships of "block" */
 export type BlockCallsArgs = {
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
 };
 
+/** columns and relationships of "block" */
+export type BlockCallsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+/** columns and relationships of "block" */
+export type BlockCalls_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+/** columns and relationships of "block" */
 export type BlockEventsArgs = {
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
 };
 
-export type BlockExtrinsicsArgs = {
+/** columns and relationships of "block" */
+export type BlockEventsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+/** columns and relationships of "block" */
+export type BlockEvents_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+/** columns and relationships of "block" */
+export type BlockExtrinsicsArgs = {
+  distinctOn?: InputMaybe<Array<ExtrinsicSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderBy>>;
+  where?: InputMaybe<ExtrinsicBoolExp>;
+};
+
+/** columns and relationships of "block" */
+export type BlockExtrinsicsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<ExtrinsicSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderBy>>;
+  where?: InputMaybe<ExtrinsicBoolExp>;
+};
+
+/** columns and relationships of "block" */
+export type BlockExtrinsics_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ExtrinsicSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderBy>>;
+  where?: InputMaybe<ExtrinsicBoolExp>;
+};
+
+/** Boolean expression to filter rows from the table "block". All fields are combined with a logical 'AND'. */
+export type BlockBoolExp = {
+  _and?: InputMaybe<Array<BlockBoolExp>>;
+  _not?: InputMaybe<BlockBoolExp>;
+  _or?: InputMaybe<Array<BlockBoolExp>>;
+  calls?: InputMaybe<CallBoolExp>;
+  callsAggregate?: InputMaybe<CallAggregateBoolExp>;
+  callsCount?: InputMaybe<IntComparisonExp>;
+  events?: InputMaybe<EventBoolExp>;
+  eventsAggregate?: InputMaybe<EventAggregateBoolExp>;
+  eventsCount?: InputMaybe<IntComparisonExp>;
+  extrinsics?: InputMaybe<ExtrinsicBoolExp>;
+  extrinsicsAggregate?: InputMaybe<ExtrinsicAggregateBoolExp>;
+  extrinsicsCount?: InputMaybe<IntComparisonExp>;
+  extrinsicsicRoot?: InputMaybe<ByteaComparisonExp>;
+  hash?: InputMaybe<ByteaComparisonExp>;
+  height?: InputMaybe<IntComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  implName?: InputMaybe<StringComparisonExp>;
+  implVersion?: InputMaybe<IntComparisonExp>;
+  parentHash?: InputMaybe<ByteaComparisonExp>;
+  specName?: InputMaybe<StringComparisonExp>;
+  specVersion?: InputMaybe<IntComparisonExp>;
+  stateRoot?: InputMaybe<ByteaComparisonExp>;
+  timestamp?: InputMaybe<TimestamptzComparisonExp>;
+  validator?: InputMaybe<ByteaComparisonExp>;
+};
+
+/** A Relay connection object on "block" */
+export type BlockConnection = {
+  __typename?: 'BlockConnection';
+  edges: Array<BlockEdge>;
+  pageInfo: PageInfo;
 };
 
 export type BlockEdge = {
@@ -240,248 +414,254 @@ export type BlockEdge = {
   node: Block;
 };
 
-export enum BlockOrderByInput {
-  CallsCountAsc = 'callsCount_ASC',
-  CallsCountAscNullsFirst = 'callsCount_ASC_NULLS_FIRST',
-  CallsCountDesc = 'callsCount_DESC',
-  CallsCountDescNullsLast = 'callsCount_DESC_NULLS_LAST',
-  EventsCountAsc = 'eventsCount_ASC',
-  EventsCountAscNullsFirst = 'eventsCount_ASC_NULLS_FIRST',
-  EventsCountDesc = 'eventsCount_DESC',
-  EventsCountDescNullsLast = 'eventsCount_DESC_NULLS_LAST',
-  ExtrinsicsCountAsc = 'extrinsicsCount_ASC',
-  ExtrinsicsCountAscNullsFirst = 'extrinsicsCount_ASC_NULLS_FIRST',
-  ExtrinsicsCountDesc = 'extrinsicsCount_DESC',
-  ExtrinsicsCountDescNullsLast = 'extrinsicsCount_DESC_NULLS_LAST',
-  ExtrinsicsicRootAsc = 'extrinsicsicRoot_ASC',
-  ExtrinsicsicRootAscNullsFirst = 'extrinsicsicRoot_ASC_NULLS_FIRST',
-  ExtrinsicsicRootDesc = 'extrinsicsicRoot_DESC',
-  ExtrinsicsicRootDescNullsLast = 'extrinsicsicRoot_DESC_NULLS_LAST',
-  HashAsc = 'hash_ASC',
-  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
-  HashDesc = 'hash_DESC',
-  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
-  HeightAsc = 'height_ASC',
-  HeightAscNullsFirst = 'height_ASC_NULLS_FIRST',
-  HeightDesc = 'height_DESC',
-  HeightDescNullsLast = 'height_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  ImplNameAsc = 'implName_ASC',
-  ImplNameAscNullsFirst = 'implName_ASC_NULLS_FIRST',
-  ImplNameDesc = 'implName_DESC',
-  ImplNameDescNullsLast = 'implName_DESC_NULLS_LAST',
-  ImplVersionAsc = 'implVersion_ASC',
-  ImplVersionAscNullsFirst = 'implVersion_ASC_NULLS_FIRST',
-  ImplVersionDesc = 'implVersion_DESC',
-  ImplVersionDescNullsLast = 'implVersion_DESC_NULLS_LAST',
-  ParentHashAsc = 'parentHash_ASC',
-  ParentHashAscNullsFirst = 'parentHash_ASC_NULLS_FIRST',
-  ParentHashDesc = 'parentHash_DESC',
-  ParentHashDescNullsLast = 'parentHash_DESC_NULLS_LAST',
-  SpecNameAsc = 'specName_ASC',
-  SpecNameAscNullsFirst = 'specName_ASC_NULLS_FIRST',
-  SpecNameDesc = 'specName_DESC',
-  SpecNameDescNullsLast = 'specName_DESC_NULLS_LAST',
-  SpecVersionAsc = 'specVersion_ASC',
-  SpecVersionAscNullsFirst = 'specVersion_ASC_NULLS_FIRST',
-  SpecVersionDesc = 'specVersion_DESC',
-  SpecVersionDescNullsLast = 'specVersion_DESC_NULLS_LAST',
-  StateRootAsc = 'stateRoot_ASC',
-  StateRootAscNullsFirst = 'stateRoot_ASC_NULLS_FIRST',
-  StateRootDesc = 'stateRoot_DESC',
-  StateRootDescNullsLast = 'stateRoot_DESC_NULLS_LAST',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
-  TimestampDesc = 'timestamp_DESC',
-  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
-  ValidatorAsc = 'validator_ASC',
-  ValidatorAscNullsFirst = 'validator_ASC_NULLS_FIRST',
-  ValidatorDesc = 'validator_DESC',
-  ValidatorDescNullsLast = 'validator_DESC_NULLS_LAST',
+/** Ordering options when selecting data from "block". */
+export type BlockOrderBy = {
+  callsAggregate?: InputMaybe<CallAggregateOrderBy>;
+  callsCount?: InputMaybe<OrderBy>;
+  eventsAggregate?: InputMaybe<EventAggregateOrderBy>;
+  eventsCount?: InputMaybe<OrderBy>;
+  extrinsicsAggregate?: InputMaybe<ExtrinsicAggregateOrderBy>;
+  extrinsicsCount?: InputMaybe<OrderBy>;
+  extrinsicsicRoot?: InputMaybe<OrderBy>;
+  hash?: InputMaybe<OrderBy>;
+  height?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  implName?: InputMaybe<OrderBy>;
+  implVersion?: InputMaybe<OrderBy>;
+  parentHash?: InputMaybe<OrderBy>;
+  specName?: InputMaybe<OrderBy>;
+  specVersion?: InputMaybe<OrderBy>;
+  stateRoot?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
+  validator?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "block" */
+export enum BlockSelectColumn {
+  /** column name */
+  CallsCount = 'callsCount',
+  /** column name */
+  EventsCount = 'eventsCount',
+  /** column name */
+  ExtrinsicsCount = 'extrinsicsCount',
+  /** column name */
+  ExtrinsicsicRoot = 'extrinsicsicRoot',
+  /** column name */
+  Hash = 'hash',
+  /** column name */
+  Height = 'height',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ImplName = 'implName',
+  /** column name */
+  ImplVersion = 'implVersion',
+  /** column name */
+  ParentHash = 'parentHash',
+  /** column name */
+  SpecName = 'specName',
+  /** column name */
+  SpecVersion = 'specVersion',
+  /** column name */
+  StateRoot = 'stateRoot',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  Validator = 'validator',
 }
 
-export type BlockWhereInput = {
-  AND?: InputMaybe<Array<BlockWhereInput>>;
-  OR?: InputMaybe<Array<BlockWhereInput>>;
-  callsCount_eq?: InputMaybe<Scalars['Int']['input']>;
-  callsCount_gt?: InputMaybe<Scalars['Int']['input']>;
-  callsCount_gte?: InputMaybe<Scalars['Int']['input']>;
-  callsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  callsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  callsCount_lt?: InputMaybe<Scalars['Int']['input']>;
-  callsCount_lte?: InputMaybe<Scalars['Int']['input']>;
-  callsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  callsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  calls_every?: InputMaybe<CallWhereInput>;
-  calls_none?: InputMaybe<CallWhereInput>;
-  calls_some?: InputMaybe<CallWhereInput>;
-  eventsCount_eq?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_gt?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_gte?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  eventsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  eventsCount_lt?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_lte?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  events_every?: InputMaybe<EventWhereInput>;
-  events_none?: InputMaybe<EventWhereInput>;
-  events_some?: InputMaybe<EventWhereInput>;
-  extrinsicsCount_eq?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_gt?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_gte?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  extrinsicsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  extrinsicsCount_lt?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_lte?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  extrinsics_every?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsics_none?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsics_some?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsicsicRoot_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  extrinsicsicRoot_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  extrinsicsicRoot_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  hash_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  hash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  hash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  height_eq?: InputMaybe<Scalars['Int']['input']>;
-  height_gt?: InputMaybe<Scalars['Int']['input']>;
-  height_gte?: InputMaybe<Scalars['Int']['input']>;
-  height_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  height_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  height_lt?: InputMaybe<Scalars['Int']['input']>;
-  height_lte?: InputMaybe<Scalars['Int']['input']>;
-  height_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  height_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  implName_contains?: InputMaybe<Scalars['String']['input']>;
-  implName_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  implName_endsWith?: InputMaybe<Scalars['String']['input']>;
-  implName_eq?: InputMaybe<Scalars['String']['input']>;
-  implName_gt?: InputMaybe<Scalars['String']['input']>;
-  implName_gte?: InputMaybe<Scalars['String']['input']>;
-  implName_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  implName_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  implName_lt?: InputMaybe<Scalars['String']['input']>;
-  implName_lte?: InputMaybe<Scalars['String']['input']>;
-  implName_not_contains?: InputMaybe<Scalars['String']['input']>;
-  implName_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  implName_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  implName_not_eq?: InputMaybe<Scalars['String']['input']>;
-  implName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  implName_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  implName_startsWith?: InputMaybe<Scalars['String']['input']>;
-  implVersion_eq?: InputMaybe<Scalars['Int']['input']>;
-  implVersion_gt?: InputMaybe<Scalars['Int']['input']>;
-  implVersion_gte?: InputMaybe<Scalars['Int']['input']>;
-  implVersion_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  implVersion_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  implVersion_lt?: InputMaybe<Scalars['Int']['input']>;
-  implVersion_lte?: InputMaybe<Scalars['Int']['input']>;
-  implVersion_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  implVersion_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  parentHash_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  parentHash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  parentHash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  specName_contains?: InputMaybe<Scalars['String']['input']>;
-  specName_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  specName_endsWith?: InputMaybe<Scalars['String']['input']>;
-  specName_eq?: InputMaybe<Scalars['String']['input']>;
-  specName_gt?: InputMaybe<Scalars['String']['input']>;
-  specName_gte?: InputMaybe<Scalars['String']['input']>;
-  specName_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  specName_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  specName_lt?: InputMaybe<Scalars['String']['input']>;
-  specName_lte?: InputMaybe<Scalars['String']['input']>;
-  specName_not_contains?: InputMaybe<Scalars['String']['input']>;
-  specName_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  specName_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  specName_not_eq?: InputMaybe<Scalars['String']['input']>;
-  specName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  specName_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  specName_startsWith?: InputMaybe<Scalars['String']['input']>;
-  specVersion_eq?: InputMaybe<Scalars['Int']['input']>;
-  specVersion_gt?: InputMaybe<Scalars['Int']['input']>;
-  specVersion_gte?: InputMaybe<Scalars['Int']['input']>;
-  specVersion_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  specVersion_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  specVersion_lt?: InputMaybe<Scalars['Int']['input']>;
-  specVersion_lte?: InputMaybe<Scalars['Int']['input']>;
-  specVersion_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  specVersion_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  stateRoot_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  stateRoot_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  stateRoot_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  validator_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  validator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  validator_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+export type BooleanComparisonExp = {
+  _eq?: InputMaybe<Scalars['Boolean']['input']>;
+  _gt?: InputMaybe<Scalars['Boolean']['input']>;
+  _gte?: InputMaybe<Scalars['Boolean']['input']>;
+  _in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['Boolean']['input']>;
+  _lte?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Scalars['Boolean']['input']>;
+  _nin?: InputMaybe<Array<Scalars['Boolean']['input']>>;
 };
 
-export type BlocksConnection = {
-  __typename?: 'BlocksConnection';
-  edges: Array<BlockEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
+export type ByteaComparisonExp = {
+  _eq?: InputMaybe<Scalars['bytea']['input']>;
+  _gt?: InputMaybe<Scalars['bytea']['input']>;
+  _gte?: InputMaybe<Scalars['bytea']['input']>;
+  _in?: InputMaybe<Array<Scalars['bytea']['input']>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['bytea']['input']>;
+  _lte?: InputMaybe<Scalars['bytea']['input']>;
+  _neq?: InputMaybe<Scalars['bytea']['input']>;
+  _nin?: InputMaybe<Array<Scalars['bytea']['input']>>;
 };
 
-export type Call = {
+/** columns and relationships of "call" */
+export type Call = Node & {
   __typename?: 'Call';
   address: Array<Scalars['Int']['output']>;
-  args?: Maybe<Scalars['JSON']['output']>;
-  argsStr?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  block: Block;
-  error?: Maybe<Scalars['JSON']['output']>;
+  args?: Maybe<Scalars['jsonb']['output']>;
+  argsStr?: Maybe<Array<Scalars['String']['output']>>;
+  /** An object relationship */
+  block?: Maybe<Block>;
+  blockId?: Maybe<Scalars['String']['output']>;
+  error?: Maybe<Scalars['jsonb']['output']>;
+  /** An array relationship */
   events: Array<Event>;
+  /** An aggregate relationship */
+  eventsAggregate: EventAggregate;
+  /** An array relationship connection */
+  events_connection: EventConnection;
+  /** An object relationship */
   extrinsic?: Maybe<Extrinsic>;
-  id: Scalars['String']['output'];
+  extrinsicId?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   pallet: Scalars['String']['output'];
+  /** An object relationship */
   parent?: Maybe<Call>;
+  parentId?: Maybe<Scalars['String']['output']>;
+  /** An array relationship */
   subcalls: Array<Call>;
+  /** An aggregate relationship */
+  subcallsAggregate: CallAggregate;
+  /** An array relationship connection */
+  subcalls_connection: CallConnection;
   success: Scalars['Boolean']['output'];
 };
 
-export type CallEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
+/** columns and relationships of "call" */
+export type CallArgsArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type CallSubcallsArgs = {
+/** columns and relationships of "call" */
+export type CallErrorArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** columns and relationships of "call" */
+export type CallEventsArgs = {
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+/** columns and relationships of "call" */
+export type CallEventsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+/** columns and relationships of "call" */
+export type CallEvents_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+/** columns and relationships of "call" */
+export type CallSubcallsArgs = {
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+/** columns and relationships of "call" */
+export type CallSubcallsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+/** columns and relationships of "call" */
+export type CallSubcalls_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+/** aggregated selection of "call" */
+export type CallAggregate = {
+  __typename?: 'CallAggregate';
+  aggregate?: Maybe<CallAggregateFields>;
+  nodes: Array<Call>;
+};
+
+export type CallAggregateBoolExp = {
+  bool_and?: InputMaybe<CallAggregateBoolExpBool_And>;
+  bool_or?: InputMaybe<CallAggregateBoolExpBool_Or>;
+  count?: InputMaybe<CallAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "call" */
+export type CallAggregateFields = {
+  __typename?: 'CallAggregateFields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<CallMaxFields>;
+  min?: Maybe<CallMinFields>;
+};
+
+/** aggregate fields of "call" */
+export type CallAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<CallSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "call" */
+export type CallAggregateOrderBy = {
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<CallMaxOrderBy>;
+  min?: InputMaybe<CallMinOrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "call". All fields are combined with a logical 'AND'. */
+export type CallBoolExp = {
+  _and?: InputMaybe<Array<CallBoolExp>>;
+  _not?: InputMaybe<CallBoolExp>;
+  _or?: InputMaybe<Array<CallBoolExp>>;
+  address?: InputMaybe<IntArrayComparisonExp>;
+  args?: InputMaybe<JsonbComparisonExp>;
+  argsStr?: InputMaybe<StringArrayComparisonExp>;
+  block?: InputMaybe<BlockBoolExp>;
+  blockId?: InputMaybe<StringComparisonExp>;
+  error?: InputMaybe<JsonbComparisonExp>;
+  events?: InputMaybe<EventBoolExp>;
+  eventsAggregate?: InputMaybe<EventAggregateBoolExp>;
+  extrinsic?: InputMaybe<ExtrinsicBoolExp>;
+  extrinsicId?: InputMaybe<StringComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  name?: InputMaybe<StringComparisonExp>;
+  pallet?: InputMaybe<StringComparisonExp>;
+  parent?: InputMaybe<CallBoolExp>;
+  parentId?: InputMaybe<StringComparisonExp>;
+  subcalls?: InputMaybe<CallBoolExp>;
+  subcallsAggregate?: InputMaybe<CallAggregateBoolExp>;
+  success?: InputMaybe<BooleanComparisonExp>;
+};
+
+/** A Relay connection object on "call" */
+export type CallConnection = {
+  __typename?: 'CallConnection';
+  edges: Array<CallEdge>;
+  pageInfo: PageInfo;
 };
 
 export type CallEdge = {
@@ -490,246 +670,249 @@ export type CallEdge = {
   node: Call;
 };
 
-export enum CallOrderByInput {
-  BlockCallsCountAsc = 'block_callsCount_ASC',
-  BlockCallsCountAscNullsFirst = 'block_callsCount_ASC_NULLS_FIRST',
-  BlockCallsCountDesc = 'block_callsCount_DESC',
-  BlockCallsCountDescNullsLast = 'block_callsCount_DESC_NULLS_LAST',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountAscNullsFirst = 'block_eventsCount_ASC_NULLS_FIRST',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockEventsCountDescNullsLast = 'block_eventsCount_DESC_NULLS_LAST',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountAscNullsFirst = 'block_extrinsicsCount_ASC_NULLS_FIRST',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockExtrinsicsCountDescNullsLast = 'block_extrinsicsCount_DESC_NULLS_LAST',
-  BlockExtrinsicsicRootAsc = 'block_extrinsicsicRoot_ASC',
-  BlockExtrinsicsicRootAscNullsFirst = 'block_extrinsicsicRoot_ASC_NULLS_FIRST',
-  BlockExtrinsicsicRootDesc = 'block_extrinsicsicRoot_DESC',
-  BlockExtrinsicsicRootDescNullsLast = 'block_extrinsicsicRoot_DESC_NULLS_LAST',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashAscNullsFirst = 'block_hash_ASC_NULLS_FIRST',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHashDescNullsLast = 'block_hash_DESC_NULLS_LAST',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightAscNullsFirst = 'block_height_ASC_NULLS_FIRST',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockHeightDescNullsLast = 'block_height_DESC_NULLS_LAST',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdAscNullsFirst = 'block_id_ASC_NULLS_FIRST',
-  BlockIdDesc = 'block_id_DESC',
-  BlockIdDescNullsLast = 'block_id_DESC_NULLS_LAST',
-  BlockImplNameAsc = 'block_implName_ASC',
-  BlockImplNameAscNullsFirst = 'block_implName_ASC_NULLS_FIRST',
-  BlockImplNameDesc = 'block_implName_DESC',
-  BlockImplNameDescNullsLast = 'block_implName_DESC_NULLS_LAST',
-  BlockImplVersionAsc = 'block_implVersion_ASC',
-  BlockImplVersionAscNullsFirst = 'block_implVersion_ASC_NULLS_FIRST',
-  BlockImplVersionDesc = 'block_implVersion_DESC',
-  BlockImplVersionDescNullsLast = 'block_implVersion_DESC_NULLS_LAST',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashAscNullsFirst = 'block_parentHash_ASC_NULLS_FIRST',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockParentHashDescNullsLast = 'block_parentHash_DESC_NULLS_LAST',
-  BlockSpecNameAsc = 'block_specName_ASC',
-  BlockSpecNameAscNullsFirst = 'block_specName_ASC_NULLS_FIRST',
-  BlockSpecNameDesc = 'block_specName_DESC',
-  BlockSpecNameDescNullsLast = 'block_specName_DESC_NULLS_LAST',
-  BlockSpecVersionAsc = 'block_specVersion_ASC',
-  BlockSpecVersionAscNullsFirst = 'block_specVersion_ASC_NULLS_FIRST',
-  BlockSpecVersionDesc = 'block_specVersion_DESC',
-  BlockSpecVersionDescNullsLast = 'block_specVersion_DESC_NULLS_LAST',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootAscNullsFirst = 'block_stateRoot_ASC_NULLS_FIRST',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockStateRootDescNullsLast = 'block_stateRoot_DESC_NULLS_LAST',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampAscNullsFirst = 'block_timestamp_ASC_NULLS_FIRST',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  BlockTimestampDescNullsLast = 'block_timestamp_DESC_NULLS_LAST',
-  BlockValidatorAsc = 'block_validator_ASC',
-  BlockValidatorAscNullsFirst = 'block_validator_ASC_NULLS_FIRST',
-  BlockValidatorDesc = 'block_validator_DESC',
-  BlockValidatorDescNullsLast = 'block_validator_DESC_NULLS_LAST',
-  ExtrinsicFeeAsc = 'extrinsic_fee_ASC',
-  ExtrinsicFeeAscNullsFirst = 'extrinsic_fee_ASC_NULLS_FIRST',
-  ExtrinsicFeeDesc = 'extrinsic_fee_DESC',
-  ExtrinsicFeeDescNullsLast = 'extrinsic_fee_DESC_NULLS_LAST',
-  ExtrinsicHashAsc = 'extrinsic_hash_ASC',
-  ExtrinsicHashAscNullsFirst = 'extrinsic_hash_ASC_NULLS_FIRST',
-  ExtrinsicHashDesc = 'extrinsic_hash_DESC',
-  ExtrinsicHashDescNullsLast = 'extrinsic_hash_DESC_NULLS_LAST',
-  ExtrinsicIdAsc = 'extrinsic_id_ASC',
-  ExtrinsicIdAscNullsFirst = 'extrinsic_id_ASC_NULLS_FIRST',
-  ExtrinsicIdDesc = 'extrinsic_id_DESC',
-  ExtrinsicIdDescNullsLast = 'extrinsic_id_DESC_NULLS_LAST',
-  ExtrinsicIndexAsc = 'extrinsic_index_ASC',
-  ExtrinsicIndexAscNullsFirst = 'extrinsic_index_ASC_NULLS_FIRST',
-  ExtrinsicIndexDesc = 'extrinsic_index_DESC',
-  ExtrinsicIndexDescNullsLast = 'extrinsic_index_DESC_NULLS_LAST',
-  ExtrinsicSuccessAsc = 'extrinsic_success_ASC',
-  ExtrinsicSuccessAscNullsFirst = 'extrinsic_success_ASC_NULLS_FIRST',
-  ExtrinsicSuccessDesc = 'extrinsic_success_DESC',
-  ExtrinsicSuccessDescNullsLast = 'extrinsic_success_DESC_NULLS_LAST',
-  ExtrinsicTipAsc = 'extrinsic_tip_ASC',
-  ExtrinsicTipAscNullsFirst = 'extrinsic_tip_ASC_NULLS_FIRST',
-  ExtrinsicTipDesc = 'extrinsic_tip_DESC',
-  ExtrinsicTipDescNullsLast = 'extrinsic_tip_DESC_NULLS_LAST',
-  ExtrinsicVersionAsc = 'extrinsic_version_ASC',
-  ExtrinsicVersionAscNullsFirst = 'extrinsic_version_ASC_NULLS_FIRST',
-  ExtrinsicVersionDesc = 'extrinsic_version_DESC',
-  ExtrinsicVersionDescNullsLast = 'extrinsic_version_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  NameAsc = 'name_ASC',
-  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
-  NameDesc = 'name_DESC',
-  NameDescNullsLast = 'name_DESC_NULLS_LAST',
-  PalletAsc = 'pallet_ASC',
-  PalletAscNullsFirst = 'pallet_ASC_NULLS_FIRST',
-  PalletDesc = 'pallet_DESC',
-  PalletDescNullsLast = 'pallet_DESC_NULLS_LAST',
-  ParentIdAsc = 'parent_id_ASC',
-  ParentIdAscNullsFirst = 'parent_id_ASC_NULLS_FIRST',
-  ParentIdDesc = 'parent_id_DESC',
-  ParentIdDescNullsLast = 'parent_id_DESC_NULLS_LAST',
-  ParentNameAsc = 'parent_name_ASC',
-  ParentNameAscNullsFirst = 'parent_name_ASC_NULLS_FIRST',
-  ParentNameDesc = 'parent_name_DESC',
-  ParentNameDescNullsLast = 'parent_name_DESC_NULLS_LAST',
-  ParentPalletAsc = 'parent_pallet_ASC',
-  ParentPalletAscNullsFirst = 'parent_pallet_ASC_NULLS_FIRST',
-  ParentPalletDesc = 'parent_pallet_DESC',
-  ParentPalletDescNullsLast = 'parent_pallet_DESC_NULLS_LAST',
-  ParentSuccessAsc = 'parent_success_ASC',
-  ParentSuccessAscNullsFirst = 'parent_success_ASC_NULLS_FIRST',
-  ParentSuccessDesc = 'parent_success_DESC',
-  ParentSuccessDescNullsLast = 'parent_success_DESC_NULLS_LAST',
-  SuccessAsc = 'success_ASC',
-  SuccessAscNullsFirst = 'success_ASC_NULLS_FIRST',
-  SuccessDesc = 'success_DESC',
-  SuccessDescNullsLast = 'success_DESC_NULLS_LAST',
+/** aggregate max on columns */
+export type CallMaxFields = {
+  __typename?: 'CallMaxFields';
+  address?: Maybe<Array<Scalars['Int']['output']>>;
+  argsStr?: Maybe<Array<Scalars['String']['output']>>;
+  blockId?: Maybe<Scalars['String']['output']>;
+  extrinsicId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  pallet?: Maybe<Scalars['String']['output']>;
+  parentId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "call" */
+export type CallMaxOrderBy = {
+  address?: InputMaybe<OrderBy>;
+  argsStr?: InputMaybe<OrderBy>;
+  blockId?: InputMaybe<OrderBy>;
+  extrinsicId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  name?: InputMaybe<OrderBy>;
+  pallet?: InputMaybe<OrderBy>;
+  parentId?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type CallMinFields = {
+  __typename?: 'CallMinFields';
+  address?: Maybe<Array<Scalars['Int']['output']>>;
+  argsStr?: Maybe<Array<Scalars['String']['output']>>;
+  blockId?: Maybe<Scalars['String']['output']>;
+  extrinsicId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  pallet?: Maybe<Scalars['String']['output']>;
+  parentId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "call" */
+export type CallMinOrderBy = {
+  address?: InputMaybe<OrderBy>;
+  argsStr?: InputMaybe<OrderBy>;
+  blockId?: InputMaybe<OrderBy>;
+  extrinsicId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  name?: InputMaybe<OrderBy>;
+  pallet?: InputMaybe<OrderBy>;
+  parentId?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "call". */
+export type CallOrderBy = {
+  address?: InputMaybe<OrderBy>;
+  args?: InputMaybe<OrderBy>;
+  argsStr?: InputMaybe<OrderBy>;
+  block?: InputMaybe<BlockOrderBy>;
+  blockId?: InputMaybe<OrderBy>;
+  error?: InputMaybe<OrderBy>;
+  eventsAggregate?: InputMaybe<EventAggregateOrderBy>;
+  extrinsic?: InputMaybe<ExtrinsicOrderBy>;
+  extrinsicId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  name?: InputMaybe<OrderBy>;
+  pallet?: InputMaybe<OrderBy>;
+  parent?: InputMaybe<CallOrderBy>;
+  parentId?: InputMaybe<OrderBy>;
+  subcallsAggregate?: InputMaybe<CallAggregateOrderBy>;
+  success?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "call" */
+export enum CallSelectColumn {
+  /** column name */
+  Address = 'address',
+  /** column name */
+  Args = 'args',
+  /** column name */
+  ArgsStr = 'argsStr',
+  /** column name */
+  BlockId = 'blockId',
+  /** column name */
+  Error = 'error',
+  /** column name */
+  ExtrinsicId = 'extrinsicId',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Pallet = 'pallet',
+  /** column name */
+  ParentId = 'parentId',
+  /** column name */
+  Success = 'success',
 }
 
-export type CallWhereInput = {
-  AND?: InputMaybe<Array<CallWhereInput>>;
-  OR?: InputMaybe<Array<CallWhereInput>>;
-  address_containsAll?: InputMaybe<Array<Scalars['Int']['input']>>;
-  address_containsAny?: InputMaybe<Array<Scalars['Int']['input']>>;
-  address_containsNone?: InputMaybe<Array<Scalars['Int']['input']>>;
-  address_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  argsStr_containsAll?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  argsStr_containsAny?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  argsStr_containsNone?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  argsStr_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  args_eq?: InputMaybe<Scalars['JSON']['input']>;
-  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  error_eq?: InputMaybe<Scalars['JSON']['input']>;
-  error_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  error_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  error_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  error_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  events_every?: InputMaybe<EventWhereInput>;
-  events_none?: InputMaybe<EventWhereInput>;
-  events_some?: InputMaybe<EventWhereInput>;
-  extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
-  pallet_contains?: InputMaybe<Scalars['String']['input']>;
-  pallet_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  pallet_endsWith?: InputMaybe<Scalars['String']['input']>;
-  pallet_eq?: InputMaybe<Scalars['String']['input']>;
-  pallet_gt?: InputMaybe<Scalars['String']['input']>;
-  pallet_gte?: InputMaybe<Scalars['String']['input']>;
-  pallet_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  pallet_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  pallet_lt?: InputMaybe<Scalars['String']['input']>;
-  pallet_lte?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_contains?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_eq?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  pallet_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  pallet_startsWith?: InputMaybe<Scalars['String']['input']>;
-  parent?: InputMaybe<CallWhereInput>;
-  parent_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  subcalls_every?: InputMaybe<CallWhereInput>;
-  subcalls_none?: InputMaybe<CallWhereInput>;
-  subcalls_some?: InputMaybe<CallWhereInput>;
-  success_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  success_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  success_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
-};
+/** select "callAggregateBoolExpBool_andArgumentsColumns" columns of table "call" */
+export enum CallSelectColumnCallAggregateBoolExpBool_AndArgumentsColumns {
+  /** column name */
+  Success = 'success',
+}
 
-export type CallsConnection = {
-  __typename?: 'CallsConnection';
-  edges: Array<CallEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
+/** select "callAggregateBoolExpBool_orArgumentsColumns" columns of table "call" */
+export enum CallSelectColumnCallAggregateBoolExpBool_OrArgumentsColumns {
+  /** column name */
+  Success = 'success',
+}
 
-/** Certification */
-export type Cert = {
+/** columns and relationships of "cert" */
+export type Cert = Node & {
   __typename?: 'Cert';
+  /** An array relationship */
   certHistory: Array<CertEvent>;
-  /** the last createdOn value */
+  /** An aggregate relationship */
+  certHistoryAggregate: CertEventAggregate;
+  /** An array relationship connection */
+  certHistory_connection: CertEventConnection;
   createdOn: Scalars['Int']['output'];
-  /** the current expireOn value */
   expireOn: Scalars['Int']['output'];
-  id: Scalars['String']['output'];
-  /** whether the certification is currently active or not */
+  id: Scalars['ID']['output'];
   isActive: Scalars['Boolean']['output'];
-  issuer: Identity;
-  receiver: Identity;
+  /** An object relationship */
+  issuer?: Maybe<Identity>;
+  issuerId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  receiver?: Maybe<Identity>;
+  receiverId?: Maybe<Scalars['String']['output']>;
 };
 
-/** Certification */
+/** columns and relationships of "cert" */
 export type CertCertHistoryArgs = {
+  distinctOn?: InputMaybe<Array<CertEventSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertEventOrderByInput>>;
-  where?: InputMaybe<CertEventWhereInput>;
+  orderBy?: InputMaybe<Array<CertEventOrderBy>>;
+  where?: InputMaybe<CertEventBoolExp>;
+};
+
+/** columns and relationships of "cert" */
+export type CertCertHistoryAggregateArgs = {
+  distinctOn?: InputMaybe<Array<CertEventSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertEventOrderBy>>;
+  where?: InputMaybe<CertEventBoolExp>;
+};
+
+/** columns and relationships of "cert" */
+export type CertCertHistory_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CertEventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertEventOrderBy>>;
+  where?: InputMaybe<CertEventBoolExp>;
+};
+
+/** aggregated selection of "cert" */
+export type CertAggregate = {
+  __typename?: 'CertAggregate';
+  aggregate?: Maybe<CertAggregateFields>;
+  nodes: Array<Cert>;
+};
+
+export type CertAggregateBoolExp = {
+  bool_and?: InputMaybe<CertAggregateBoolExpBool_And>;
+  bool_or?: InputMaybe<CertAggregateBoolExpBool_Or>;
+  count?: InputMaybe<CertAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "cert" */
+export type CertAggregateFields = {
+  __typename?: 'CertAggregateFields';
+  avg?: Maybe<CertAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<CertMaxFields>;
+  min?: Maybe<CertMinFields>;
+  stddev?: Maybe<CertStddevFields>;
+  stddevPop?: Maybe<CertStddevPopFields>;
+  stddevSamp?: Maybe<CertStddevSampFields>;
+  sum?: Maybe<CertSumFields>;
+  varPop?: Maybe<CertVarPopFields>;
+  varSamp?: Maybe<CertVarSampFields>;
+  variance?: Maybe<CertVarianceFields>;
+};
+
+/** aggregate fields of "cert" */
+export type CertAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<CertSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "cert" */
+export type CertAggregateOrderBy = {
+  avg?: InputMaybe<CertAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<CertMaxOrderBy>;
+  min?: InputMaybe<CertMinOrderBy>;
+  stddev?: InputMaybe<CertStddevOrderBy>;
+  stddevPop?: InputMaybe<CertStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<CertStddevSampOrderBy>;
+  sum?: InputMaybe<CertSumOrderBy>;
+  varPop?: InputMaybe<CertVarPopOrderBy>;
+  varSamp?: InputMaybe<CertVarSampOrderBy>;
+  variance?: InputMaybe<CertVarianceOrderBy>;
+};
+
+/** aggregate avg on columns */
+export type CertAvgFields = {
+  __typename?: 'CertAvgFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+  expireOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "cert" */
+export type CertAvgOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "cert". All fields are combined with a logical 'AND'. */
+export type CertBoolExp = {
+  _and?: InputMaybe<Array<CertBoolExp>>;
+  _not?: InputMaybe<CertBoolExp>;
+  _or?: InputMaybe<Array<CertBoolExp>>;
+  certHistory?: InputMaybe<CertEventBoolExp>;
+  certHistoryAggregate?: InputMaybe<CertEventAggregateBoolExp>;
+  createdOn?: InputMaybe<IntComparisonExp>;
+  expireOn?: InputMaybe<IntComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  isActive?: InputMaybe<BooleanComparisonExp>;
+  issuer?: InputMaybe<IdentityBoolExp>;
+  issuerId?: InputMaybe<StringComparisonExp>;
+  receiver?: InputMaybe<IdentityBoolExp>;
+  receiverId?: InputMaybe<StringComparisonExp>;
+};
+
+/** A Relay connection object on "cert" */
+export type CertConnection = {
+  __typename?: 'CertConnection';
+  edges: Array<CertEdge>;
+  pageInfo: PageInfo;
 };
 
 export type CertEdge = {
@@ -738,14 +921,98 @@ export type CertEdge = {
   node: Cert;
 };
 
-/** Certification event */
-export type CertEvent = {
+/** columns and relationships of "cert_event" */
+export type CertEvent = Node & {
   __typename?: 'CertEvent';
   blockNumber: Scalars['Int']['output'];
-  cert: Cert;
-  event: Event;
-  eventType: EventType;
-  id: Scalars['String']['output'];
+  /** An object relationship */
+  cert?: Maybe<Cert>;
+  certId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  event?: Maybe<Event>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  eventType?: Maybe<EventTypeEnum>;
+  id: Scalars['ID']['output'];
+};
+
+/** aggregated selection of "cert_event" */
+export type CertEventAggregate = {
+  __typename?: 'CertEventAggregate';
+  aggregate?: Maybe<CertEventAggregateFields>;
+  nodes: Array<CertEvent>;
+};
+
+export type CertEventAggregateBoolExp = {
+  count?: InputMaybe<CertEventAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "cert_event" */
+export type CertEventAggregateFields = {
+  __typename?: 'CertEventAggregateFields';
+  avg?: Maybe<CertEventAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<CertEventMaxFields>;
+  min?: Maybe<CertEventMinFields>;
+  stddev?: Maybe<CertEventStddevFields>;
+  stddevPop?: Maybe<CertEventStddevPopFields>;
+  stddevSamp?: Maybe<CertEventStddevSampFields>;
+  sum?: Maybe<CertEventSumFields>;
+  varPop?: Maybe<CertEventVarPopFields>;
+  varSamp?: Maybe<CertEventVarSampFields>;
+  variance?: Maybe<CertEventVarianceFields>;
+};
+
+/** aggregate fields of "cert_event" */
+export type CertEventAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<CertEventSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "cert_event" */
+export type CertEventAggregateOrderBy = {
+  avg?: InputMaybe<CertEventAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<CertEventMaxOrderBy>;
+  min?: InputMaybe<CertEventMinOrderBy>;
+  stddev?: InputMaybe<CertEventStddevOrderBy>;
+  stddevPop?: InputMaybe<CertEventStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<CertEventStddevSampOrderBy>;
+  sum?: InputMaybe<CertEventSumOrderBy>;
+  varPop?: InputMaybe<CertEventVarPopOrderBy>;
+  varSamp?: InputMaybe<CertEventVarSampOrderBy>;
+  variance?: InputMaybe<CertEventVarianceOrderBy>;
+};
+
+/** aggregate avg on columns */
+export type CertEventAvgFields = {
+  __typename?: 'CertEventAvgFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "cert_event" */
+export type CertEventAvgOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "cert_event". All fields are combined with a logical 'AND'. */
+export type CertEventBoolExp = {
+  _and?: InputMaybe<Array<CertEventBoolExp>>;
+  _not?: InputMaybe<CertEventBoolExp>;
+  _or?: InputMaybe<Array<CertEventBoolExp>>;
+  blockNumber?: InputMaybe<IntComparisonExp>;
+  cert?: InputMaybe<CertBoolExp>;
+  certId?: InputMaybe<StringComparisonExp>;
+  event?: InputMaybe<EventBoolExp>;
+  eventId?: InputMaybe<StringComparisonExp>;
+  eventType?: InputMaybe<EventTypeEnumComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+};
+
+/** A Relay connection object on "cert_event" */
+export type CertEventConnection = {
+  __typename?: 'CertEventConnection';
+  edges: Array<CertEventEdge>;
+  pageInfo: PageInfo;
 };
 
 export type CertEventEdge = {
@@ -754,260 +1021,407 @@ export type CertEventEdge = {
   node: CertEvent;
 };
 
-export enum CertEventOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  CertCreatedOnAsc = 'cert_createdOn_ASC',
-  CertCreatedOnAscNullsFirst = 'cert_createdOn_ASC_NULLS_FIRST',
-  CertCreatedOnDesc = 'cert_createdOn_DESC',
-  CertCreatedOnDescNullsLast = 'cert_createdOn_DESC_NULLS_LAST',
-  CertExpireOnAsc = 'cert_expireOn_ASC',
-  CertExpireOnAscNullsFirst = 'cert_expireOn_ASC_NULLS_FIRST',
-  CertExpireOnDesc = 'cert_expireOn_DESC',
-  CertExpireOnDescNullsLast = 'cert_expireOn_DESC_NULLS_LAST',
-  CertIdAsc = 'cert_id_ASC',
-  CertIdAscNullsFirst = 'cert_id_ASC_NULLS_FIRST',
-  CertIdDesc = 'cert_id_DESC',
-  CertIdDescNullsLast = 'cert_id_DESC_NULLS_LAST',
-  CertIsActiveAsc = 'cert_isActive_ASC',
-  CertIsActiveAscNullsFirst = 'cert_isActive_ASC_NULLS_FIRST',
-  CertIsActiveDesc = 'cert_isActive_DESC',
-  CertIsActiveDescNullsLast = 'cert_isActive_DESC_NULLS_LAST',
-  EventTypeAsc = 'eventType_ASC',
-  EventTypeAscNullsFirst = 'eventType_ASC_NULLS_FIRST',
-  EventTypeDesc = 'eventType_DESC',
-  EventTypeDescNullsLast = 'eventType_DESC_NULLS_LAST',
-  EventIdAsc = 'event_id_ASC',
-  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
-  EventIdDesc = 'event_id_DESC',
-  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
-  EventIndexAsc = 'event_index_ASC',
-  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
-  EventIndexDesc = 'event_index_DESC',
-  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
-  EventNameAsc = 'event_name_ASC',
-  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
-  EventNameDesc = 'event_name_DESC',
-  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
-  EventPalletAsc = 'event_pallet_ASC',
-  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
-  EventPalletDesc = 'event_pallet_DESC',
-  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
-  EventPhaseAsc = 'event_phase_ASC',
-  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
-  EventPhaseDesc = 'event_phase_DESC',
-  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+/** aggregate max on columns */
+export type CertEventMaxFields = {
+  __typename?: 'CertEventMaxFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+  certId?: Maybe<Scalars['String']['output']>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "cert_event" */
+export type CertEventMaxOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  certId?: InputMaybe<OrderBy>;
+  eventId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type CertEventMinFields = {
+  __typename?: 'CertEventMinFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+  certId?: Maybe<Scalars['String']['output']>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "cert_event" */
+export type CertEventMinOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  certId?: InputMaybe<OrderBy>;
+  eventId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "cert_event". */
+export type CertEventOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  cert?: InputMaybe<CertOrderBy>;
+  certId?: InputMaybe<OrderBy>;
+  event?: InputMaybe<EventOrderBy>;
+  eventId?: InputMaybe<OrderBy>;
+  eventType?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "cert_event" */
+export enum CertEventSelectColumn {
+  /** column name */
+  BlockNumber = 'blockNumber',
+  /** column name */
+  CertId = 'certId',
+  /** column name */
+  EventId = 'eventId',
+  /** column name */
+  EventType = 'eventType',
+  /** column name */
+  Id = 'id',
 }
 
-export type CertEventWhereInput = {
-  AND?: InputMaybe<Array<CertEventWhereInput>>;
-  OR?: InputMaybe<Array<CertEventWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  cert?: InputMaybe<CertWhereInput>;
-  cert_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  event?: InputMaybe<EventWhereInput>;
-  eventType_eq?: InputMaybe<EventType>;
-  eventType_in?: InputMaybe<Array<EventType>>;
-  eventType_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  eventType_not_eq?: InputMaybe<EventType>;
-  eventType_not_in?: InputMaybe<Array<EventType>>;
-  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+/** aggregate stddev on columns */
+export type CertEventStddevFields = {
+  __typename?: 'CertEventStddevFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
 };
 
-export type CertEventsConnection = {
-  __typename?: 'CertEventsConnection';
-  edges: Array<CertEventEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by stddev() on columns of table "cert_event" */
+export type CertEventStddevOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
 };
 
-export enum CertOrderByInput {
-  CreatedOnAsc = 'createdOn_ASC',
-  CreatedOnAscNullsFirst = 'createdOn_ASC_NULLS_FIRST',
-  CreatedOnDesc = 'createdOn_DESC',
-  CreatedOnDescNullsLast = 'createdOn_DESC_NULLS_LAST',
-  ExpireOnAsc = 'expireOn_ASC',
-  ExpireOnAscNullsFirst = 'expireOn_ASC_NULLS_FIRST',
-  ExpireOnDesc = 'expireOn_DESC',
-  ExpireOnDescNullsLast = 'expireOn_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IsActiveAsc = 'isActive_ASC',
-  IsActiveAscNullsFirst = 'isActive_ASC_NULLS_FIRST',
-  IsActiveDesc = 'isActive_DESC',
-  IsActiveDescNullsLast = 'isActive_DESC_NULLS_LAST',
-  IssuerCreatedOnAsc = 'issuer_createdOn_ASC',
-  IssuerCreatedOnAscNullsFirst = 'issuer_createdOn_ASC_NULLS_FIRST',
-  IssuerCreatedOnDesc = 'issuer_createdOn_DESC',
-  IssuerCreatedOnDescNullsLast = 'issuer_createdOn_DESC_NULLS_LAST',
-  IssuerExpireOnAsc = 'issuer_expireOn_ASC',
-  IssuerExpireOnAscNullsFirst = 'issuer_expireOn_ASC_NULLS_FIRST',
-  IssuerExpireOnDesc = 'issuer_expireOn_DESC',
-  IssuerExpireOnDescNullsLast = 'issuer_expireOn_DESC_NULLS_LAST',
-  IssuerIdAsc = 'issuer_id_ASC',
-  IssuerIdAscNullsFirst = 'issuer_id_ASC_NULLS_FIRST',
-  IssuerIdDesc = 'issuer_id_DESC',
-  IssuerIdDescNullsLast = 'issuer_id_DESC_NULLS_LAST',
-  IssuerIndexAsc = 'issuer_index_ASC',
-  IssuerIndexAscNullsFirst = 'issuer_index_ASC_NULLS_FIRST',
-  IssuerIndexDesc = 'issuer_index_DESC',
-  IssuerIndexDescNullsLast = 'issuer_index_DESC_NULLS_LAST',
-  IssuerIsMemberAsc = 'issuer_isMember_ASC',
-  IssuerIsMemberAscNullsFirst = 'issuer_isMember_ASC_NULLS_FIRST',
-  IssuerIsMemberDesc = 'issuer_isMember_DESC',
-  IssuerIsMemberDescNullsLast = 'issuer_isMember_DESC_NULLS_LAST',
-  IssuerLastChangeOnAsc = 'issuer_lastChangeOn_ASC',
-  IssuerLastChangeOnAscNullsFirst = 'issuer_lastChangeOn_ASC_NULLS_FIRST',
-  IssuerLastChangeOnDesc = 'issuer_lastChangeOn_DESC',
-  IssuerLastChangeOnDescNullsLast = 'issuer_lastChangeOn_DESC_NULLS_LAST',
-  IssuerNameAsc = 'issuer_name_ASC',
-  IssuerNameAscNullsFirst = 'issuer_name_ASC_NULLS_FIRST',
-  IssuerNameDesc = 'issuer_name_DESC',
-  IssuerNameDescNullsLast = 'issuer_name_DESC_NULLS_LAST',
-  IssuerSmithStatusAsc = 'issuer_smithStatus_ASC',
-  IssuerSmithStatusAscNullsFirst = 'issuer_smithStatus_ASC_NULLS_FIRST',
-  IssuerSmithStatusDesc = 'issuer_smithStatus_DESC',
-  IssuerSmithStatusDescNullsLast = 'issuer_smithStatus_DESC_NULLS_LAST',
-  IssuerStatusAsc = 'issuer_status_ASC',
-  IssuerStatusAscNullsFirst = 'issuer_status_ASC_NULLS_FIRST',
-  IssuerStatusDesc = 'issuer_status_DESC',
-  IssuerStatusDescNullsLast = 'issuer_status_DESC_NULLS_LAST',
-  ReceiverCreatedOnAsc = 'receiver_createdOn_ASC',
-  ReceiverCreatedOnAscNullsFirst = 'receiver_createdOn_ASC_NULLS_FIRST',
-  ReceiverCreatedOnDesc = 'receiver_createdOn_DESC',
-  ReceiverCreatedOnDescNullsLast = 'receiver_createdOn_DESC_NULLS_LAST',
-  ReceiverExpireOnAsc = 'receiver_expireOn_ASC',
-  ReceiverExpireOnAscNullsFirst = 'receiver_expireOn_ASC_NULLS_FIRST',
-  ReceiverExpireOnDesc = 'receiver_expireOn_DESC',
-  ReceiverExpireOnDescNullsLast = 'receiver_expireOn_DESC_NULLS_LAST',
-  ReceiverIdAsc = 'receiver_id_ASC',
-  ReceiverIdAscNullsFirst = 'receiver_id_ASC_NULLS_FIRST',
-  ReceiverIdDesc = 'receiver_id_DESC',
-  ReceiverIdDescNullsLast = 'receiver_id_DESC_NULLS_LAST',
-  ReceiverIndexAsc = 'receiver_index_ASC',
-  ReceiverIndexAscNullsFirst = 'receiver_index_ASC_NULLS_FIRST',
-  ReceiverIndexDesc = 'receiver_index_DESC',
-  ReceiverIndexDescNullsLast = 'receiver_index_DESC_NULLS_LAST',
-  ReceiverIsMemberAsc = 'receiver_isMember_ASC',
-  ReceiverIsMemberAscNullsFirst = 'receiver_isMember_ASC_NULLS_FIRST',
-  ReceiverIsMemberDesc = 'receiver_isMember_DESC',
-  ReceiverIsMemberDescNullsLast = 'receiver_isMember_DESC_NULLS_LAST',
-  ReceiverLastChangeOnAsc = 'receiver_lastChangeOn_ASC',
-  ReceiverLastChangeOnAscNullsFirst = 'receiver_lastChangeOn_ASC_NULLS_FIRST',
-  ReceiverLastChangeOnDesc = 'receiver_lastChangeOn_DESC',
-  ReceiverLastChangeOnDescNullsLast = 'receiver_lastChangeOn_DESC_NULLS_LAST',
-  ReceiverNameAsc = 'receiver_name_ASC',
-  ReceiverNameAscNullsFirst = 'receiver_name_ASC_NULLS_FIRST',
-  ReceiverNameDesc = 'receiver_name_DESC',
-  ReceiverNameDescNullsLast = 'receiver_name_DESC_NULLS_LAST',
-  ReceiverSmithStatusAsc = 'receiver_smithStatus_ASC',
-  ReceiverSmithStatusAscNullsFirst = 'receiver_smithStatus_ASC_NULLS_FIRST',
-  ReceiverSmithStatusDesc = 'receiver_smithStatus_DESC',
-  ReceiverSmithStatusDescNullsLast = 'receiver_smithStatus_DESC_NULLS_LAST',
-  ReceiverStatusAsc = 'receiver_status_ASC',
-  ReceiverStatusAscNullsFirst = 'receiver_status_ASC_NULLS_FIRST',
-  ReceiverStatusDesc = 'receiver_status_DESC',
-  ReceiverStatusDescNullsLast = 'receiver_status_DESC_NULLS_LAST',
+/** aggregate stddevPop on columns */
+export type CertEventStddevPopFields = {
+  __typename?: 'CertEventStddevPopFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevPop() on columns of table "cert_event" */
+export type CertEventStddevPopOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type CertEventStddevSampFields = {
+  __typename?: 'CertEventStddevSampFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "cert_event" */
+export type CertEventStddevSampOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate sum on columns */
+export type CertEventSumFields = {
+  __typename?: 'CertEventSumFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "cert_event" */
+export type CertEventSumOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varPop on columns */
+export type CertEventVarPopFields = {
+  __typename?: 'CertEventVarPopFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "cert_event" */
+export type CertEventVarPopOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type CertEventVarSampFields = {
+  __typename?: 'CertEventVarSampFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "cert_event" */
+export type CertEventVarSampOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type CertEventVarianceFields = {
+  __typename?: 'CertEventVarianceFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "cert_event" */
+export type CertEventVarianceOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate max on columns */
+export type CertMaxFields = {
+  __typename?: 'CertMaxFields';
+  createdOn?: Maybe<Scalars['Int']['output']>;
+  expireOn?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  issuerId?: Maybe<Scalars['String']['output']>;
+  receiverId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "cert" */
+export type CertMaxOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  issuerId?: InputMaybe<OrderBy>;
+  receiverId?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type CertMinFields = {
+  __typename?: 'CertMinFields';
+  createdOn?: Maybe<Scalars['Int']['output']>;
+  expireOn?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  issuerId?: Maybe<Scalars['String']['output']>;
+  receiverId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "cert" */
+export type CertMinOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  issuerId?: InputMaybe<OrderBy>;
+  receiverId?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "cert". */
+export type CertOrderBy = {
+  certHistoryAggregate?: InputMaybe<CertEventAggregateOrderBy>;
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  isActive?: InputMaybe<OrderBy>;
+  issuer?: InputMaybe<IdentityOrderBy>;
+  issuerId?: InputMaybe<OrderBy>;
+  receiver?: InputMaybe<IdentityOrderBy>;
+  receiverId?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "cert" */
+export enum CertSelectColumn {
+  /** column name */
+  CreatedOn = 'createdOn',
+  /** column name */
+  ExpireOn = 'expireOn',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsActive = 'isActive',
+  /** column name */
+  IssuerId = 'issuerId',
+  /** column name */
+  ReceiverId = 'receiverId',
 }
 
-export type CertWhereInput = {
-  AND?: InputMaybe<Array<CertWhereInput>>;
-  OR?: InputMaybe<Array<CertWhereInput>>;
-  certHistory_every?: InputMaybe<CertEventWhereInput>;
-  certHistory_none?: InputMaybe<CertEventWhereInput>;
-  certHistory_some?: InputMaybe<CertEventWhereInput>;
-  createdOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  createdOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  createdOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  expireOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  expireOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  expireOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  isActive_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  isActive_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  isActive_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  issuer?: InputMaybe<IdentityWhereInput>;
-  issuer_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  receiver?: InputMaybe<IdentityWhereInput>;
-  receiver_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+/** select "certAggregateBoolExpBool_andArgumentsColumns" columns of table "cert" */
+export enum CertSelectColumnCertAggregateBoolExpBool_AndArgumentsColumns {
+  /** column name */
+  IsActive = 'isActive',
+}
+
+/** select "certAggregateBoolExpBool_orArgumentsColumns" columns of table "cert" */
+export enum CertSelectColumnCertAggregateBoolExpBool_OrArgumentsColumns {
+  /** column name */
+  IsActive = 'isActive',
+}
+
+/** aggregate stddev on columns */
+export type CertStddevFields = {
+  __typename?: 'CertStddevFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+  expireOn?: Maybe<Scalars['Float']['output']>;
 };
 
-export type CertsConnection = {
-  __typename?: 'CertsConnection';
-  edges: Array<CertEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by stddev() on columns of table "cert" */
+export type CertStddevOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
 };
 
-/** owner key change */
-export type ChangeOwnerKey = {
+/** aggregate stddevPop on columns */
+export type CertStddevPopFields = {
+  __typename?: 'CertStddevPopFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+  expireOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevPop() on columns of table "cert" */
+export type CertStddevPopOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type CertStddevSampFields = {
+  __typename?: 'CertStddevSampFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+  expireOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "cert" */
+export type CertStddevSampOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate sum on columns */
+export type CertSumFields = {
+  __typename?: 'CertSumFields';
+  createdOn?: Maybe<Scalars['Int']['output']>;
+  expireOn?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "cert" */
+export type CertSumOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varPop on columns */
+export type CertVarPopFields = {
+  __typename?: 'CertVarPopFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+  expireOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "cert" */
+export type CertVarPopOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type CertVarSampFields = {
+  __typename?: 'CertVarSampFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+  expireOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "cert" */
+export type CertVarSampOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type CertVarianceFields = {
+  __typename?: 'CertVarianceFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+  expireOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "cert" */
+export type CertVarianceOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+};
+
+/** columns and relationships of "change_owner_key" */
+export type ChangeOwnerKey = Node & {
   __typename?: 'ChangeOwnerKey';
   blockNumber: Scalars['Int']['output'];
-  id: Scalars['String']['output'];
-  identity: Identity;
-  next: Account;
-  previous: Account;
+  id: Scalars['ID']['output'];
+  /** An object relationship */
+  identity?: Maybe<Identity>;
+  identityId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  next?: Maybe<Account>;
+  nextId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  previous?: Maybe<Account>;
+  previousId?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregated selection of "change_owner_key" */
+export type ChangeOwnerKeyAggregate = {
+  __typename?: 'ChangeOwnerKeyAggregate';
+  aggregate?: Maybe<ChangeOwnerKeyAggregateFields>;
+  nodes: Array<ChangeOwnerKey>;
+};
+
+export type ChangeOwnerKeyAggregateBoolExp = {
+  count?: InputMaybe<ChangeOwnerKeyAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "change_owner_key" */
+export type ChangeOwnerKeyAggregateFields = {
+  __typename?: 'ChangeOwnerKeyAggregateFields';
+  avg?: Maybe<ChangeOwnerKeyAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<ChangeOwnerKeyMaxFields>;
+  min?: Maybe<ChangeOwnerKeyMinFields>;
+  stddev?: Maybe<ChangeOwnerKeyStddevFields>;
+  stddevPop?: Maybe<ChangeOwnerKeyStddevPopFields>;
+  stddevSamp?: Maybe<ChangeOwnerKeyStddevSampFields>;
+  sum?: Maybe<ChangeOwnerKeySumFields>;
+  varPop?: Maybe<ChangeOwnerKeyVarPopFields>;
+  varSamp?: Maybe<ChangeOwnerKeyVarSampFields>;
+  variance?: Maybe<ChangeOwnerKeyVarianceFields>;
+};
+
+/** aggregate fields of "change_owner_key" */
+export type ChangeOwnerKeyAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "change_owner_key" */
+export type ChangeOwnerKeyAggregateOrderBy = {
+  avg?: InputMaybe<ChangeOwnerKeyAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<ChangeOwnerKeyMaxOrderBy>;
+  min?: InputMaybe<ChangeOwnerKeyMinOrderBy>;
+  stddev?: InputMaybe<ChangeOwnerKeyStddevOrderBy>;
+  stddevPop?: InputMaybe<ChangeOwnerKeyStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<ChangeOwnerKeyStddevSampOrderBy>;
+  sum?: InputMaybe<ChangeOwnerKeySumOrderBy>;
+  varPop?: InputMaybe<ChangeOwnerKeyVarPopOrderBy>;
+  varSamp?: InputMaybe<ChangeOwnerKeyVarSampOrderBy>;
+  variance?: InputMaybe<ChangeOwnerKeyVarianceOrderBy>;
+};
+
+/** aggregate avg on columns */
+export type ChangeOwnerKeyAvgFields = {
+  __typename?: 'ChangeOwnerKeyAvgFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyAvgOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "change_owner_key". All fields are combined with a logical 'AND'. */
+export type ChangeOwnerKeyBoolExp = {
+  _and?: InputMaybe<Array<ChangeOwnerKeyBoolExp>>;
+  _not?: InputMaybe<ChangeOwnerKeyBoolExp>;
+  _or?: InputMaybe<Array<ChangeOwnerKeyBoolExp>>;
+  blockNumber?: InputMaybe<IntComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  identity?: InputMaybe<IdentityBoolExp>;
+  identityId?: InputMaybe<StringComparisonExp>;
+  next?: InputMaybe<AccountBoolExp>;
+  nextId?: InputMaybe<StringComparisonExp>;
+  previous?: InputMaybe<AccountBoolExp>;
+  previousId?: InputMaybe<StringComparisonExp>;
+};
+
+/** A Relay connection object on "change_owner_key" */
+export type ChangeOwnerKeyConnection = {
+  __typename?: 'ChangeOwnerKeyConnection';
+  edges: Array<ChangeOwnerKeyEdge>;
+  pageInfo: PageInfo;
 };
 
 export type ChangeOwnerKeyEdge = {
@@ -1016,124 +1430,272 @@ export type ChangeOwnerKeyEdge = {
   node: ChangeOwnerKey;
 };
 
-export enum ChangeOwnerKeyOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IdentityCreatedOnAsc = 'identity_createdOn_ASC',
-  IdentityCreatedOnAscNullsFirst = 'identity_createdOn_ASC_NULLS_FIRST',
-  IdentityCreatedOnDesc = 'identity_createdOn_DESC',
-  IdentityCreatedOnDescNullsLast = 'identity_createdOn_DESC_NULLS_LAST',
-  IdentityExpireOnAsc = 'identity_expireOn_ASC',
-  IdentityExpireOnAscNullsFirst = 'identity_expireOn_ASC_NULLS_FIRST',
-  IdentityExpireOnDesc = 'identity_expireOn_DESC',
-  IdentityExpireOnDescNullsLast = 'identity_expireOn_DESC_NULLS_LAST',
-  IdentityIdAsc = 'identity_id_ASC',
-  IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
-  IdentityIdDesc = 'identity_id_DESC',
-  IdentityIdDescNullsLast = 'identity_id_DESC_NULLS_LAST',
-  IdentityIndexAsc = 'identity_index_ASC',
-  IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
-  IdentityIndexDesc = 'identity_index_DESC',
-  IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
-  IdentityIsMemberAsc = 'identity_isMember_ASC',
-  IdentityIsMemberAscNullsFirst = 'identity_isMember_ASC_NULLS_FIRST',
-  IdentityIsMemberDesc = 'identity_isMember_DESC',
-  IdentityIsMemberDescNullsLast = 'identity_isMember_DESC_NULLS_LAST',
-  IdentityLastChangeOnAsc = 'identity_lastChangeOn_ASC',
-  IdentityLastChangeOnAscNullsFirst = 'identity_lastChangeOn_ASC_NULLS_FIRST',
-  IdentityLastChangeOnDesc = 'identity_lastChangeOn_DESC',
-  IdentityLastChangeOnDescNullsLast = 'identity_lastChangeOn_DESC_NULLS_LAST',
-  IdentityNameAsc = 'identity_name_ASC',
-  IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
-  IdentityNameDesc = 'identity_name_DESC',
-  IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
-  IdentitySmithStatusAsc = 'identity_smithStatus_ASC',
-  IdentitySmithStatusAscNullsFirst = 'identity_smithStatus_ASC_NULLS_FIRST',
-  IdentitySmithStatusDesc = 'identity_smithStatus_DESC',
-  IdentitySmithStatusDescNullsLast = 'identity_smithStatus_DESC_NULLS_LAST',
-  IdentityStatusAsc = 'identity_status_ASC',
-  IdentityStatusAscNullsFirst = 'identity_status_ASC_NULLS_FIRST',
-  IdentityStatusDesc = 'identity_status_DESC',
-  IdentityStatusDescNullsLast = 'identity_status_DESC_NULLS_LAST',
-  NextIdAsc = 'next_id_ASC',
-  NextIdAscNullsFirst = 'next_id_ASC_NULLS_FIRST',
-  NextIdDesc = 'next_id_DESC',
-  NextIdDescNullsLast = 'next_id_DESC_NULLS_LAST',
-  PreviousIdAsc = 'previous_id_ASC',
-  PreviousIdAscNullsFirst = 'previous_id_ASC_NULLS_FIRST',
-  PreviousIdDesc = 'previous_id_DESC',
-  PreviousIdDescNullsLast = 'previous_id_DESC_NULLS_LAST',
-}
-
-export type ChangeOwnerKeyWhereInput = {
-  AND?: InputMaybe<Array<ChangeOwnerKeyWhereInput>>;
-  OR?: InputMaybe<Array<ChangeOwnerKeyWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  identity?: InputMaybe<IdentityWhereInput>;
-  identity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  next?: InputMaybe<AccountWhereInput>;
-  next_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  previous?: InputMaybe<AccountWhereInput>;
-  previous_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+/** aggregate max on columns */
+export type ChangeOwnerKeyMaxFields = {
+  __typename?: 'ChangeOwnerKeyMaxFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  identityId?: Maybe<Scalars['String']['output']>;
+  nextId?: Maybe<Scalars['String']['output']>;
+  previousId?: Maybe<Scalars['String']['output']>;
 };
 
-export type ChangeOwnerKeysConnection = {
-  __typename?: 'ChangeOwnerKeysConnection';
-  edges: Array<ChangeOwnerKeyEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by max() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyMaxOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+  nextId?: InputMaybe<OrderBy>;
+  previousId?: InputMaybe<OrderBy>;
 };
 
-export enum CounterLevel {
-  Global = 'Global',
-  Item = 'Item',
-  Pallet = 'Pallet',
+/** aggregate min on columns */
+export type ChangeOwnerKeyMinFields = {
+  __typename?: 'ChangeOwnerKeyMinFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  identityId?: Maybe<Scalars['String']['output']>;
+  nextId?: Maybe<Scalars['String']['output']>;
+  previousId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyMinOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+  nextId?: InputMaybe<OrderBy>;
+  previousId?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "change_owner_key". */
+export type ChangeOwnerKeyOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identity?: InputMaybe<IdentityOrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+  next?: InputMaybe<AccountOrderBy>;
+  nextId?: InputMaybe<OrderBy>;
+  previous?: InputMaybe<AccountOrderBy>;
+  previousId?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "change_owner_key" */
+export enum ChangeOwnerKeySelectColumn {
+  /** column name */
+  BlockNumber = 'blockNumber',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identityId',
+  /** column name */
+  NextId = 'nextId',
+  /** column name */
+  PreviousId = 'previousId',
 }
 
-export type Event = {
+/** aggregate stddev on columns */
+export type ChangeOwnerKeyStddevFields = {
+  __typename?: 'ChangeOwnerKeyStddevFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyStddevOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevPop on columns */
+export type ChangeOwnerKeyStddevPopFields = {
+  __typename?: 'ChangeOwnerKeyStddevPopFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevPop() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyStddevPopOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type ChangeOwnerKeyStddevSampFields = {
+  __typename?: 'ChangeOwnerKeyStddevSampFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyStddevSampOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate sum on columns */
+export type ChangeOwnerKeySumFields = {
+  __typename?: 'ChangeOwnerKeySumFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "change_owner_key" */
+export type ChangeOwnerKeySumOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varPop on columns */
+export type ChangeOwnerKeyVarPopFields = {
+  __typename?: 'ChangeOwnerKeyVarPopFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyVarPopOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type ChangeOwnerKeyVarSampFields = {
+  __typename?: 'ChangeOwnerKeyVarSampFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyVarSampOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type ChangeOwnerKeyVarianceFields = {
+  __typename?: 'ChangeOwnerKeyVarianceFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "change_owner_key" */
+export type ChangeOwnerKeyVarianceOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+export enum CounterLevelEnum {
+  Global = 'GLOBAL',
+  Item = 'ITEM',
+  Pallet = 'PALLET',
+}
+
+/** Boolean expression to compare columns of type "CounterLevelEnum". All fields are combined with logical 'AND'. */
+export type CounterLevelEnumComparisonExp = {
+  _eq?: InputMaybe<CounterLevelEnum>;
+  _in?: InputMaybe<Array<CounterLevelEnum>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<CounterLevelEnum>;
+  _nin?: InputMaybe<Array<CounterLevelEnum>>;
+};
+
+/** columns and relationships of "event" */
+export type Event = Node & {
   __typename?: 'Event';
-  args?: Maybe<Scalars['JSON']['output']>;
-  argsStr?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  block: Block;
+  args?: Maybe<Scalars['jsonb']['output']>;
+  argsStr?: Maybe<Array<Scalars['String']['output']>>;
+  /** An object relationship */
+  block?: Maybe<Block>;
+  blockId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
   call?: Maybe<Call>;
+  callId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
   extrinsic?: Maybe<Extrinsic>;
-  /** Event id - e.g. 0000000001-000000-272d6 */
-  id: Scalars['String']['output'];
+  extrinsicId?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
   index: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   pallet: Scalars['String']['output'];
   phase: Scalars['String']['output'];
+};
+
+/** columns and relationships of "event" */
+export type EventArgsArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregated selection of "event" */
+export type EventAggregate = {
+  __typename?: 'EventAggregate';
+  aggregate?: Maybe<EventAggregateFields>;
+  nodes: Array<Event>;
+};
+
+export type EventAggregateBoolExp = {
+  count?: InputMaybe<EventAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "event" */
+export type EventAggregateFields = {
+  __typename?: 'EventAggregateFields';
+  avg?: Maybe<EventAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<EventMaxFields>;
+  min?: Maybe<EventMinFields>;
+  stddev?: Maybe<EventStddevFields>;
+  stddevPop?: Maybe<EventStddevPopFields>;
+  stddevSamp?: Maybe<EventStddevSampFields>;
+  sum?: Maybe<EventSumFields>;
+  varPop?: Maybe<EventVarPopFields>;
+  varSamp?: Maybe<EventVarSampFields>;
+  variance?: Maybe<EventVarianceFields>;
+};
+
+/** aggregate fields of "event" */
+export type EventAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<EventSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "event" */
+export type EventAggregateOrderBy = {
+  avg?: InputMaybe<EventAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<EventMaxOrderBy>;
+  min?: InputMaybe<EventMinOrderBy>;
+  stddev?: InputMaybe<EventStddevOrderBy>;
+  stddevPop?: InputMaybe<EventStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<EventStddevSampOrderBy>;
+  sum?: InputMaybe<EventSumOrderBy>;
+  varPop?: InputMaybe<EventVarPopOrderBy>;
+  varSamp?: InputMaybe<EventVarSampOrderBy>;
+  variance?: InputMaybe<EventVarianceOrderBy>;
+};
+
+/** aggregate avg on columns */
+export type EventAvgFields = {
+  __typename?: 'EventAvgFields';
+  index?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "event" */
+export type EventAvgOrderBy = {
+  index?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "event". All fields are combined with a logical 'AND'. */
+export type EventBoolExp = {
+  _and?: InputMaybe<Array<EventBoolExp>>;
+  _not?: InputMaybe<EventBoolExp>;
+  _or?: InputMaybe<Array<EventBoolExp>>;
+  args?: InputMaybe<JsonbComparisonExp>;
+  argsStr?: InputMaybe<StringArrayComparisonExp>;
+  block?: InputMaybe<BlockBoolExp>;
+  blockId?: InputMaybe<StringComparisonExp>;
+  call?: InputMaybe<CallBoolExp>;
+  callId?: InputMaybe<StringComparisonExp>;
+  extrinsic?: InputMaybe<ExtrinsicBoolExp>;
+  extrinsicId?: InputMaybe<StringComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  index?: InputMaybe<IntComparisonExp>;
+  name?: InputMaybe<StringComparisonExp>;
+  pallet?: InputMaybe<StringComparisonExp>;
+  phase?: InputMaybe<StringComparisonExp>;
+};
+
+/** A Relay connection object on "event" */
+export type EventConnection = {
+  __typename?: 'EventConnection';
+  edges: Array<EventEdge>;
+  pageInfo: PageInfo;
 };
 
 export type EventEdge = {
@@ -1142,272 +1704,389 @@ export type EventEdge = {
   node: Event;
 };
 
-export enum EventOrderByInput {
-  BlockCallsCountAsc = 'block_callsCount_ASC',
-  BlockCallsCountAscNullsFirst = 'block_callsCount_ASC_NULLS_FIRST',
-  BlockCallsCountDesc = 'block_callsCount_DESC',
-  BlockCallsCountDescNullsLast = 'block_callsCount_DESC_NULLS_LAST',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountAscNullsFirst = 'block_eventsCount_ASC_NULLS_FIRST',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockEventsCountDescNullsLast = 'block_eventsCount_DESC_NULLS_LAST',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountAscNullsFirst = 'block_extrinsicsCount_ASC_NULLS_FIRST',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockExtrinsicsCountDescNullsLast = 'block_extrinsicsCount_DESC_NULLS_LAST',
-  BlockExtrinsicsicRootAsc = 'block_extrinsicsicRoot_ASC',
-  BlockExtrinsicsicRootAscNullsFirst = 'block_extrinsicsicRoot_ASC_NULLS_FIRST',
-  BlockExtrinsicsicRootDesc = 'block_extrinsicsicRoot_DESC',
-  BlockExtrinsicsicRootDescNullsLast = 'block_extrinsicsicRoot_DESC_NULLS_LAST',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashAscNullsFirst = 'block_hash_ASC_NULLS_FIRST',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHashDescNullsLast = 'block_hash_DESC_NULLS_LAST',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightAscNullsFirst = 'block_height_ASC_NULLS_FIRST',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockHeightDescNullsLast = 'block_height_DESC_NULLS_LAST',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdAscNullsFirst = 'block_id_ASC_NULLS_FIRST',
-  BlockIdDesc = 'block_id_DESC',
-  BlockIdDescNullsLast = 'block_id_DESC_NULLS_LAST',
-  BlockImplNameAsc = 'block_implName_ASC',
-  BlockImplNameAscNullsFirst = 'block_implName_ASC_NULLS_FIRST',
-  BlockImplNameDesc = 'block_implName_DESC',
-  BlockImplNameDescNullsLast = 'block_implName_DESC_NULLS_LAST',
-  BlockImplVersionAsc = 'block_implVersion_ASC',
-  BlockImplVersionAscNullsFirst = 'block_implVersion_ASC_NULLS_FIRST',
-  BlockImplVersionDesc = 'block_implVersion_DESC',
-  BlockImplVersionDescNullsLast = 'block_implVersion_DESC_NULLS_LAST',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashAscNullsFirst = 'block_parentHash_ASC_NULLS_FIRST',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockParentHashDescNullsLast = 'block_parentHash_DESC_NULLS_LAST',
-  BlockSpecNameAsc = 'block_specName_ASC',
-  BlockSpecNameAscNullsFirst = 'block_specName_ASC_NULLS_FIRST',
-  BlockSpecNameDesc = 'block_specName_DESC',
-  BlockSpecNameDescNullsLast = 'block_specName_DESC_NULLS_LAST',
-  BlockSpecVersionAsc = 'block_specVersion_ASC',
-  BlockSpecVersionAscNullsFirst = 'block_specVersion_ASC_NULLS_FIRST',
-  BlockSpecVersionDesc = 'block_specVersion_DESC',
-  BlockSpecVersionDescNullsLast = 'block_specVersion_DESC_NULLS_LAST',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootAscNullsFirst = 'block_stateRoot_ASC_NULLS_FIRST',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockStateRootDescNullsLast = 'block_stateRoot_DESC_NULLS_LAST',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampAscNullsFirst = 'block_timestamp_ASC_NULLS_FIRST',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  BlockTimestampDescNullsLast = 'block_timestamp_DESC_NULLS_LAST',
-  BlockValidatorAsc = 'block_validator_ASC',
-  BlockValidatorAscNullsFirst = 'block_validator_ASC_NULLS_FIRST',
-  BlockValidatorDesc = 'block_validator_DESC',
-  BlockValidatorDescNullsLast = 'block_validator_DESC_NULLS_LAST',
-  CallIdAsc = 'call_id_ASC',
-  CallIdAscNullsFirst = 'call_id_ASC_NULLS_FIRST',
-  CallIdDesc = 'call_id_DESC',
-  CallIdDescNullsLast = 'call_id_DESC_NULLS_LAST',
-  CallNameAsc = 'call_name_ASC',
-  CallNameAscNullsFirst = 'call_name_ASC_NULLS_FIRST',
-  CallNameDesc = 'call_name_DESC',
-  CallNameDescNullsLast = 'call_name_DESC_NULLS_LAST',
-  CallPalletAsc = 'call_pallet_ASC',
-  CallPalletAscNullsFirst = 'call_pallet_ASC_NULLS_FIRST',
-  CallPalletDesc = 'call_pallet_DESC',
-  CallPalletDescNullsLast = 'call_pallet_DESC_NULLS_LAST',
-  CallSuccessAsc = 'call_success_ASC',
-  CallSuccessAscNullsFirst = 'call_success_ASC_NULLS_FIRST',
-  CallSuccessDesc = 'call_success_DESC',
-  CallSuccessDescNullsLast = 'call_success_DESC_NULLS_LAST',
-  ExtrinsicFeeAsc = 'extrinsic_fee_ASC',
-  ExtrinsicFeeAscNullsFirst = 'extrinsic_fee_ASC_NULLS_FIRST',
-  ExtrinsicFeeDesc = 'extrinsic_fee_DESC',
-  ExtrinsicFeeDescNullsLast = 'extrinsic_fee_DESC_NULLS_LAST',
-  ExtrinsicHashAsc = 'extrinsic_hash_ASC',
-  ExtrinsicHashAscNullsFirst = 'extrinsic_hash_ASC_NULLS_FIRST',
-  ExtrinsicHashDesc = 'extrinsic_hash_DESC',
-  ExtrinsicHashDescNullsLast = 'extrinsic_hash_DESC_NULLS_LAST',
-  ExtrinsicIdAsc = 'extrinsic_id_ASC',
-  ExtrinsicIdAscNullsFirst = 'extrinsic_id_ASC_NULLS_FIRST',
-  ExtrinsicIdDesc = 'extrinsic_id_DESC',
-  ExtrinsicIdDescNullsLast = 'extrinsic_id_DESC_NULLS_LAST',
-  ExtrinsicIndexAsc = 'extrinsic_index_ASC',
-  ExtrinsicIndexAscNullsFirst = 'extrinsic_index_ASC_NULLS_FIRST',
-  ExtrinsicIndexDesc = 'extrinsic_index_DESC',
-  ExtrinsicIndexDescNullsLast = 'extrinsic_index_DESC_NULLS_LAST',
-  ExtrinsicSuccessAsc = 'extrinsic_success_ASC',
-  ExtrinsicSuccessAscNullsFirst = 'extrinsic_success_ASC_NULLS_FIRST',
-  ExtrinsicSuccessDesc = 'extrinsic_success_DESC',
-  ExtrinsicSuccessDescNullsLast = 'extrinsic_success_DESC_NULLS_LAST',
-  ExtrinsicTipAsc = 'extrinsic_tip_ASC',
-  ExtrinsicTipAscNullsFirst = 'extrinsic_tip_ASC_NULLS_FIRST',
-  ExtrinsicTipDesc = 'extrinsic_tip_DESC',
-  ExtrinsicTipDescNullsLast = 'extrinsic_tip_DESC_NULLS_LAST',
-  ExtrinsicVersionAsc = 'extrinsic_version_ASC',
-  ExtrinsicVersionAscNullsFirst = 'extrinsic_version_ASC_NULLS_FIRST',
-  ExtrinsicVersionDesc = 'extrinsic_version_DESC',
-  ExtrinsicVersionDescNullsLast = 'extrinsic_version_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IndexAsc = 'index_ASC',
-  IndexAscNullsFirst = 'index_ASC_NULLS_FIRST',
-  IndexDesc = 'index_DESC',
-  IndexDescNullsLast = 'index_DESC_NULLS_LAST',
-  NameAsc = 'name_ASC',
-  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
-  NameDesc = 'name_DESC',
-  NameDescNullsLast = 'name_DESC_NULLS_LAST',
-  PalletAsc = 'pallet_ASC',
-  PalletAscNullsFirst = 'pallet_ASC_NULLS_FIRST',
-  PalletDesc = 'pallet_DESC',
-  PalletDescNullsLast = 'pallet_DESC_NULLS_LAST',
-  PhaseAsc = 'phase_ASC',
-  PhaseAscNullsFirst = 'phase_ASC_NULLS_FIRST',
-  PhaseDesc = 'phase_DESC',
-  PhaseDescNullsLast = 'phase_DESC_NULLS_LAST',
+/** aggregate max on columns */
+export type EventMaxFields = {
+  __typename?: 'EventMaxFields';
+  argsStr?: Maybe<Array<Scalars['String']['output']>>;
+  blockId?: Maybe<Scalars['String']['output']>;
+  callId?: Maybe<Scalars['String']['output']>;
+  extrinsicId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index?: Maybe<Scalars['Int']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  pallet?: Maybe<Scalars['String']['output']>;
+  phase?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "event" */
+export type EventMaxOrderBy = {
+  argsStr?: InputMaybe<OrderBy>;
+  blockId?: InputMaybe<OrderBy>;
+  callId?: InputMaybe<OrderBy>;
+  extrinsicId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  name?: InputMaybe<OrderBy>;
+  pallet?: InputMaybe<OrderBy>;
+  phase?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type EventMinFields = {
+  __typename?: 'EventMinFields';
+  argsStr?: Maybe<Array<Scalars['String']['output']>>;
+  blockId?: Maybe<Scalars['String']['output']>;
+  callId?: Maybe<Scalars['String']['output']>;
+  extrinsicId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index?: Maybe<Scalars['Int']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  pallet?: Maybe<Scalars['String']['output']>;
+  phase?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "event" */
+export type EventMinOrderBy = {
+  argsStr?: InputMaybe<OrderBy>;
+  blockId?: InputMaybe<OrderBy>;
+  callId?: InputMaybe<OrderBy>;
+  extrinsicId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  name?: InputMaybe<OrderBy>;
+  pallet?: InputMaybe<OrderBy>;
+  phase?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "event". */
+export type EventOrderBy = {
+  args?: InputMaybe<OrderBy>;
+  argsStr?: InputMaybe<OrderBy>;
+  block?: InputMaybe<BlockOrderBy>;
+  blockId?: InputMaybe<OrderBy>;
+  call?: InputMaybe<CallOrderBy>;
+  callId?: InputMaybe<OrderBy>;
+  extrinsic?: InputMaybe<ExtrinsicOrderBy>;
+  extrinsicId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  name?: InputMaybe<OrderBy>;
+  pallet?: InputMaybe<OrderBy>;
+  phase?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "event" */
+export enum EventSelectColumn {
+  /** column name */
+  Args = 'args',
+  /** column name */
+  ArgsStr = 'argsStr',
+  /** column name */
+  BlockId = 'blockId',
+  /** column name */
+  CallId = 'callId',
+  /** column name */
+  ExtrinsicId = 'extrinsicId',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Index = 'index',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Pallet = 'pallet',
+  /** column name */
+  Phase = 'phase',
 }
 
-export enum EventType {
+/** aggregate stddev on columns */
+export type EventStddevFields = {
+  __typename?: 'EventStddevFields';
+  index?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "event" */
+export type EventStddevOrderBy = {
+  index?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevPop on columns */
+export type EventStddevPopFields = {
+  __typename?: 'EventStddevPopFields';
+  index?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevPop() on columns of table "event" */
+export type EventStddevPopOrderBy = {
+  index?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type EventStddevSampFields = {
+  __typename?: 'EventStddevSampFields';
+  index?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "event" */
+export type EventStddevSampOrderBy = {
+  index?: InputMaybe<OrderBy>;
+};
+
+/** aggregate sum on columns */
+export type EventSumFields = {
+  __typename?: 'EventSumFields';
+  index?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "event" */
+export type EventSumOrderBy = {
+  index?: InputMaybe<OrderBy>;
+};
+
+export enum EventTypeEnum {
   Creation = 'CREATION',
   Removal = 'REMOVAL',
   Renewal = 'RENEWAL',
 }
 
-export type EventWhereInput = {
-  AND?: InputMaybe<Array<EventWhereInput>>;
-  OR?: InputMaybe<Array<EventWhereInput>>;
-  argsStr_containsAll?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  argsStr_containsAny?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  argsStr_containsNone?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  argsStr_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  args_eq?: InputMaybe<Scalars['JSON']['input']>;
-  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  call?: InputMaybe<CallWhereInput>;
-  call_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  index_eq?: InputMaybe<Scalars['Int']['input']>;
-  index_gt?: InputMaybe<Scalars['Int']['input']>;
-  index_gte?: InputMaybe<Scalars['Int']['input']>;
-  index_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  index_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  index_lt?: InputMaybe<Scalars['Int']['input']>;
-  index_lte?: InputMaybe<Scalars['Int']['input']>;
-  index_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  index_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
-  pallet_contains?: InputMaybe<Scalars['String']['input']>;
-  pallet_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  pallet_endsWith?: InputMaybe<Scalars['String']['input']>;
-  pallet_eq?: InputMaybe<Scalars['String']['input']>;
-  pallet_gt?: InputMaybe<Scalars['String']['input']>;
-  pallet_gte?: InputMaybe<Scalars['String']['input']>;
-  pallet_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  pallet_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  pallet_lt?: InputMaybe<Scalars['String']['input']>;
-  pallet_lte?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_contains?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_eq?: InputMaybe<Scalars['String']['input']>;
-  pallet_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  pallet_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  pallet_startsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_contains?: InputMaybe<Scalars['String']['input']>;
-  phase_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  phase_endsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_eq?: InputMaybe<Scalars['String']['input']>;
-  phase_gt?: InputMaybe<Scalars['String']['input']>;
-  phase_gte?: InputMaybe<Scalars['String']['input']>;
-  phase_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  phase_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  phase_lt?: InputMaybe<Scalars['String']['input']>;
-  phase_lte?: InputMaybe<Scalars['String']['input']>;
-  phase_not_contains?: InputMaybe<Scalars['String']['input']>;
-  phase_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  phase_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_not_eq?: InputMaybe<Scalars['String']['input']>;
-  phase_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  phase_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_startsWith?: InputMaybe<Scalars['String']['input']>;
+/** Boolean expression to compare columns of type "EventTypeEnum". All fields are combined with logical 'AND'. */
+export type EventTypeEnumComparisonExp = {
+  _eq?: InputMaybe<EventTypeEnum>;
+  _in?: InputMaybe<Array<EventTypeEnum>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<EventTypeEnum>;
+  _nin?: InputMaybe<Array<EventTypeEnum>>;
 };
 
-export type EventsConnection = {
-  __typename?: 'EventsConnection';
-  edges: Array<EventEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** aggregate varPop on columns */
+export type EventVarPopFields = {
+  __typename?: 'EventVarPopFields';
+  index?: Maybe<Scalars['Float']['output']>;
 };
 
-export type Extrinsic = {
+/** order by varPop() on columns of table "event" */
+export type EventVarPopOrderBy = {
+  index?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type EventVarSampFields = {
+  __typename?: 'EventVarSampFields';
+  index?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "event" */
+export type EventVarSampOrderBy = {
+  index?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type EventVarianceFields = {
+  __typename?: 'EventVarianceFields';
+  index?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "event" */
+export type EventVarianceOrderBy = {
+  index?: InputMaybe<OrderBy>;
+};
+
+/** columns and relationships of "extrinsic" */
+export type Extrinsic = Node & {
   __typename?: 'Extrinsic';
-  block: Block;
-  call: Call;
+  /** An object relationship */
+  block?: Maybe<Block>;
+  blockId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  call?: Maybe<Call>;
+  callId?: Maybe<Scalars['String']['output']>;
+  /** An array relationship */
   calls: Array<Call>;
-  error?: Maybe<Scalars['JSON']['output']>;
+  /** An aggregate relationship */
+  callsAggregate: CallAggregate;
+  /** An array relationship connection */
+  calls_connection: CallConnection;
+  error?: Maybe<Scalars['jsonb']['output']>;
+  /** An array relationship */
   events: Array<Event>;
-  fee?: Maybe<Scalars['BigInt']['output']>;
-  hash: Scalars['Bytes']['output'];
-  id: Scalars['String']['output'];
+  /** An aggregate relationship */
+  eventsAggregate: EventAggregate;
+  /** An array relationship connection */
+  events_connection: EventConnection;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  hash: Scalars['bytea']['output'];
+  id: Scalars['ID']['output'];
   index: Scalars['Int']['output'];
-  signature?: Maybe<ExtrinsicSignature>;
+  signature?: Maybe<Scalars['jsonb']['output']>;
   success?: Maybe<Scalars['Boolean']['output']>;
-  tip?: Maybe<Scalars['BigInt']['output']>;
+  tip?: Maybe<Scalars['numeric']['output']>;
   version: Scalars['Int']['output'];
 };
 
+/** columns and relationships of "extrinsic" */
 export type ExtrinsicCallsArgs = {
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
 };
 
-export type ExtrinsicEventsArgs = {
+/** columns and relationships of "extrinsic" */
+export type ExtrinsicCallsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+/** columns and relationships of "extrinsic" */
+export type ExtrinsicCalls_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+/** columns and relationships of "extrinsic" */
+export type ExtrinsicErrorArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** columns and relationships of "extrinsic" */
+export type ExtrinsicEventsArgs = {
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+/** columns and relationships of "extrinsic" */
+export type ExtrinsicEventsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+/** columns and relationships of "extrinsic" */
+export type ExtrinsicEvents_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+/** columns and relationships of "extrinsic" */
+export type ExtrinsicSignatureArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregated selection of "extrinsic" */
+export type ExtrinsicAggregate = {
+  __typename?: 'ExtrinsicAggregate';
+  aggregate?: Maybe<ExtrinsicAggregateFields>;
+  nodes: Array<Extrinsic>;
+};
+
+export type ExtrinsicAggregateBoolExp = {
+  bool_and?: InputMaybe<ExtrinsicAggregateBoolExpBool_And>;
+  bool_or?: InputMaybe<ExtrinsicAggregateBoolExpBool_Or>;
+  count?: InputMaybe<ExtrinsicAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "extrinsic" */
+export type ExtrinsicAggregateFields = {
+  __typename?: 'ExtrinsicAggregateFields';
+  avg?: Maybe<ExtrinsicAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<ExtrinsicMaxFields>;
+  min?: Maybe<ExtrinsicMinFields>;
+  stddev?: Maybe<ExtrinsicStddevFields>;
+  stddevPop?: Maybe<ExtrinsicStddevPopFields>;
+  stddevSamp?: Maybe<ExtrinsicStddevSampFields>;
+  sum?: Maybe<ExtrinsicSumFields>;
+  varPop?: Maybe<ExtrinsicVarPopFields>;
+  varSamp?: Maybe<ExtrinsicVarSampFields>;
+  variance?: Maybe<ExtrinsicVarianceFields>;
+};
+
+/** aggregate fields of "extrinsic" */
+export type ExtrinsicAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<ExtrinsicSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "extrinsic" */
+export type ExtrinsicAggregateOrderBy = {
+  avg?: InputMaybe<ExtrinsicAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<ExtrinsicMaxOrderBy>;
+  min?: InputMaybe<ExtrinsicMinOrderBy>;
+  stddev?: InputMaybe<ExtrinsicStddevOrderBy>;
+  stddevPop?: InputMaybe<ExtrinsicStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<ExtrinsicStddevSampOrderBy>;
+  sum?: InputMaybe<ExtrinsicSumOrderBy>;
+  varPop?: InputMaybe<ExtrinsicVarPopOrderBy>;
+  varSamp?: InputMaybe<ExtrinsicVarSampOrderBy>;
+  variance?: InputMaybe<ExtrinsicVarianceOrderBy>;
+};
+
+/** aggregate avg on columns */
+export type ExtrinsicAvgFields = {
+  __typename?: 'ExtrinsicAvgFields';
+  fee?: Maybe<Scalars['Float']['output']>;
+  index?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+  version?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "extrinsic" */
+export type ExtrinsicAvgOrderBy = {
+  fee?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "extrinsic". All fields are combined with a logical 'AND'. */
+export type ExtrinsicBoolExp = {
+  _and?: InputMaybe<Array<ExtrinsicBoolExp>>;
+  _not?: InputMaybe<ExtrinsicBoolExp>;
+  _or?: InputMaybe<Array<ExtrinsicBoolExp>>;
+  block?: InputMaybe<BlockBoolExp>;
+  blockId?: InputMaybe<StringComparisonExp>;
+  call?: InputMaybe<CallBoolExp>;
+  callId?: InputMaybe<StringComparisonExp>;
+  calls?: InputMaybe<CallBoolExp>;
+  callsAggregate?: InputMaybe<CallAggregateBoolExp>;
+  error?: InputMaybe<JsonbComparisonExp>;
+  events?: InputMaybe<EventBoolExp>;
+  eventsAggregate?: InputMaybe<EventAggregateBoolExp>;
+  fee?: InputMaybe<NumericComparisonExp>;
+  hash?: InputMaybe<ByteaComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  index?: InputMaybe<IntComparisonExp>;
+  signature?: InputMaybe<JsonbComparisonExp>;
+  success?: InputMaybe<BooleanComparisonExp>;
+  tip?: InputMaybe<NumericComparisonExp>;
+  version?: InputMaybe<IntComparisonExp>;
+};
+
+/** A Relay connection object on "extrinsic" */
+export type ExtrinsicConnection = {
+  __typename?: 'ExtrinsicConnection';
+  edges: Array<ExtrinsicEdge>;
+  pageInfo: PageInfo;
 };
 
 export type ExtrinsicEdge = {
@@ -1416,337 +2095,544 @@ export type ExtrinsicEdge = {
   node: Extrinsic;
 };
 
-export enum ExtrinsicOrderByInput {
-  BlockCallsCountAsc = 'block_callsCount_ASC',
-  BlockCallsCountAscNullsFirst = 'block_callsCount_ASC_NULLS_FIRST',
-  BlockCallsCountDesc = 'block_callsCount_DESC',
-  BlockCallsCountDescNullsLast = 'block_callsCount_DESC_NULLS_LAST',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountAscNullsFirst = 'block_eventsCount_ASC_NULLS_FIRST',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockEventsCountDescNullsLast = 'block_eventsCount_DESC_NULLS_LAST',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountAscNullsFirst = 'block_extrinsicsCount_ASC_NULLS_FIRST',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockExtrinsicsCountDescNullsLast = 'block_extrinsicsCount_DESC_NULLS_LAST',
-  BlockExtrinsicsicRootAsc = 'block_extrinsicsicRoot_ASC',
-  BlockExtrinsicsicRootAscNullsFirst = 'block_extrinsicsicRoot_ASC_NULLS_FIRST',
-  BlockExtrinsicsicRootDesc = 'block_extrinsicsicRoot_DESC',
-  BlockExtrinsicsicRootDescNullsLast = 'block_extrinsicsicRoot_DESC_NULLS_LAST',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashAscNullsFirst = 'block_hash_ASC_NULLS_FIRST',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHashDescNullsLast = 'block_hash_DESC_NULLS_LAST',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightAscNullsFirst = 'block_height_ASC_NULLS_FIRST',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockHeightDescNullsLast = 'block_height_DESC_NULLS_LAST',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdAscNullsFirst = 'block_id_ASC_NULLS_FIRST',
-  BlockIdDesc = 'block_id_DESC',
-  BlockIdDescNullsLast = 'block_id_DESC_NULLS_LAST',
-  BlockImplNameAsc = 'block_implName_ASC',
-  BlockImplNameAscNullsFirst = 'block_implName_ASC_NULLS_FIRST',
-  BlockImplNameDesc = 'block_implName_DESC',
-  BlockImplNameDescNullsLast = 'block_implName_DESC_NULLS_LAST',
-  BlockImplVersionAsc = 'block_implVersion_ASC',
-  BlockImplVersionAscNullsFirst = 'block_implVersion_ASC_NULLS_FIRST',
-  BlockImplVersionDesc = 'block_implVersion_DESC',
-  BlockImplVersionDescNullsLast = 'block_implVersion_DESC_NULLS_LAST',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashAscNullsFirst = 'block_parentHash_ASC_NULLS_FIRST',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockParentHashDescNullsLast = 'block_parentHash_DESC_NULLS_LAST',
-  BlockSpecNameAsc = 'block_specName_ASC',
-  BlockSpecNameAscNullsFirst = 'block_specName_ASC_NULLS_FIRST',
-  BlockSpecNameDesc = 'block_specName_DESC',
-  BlockSpecNameDescNullsLast = 'block_specName_DESC_NULLS_LAST',
-  BlockSpecVersionAsc = 'block_specVersion_ASC',
-  BlockSpecVersionAscNullsFirst = 'block_specVersion_ASC_NULLS_FIRST',
-  BlockSpecVersionDesc = 'block_specVersion_DESC',
-  BlockSpecVersionDescNullsLast = 'block_specVersion_DESC_NULLS_LAST',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootAscNullsFirst = 'block_stateRoot_ASC_NULLS_FIRST',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockStateRootDescNullsLast = 'block_stateRoot_DESC_NULLS_LAST',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampAscNullsFirst = 'block_timestamp_ASC_NULLS_FIRST',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  BlockTimestampDescNullsLast = 'block_timestamp_DESC_NULLS_LAST',
-  BlockValidatorAsc = 'block_validator_ASC',
-  BlockValidatorAscNullsFirst = 'block_validator_ASC_NULLS_FIRST',
-  BlockValidatorDesc = 'block_validator_DESC',
-  BlockValidatorDescNullsLast = 'block_validator_DESC_NULLS_LAST',
-  CallIdAsc = 'call_id_ASC',
-  CallIdAscNullsFirst = 'call_id_ASC_NULLS_FIRST',
-  CallIdDesc = 'call_id_DESC',
-  CallIdDescNullsLast = 'call_id_DESC_NULLS_LAST',
-  CallNameAsc = 'call_name_ASC',
-  CallNameAscNullsFirst = 'call_name_ASC_NULLS_FIRST',
-  CallNameDesc = 'call_name_DESC',
-  CallNameDescNullsLast = 'call_name_DESC_NULLS_LAST',
-  CallPalletAsc = 'call_pallet_ASC',
-  CallPalletAscNullsFirst = 'call_pallet_ASC_NULLS_FIRST',
-  CallPalletDesc = 'call_pallet_DESC',
-  CallPalletDescNullsLast = 'call_pallet_DESC_NULLS_LAST',
-  CallSuccessAsc = 'call_success_ASC',
-  CallSuccessAscNullsFirst = 'call_success_ASC_NULLS_FIRST',
-  CallSuccessDesc = 'call_success_DESC',
-  CallSuccessDescNullsLast = 'call_success_DESC_NULLS_LAST',
-  FeeAsc = 'fee_ASC',
-  FeeAscNullsFirst = 'fee_ASC_NULLS_FIRST',
-  FeeDesc = 'fee_DESC',
-  FeeDescNullsLast = 'fee_DESC_NULLS_LAST',
-  HashAsc = 'hash_ASC',
-  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
-  HashDesc = 'hash_DESC',
-  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IndexAsc = 'index_ASC',
-  IndexAscNullsFirst = 'index_ASC_NULLS_FIRST',
-  IndexDesc = 'index_DESC',
-  IndexDescNullsLast = 'index_DESC_NULLS_LAST',
-  SuccessAsc = 'success_ASC',
-  SuccessAscNullsFirst = 'success_ASC_NULLS_FIRST',
-  SuccessDesc = 'success_DESC',
-  SuccessDescNullsLast = 'success_DESC_NULLS_LAST',
-  TipAsc = 'tip_ASC',
-  TipAscNullsFirst = 'tip_ASC_NULLS_FIRST',
-  TipDesc = 'tip_DESC',
-  TipDescNullsLast = 'tip_DESC_NULLS_LAST',
-  VersionAsc = 'version_ASC',
-  VersionAscNullsFirst = 'version_ASC_NULLS_FIRST',
-  VersionDesc = 'version_DESC',
-  VersionDescNullsLast = 'version_DESC_NULLS_LAST',
+/** aggregate max on columns */
+export type ExtrinsicMaxFields = {
+  __typename?: 'ExtrinsicMaxFields';
+  blockId?: Maybe<Scalars['String']['output']>;
+  callId?: Maybe<Scalars['String']['output']>;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index?: Maybe<Scalars['Int']['output']>;
+  tip?: Maybe<Scalars['numeric']['output']>;
+  version?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by max() on columns of table "extrinsic" */
+export type ExtrinsicMaxOrderBy = {
+  blockId?: InputMaybe<OrderBy>;
+  callId?: InputMaybe<OrderBy>;
+  fee?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type ExtrinsicMinFields = {
+  __typename?: 'ExtrinsicMinFields';
+  blockId?: Maybe<Scalars['String']['output']>;
+  callId?: Maybe<Scalars['String']['output']>;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index?: Maybe<Scalars['Int']['output']>;
+  tip?: Maybe<Scalars['numeric']['output']>;
+  version?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by min() on columns of table "extrinsic" */
+export type ExtrinsicMinOrderBy = {
+  blockId?: InputMaybe<OrderBy>;
+  callId?: InputMaybe<OrderBy>;
+  fee?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "extrinsic". */
+export type ExtrinsicOrderBy = {
+  block?: InputMaybe<BlockOrderBy>;
+  blockId?: InputMaybe<OrderBy>;
+  call?: InputMaybe<CallOrderBy>;
+  callId?: InputMaybe<OrderBy>;
+  callsAggregate?: InputMaybe<CallAggregateOrderBy>;
+  error?: InputMaybe<OrderBy>;
+  eventsAggregate?: InputMaybe<EventAggregateOrderBy>;
+  fee?: InputMaybe<OrderBy>;
+  hash?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  signature?: InputMaybe<OrderBy>;
+  success?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "extrinsic" */
+export enum ExtrinsicSelectColumn {
+  /** column name */
+  BlockId = 'blockId',
+  /** column name */
+  CallId = 'callId',
+  /** column name */
+  Error = 'error',
+  /** column name */
+  Fee = 'fee',
+  /** column name */
+  Hash = 'hash',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Index = 'index',
+  /** column name */
+  Signature = 'signature',
+  /** column name */
+  Success = 'success',
+  /** column name */
+  Tip = 'tip',
+  /** column name */
+  Version = 'version',
 }
 
-export type ExtrinsicSignature = {
-  __typename?: 'ExtrinsicSignature';
-  address?: Maybe<Scalars['JSON']['output']>;
-  signature?: Maybe<Scalars['JSON']['output']>;
-  signedExtensions?: Maybe<Scalars['JSON']['output']>;
+/** select "extrinsicAggregateBoolExpBool_andArgumentsColumns" columns of table "extrinsic" */
+export enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_AndArgumentsColumns {
+  /** column name */
+  Success = 'success',
+}
+
+/** select "extrinsicAggregateBoolExpBool_orArgumentsColumns" columns of table "extrinsic" */
+export enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_OrArgumentsColumns {
+  /** column name */
+  Success = 'success',
+}
+
+/** aggregate stddev on columns */
+export type ExtrinsicStddevFields = {
+  __typename?: 'ExtrinsicStddevFields';
+  fee?: Maybe<Scalars['Float']['output']>;
+  index?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+  version?: Maybe<Scalars['Float']['output']>;
 };
 
-export type ExtrinsicSignatureWhereInput = {
-  address_eq?: InputMaybe<Scalars['JSON']['input']>;
-  address_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  address_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  address_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  address_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  signature_eq?: InputMaybe<Scalars['JSON']['input']>;
-  signature_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  signature_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  signature_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  signature_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  signedExtensions_eq?: InputMaybe<Scalars['JSON']['input']>;
-  signedExtensions_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  signedExtensions_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  signedExtensions_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  signedExtensions_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+/** order by stddev() on columns of table "extrinsic" */
+export type ExtrinsicStddevOrderBy = {
+  fee?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
 };
 
-export type ExtrinsicWhereInput = {
-  AND?: InputMaybe<Array<ExtrinsicWhereInput>>;
-  OR?: InputMaybe<Array<ExtrinsicWhereInput>>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  call?: InputMaybe<CallWhereInput>;
-  call_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  calls_every?: InputMaybe<CallWhereInput>;
-  calls_none?: InputMaybe<CallWhereInput>;
-  calls_some?: InputMaybe<CallWhereInput>;
-  error_eq?: InputMaybe<Scalars['JSON']['input']>;
-  error_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  error_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  error_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  error_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  events_every?: InputMaybe<EventWhereInput>;
-  events_none?: InputMaybe<EventWhereInput>;
-  events_some?: InputMaybe<EventWhereInput>;
-  fee_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  fee_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  fee_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  hash_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  hash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  hash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  index_eq?: InputMaybe<Scalars['Int']['input']>;
-  index_gt?: InputMaybe<Scalars['Int']['input']>;
-  index_gte?: InputMaybe<Scalars['Int']['input']>;
-  index_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  index_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  index_lt?: InputMaybe<Scalars['Int']['input']>;
-  index_lte?: InputMaybe<Scalars['Int']['input']>;
-  index_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  index_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  signature?: InputMaybe<ExtrinsicSignatureWhereInput>;
-  signature_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  success_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  success_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  success_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  tip_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  tip_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  tip_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  version_eq?: InputMaybe<Scalars['Int']['input']>;
-  version_gt?: InputMaybe<Scalars['Int']['input']>;
-  version_gte?: InputMaybe<Scalars['Int']['input']>;
-  version_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  version_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  version_lt?: InputMaybe<Scalars['Int']['input']>;
-  version_lte?: InputMaybe<Scalars['Int']['input']>;
-  version_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  version_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+/** aggregate stddevPop on columns */
+export type ExtrinsicStddevPopFields = {
+  __typename?: 'ExtrinsicStddevPopFields';
+  fee?: Maybe<Scalars['Float']['output']>;
+  index?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+  version?: Maybe<Scalars['Float']['output']>;
 };
 
-export type ExtrinsicsConnection = {
-  __typename?: 'ExtrinsicsConnection';
-  edges: Array<ExtrinsicEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by stddevPop() on columns of table "extrinsic" */
+export type ExtrinsicStddevPopOrderBy = {
+  fee?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
 };
 
-export type IdentitiesConnection = {
-  __typename?: 'IdentitiesConnection';
+/** aggregate stddevSamp on columns */
+export type ExtrinsicStddevSampFields = {
+  __typename?: 'ExtrinsicStddevSampFields';
+  fee?: Maybe<Scalars['Float']['output']>;
+  index?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+  version?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "extrinsic" */
+export type ExtrinsicStddevSampOrderBy = {
+  fee?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** aggregate sum on columns */
+export type ExtrinsicSumFields = {
+  __typename?: 'ExtrinsicSumFields';
+  fee?: Maybe<Scalars['numeric']['output']>;
+  index?: Maybe<Scalars['Int']['output']>;
+  tip?: Maybe<Scalars['numeric']['output']>;
+  version?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "extrinsic" */
+export type ExtrinsicSumOrderBy = {
+  fee?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varPop on columns */
+export type ExtrinsicVarPopFields = {
+  __typename?: 'ExtrinsicVarPopFields';
+  fee?: Maybe<Scalars['Float']['output']>;
+  index?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+  version?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "extrinsic" */
+export type ExtrinsicVarPopOrderBy = {
+  fee?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type ExtrinsicVarSampFields = {
+  __typename?: 'ExtrinsicVarSampFields';
+  fee?: Maybe<Scalars['Float']['output']>;
+  index?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+  version?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "extrinsic" */
+export type ExtrinsicVarSampOrderBy = {
+  fee?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type ExtrinsicVarianceFields = {
+  __typename?: 'ExtrinsicVarianceFields';
+  fee?: Maybe<Scalars['Float']['output']>;
+  index?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+  version?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "extrinsic" */
+export type ExtrinsicVarianceOrderBy = {
+  fee?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  tip?: InputMaybe<OrderBy>;
+  version?: InputMaybe<OrderBy>;
+};
+
+/** columns and relationships of "identity" */
+export type Identity = Node & {
+  __typename?: 'Identity';
+  /** An object relationship */
+  account?: Maybe<Account>;
+  accountId?: Maybe<Scalars['String']['output']>;
+  /** An array relationship */
+  certIssued: Array<Cert>;
+  /** An aggregate relationship */
+  certIssuedAggregate: CertAggregate;
+  /** An array relationship connection */
+  certIssued_connection: CertConnection;
+  /** An array relationship */
+  certReceived: Array<Cert>;
+  /** An aggregate relationship */
+  certReceivedAggregate: CertAggregate;
+  /** An array relationship connection */
+  certReceived_connection: CertConnection;
+  /** An object relationship */
+  createdIn?: Maybe<Event>;
+  createdInId?: Maybe<Scalars['String']['output']>;
+  createdOn: Scalars['Int']['output'];
+  expireOn: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  index: Scalars['Int']['output'];
+  isMember: Scalars['Boolean']['output'];
+  lastChangeOn: Scalars['Int']['output'];
+  /** An array relationship */
+  linkedAccount: Array<Account>;
+  /** An aggregate relationship */
+  linkedAccountAggregate: AccountAggregate;
+  /** An array relationship connection */
+  linkedAccount_connection: AccountConnection;
+  /** An array relationship */
+  membershipHistory: Array<MembershipEvent>;
+  /** An aggregate relationship */
+  membershipHistoryAggregate: MembershipEventAggregate;
+  /** An array relationship connection */
+  membershipHistory_connection: MembershipEventConnection;
+  name: Scalars['String']['output'];
+  /** An array relationship */
+  ownerKeyChange: Array<ChangeOwnerKey>;
+  /** An aggregate relationship */
+  ownerKeyChangeAggregate: ChangeOwnerKeyAggregate;
+  /** An array relationship connection */
+  ownerKeyChange_connection: ChangeOwnerKeyConnection;
+  /** An array relationship */
+  smithCertIssued: Array<SmithCert>;
+  /** An aggregate relationship */
+  smithCertIssuedAggregate: SmithCertAggregate;
+  /** An array relationship connection */
+  smithCertIssued_connection: SmithCertConnection;
+  /** An array relationship */
+  smithCertReceived: Array<SmithCert>;
+  /** An aggregate relationship */
+  smithCertReceivedAggregate: SmithCertAggregate;
+  /** An array relationship connection */
+  smithCertReceived_connection: SmithCertConnection;
+  smithStatus?: Maybe<SmithStatusEnum>;
+  status?: Maybe<IdentityStatusEnum>;
+  /** "Get UD History by Identity" */
+  udHistory?: Maybe<Array<UdHistory>>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityCertIssuedArgs = {
+  distinctOn?: InputMaybe<Array<CertSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderBy>>;
+  where?: InputMaybe<CertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityCertIssuedAggregateArgs = {
+  distinctOn?: InputMaybe<Array<CertSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderBy>>;
+  where?: InputMaybe<CertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityCertIssued_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CertSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderBy>>;
+  where?: InputMaybe<CertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityCertReceivedArgs = {
+  distinctOn?: InputMaybe<Array<CertSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderBy>>;
+  where?: InputMaybe<CertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityCertReceivedAggregateArgs = {
+  distinctOn?: InputMaybe<Array<CertSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderBy>>;
+  where?: InputMaybe<CertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityCertReceived_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CertSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderBy>>;
+  where?: InputMaybe<CertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityLinkedAccountArgs = {
+  distinctOn?: InputMaybe<Array<AccountSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy>>;
+  where?: InputMaybe<AccountBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityLinkedAccountAggregateArgs = {
+  distinctOn?: InputMaybe<Array<AccountSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy>>;
+  where?: InputMaybe<AccountBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityLinkedAccount_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<AccountSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy>>;
+  where?: InputMaybe<AccountBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityMembershipHistoryArgs = {
+  distinctOn?: InputMaybe<Array<MembershipEventSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MembershipEventOrderBy>>;
+  where?: InputMaybe<MembershipEventBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityMembershipHistoryAggregateArgs = {
+  distinctOn?: InputMaybe<Array<MembershipEventSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MembershipEventOrderBy>>;
+  where?: InputMaybe<MembershipEventBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityMembershipHistory_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<MembershipEventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MembershipEventOrderBy>>;
+  where?: InputMaybe<MembershipEventBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityOwnerKeyChangeArgs = {
+  distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
+  where?: InputMaybe<ChangeOwnerKeyBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityOwnerKeyChangeAggregateArgs = {
+  distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
+  where?: InputMaybe<ChangeOwnerKeyBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityOwnerKeyChange_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
+  where?: InputMaybe<ChangeOwnerKeyBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentitySmithCertIssuedArgs = {
+  distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
+  where?: InputMaybe<SmithCertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentitySmithCertIssuedAggregateArgs = {
+  distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
+  where?: InputMaybe<SmithCertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentitySmithCertIssued_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
+  where?: InputMaybe<SmithCertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentitySmithCertReceivedArgs = {
+  distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
+  where?: InputMaybe<SmithCertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentitySmithCertReceivedAggregateArgs = {
+  distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
+  where?: InputMaybe<SmithCertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentitySmithCertReceived_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
+  where?: InputMaybe<SmithCertBoolExp>;
+};
+
+/** columns and relationships of "identity" */
+export type IdentityUdHistoryArgs = {
+  distinctOn?: InputMaybe<Array<UdHistorySelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdHistoryOrderBy>>;
+  where?: InputMaybe<UdHistoryBoolExp>;
+};
+
+/** Boolean expression to filter rows from the table "identity". All fields are combined with a logical 'AND'. */
+export type IdentityBoolExp = {
+  _and?: InputMaybe<Array<IdentityBoolExp>>;
+  _not?: InputMaybe<IdentityBoolExp>;
+  _or?: InputMaybe<Array<IdentityBoolExp>>;
+  account?: InputMaybe<AccountBoolExp>;
+  accountId?: InputMaybe<StringComparisonExp>;
+  certIssued?: InputMaybe<CertBoolExp>;
+  certIssuedAggregate?: InputMaybe<CertAggregateBoolExp>;
+  certReceived?: InputMaybe<CertBoolExp>;
+  certReceivedAggregate?: InputMaybe<CertAggregateBoolExp>;
+  createdIn?: InputMaybe<EventBoolExp>;
+  createdInId?: InputMaybe<StringComparisonExp>;
+  createdOn?: InputMaybe<IntComparisonExp>;
+  expireOn?: InputMaybe<IntComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  index?: InputMaybe<IntComparisonExp>;
+  isMember?: InputMaybe<BooleanComparisonExp>;
+  lastChangeOn?: InputMaybe<IntComparisonExp>;
+  linkedAccount?: InputMaybe<AccountBoolExp>;
+  linkedAccountAggregate?: InputMaybe<AccountAggregateBoolExp>;
+  membershipHistory?: InputMaybe<MembershipEventBoolExp>;
+  membershipHistoryAggregate?: InputMaybe<MembershipEventAggregateBoolExp>;
+  name?: InputMaybe<StringComparisonExp>;
+  ownerKeyChange?: InputMaybe<ChangeOwnerKeyBoolExp>;
+  ownerKeyChangeAggregate?: InputMaybe<ChangeOwnerKeyAggregateBoolExp>;
+  smithCertIssued?: InputMaybe<SmithCertBoolExp>;
+  smithCertIssuedAggregate?: InputMaybe<SmithCertAggregateBoolExp>;
+  smithCertReceived?: InputMaybe<SmithCertBoolExp>;
+  smithCertReceivedAggregate?: InputMaybe<SmithCertAggregateBoolExp>;
+  smithStatus?: InputMaybe<SmithStatusEnumComparisonExp>;
+  status?: InputMaybe<IdentityStatusEnumComparisonExp>;
+  udHistory?: InputMaybe<UdHistoryBoolExp>;
+};
+
+/** A Relay connection object on "identity" */
+export type IdentityConnection = {
+  __typename?: 'IdentityConnection';
   edges: Array<IdentityEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-/** Identity */
-export type Identity = {
-  __typename?: 'Identity';
-  /** Current account */
-  account: Account;
-  /** Certifications issued */
-  certIssued: Array<Cert>;
-  /** Certifications received */
-  certReceived: Array<Cert>;
-  /** Event corresponding of identity creation event */
-  createdIn: Event;
-  /** Block number of identity creation event */
-  createdOn: Scalars['Int']['output'];
-  /** the current expireOn value */
-  expireOn: Scalars['Int']['output'];
-  id: Scalars['String']['output'];
-  /** Identity index */
-  index: Scalars['Int']['output'];
-  /** True if the identity is a member */
-  isMember: Scalars['Boolean']['output'];
-  /** Block number of last identity, changeOwnerKey and membership event */
-  lastChangeOn: Scalars['Int']['output'];
-  /** linked accounts */
-  linkedAccount: Array<Account>;
-  /** history of the membership changes events */
-  membershipHistory: Array<MembershipEvent>;
-  /** Name */
-  name: Scalars['String']['output'];
-  /** Owner key changes */
-  ownerKeyChange: Array<ChangeOwnerKey>;
-  /** Smith certifications issued */
-  smithCertIssued: Array<SmithCert>;
-  /** Smith certifications received */
-  smithCertReceived: Array<SmithCert>;
-  /** Smith status of the identity */
-  smithStatus?: Maybe<SmithStatus>;
-  /** Status of the identity */
-  status: IdentityStatus;
-  /** Universal Dividend history */
-  udHistory: Array<UdHistory>;
-};
-
-/** Identity */
-export type IdentityCertIssuedArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertOrderByInput>>;
-  where?: InputMaybe<CertWhereInput>;
-};
-
-/** Identity */
-export type IdentityCertReceivedArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertOrderByInput>>;
-  where?: InputMaybe<CertWhereInput>;
-};
-
-/** Identity */
-export type IdentityLinkedAccountArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AccountOrderByInput>>;
-  where?: InputMaybe<AccountWhereInput>;
-};
-
-/** Identity */
-export type IdentityMembershipHistoryArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<MembershipEventOrderByInput>>;
-  where?: InputMaybe<MembershipEventWhereInput>;
-};
-
-/** Identity */
-export type IdentityOwnerKeyChangeArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderByInput>>;
-  where?: InputMaybe<ChangeOwnerKeyWhereInput>;
-};
-
-/** Identity */
-export type IdentitySmithCertIssuedArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertOrderByInput>>;
-  where?: InputMaybe<SmithCertWhereInput>;
-};
-
-/** Identity */
-export type IdentitySmithCertReceivedArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertOrderByInput>>;
-  where?: InputMaybe<SmithCertWhereInput>;
-};
-
-/** Identity */
-export type IdentityUdHistoryArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: Scalars['Int']['input'];
-  orderBy?: InputMaybe<OrderByEnum>;
-  where?: InputMaybe<UdHistoryFilterInput>;
 };
 
 export type IdentityEdge = {
@@ -1755,207 +2641,145 @@ export type IdentityEdge = {
   node: Identity;
 };
 
-export enum IdentityOrderByInput {
-  AccountIdAsc = 'account_id_ASC',
-  AccountIdAscNullsFirst = 'account_id_ASC_NULLS_FIRST',
-  AccountIdDesc = 'account_id_DESC',
-  AccountIdDescNullsLast = 'account_id_DESC_NULLS_LAST',
-  CreatedInIdAsc = 'createdIn_id_ASC',
-  CreatedInIdAscNullsFirst = 'createdIn_id_ASC_NULLS_FIRST',
-  CreatedInIdDesc = 'createdIn_id_DESC',
-  CreatedInIdDescNullsLast = 'createdIn_id_DESC_NULLS_LAST',
-  CreatedInIndexAsc = 'createdIn_index_ASC',
-  CreatedInIndexAscNullsFirst = 'createdIn_index_ASC_NULLS_FIRST',
-  CreatedInIndexDesc = 'createdIn_index_DESC',
-  CreatedInIndexDescNullsLast = 'createdIn_index_DESC_NULLS_LAST',
-  CreatedInNameAsc = 'createdIn_name_ASC',
-  CreatedInNameAscNullsFirst = 'createdIn_name_ASC_NULLS_FIRST',
-  CreatedInNameDesc = 'createdIn_name_DESC',
-  CreatedInNameDescNullsLast = 'createdIn_name_DESC_NULLS_LAST',
-  CreatedInPalletAsc = 'createdIn_pallet_ASC',
-  CreatedInPalletAscNullsFirst = 'createdIn_pallet_ASC_NULLS_FIRST',
-  CreatedInPalletDesc = 'createdIn_pallet_DESC',
-  CreatedInPalletDescNullsLast = 'createdIn_pallet_DESC_NULLS_LAST',
-  CreatedInPhaseAsc = 'createdIn_phase_ASC',
-  CreatedInPhaseAscNullsFirst = 'createdIn_phase_ASC_NULLS_FIRST',
-  CreatedInPhaseDesc = 'createdIn_phase_DESC',
-  CreatedInPhaseDescNullsLast = 'createdIn_phase_DESC_NULLS_LAST',
-  CreatedOnAsc = 'createdOn_ASC',
-  CreatedOnAscNullsFirst = 'createdOn_ASC_NULLS_FIRST',
-  CreatedOnDesc = 'createdOn_DESC',
-  CreatedOnDescNullsLast = 'createdOn_DESC_NULLS_LAST',
-  ExpireOnAsc = 'expireOn_ASC',
-  ExpireOnAscNullsFirst = 'expireOn_ASC_NULLS_FIRST',
-  ExpireOnDesc = 'expireOn_DESC',
-  ExpireOnDescNullsLast = 'expireOn_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IndexAsc = 'index_ASC',
-  IndexAscNullsFirst = 'index_ASC_NULLS_FIRST',
-  IndexDesc = 'index_DESC',
-  IndexDescNullsLast = 'index_DESC_NULLS_LAST',
-  IsMemberAsc = 'isMember_ASC',
-  IsMemberAscNullsFirst = 'isMember_ASC_NULLS_FIRST',
-  IsMemberDesc = 'isMember_DESC',
-  IsMemberDescNullsLast = 'isMember_DESC_NULLS_LAST',
-  LastChangeOnAsc = 'lastChangeOn_ASC',
-  LastChangeOnAscNullsFirst = 'lastChangeOn_ASC_NULLS_FIRST',
-  LastChangeOnDesc = 'lastChangeOn_DESC',
-  LastChangeOnDescNullsLast = 'lastChangeOn_DESC_NULLS_LAST',
-  NameAsc = 'name_ASC',
-  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
-  NameDesc = 'name_DESC',
-  NameDescNullsLast = 'name_DESC_NULLS_LAST',
-  SmithStatusAsc = 'smithStatus_ASC',
-  SmithStatusAscNullsFirst = 'smithStatus_ASC_NULLS_FIRST',
-  SmithStatusDesc = 'smithStatus_DESC',
-  SmithStatusDescNullsLast = 'smithStatus_DESC_NULLS_LAST',
-  StatusAsc = 'status_ASC',
-  StatusAscNullsFirst = 'status_ASC_NULLS_FIRST',
-  StatusDesc = 'status_DESC',
-  StatusDescNullsLast = 'status_DESC_NULLS_LAST',
-}
-
-/** identity status directly linked to Duniter IdtyStatus */
-export enum IdentityStatus {
-  Member = 'Member',
-  NotMember = 'NotMember',
-  Removed = 'Removed',
-  Revoked = 'Revoked',
-  Unconfirmed = 'Unconfirmed',
-  Unvalidated = 'Unvalidated',
-}
-
-export type IdentityWhereInput = {
-  AND?: InputMaybe<Array<IdentityWhereInput>>;
-  OR?: InputMaybe<Array<IdentityWhereInput>>;
-  account?: InputMaybe<AccountWhereInput>;
-  account_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  certIssued_every?: InputMaybe<CertWhereInput>;
-  certIssued_none?: InputMaybe<CertWhereInput>;
-  certIssued_some?: InputMaybe<CertWhereInput>;
-  certReceived_every?: InputMaybe<CertWhereInput>;
-  certReceived_none?: InputMaybe<CertWhereInput>;
-  certReceived_some?: InputMaybe<CertWhereInput>;
-  createdIn?: InputMaybe<EventWhereInput>;
-  createdIn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  createdOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  createdOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  createdOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  expireOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  expireOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  expireOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  expireOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  index_eq?: InputMaybe<Scalars['Int']['input']>;
-  index_gt?: InputMaybe<Scalars['Int']['input']>;
-  index_gte?: InputMaybe<Scalars['Int']['input']>;
-  index_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  index_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  index_lt?: InputMaybe<Scalars['Int']['input']>;
-  index_lte?: InputMaybe<Scalars['Int']['input']>;
-  index_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  index_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  isMember_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  isMember_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  isMember_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  lastChangeOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  lastChangeOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  lastChangeOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  lastChangeOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  lastChangeOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  lastChangeOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  lastChangeOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  lastChangeOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  lastChangeOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  linkedAccount_every?: InputMaybe<AccountWhereInput>;
-  linkedAccount_none?: InputMaybe<AccountWhereInput>;
-  linkedAccount_some?: InputMaybe<AccountWhereInput>;
-  membershipHistory_every?: InputMaybe<MembershipEventWhereInput>;
-  membershipHistory_none?: InputMaybe<MembershipEventWhereInput>;
-  membershipHistory_some?: InputMaybe<MembershipEventWhereInput>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
-  ownerKeyChange_every?: InputMaybe<ChangeOwnerKeyWhereInput>;
-  ownerKeyChange_none?: InputMaybe<ChangeOwnerKeyWhereInput>;
-  ownerKeyChange_some?: InputMaybe<ChangeOwnerKeyWhereInput>;
-  smithCertIssued_every?: InputMaybe<SmithCertWhereInput>;
-  smithCertIssued_none?: InputMaybe<SmithCertWhereInput>;
-  smithCertIssued_some?: InputMaybe<SmithCertWhereInput>;
-  smithCertReceived_every?: InputMaybe<SmithCertWhereInput>;
-  smithCertReceived_none?: InputMaybe<SmithCertWhereInput>;
-  smithCertReceived_some?: InputMaybe<SmithCertWhereInput>;
-  smithStatus_eq?: InputMaybe<SmithStatus>;
-  smithStatus_in?: InputMaybe<Array<SmithStatus>>;
-  smithStatus_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  smithStatus_not_eq?: InputMaybe<SmithStatus>;
-  smithStatus_not_in?: InputMaybe<Array<SmithStatus>>;
-  status_eq?: InputMaybe<IdentityStatus>;
-  status_in?: InputMaybe<Array<IdentityStatus>>;
-  status_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  status_not_eq?: InputMaybe<IdentityStatus>;
-  status_not_in?: InputMaybe<Array<IdentityStatus>>;
-  udHistory_every?: InputMaybe<UdHistoryWhereInput>;
-  udHistory_none?: InputMaybe<UdHistoryWhereInput>;
-  udHistory_some?: InputMaybe<UdHistoryWhereInput>;
+/** Ordering options when selecting data from "identity". */
+export type IdentityOrderBy = {
+  account?: InputMaybe<AccountOrderBy>;
+  accountId?: InputMaybe<OrderBy>;
+  certIssuedAggregate?: InputMaybe<CertAggregateOrderBy>;
+  certReceivedAggregate?: InputMaybe<CertAggregateOrderBy>;
+  createdIn?: InputMaybe<EventOrderBy>;
+  createdInId?: InputMaybe<OrderBy>;
+  createdOn?: InputMaybe<OrderBy>;
+  expireOn?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  index?: InputMaybe<OrderBy>;
+  isMember?: InputMaybe<OrderBy>;
+  lastChangeOn?: InputMaybe<OrderBy>;
+  linkedAccountAggregate?: InputMaybe<AccountAggregateOrderBy>;
+  membershipHistoryAggregate?: InputMaybe<MembershipEventAggregateOrderBy>;
+  name?: InputMaybe<OrderBy>;
+  ownerKeyChangeAggregate?: InputMaybe<ChangeOwnerKeyAggregateOrderBy>;
+  smithCertIssuedAggregate?: InputMaybe<SmithCertAggregateOrderBy>;
+  smithCertReceivedAggregate?: InputMaybe<SmithCertAggregateOrderBy>;
+  smithStatus?: InputMaybe<OrderBy>;
+  status?: InputMaybe<OrderBy>;
+  udHistoryAggregate?: InputMaybe<UdHistoryAggregateOrderBy>;
 };
 
-export enum ItemType {
-  Calls = 'Calls',
-  Events = 'Events',
-  Extrinsics = 'Extrinsics',
+/** select columns of table "identity" */
+export enum IdentitySelectColumn {
+  /** column name */
+  AccountId = 'accountId',
+  /** column name */
+  CreatedInId = 'createdInId',
+  /** column name */
+  CreatedOn = 'createdOn',
+  /** column name */
+  ExpireOn = 'expireOn',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Index = 'index',
+  /** column name */
+  IsMember = 'isMember',
+  /** column name */
+  LastChangeOn = 'lastChangeOn',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  SmithStatus = 'smithStatus',
+  /** column name */
+  Status = 'status',
 }
 
-export type ItemsCounter = {
+export enum IdentityStatusEnum {
+  Member = 'MEMBER',
+  Notmember = 'NOTMEMBER',
+  Removed = 'REMOVED',
+  Revoked = 'REVOKED',
+  Unconfirmed = 'UNCONFIRMED',
+  Unvalidated = 'UNVALIDATED',
+}
+
+/** Boolean expression to compare columns of type "IdentityStatusEnum". All fields are combined with logical 'AND'. */
+export type IdentityStatusEnumComparisonExp = {
+  _eq?: InputMaybe<IdentityStatusEnum>;
+  _in?: InputMaybe<Array<IdentityStatusEnum>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<IdentityStatusEnum>;
+  _nin?: InputMaybe<Array<IdentityStatusEnum>>;
+};
+
+/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
+export type IntArrayComparisonExp = {
+  /** is the array contained in the given array value */
+  _containedIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  /** does the array contain the given value */
+  _contains?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _eq?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _gt?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _gte?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _in?: InputMaybe<Array<Array<Scalars['Int']['input']>>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _lte?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _neq?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _nin?: InputMaybe<Array<Array<Scalars['Int']['input']>>>;
+};
+
+/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
+export type IntComparisonExp = {
+  _eq?: InputMaybe<Scalars['Int']['input']>;
+  _gt?: InputMaybe<Scalars['Int']['input']>;
+  _gte?: InputMaybe<Scalars['Int']['input']>;
+  _in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['Int']['input']>;
+  _lte?: InputMaybe<Scalars['Int']['input']>;
+  _neq?: InputMaybe<Scalars['Int']['input']>;
+  _nin?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export enum ItemTypeEnum {
+  Calls = 'CALLS',
+  Events = 'EVENTS',
+  Extrinsics = 'EXTRINSICS',
+}
+
+/** Boolean expression to compare columns of type "ItemTypeEnum". All fields are combined with logical 'AND'. */
+export type ItemTypeEnumComparisonExp = {
+  _eq?: InputMaybe<ItemTypeEnum>;
+  _in?: InputMaybe<Array<ItemTypeEnum>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<ItemTypeEnum>;
+  _nin?: InputMaybe<Array<ItemTypeEnum>>;
+};
+
+/** columns and relationships of "items_counter" */
+export type ItemsCounter = Node & {
   __typename?: 'ItemsCounter';
-  id: Scalars['String']['output'];
-  level: CounterLevel;
+  id: Scalars['ID']['output'];
+  level?: Maybe<CounterLevelEnum>;
   total: Scalars['Int']['output'];
-  type: ItemType;
+  type?: Maybe<ItemTypeEnum>;
+};
+
+/** Boolean expression to filter rows from the table "items_counter". All fields are combined with a logical 'AND'. */
+export type ItemsCounterBoolExp = {
+  _and?: InputMaybe<Array<ItemsCounterBoolExp>>;
+  _not?: InputMaybe<ItemsCounterBoolExp>;
+  _or?: InputMaybe<Array<ItemsCounterBoolExp>>;
+  id?: InputMaybe<StringComparisonExp>;
+  level?: InputMaybe<CounterLevelEnumComparisonExp>;
+  total?: InputMaybe<IntComparisonExp>;
+  type?: InputMaybe<ItemTypeEnumComparisonExp>;
+};
+
+/** A Relay connection object on "items_counter" */
+export type ItemsCounterConnection = {
+  __typename?: 'ItemsCounterConnection';
+  edges: Array<ItemsCounterEdge>;
+  pageInfo: PageInfo;
 };
 
 export type ItemsCounterEdge = {
@@ -1964,80 +2788,146 @@ export type ItemsCounterEdge = {
   node: ItemsCounter;
 };
 
-export enum ItemsCounterOrderByInput {
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  LevelAsc = 'level_ASC',
-  LevelAscNullsFirst = 'level_ASC_NULLS_FIRST',
-  LevelDesc = 'level_DESC',
-  LevelDescNullsLast = 'level_DESC_NULLS_LAST',
-  TotalAsc = 'total_ASC',
-  TotalAscNullsFirst = 'total_ASC_NULLS_FIRST',
-  TotalDesc = 'total_DESC',
-  TotalDescNullsLast = 'total_DESC_NULLS_LAST',
-  TypeAsc = 'type_ASC',
-  TypeAscNullsFirst = 'type_ASC_NULLS_FIRST',
-  TypeDesc = 'type_DESC',
-  TypeDescNullsLast = 'type_DESC_NULLS_LAST',
+/** Ordering options when selecting data from "items_counter". */
+export type ItemsCounterOrderBy = {
+  id?: InputMaybe<OrderBy>;
+  level?: InputMaybe<OrderBy>;
+  total?: InputMaybe<OrderBy>;
+  type?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "items_counter" */
+export enum ItemsCounterSelectColumn {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Level = 'level',
+  /** column name */
+  Total = 'total',
+  /** column name */
+  Type = 'type',
 }
 
-export type ItemsCounterWhereInput = {
-  AND?: InputMaybe<Array<ItemsCounterWhereInput>>;
-  OR?: InputMaybe<Array<ItemsCounterWhereInput>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  level_eq?: InputMaybe<CounterLevel>;
-  level_in?: InputMaybe<Array<CounterLevel>>;
-  level_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  level_not_eq?: InputMaybe<CounterLevel>;
-  level_not_in?: InputMaybe<Array<CounterLevel>>;
-  total_eq?: InputMaybe<Scalars['Int']['input']>;
-  total_gt?: InputMaybe<Scalars['Int']['input']>;
-  total_gte?: InputMaybe<Scalars['Int']['input']>;
-  total_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  total_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  total_lt?: InputMaybe<Scalars['Int']['input']>;
-  total_lte?: InputMaybe<Scalars['Int']['input']>;
-  total_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  total_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  type_eq?: InputMaybe<ItemType>;
-  type_in?: InputMaybe<Array<ItemType>>;
-  type_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  type_not_eq?: InputMaybe<ItemType>;
-  type_not_in?: InputMaybe<Array<ItemType>>;
+export type JsonbCastExp = {
+  String?: InputMaybe<StringComparisonExp>;
 };
 
-export type ItemsCountersConnection = {
-  __typename?: 'ItemsCountersConnection';
-  edges: Array<ItemsCounterEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+export type JsonbComparisonExp = {
+  _cast?: InputMaybe<JsonbCastExp>;
+  /** is the column contained in the given json value */
+  _containedIn?: InputMaybe<Scalars['jsonb']['input']>;
+  /** does the column contain the given json value at the top level */
+  _contains?: InputMaybe<Scalars['jsonb']['input']>;
+  _eq?: InputMaybe<Scalars['jsonb']['input']>;
+  _gt?: InputMaybe<Scalars['jsonb']['input']>;
+  _gte?: InputMaybe<Scalars['jsonb']['input']>;
+  /** does the string exist as a top-level key in the column */
+  _hasKey?: InputMaybe<Scalars['String']['input']>;
+  /** do all of these strings exist as top-level keys in the column */
+  _hasKeysAll?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** do any of these strings exist as top-level keys in the column */
+  _hasKeysAny?: InputMaybe<Array<Scalars['String']['input']>>;
+  _in?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['jsonb']['input']>;
+  _lte?: InputMaybe<Scalars['jsonb']['input']>;
+  _neq?: InputMaybe<Scalars['jsonb']['input']>;
+  _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
 };
 
-export type MembershipEvent = {
+/** columns and relationships of "membership_event" */
+export type MembershipEvent = Node & {
   __typename?: 'MembershipEvent';
   blockNumber: Scalars['Int']['output'];
-  event: Event;
-  eventType: EventType;
-  id: Scalars['String']['output'];
-  identity: Identity;
+  /** An object relationship */
+  event?: Maybe<Event>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  eventType?: Maybe<EventTypeEnum>;
+  id: Scalars['ID']['output'];
+  /** An object relationship */
+  identity?: Maybe<Identity>;
+  identityId?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregated selection of "membership_event" */
+export type MembershipEventAggregate = {
+  __typename?: 'MembershipEventAggregate';
+  aggregate?: Maybe<MembershipEventAggregateFields>;
+  nodes: Array<MembershipEvent>;
+};
+
+export type MembershipEventAggregateBoolExp = {
+  count?: InputMaybe<MembershipEventAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "membership_event" */
+export type MembershipEventAggregateFields = {
+  __typename?: 'MembershipEventAggregateFields';
+  avg?: Maybe<MembershipEventAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<MembershipEventMaxFields>;
+  min?: Maybe<MembershipEventMinFields>;
+  stddev?: Maybe<MembershipEventStddevFields>;
+  stddevPop?: Maybe<MembershipEventStddevPopFields>;
+  stddevSamp?: Maybe<MembershipEventStddevSampFields>;
+  sum?: Maybe<MembershipEventSumFields>;
+  varPop?: Maybe<MembershipEventVarPopFields>;
+  varSamp?: Maybe<MembershipEventVarSampFields>;
+  variance?: Maybe<MembershipEventVarianceFields>;
+};
+
+/** aggregate fields of "membership_event" */
+export type MembershipEventAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<MembershipEventSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "membership_event" */
+export type MembershipEventAggregateOrderBy = {
+  avg?: InputMaybe<MembershipEventAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<MembershipEventMaxOrderBy>;
+  min?: InputMaybe<MembershipEventMinOrderBy>;
+  stddev?: InputMaybe<MembershipEventStddevOrderBy>;
+  stddevPop?: InputMaybe<MembershipEventStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<MembershipEventStddevSampOrderBy>;
+  sum?: InputMaybe<MembershipEventSumOrderBy>;
+  varPop?: InputMaybe<MembershipEventVarPopOrderBy>;
+  varSamp?: InputMaybe<MembershipEventVarSampOrderBy>;
+  variance?: InputMaybe<MembershipEventVarianceOrderBy>;
+};
+
+/** aggregate avg on columns */
+export type MembershipEventAvgFields = {
+  __typename?: 'MembershipEventAvgFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "membership_event" */
+export type MembershipEventAvgOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "membership_event". All fields are combined with a logical 'AND'. */
+export type MembershipEventBoolExp = {
+  _and?: InputMaybe<Array<MembershipEventBoolExp>>;
+  _not?: InputMaybe<MembershipEventBoolExp>;
+  _or?: InputMaybe<Array<MembershipEventBoolExp>>;
+  blockNumber?: InputMaybe<IntComparisonExp>;
+  event?: InputMaybe<EventBoolExp>;
+  eventId?: InputMaybe<StringComparisonExp>;
+  eventType?: InputMaybe<EventTypeEnumComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  identity?: InputMaybe<IdentityBoolExp>;
+  identityId?: InputMaybe<StringComparisonExp>;
+};
+
+/** A Relay connection object on "membership_event" */
+export type MembershipEventConnection = {
+  __typename?: 'MembershipEventConnection';
+  edges: Array<MembershipEventEdge>;
+  pageInfo: PageInfo;
 };
 
 export type MembershipEventEdge = {
@@ -2046,136 +2936,175 @@ export type MembershipEventEdge = {
   node: MembershipEvent;
 };
 
-export enum MembershipEventOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  EventTypeAsc = 'eventType_ASC',
-  EventTypeAscNullsFirst = 'eventType_ASC_NULLS_FIRST',
-  EventTypeDesc = 'eventType_DESC',
-  EventTypeDescNullsLast = 'eventType_DESC_NULLS_LAST',
-  EventIdAsc = 'event_id_ASC',
-  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
-  EventIdDesc = 'event_id_DESC',
-  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
-  EventIndexAsc = 'event_index_ASC',
-  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
-  EventIndexDesc = 'event_index_DESC',
-  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
-  EventNameAsc = 'event_name_ASC',
-  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
-  EventNameDesc = 'event_name_DESC',
-  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
-  EventPalletAsc = 'event_pallet_ASC',
-  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
-  EventPalletDesc = 'event_pallet_DESC',
-  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
-  EventPhaseAsc = 'event_phase_ASC',
-  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
-  EventPhaseDesc = 'event_phase_DESC',
-  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IdentityCreatedOnAsc = 'identity_createdOn_ASC',
-  IdentityCreatedOnAscNullsFirst = 'identity_createdOn_ASC_NULLS_FIRST',
-  IdentityCreatedOnDesc = 'identity_createdOn_DESC',
-  IdentityCreatedOnDescNullsLast = 'identity_createdOn_DESC_NULLS_LAST',
-  IdentityExpireOnAsc = 'identity_expireOn_ASC',
-  IdentityExpireOnAscNullsFirst = 'identity_expireOn_ASC_NULLS_FIRST',
-  IdentityExpireOnDesc = 'identity_expireOn_DESC',
-  IdentityExpireOnDescNullsLast = 'identity_expireOn_DESC_NULLS_LAST',
-  IdentityIdAsc = 'identity_id_ASC',
-  IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
-  IdentityIdDesc = 'identity_id_DESC',
-  IdentityIdDescNullsLast = 'identity_id_DESC_NULLS_LAST',
-  IdentityIndexAsc = 'identity_index_ASC',
-  IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
-  IdentityIndexDesc = 'identity_index_DESC',
-  IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
-  IdentityIsMemberAsc = 'identity_isMember_ASC',
-  IdentityIsMemberAscNullsFirst = 'identity_isMember_ASC_NULLS_FIRST',
-  IdentityIsMemberDesc = 'identity_isMember_DESC',
-  IdentityIsMemberDescNullsLast = 'identity_isMember_DESC_NULLS_LAST',
-  IdentityLastChangeOnAsc = 'identity_lastChangeOn_ASC',
-  IdentityLastChangeOnAscNullsFirst = 'identity_lastChangeOn_ASC_NULLS_FIRST',
-  IdentityLastChangeOnDesc = 'identity_lastChangeOn_DESC',
-  IdentityLastChangeOnDescNullsLast = 'identity_lastChangeOn_DESC_NULLS_LAST',
-  IdentityNameAsc = 'identity_name_ASC',
-  IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
-  IdentityNameDesc = 'identity_name_DESC',
-  IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
-  IdentitySmithStatusAsc = 'identity_smithStatus_ASC',
-  IdentitySmithStatusAscNullsFirst = 'identity_smithStatus_ASC_NULLS_FIRST',
-  IdentitySmithStatusDesc = 'identity_smithStatus_DESC',
-  IdentitySmithStatusDescNullsLast = 'identity_smithStatus_DESC_NULLS_LAST',
-  IdentityStatusAsc = 'identity_status_ASC',
-  IdentityStatusAscNullsFirst = 'identity_status_ASC_NULLS_FIRST',
-  IdentityStatusDesc = 'identity_status_DESC',
-  IdentityStatusDescNullsLast = 'identity_status_DESC_NULLS_LAST',
+/** aggregate max on columns */
+export type MembershipEventMaxFields = {
+  __typename?: 'MembershipEventMaxFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  identityId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "membership_event" */
+export type MembershipEventMaxOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  eventId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type MembershipEventMinFields = {
+  __typename?: 'MembershipEventMinFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  identityId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "membership_event" */
+export type MembershipEventMinOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  eventId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "membership_event". */
+export type MembershipEventOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  event?: InputMaybe<EventOrderBy>;
+  eventId?: InputMaybe<OrderBy>;
+  eventType?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identity?: InputMaybe<IdentityOrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "membership_event" */
+export enum MembershipEventSelectColumn {
+  /** column name */
+  BlockNumber = 'blockNumber',
+  /** column name */
+  EventId = 'eventId',
+  /** column name */
+  EventType = 'eventType',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identityId',
 }
 
-export type MembershipEventWhereInput = {
-  AND?: InputMaybe<Array<MembershipEventWhereInput>>;
-  OR?: InputMaybe<Array<MembershipEventWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  event?: InputMaybe<EventWhereInput>;
-  eventType_eq?: InputMaybe<EventType>;
-  eventType_in?: InputMaybe<Array<EventType>>;
-  eventType_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  eventType_not_eq?: InputMaybe<EventType>;
-  eventType_not_in?: InputMaybe<Array<EventType>>;
-  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  identity?: InputMaybe<IdentityWhereInput>;
-  identity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+/** aggregate stddev on columns */
+export type MembershipEventStddevFields = {
+  __typename?: 'MembershipEventStddevFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
 };
 
-export type MembershipEventsConnection = {
-  __typename?: 'MembershipEventsConnection';
-  edges: Array<MembershipEventEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by stddev() on columns of table "membership_event" */
+export type MembershipEventStddevOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
 };
 
-export type NumberFilter = {
-  eq?: InputMaybe<Scalars['Int']['input']>;
-  gt?: InputMaybe<Scalars['Int']['input']>;
-  gte?: InputMaybe<Scalars['Int']['input']>;
-  lt?: InputMaybe<Scalars['Int']['input']>;
-  lte?: InputMaybe<Scalars['Int']['input']>;
+/** aggregate stddevPop on columns */
+export type MembershipEventStddevPopFields = {
+  __typename?: 'MembershipEventStddevPopFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
 };
 
-/** The basic directions for order by */
-export enum OrderByEnum {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberDesc = 'blockNumber_DESC',
+/** order by stddevPop() on columns of table "membership_event" */
+export type MembershipEventStddevPopOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type MembershipEventStddevSampFields = {
+  __typename?: 'MembershipEventStddevSampFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "membership_event" */
+export type MembershipEventStddevSampOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate sum on columns */
+export type MembershipEventSumFields = {
+  __typename?: 'MembershipEventSumFields';
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "membership_event" */
+export type MembershipEventSumOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varPop on columns */
+export type MembershipEventVarPopFields = {
+  __typename?: 'MembershipEventVarPopFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "membership_event" */
+export type MembershipEventVarPopOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type MembershipEventVarSampFields = {
+  __typename?: 'MembershipEventVarSampFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "membership_event" */
+export type MembershipEventVarSampOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type MembershipEventVarianceFields = {
+  __typename?: 'MembershipEventVarianceFields';
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "membership_event" */
+export type MembershipEventVarianceOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** An object with globally unique ID */
+export type Node = {
+  /** A globally unique identifier */
+  id: Scalars['ID']['output'];
+};
+
+/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+export type NumericComparisonExp = {
+  _eq?: InputMaybe<Scalars['numeric']['input']>;
+  _gt?: InputMaybe<Scalars['numeric']['input']>;
+  _gte?: InputMaybe<Scalars['numeric']['input']>;
+  _in?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['numeric']['input']>;
+  _lte?: InputMaybe<Scalars['numeric']['input']>;
+  _neq?: InputMaybe<Scalars['numeric']['input']>;
+  _nin?: InputMaybe<Array<Scalars['numeric']['input']>>;
+};
+
+/** column ordering options */
+export enum OrderBy {
+  /** in ascending order, nulls last */
+  Asc = 'ASC',
+  /** in ascending order, nulls first */
+  AscNullsFirst = 'ASC_NULLS_FIRST',
+  /** in ascending order, nulls last */
+  AscNullsLast = 'ASC_NULLS_LAST',
+  /** in descending order, nulls first */
+  Desc = 'DESC',
+  /** in descending order, nulls first */
+  DescNullsFirst = 'DESC_NULLS_FIRST',
+  /** in descending order, nulls last */
+  DescNullsLast = 'DESC_NULLS_LAST',
 }
 
 export type PageInfo = {
@@ -2186,451 +3115,96 @@ export type PageInfo = {
   startCursor: Scalars['String']['output'];
 };
 
-export type Query = {
-  __typename?: 'Query';
-  accountById?: Maybe<Account>;
-  /** @deprecated Use accountById */
-  accountByUniqueInput?: Maybe<Account>;
-  accounts: Array<Account>;
-  accountsConnection: AccountsConnection;
-  blockById?: Maybe<Block>;
-  /** @deprecated Use blockById */
-  blockByUniqueInput?: Maybe<Block>;
-  blocks: Array<Block>;
-  blocksConnection: BlocksConnection;
-  callById?: Maybe<Call>;
-  /** @deprecated Use callById */
-  callByUniqueInput?: Maybe<Call>;
-  calls: Array<Call>;
-  callsConnection: CallsConnection;
-  certById?: Maybe<Cert>;
-  /** @deprecated Use certById */
-  certByUniqueInput?: Maybe<Cert>;
-  certEventById?: Maybe<CertEvent>;
-  /** @deprecated Use certEventById */
-  certEventByUniqueInput?: Maybe<CertEvent>;
-  certEvents: Array<CertEvent>;
-  certEventsConnection: CertEventsConnection;
-  certs: Array<Cert>;
-  certsConnection: CertsConnection;
-  changeOwnerKeyById?: Maybe<ChangeOwnerKey>;
-  /** @deprecated Use changeOwnerKeyById */
-  changeOwnerKeyByUniqueInput?: Maybe<ChangeOwnerKey>;
-  changeOwnerKeys: Array<ChangeOwnerKey>;
-  changeOwnerKeysConnection: ChangeOwnerKeysConnection;
-  eventById?: Maybe<Event>;
-  /** @deprecated Use eventById */
-  eventByUniqueInput?: Maybe<Event>;
-  events: Array<Event>;
-  eventsConnection: EventsConnection;
-  extrinsicById?: Maybe<Extrinsic>;
-  /** @deprecated Use extrinsicById */
-  extrinsicByUniqueInput?: Maybe<Extrinsic>;
-  extrinsics: Array<Extrinsic>;
-  extrinsicsConnection: ExtrinsicsConnection;
-  galuel: Scalars['String']['output'];
-  identities: Array<Identity>;
-  identitiesConnection: IdentitiesConnection;
-  identityById?: Maybe<Identity>;
-  /** @deprecated Use identityById */
-  identityByUniqueInput?: Maybe<Identity>;
-  itemsCounterById?: Maybe<ItemsCounter>;
-  /** @deprecated Use itemsCounterById */
-  itemsCounterByUniqueInput?: Maybe<ItemsCounter>;
-  itemsCounters: Array<ItemsCounter>;
-  itemsCountersConnection: ItemsCountersConnection;
-  membershipEventById?: Maybe<MembershipEvent>;
-  /** @deprecated Use membershipEventById */
-  membershipEventByUniqueInput?: Maybe<MembershipEvent>;
-  membershipEvents: Array<MembershipEvent>;
-  membershipEventsConnection: MembershipEventsConnection;
-  smithCertById?: Maybe<SmithCert>;
-  /** @deprecated Use smithCertById */
-  smithCertByUniqueInput?: Maybe<SmithCert>;
-  smithCerts: Array<SmithCert>;
-  smithCertsConnection: SmithCertsConnection;
-  squidStatus?: Maybe<SquidStatus>;
-  transferById?: Maybe<Transfer>;
-  /** @deprecated Use transferById */
-  transferByUniqueInput?: Maybe<Transfer>;
-  transfers: Array<Transfer>;
-  transfersConnection: TransfersConnection;
-  udHistories: Array<UdHistory>;
-  udHistoriesConnection: UdHistoriesConnection;
-  udHistoryById?: Maybe<UdHistory>;
-  /** @deprecated Use udHistoryById */
-  udHistoryByUniqueInput?: Maybe<UdHistory>;
-  udReevalById?: Maybe<UdReeval>;
-  /** @deprecated Use udReevalById */
-  udReevalByUniqueInput?: Maybe<UdReeval>;
-  udReevals: Array<UdReeval>;
-  udReevalsConnection: UdReevalsConnection;
-  universalDividendById?: Maybe<UniversalDividend>;
-  /** @deprecated Use universalDividendById */
-  universalDividendByUniqueInput?: Maybe<UniversalDividend>;
-  universalDividends: Array<UniversalDividend>;
-  universalDividendsConnection: UniversalDividendsConnection;
-};
-
-export type QueryAccountByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryAccountByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryAccountsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AccountOrderByInput>>;
-  where?: InputMaybe<AccountWhereInput>;
-};
-
-export type QueryAccountsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<AccountOrderByInput>;
-  where?: InputMaybe<AccountWhereInput>;
-};
-
-export type QueryBlockByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryBlockByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryBlocksArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<BlockOrderByInput>>;
-  where?: InputMaybe<BlockWhereInput>;
-};
-
-export type QueryBlocksConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<BlockOrderByInput>;
-  where?: InputMaybe<BlockWhereInput>;
-};
-
-export type QueryCallByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryCallByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
-};
-
-export type QueryCallsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<CallOrderByInput>;
-  where?: InputMaybe<CallWhereInput>;
-};
-
-export type QueryCertByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryCertByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryCertEventByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryCertEventByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryCertEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertEventOrderByInput>>;
-  where?: InputMaybe<CertEventWhereInput>;
-};
-
-export type QueryCertEventsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<CertEventOrderByInput>;
-  where?: InputMaybe<CertEventWhereInput>;
-};
-
-export type QueryCertsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertOrderByInput>>;
-  where?: InputMaybe<CertWhereInput>;
-};
-
-export type QueryCertsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<CertOrderByInput>;
-  where?: InputMaybe<CertWhereInput>;
-};
-
-export type QueryChangeOwnerKeyByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryChangeOwnerKeyByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryChangeOwnerKeysArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderByInput>>;
-  where?: InputMaybe<ChangeOwnerKeyWhereInput>;
-};
-
-export type QueryChangeOwnerKeysConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<ChangeOwnerKeyOrderByInput>;
-  where?: InputMaybe<ChangeOwnerKeyWhereInput>;
-};
-
-export type QueryEventByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryEventByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
-};
-
-export type QueryEventsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<EventOrderByInput>;
-  where?: InputMaybe<EventWhereInput>;
-};
-
-export type QueryExtrinsicByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryExtrinsicByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryExtrinsicsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
-};
-
-export type QueryExtrinsicsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<ExtrinsicOrderByInput>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
-};
-
-export type QueryIdentitiesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<IdentityOrderByInput>>;
-  where?: InputMaybe<IdentityWhereInput>;
-};
-
-export type QueryIdentitiesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<IdentityOrderByInput>;
-  where?: InputMaybe<IdentityWhereInput>;
-};
-
-export type QueryIdentityByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryIdentityByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryItemsCounterByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryItemsCounterByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryItemsCountersArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ItemsCounterOrderByInput>>;
-  where?: InputMaybe<ItemsCounterWhereInput>;
-};
-
-export type QueryItemsCountersConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<ItemsCounterOrderByInput>;
-  where?: InputMaybe<ItemsCounterWhereInput>;
-};
-
-export type QueryMembershipEventByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryMembershipEventByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryMembershipEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<MembershipEventOrderByInput>>;
-  where?: InputMaybe<MembershipEventWhereInput>;
-};
-
-export type QueryMembershipEventsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<MembershipEventOrderByInput>;
-  where?: InputMaybe<MembershipEventWhereInput>;
-};
-
-export type QuerySmithCertByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QuerySmithCertByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QuerySmithCertsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertOrderByInput>>;
-  where?: InputMaybe<SmithCertWhereInput>;
-};
-
-export type QuerySmithCertsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<SmithCertOrderByInput>;
-  where?: InputMaybe<SmithCertWhereInput>;
-};
-
-export type QueryTransferByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryTransferByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryTransfersArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<TransferOrderByInput>>;
-  where?: InputMaybe<TransferWhereInput>;
-};
-
-export type QueryTransfersConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<TransferOrderByInput>;
-  where?: InputMaybe<TransferWhereInput>;
-};
-
-export type QueryUdHistoriesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<UdHistoryOrderByInput>>;
-  where?: InputMaybe<UdHistoryWhereInput>;
-};
-
-export type QueryUdHistoriesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<UdHistoryOrderByInput>;
-  where?: InputMaybe<UdHistoryWhereInput>;
-};
-
-export type QueryUdHistoryByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryUdHistoryByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryUdReevalByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryUdReevalByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryUdReevalsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<UdReevalOrderByInput>>;
-  where?: InputMaybe<UdReevalWhereInput>;
-};
-
-export type QueryUdReevalsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<UdReevalOrderByInput>;
-  where?: InputMaybe<UdReevalWhereInput>;
-};
-
-export type QueryUniversalDividendByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type QueryUniversalDividendByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-export type QueryUniversalDividendsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<UniversalDividendOrderByInput>>;
-  where?: InputMaybe<UniversalDividendWhereInput>;
-};
-
-export type QueryUniversalDividendsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<UniversalDividendOrderByInput>;
-  where?: InputMaybe<UniversalDividendWhereInput>;
-};
-
-/** Smith certification */
-export type SmithCert = {
+/** columns and relationships of "smith_cert" */
+export type SmithCert = Node & {
   __typename?: 'SmithCert';
   createdOn: Scalars['Int']['output'];
-  id: Scalars['String']['output'];
-  issuer: Identity;
-  receiver: Identity;
+  id: Scalars['ID']['output'];
+  /** An object relationship */
+  issuer?: Maybe<Identity>;
+  issuerId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  receiver?: Maybe<Identity>;
+  receiverId?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregated selection of "smith_cert" */
+export type SmithCertAggregate = {
+  __typename?: 'SmithCertAggregate';
+  aggregate?: Maybe<SmithCertAggregateFields>;
+  nodes: Array<SmithCert>;
+};
+
+export type SmithCertAggregateBoolExp = {
+  count?: InputMaybe<SmithCertAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "smith_cert" */
+export type SmithCertAggregateFields = {
+  __typename?: 'SmithCertAggregateFields';
+  avg?: Maybe<SmithCertAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<SmithCertMaxFields>;
+  min?: Maybe<SmithCertMinFields>;
+  stddev?: Maybe<SmithCertStddevFields>;
+  stddevPop?: Maybe<SmithCertStddevPopFields>;
+  stddevSamp?: Maybe<SmithCertStddevSampFields>;
+  sum?: Maybe<SmithCertSumFields>;
+  varPop?: Maybe<SmithCertVarPopFields>;
+  varSamp?: Maybe<SmithCertVarSampFields>;
+  variance?: Maybe<SmithCertVarianceFields>;
+};
+
+/** aggregate fields of "smith_cert" */
+export type SmithCertAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<SmithCertSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "smith_cert" */
+export type SmithCertAggregateOrderBy = {
+  avg?: InputMaybe<SmithCertAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<SmithCertMaxOrderBy>;
+  min?: InputMaybe<SmithCertMinOrderBy>;
+  stddev?: InputMaybe<SmithCertStddevOrderBy>;
+  stddevPop?: InputMaybe<SmithCertStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<SmithCertStddevSampOrderBy>;
+  sum?: InputMaybe<SmithCertSumOrderBy>;
+  varPop?: InputMaybe<SmithCertVarPopOrderBy>;
+  varSamp?: InputMaybe<SmithCertVarSampOrderBy>;
+  variance?: InputMaybe<SmithCertVarianceOrderBy>;
+};
+
+/** aggregate avg on columns */
+export type SmithCertAvgFields = {
+  __typename?: 'SmithCertAvgFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "smith_cert" */
+export type SmithCertAvgOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "smith_cert". All fields are combined with a logical 'AND'. */
+export type SmithCertBoolExp = {
+  _and?: InputMaybe<Array<SmithCertBoolExp>>;
+  _not?: InputMaybe<SmithCertBoolExp>;
+  _or?: InputMaybe<Array<SmithCertBoolExp>>;
+  createdOn?: InputMaybe<IntComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  issuer?: InputMaybe<IdentityBoolExp>;
+  issuerId?: InputMaybe<StringComparisonExp>;
+  receiver?: InputMaybe<IdentityBoolExp>;
+  receiverId?: InputMaybe<StringComparisonExp>;
+};
+
+/** A Relay connection object on "smith_cert" */
+export type SmithCertConnection = {
+  __typename?: 'SmithCertConnection';
+  edges: Array<SmithCertEdge>;
+  pageInfo: PageInfo;
 };
 
 export type SmithCertEdge = {
@@ -2639,366 +3213,316 @@ export type SmithCertEdge = {
   node: SmithCert;
 };
 
-export enum SmithCertOrderByInput {
-  CreatedOnAsc = 'createdOn_ASC',
-  CreatedOnAscNullsFirst = 'createdOn_ASC_NULLS_FIRST',
-  CreatedOnDesc = 'createdOn_DESC',
-  CreatedOnDescNullsLast = 'createdOn_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IssuerCreatedOnAsc = 'issuer_createdOn_ASC',
-  IssuerCreatedOnAscNullsFirst = 'issuer_createdOn_ASC_NULLS_FIRST',
-  IssuerCreatedOnDesc = 'issuer_createdOn_DESC',
-  IssuerCreatedOnDescNullsLast = 'issuer_createdOn_DESC_NULLS_LAST',
-  IssuerExpireOnAsc = 'issuer_expireOn_ASC',
-  IssuerExpireOnAscNullsFirst = 'issuer_expireOn_ASC_NULLS_FIRST',
-  IssuerExpireOnDesc = 'issuer_expireOn_DESC',
-  IssuerExpireOnDescNullsLast = 'issuer_expireOn_DESC_NULLS_LAST',
-  IssuerIdAsc = 'issuer_id_ASC',
-  IssuerIdAscNullsFirst = 'issuer_id_ASC_NULLS_FIRST',
-  IssuerIdDesc = 'issuer_id_DESC',
-  IssuerIdDescNullsLast = 'issuer_id_DESC_NULLS_LAST',
-  IssuerIndexAsc = 'issuer_index_ASC',
-  IssuerIndexAscNullsFirst = 'issuer_index_ASC_NULLS_FIRST',
-  IssuerIndexDesc = 'issuer_index_DESC',
-  IssuerIndexDescNullsLast = 'issuer_index_DESC_NULLS_LAST',
-  IssuerIsMemberAsc = 'issuer_isMember_ASC',
-  IssuerIsMemberAscNullsFirst = 'issuer_isMember_ASC_NULLS_FIRST',
-  IssuerIsMemberDesc = 'issuer_isMember_DESC',
-  IssuerIsMemberDescNullsLast = 'issuer_isMember_DESC_NULLS_LAST',
-  IssuerLastChangeOnAsc = 'issuer_lastChangeOn_ASC',
-  IssuerLastChangeOnAscNullsFirst = 'issuer_lastChangeOn_ASC_NULLS_FIRST',
-  IssuerLastChangeOnDesc = 'issuer_lastChangeOn_DESC',
-  IssuerLastChangeOnDescNullsLast = 'issuer_lastChangeOn_DESC_NULLS_LAST',
-  IssuerNameAsc = 'issuer_name_ASC',
-  IssuerNameAscNullsFirst = 'issuer_name_ASC_NULLS_FIRST',
-  IssuerNameDesc = 'issuer_name_DESC',
-  IssuerNameDescNullsLast = 'issuer_name_DESC_NULLS_LAST',
-  IssuerSmithStatusAsc = 'issuer_smithStatus_ASC',
-  IssuerSmithStatusAscNullsFirst = 'issuer_smithStatus_ASC_NULLS_FIRST',
-  IssuerSmithStatusDesc = 'issuer_smithStatus_DESC',
-  IssuerSmithStatusDescNullsLast = 'issuer_smithStatus_DESC_NULLS_LAST',
-  IssuerStatusAsc = 'issuer_status_ASC',
-  IssuerStatusAscNullsFirst = 'issuer_status_ASC_NULLS_FIRST',
-  IssuerStatusDesc = 'issuer_status_DESC',
-  IssuerStatusDescNullsLast = 'issuer_status_DESC_NULLS_LAST',
-  ReceiverCreatedOnAsc = 'receiver_createdOn_ASC',
-  ReceiverCreatedOnAscNullsFirst = 'receiver_createdOn_ASC_NULLS_FIRST',
-  ReceiverCreatedOnDesc = 'receiver_createdOn_DESC',
-  ReceiverCreatedOnDescNullsLast = 'receiver_createdOn_DESC_NULLS_LAST',
-  ReceiverExpireOnAsc = 'receiver_expireOn_ASC',
-  ReceiverExpireOnAscNullsFirst = 'receiver_expireOn_ASC_NULLS_FIRST',
-  ReceiverExpireOnDesc = 'receiver_expireOn_DESC',
-  ReceiverExpireOnDescNullsLast = 'receiver_expireOn_DESC_NULLS_LAST',
-  ReceiverIdAsc = 'receiver_id_ASC',
-  ReceiverIdAscNullsFirst = 'receiver_id_ASC_NULLS_FIRST',
-  ReceiverIdDesc = 'receiver_id_DESC',
-  ReceiverIdDescNullsLast = 'receiver_id_DESC_NULLS_LAST',
-  ReceiverIndexAsc = 'receiver_index_ASC',
-  ReceiverIndexAscNullsFirst = 'receiver_index_ASC_NULLS_FIRST',
-  ReceiverIndexDesc = 'receiver_index_DESC',
-  ReceiverIndexDescNullsLast = 'receiver_index_DESC_NULLS_LAST',
-  ReceiverIsMemberAsc = 'receiver_isMember_ASC',
-  ReceiverIsMemberAscNullsFirst = 'receiver_isMember_ASC_NULLS_FIRST',
-  ReceiverIsMemberDesc = 'receiver_isMember_DESC',
-  ReceiverIsMemberDescNullsLast = 'receiver_isMember_DESC_NULLS_LAST',
-  ReceiverLastChangeOnAsc = 'receiver_lastChangeOn_ASC',
-  ReceiverLastChangeOnAscNullsFirst = 'receiver_lastChangeOn_ASC_NULLS_FIRST',
-  ReceiverLastChangeOnDesc = 'receiver_lastChangeOn_DESC',
-  ReceiverLastChangeOnDescNullsLast = 'receiver_lastChangeOn_DESC_NULLS_LAST',
-  ReceiverNameAsc = 'receiver_name_ASC',
-  ReceiverNameAscNullsFirst = 'receiver_name_ASC_NULLS_FIRST',
-  ReceiverNameDesc = 'receiver_name_DESC',
-  ReceiverNameDescNullsLast = 'receiver_name_DESC_NULLS_LAST',
-  ReceiverSmithStatusAsc = 'receiver_smithStatus_ASC',
-  ReceiverSmithStatusAscNullsFirst = 'receiver_smithStatus_ASC_NULLS_FIRST',
-  ReceiverSmithStatusDesc = 'receiver_smithStatus_DESC',
-  ReceiverSmithStatusDescNullsLast = 'receiver_smithStatus_DESC_NULLS_LAST',
-  ReceiverStatusAsc = 'receiver_status_ASC',
-  ReceiverStatusAscNullsFirst = 'receiver_status_ASC_NULLS_FIRST',
-  ReceiverStatusDesc = 'receiver_status_DESC',
-  ReceiverStatusDescNullsLast = 'receiver_status_DESC_NULLS_LAST',
+/** aggregate max on columns */
+export type SmithCertMaxFields = {
+  __typename?: 'SmithCertMaxFields';
+  createdOn?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  issuerId?: Maybe<Scalars['String']['output']>;
+  receiverId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "smith_cert" */
+export type SmithCertMaxOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  issuerId?: InputMaybe<OrderBy>;
+  receiverId?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type SmithCertMinFields = {
+  __typename?: 'SmithCertMinFields';
+  createdOn?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  issuerId?: Maybe<Scalars['String']['output']>;
+  receiverId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "smith_cert" */
+export type SmithCertMinOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  issuerId?: InputMaybe<OrderBy>;
+  receiverId?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "smith_cert". */
+export type SmithCertOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  issuer?: InputMaybe<IdentityOrderBy>;
+  issuerId?: InputMaybe<OrderBy>;
+  receiver?: InputMaybe<IdentityOrderBy>;
+  receiverId?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "smith_cert" */
+export enum SmithCertSelectColumn {
+  /** column name */
+  CreatedOn = 'createdOn',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IssuerId = 'issuerId',
+  /** column name */
+  ReceiverId = 'receiverId',
 }
 
-export type SmithCertWhereInput = {
-  AND?: InputMaybe<Array<SmithCertWhereInput>>;
-  OR?: InputMaybe<Array<SmithCertWhereInput>>;
-  createdOn_eq?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_gt?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_gte?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  createdOn_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  createdOn_lt?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_lte?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  createdOn_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  issuer?: InputMaybe<IdentityWhereInput>;
-  issuer_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  receiver?: InputMaybe<IdentityWhereInput>;
-  receiver_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+/** aggregate stddev on columns */
+export type SmithCertStddevFields = {
+  __typename?: 'SmithCertStddevFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
 };
 
-export type SmithCertsConnection = {
-  __typename?: 'SmithCertsConnection';
-  edges: Array<SmithCertEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by stddev() on columns of table "smith_cert" */
+export type SmithCertStddevOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
 };
 
-/** smith status directly linked to Duniter SmithStatus */
-export enum SmithStatus {
-  Excluded = 'Excluded',
-  Invited = 'Invited',
-  Pending = 'Pending',
-  Smith = 'Smith',
+/** aggregate stddevPop on columns */
+export type SmithCertStddevPopFields = {
+  __typename?: 'SmithCertStddevPopFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevPop() on columns of table "smith_cert" */
+export type SmithCertStddevPopOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type SmithCertStddevSampFields = {
+  __typename?: 'SmithCertStddevSampFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "smith_cert" */
+export type SmithCertStddevSampOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate sum on columns */
+export type SmithCertSumFields = {
+  __typename?: 'SmithCertSumFields';
+  createdOn?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "smith_cert" */
+export type SmithCertSumOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varPop on columns */
+export type SmithCertVarPopFields = {
+  __typename?: 'SmithCertVarPopFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "smith_cert" */
+export type SmithCertVarPopOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type SmithCertVarSampFields = {
+  __typename?: 'SmithCertVarSampFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "smith_cert" */
+export type SmithCertVarSampOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type SmithCertVarianceFields = {
+  __typename?: 'SmithCertVarianceFields';
+  createdOn?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "smith_cert" */
+export type SmithCertVarianceOrderBy = {
+  createdOn?: InputMaybe<OrderBy>;
+};
+
+export enum SmithStatusEnum {
+  Excluded = 'EXCLUDED',
+  Invited = 'INVITED',
+  Pending = 'PENDING',
+  Smith = 'SMITH',
 }
 
-export type SquidStatus = {
-  __typename?: 'SquidStatus';
-  /** The height of the processed part of the chain */
-  height?: Maybe<Scalars['Int']['output']>;
+/** Boolean expression to compare columns of type "SmithStatusEnum". All fields are combined with logical 'AND'. */
+export type SmithStatusEnumComparisonExp = {
+  _eq?: InputMaybe<SmithStatusEnum>;
+  _in?: InputMaybe<Array<SmithStatusEnum>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<SmithStatusEnum>;
+  _nin?: InputMaybe<Array<SmithStatusEnum>>;
 };
 
-export type Subscription = {
-  __typename?: 'Subscription';
-  accountById?: Maybe<Account>;
-  accounts: Array<Account>;
-  blockById?: Maybe<Block>;
-  blocks: Array<Block>;
-  callById?: Maybe<Call>;
-  calls: Array<Call>;
-  certById?: Maybe<Cert>;
-  certEventById?: Maybe<CertEvent>;
-  certEvents: Array<CertEvent>;
-  certs: Array<Cert>;
-  changeOwnerKeyById?: Maybe<ChangeOwnerKey>;
-  changeOwnerKeys: Array<ChangeOwnerKey>;
-  eventById?: Maybe<Event>;
-  events: Array<Event>;
-  extrinsicById?: Maybe<Extrinsic>;
-  extrinsics: Array<Extrinsic>;
-  identities: Array<Identity>;
-  identityById?: Maybe<Identity>;
-  itemsCounterById?: Maybe<ItemsCounter>;
-  itemsCounters: Array<ItemsCounter>;
-  membershipEventById?: Maybe<MembershipEvent>;
-  membershipEvents: Array<MembershipEvent>;
-  smithCertById?: Maybe<SmithCert>;
-  smithCerts: Array<SmithCert>;
-  transferById?: Maybe<Transfer>;
-  transfers: Array<Transfer>;
-  udHistories: Array<UdHistory>;
-  udHistoryById?: Maybe<UdHistory>;
-  udReevalById?: Maybe<UdReeval>;
-  udReevals: Array<UdReeval>;
-  universalDividendById?: Maybe<UniversalDividend>;
-  universalDividends: Array<UniversalDividend>;
+/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
+export type StringArrayComparisonExp = {
+  /** is the array contained in the given array value */
+  _containedIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** does the array contain the given value */
+  _contains?: InputMaybe<Array<Scalars['String']['input']>>;
+  _eq?: InputMaybe<Array<Scalars['String']['input']>>;
+  _gt?: InputMaybe<Array<Scalars['String']['input']>>;
+  _gte?: InputMaybe<Array<Scalars['String']['input']>>;
+  _in?: InputMaybe<Array<Array<Scalars['String']['input']>>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Array<Scalars['String']['input']>>;
+  _lte?: InputMaybe<Array<Scalars['String']['input']>>;
+  _neq?: InputMaybe<Array<Scalars['String']['input']>>;
+  _nin?: InputMaybe<Array<Array<Scalars['String']['input']>>>;
 };
 
-export type SubscriptionAccountByIdArgs = {
-  id: Scalars['String']['input'];
+/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
+export type StringComparisonExp = {
+  _eq?: InputMaybe<Scalars['String']['input']>;
+  _gt?: InputMaybe<Scalars['String']['input']>;
+  _gte?: InputMaybe<Scalars['String']['input']>;
+  /** does the column match the given case-insensitive pattern */
+  _ilike?: InputMaybe<Scalars['String']['input']>;
+  _in?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** does the column match the given POSIX regular expression, case insensitive */
+  _iregex?: InputMaybe<Scalars['String']['input']>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** does the column match the given pattern */
+  _like?: InputMaybe<Scalars['String']['input']>;
+  _lt?: InputMaybe<Scalars['String']['input']>;
+  _lte?: InputMaybe<Scalars['String']['input']>;
+  _neq?: InputMaybe<Scalars['String']['input']>;
+  /** does the column NOT match the given case-insensitive pattern */
+  _nilike?: InputMaybe<Scalars['String']['input']>;
+  _nin?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** does the column NOT match the given POSIX regular expression, case insensitive */
+  _niregex?: InputMaybe<Scalars['String']['input']>;
+  /** does the column NOT match the given pattern */
+  _nlike?: InputMaybe<Scalars['String']['input']>;
+  /** does the column NOT match the given POSIX regular expression, case sensitive */
+  _nregex?: InputMaybe<Scalars['String']['input']>;
+  /** does the column NOT match the given SQL regular expression */
+  _nsimilar?: InputMaybe<Scalars['String']['input']>;
+  /** does the column match the given POSIX regular expression, case sensitive */
+  _regex?: InputMaybe<Scalars['String']['input']>;
+  /** does the column match the given SQL regular expression */
+  _similar?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type SubscriptionAccountsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AccountOrderByInput>>;
-  where?: InputMaybe<AccountWhereInput>;
+/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
+export type TimestamptzComparisonExp = {
+  _eq?: InputMaybe<Scalars['timestamptz']['input']>;
+  _gt?: InputMaybe<Scalars['timestamptz']['input']>;
+  _gte?: InputMaybe<Scalars['timestamptz']['input']>;
+  _in?: InputMaybe<Array<Scalars['timestamptz']['input']>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['timestamptz']['input']>;
+  _lte?: InputMaybe<Scalars['timestamptz']['input']>;
+  _neq?: InputMaybe<Scalars['timestamptz']['input']>;
+  _nin?: InputMaybe<Array<Scalars['timestamptz']['input']>>;
 };
 
-export type SubscriptionBlockByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionBlocksArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<BlockOrderByInput>>;
-  where?: InputMaybe<BlockWhereInput>;
-};
-
-export type SubscriptionCallByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
-};
-
-export type SubscriptionCertByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionCertEventByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionCertEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertEventOrderByInput>>;
-  where?: InputMaybe<CertEventWhereInput>;
-};
-
-export type SubscriptionCertsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CertOrderByInput>>;
-  where?: InputMaybe<CertWhereInput>;
-};
-
-export type SubscriptionChangeOwnerKeyByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionChangeOwnerKeysArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderByInput>>;
-  where?: InputMaybe<ChangeOwnerKeyWhereInput>;
-};
-
-export type SubscriptionEventByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
-};
-
-export type SubscriptionExtrinsicByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionExtrinsicsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
-};
-
-export type SubscriptionIdentitiesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<IdentityOrderByInput>>;
-  where?: InputMaybe<IdentityWhereInput>;
-};
-
-export type SubscriptionIdentityByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionItemsCounterByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionItemsCountersArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ItemsCounterOrderByInput>>;
-  where?: InputMaybe<ItemsCounterWhereInput>;
-};
-
-export type SubscriptionMembershipEventByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionMembershipEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<MembershipEventOrderByInput>>;
-  where?: InputMaybe<MembershipEventWhereInput>;
-};
-
-export type SubscriptionSmithCertByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionSmithCertsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<SmithCertOrderByInput>>;
-  where?: InputMaybe<SmithCertWhereInput>;
-};
-
-export type SubscriptionTransferByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionTransfersArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<TransferOrderByInput>>;
-  where?: InputMaybe<TransferWhereInput>;
-};
-
-export type SubscriptionUdHistoriesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<UdHistoryOrderByInput>>;
-  where?: InputMaybe<UdHistoryWhereInput>;
-};
-
-export type SubscriptionUdHistoryByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionUdReevalByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionUdReevalsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<UdReevalOrderByInput>>;
-  where?: InputMaybe<UdReevalWhereInput>;
-};
-
-export type SubscriptionUniversalDividendByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type SubscriptionUniversalDividendsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<UniversalDividendOrderByInput>>;
-  where?: InputMaybe<UniversalDividendWhereInput>;
-};
-
-export type Transfer = {
+/** columns and relationships of "transfer" */
+export type Transfer = Node & {
   __typename?: 'Transfer';
-  amount: Scalars['BigInt']['output'];
+  amount: Scalars['numeric']['output'];
   blockNumber: Scalars['Int']['output'];
   comment?: Maybe<Scalars['String']['output']>;
-  from: Account;
-  id: Scalars['String']['output'];
-  timestamp: Scalars['DateTime']['output'];
-  to: Account;
+  /** An object relationship */
+  from?: Maybe<Account>;
+  fromId?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  timestamp: Scalars['timestamptz']['output'];
+  /** An object relationship */
+  to?: Maybe<Account>;
+  toId?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregated selection of "transfer" */
+export type TransferAggregate = {
+  __typename?: 'TransferAggregate';
+  aggregate?: Maybe<TransferAggregateFields>;
+  nodes: Array<Transfer>;
+};
+
+export type TransferAggregateBoolExp = {
+  count?: InputMaybe<TransferAggregateBoolExpCount>;
+};
+
+/** aggregate fields of "transfer" */
+export type TransferAggregateFields = {
+  __typename?: 'TransferAggregateFields';
+  avg?: Maybe<TransferAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<TransferMaxFields>;
+  min?: Maybe<TransferMinFields>;
+  stddev?: Maybe<TransferStddevFields>;
+  stddevPop?: Maybe<TransferStddevPopFields>;
+  stddevSamp?: Maybe<TransferStddevSampFields>;
+  sum?: Maybe<TransferSumFields>;
+  varPop?: Maybe<TransferVarPopFields>;
+  varSamp?: Maybe<TransferVarSampFields>;
+  variance?: Maybe<TransferVarianceFields>;
+};
+
+/** aggregate fields of "transfer" */
+export type TransferAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<TransferSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "transfer" */
+export type TransferAggregateOrderBy = {
+  avg?: InputMaybe<TransferAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<TransferMaxOrderBy>;
+  min?: InputMaybe<TransferMinOrderBy>;
+  stddev?: InputMaybe<TransferStddevOrderBy>;
+  stddevPop?: InputMaybe<TransferStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<TransferStddevSampOrderBy>;
+  sum?: InputMaybe<TransferSumOrderBy>;
+  varPop?: InputMaybe<TransferVarPopOrderBy>;
+  varSamp?: InputMaybe<TransferVarSampOrderBy>;
+  variance?: InputMaybe<TransferVarianceOrderBy>;
+};
+
+/** aggregate avg on columns */
+export type TransferAvgFields = {
+  __typename?: 'TransferAvgFields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "transfer" */
+export type TransferAvgOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "transfer". All fields are combined with a logical 'AND'. */
+export type TransferBoolExp = {
+  _and?: InputMaybe<Array<TransferBoolExp>>;
+  _not?: InputMaybe<TransferBoolExp>;
+  _or?: InputMaybe<Array<TransferBoolExp>>;
+  amount?: InputMaybe<NumericComparisonExp>;
+  blockNumber?: InputMaybe<IntComparisonExp>;
+  comment?: InputMaybe<StringComparisonExp>;
+  from?: InputMaybe<AccountBoolExp>;
+  fromId?: InputMaybe<StringComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  timestamp?: InputMaybe<TimestamptzComparisonExp>;
+  to?: InputMaybe<AccountBoolExp>;
+  toId?: InputMaybe<StringComparisonExp>;
+};
+
+/** A Relay connection object on "transfer" */
+export type TransferConnection = {
+  __typename?: 'TransferConnection';
+  edges: Array<TransferEdge>;
+  pageInfo: PageInfo;
 };
 
 export type TransferEdge = {
@@ -3007,422 +3531,423 @@ export type TransferEdge = {
   node: Transfer;
 };
 
-export enum TransferOrderByInput {
-  AmountAsc = 'amount_ASC',
-  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
-  AmountDesc = 'amount_DESC',
-  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  CommentAsc = 'comment_ASC',
-  CommentAscNullsFirst = 'comment_ASC_NULLS_FIRST',
-  CommentDesc = 'comment_DESC',
-  CommentDescNullsLast = 'comment_DESC_NULLS_LAST',
-  FromIdAsc = 'from_id_ASC',
-  FromIdAscNullsFirst = 'from_id_ASC_NULLS_FIRST',
-  FromIdDesc = 'from_id_DESC',
-  FromIdDescNullsLast = 'from_id_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
-  TimestampDesc = 'timestamp_DESC',
-  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
-  ToIdAsc = 'to_id_ASC',
-  ToIdAscNullsFirst = 'to_id_ASC_NULLS_FIRST',
-  ToIdDesc = 'to_id_DESC',
-  ToIdDescNullsLast = 'to_id_DESC_NULLS_LAST',
+/** aggregate max on columns */
+export type TransferMaxFields = {
+  __typename?: 'TransferMaxFields';
+  amount?: Maybe<Scalars['numeric']['output']>;
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+  comment?: Maybe<Scalars['String']['output']>;
+  fromId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamptz']['output']>;
+  toId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "transfer" */
+export type TransferMaxOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+  comment?: InputMaybe<OrderBy>;
+  fromId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
+  toId?: InputMaybe<OrderBy>;
+};
+
+/** aggregate min on columns */
+export type TransferMinFields = {
+  __typename?: 'TransferMinFields';
+  amount?: Maybe<Scalars['numeric']['output']>;
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+  comment?: Maybe<Scalars['String']['output']>;
+  fromId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamptz']['output']>;
+  toId?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "transfer" */
+export type TransferMinOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+  comment?: InputMaybe<OrderBy>;
+  fromId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
+  toId?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "transfer". */
+export type TransferOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+  comment?: InputMaybe<OrderBy>;
+  from?: InputMaybe<AccountOrderBy>;
+  fromId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
+  to?: InputMaybe<AccountOrderBy>;
+  toId?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "transfer" */
+export enum TransferSelectColumn {
+  /** column name */
+  Amount = 'amount',
+  /** column name */
+  BlockNumber = 'blockNumber',
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  FromId = 'fromId',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  ToId = 'toId',
 }
 
-export type TransferWhereInput = {
-  AND?: InputMaybe<Array<TransferWhereInput>>;
-  OR?: InputMaybe<Array<TransferWhereInput>>;
-  amount_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  comment_contains?: InputMaybe<Scalars['String']['input']>;
-  comment_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  comment_endsWith?: InputMaybe<Scalars['String']['input']>;
-  comment_eq?: InputMaybe<Scalars['String']['input']>;
-  comment_gt?: InputMaybe<Scalars['String']['input']>;
-  comment_gte?: InputMaybe<Scalars['String']['input']>;
-  comment_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  comment_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  comment_lt?: InputMaybe<Scalars['String']['input']>;
-  comment_lte?: InputMaybe<Scalars['String']['input']>;
-  comment_not_contains?: InputMaybe<Scalars['String']['input']>;
-  comment_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  comment_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  comment_not_eq?: InputMaybe<Scalars['String']['input']>;
-  comment_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  comment_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  comment_startsWith?: InputMaybe<Scalars['String']['input']>;
-  from?: InputMaybe<AccountWhereInput>;
-  from_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  to?: InputMaybe<AccountWhereInput>;
-  to_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+/** aggregate stddev on columns */
+export type TransferStddevFields = {
+  __typename?: 'TransferStddevFields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  blockNumber?: Maybe<Scalars['Float']['output']>;
 };
 
-export type TransfersConnection = {
-  __typename?: 'TransfersConnection';
-  edges: Array<TransferEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by stddev() on columns of table "transfer" */
+export type TransferStddevOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
 };
 
-export type UdHistoriesConnection = {
-  __typename?: 'UDHistoriesConnection';
-  edges: Array<UdHistoryEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** aggregate stddevPop on columns */
+export type TransferStddevPopFields = {
+  __typename?: 'TransferStddevPopFields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  blockNumber?: Maybe<Scalars['Float']['output']>;
 };
 
-/** History of Universal Dividend received by an member identity. */
-export type UdHistory = {
-  __typename?: 'UDHistory';
+/** order by stddevPop() on columns of table "transfer" */
+export type TransferStddevPopOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type TransferStddevSampFields = {
+  __typename?: 'TransferStddevSampFields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "transfer" */
+export type TransferStddevSampOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate sum on columns */
+export type TransferSumFields = {
+  __typename?: 'TransferSumFields';
+  amount?: Maybe<Scalars['numeric']['output']>;
+  blockNumber?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "transfer" */
+export type TransferSumOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varPop on columns */
+export type TransferVarPopFields = {
+  __typename?: 'TransferVarPopFields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "transfer" */
+export type TransferVarPopOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type TransferVarSampFields = {
+  __typename?: 'TransferVarSampFields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "transfer" */
+export type TransferVarSampOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type TransferVarianceFields = {
+  __typename?: 'TransferVarianceFields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  blockNumber?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "transfer" */
+export type TransferVarianceOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** columns and relationships of "ud_history" */
+export type UdHistory = Node & {
+  __typename?: 'UdHistory';
   amount: Scalars['Int']['output'];
   blockNumber: Scalars['Int']['output'];
-  event: Event;
-  id: Scalars['String']['output'];
-  identity: Identity;
-  timestamp: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  /** An object relationship */
+  identity?: Maybe<Identity>;
+  identityId?: Maybe<Scalars['String']['output']>;
+  timestamp: Scalars['timestamptz']['output'];
+};
+
+/** order by aggregate values of table "ud_history" */
+export type UdHistoryAggregateOrderBy = {
+  avg?: InputMaybe<UdHistoryAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<UdHistoryMaxOrderBy>;
+  min?: InputMaybe<UdHistoryMinOrderBy>;
+  stddev?: InputMaybe<UdHistoryStddevOrderBy>;
+  stddevPop?: InputMaybe<UdHistoryStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<UdHistoryStddevSampOrderBy>;
+  sum?: InputMaybe<UdHistorySumOrderBy>;
+  varPop?: InputMaybe<UdHistoryVarPopOrderBy>;
+  varSamp?: InputMaybe<UdHistoryVarSampOrderBy>;
+  variance?: InputMaybe<UdHistoryVarianceOrderBy>;
+};
+
+/** order by avg() on columns of table "ud_history" */
+export type UdHistoryAvgOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "ud_history". All fields are combined with a logical 'AND'. */
+export type UdHistoryBoolExp = {
+  _and?: InputMaybe<Array<UdHistoryBoolExp>>;
+  _not?: InputMaybe<UdHistoryBoolExp>;
+  _or?: InputMaybe<Array<UdHistoryBoolExp>>;
+  amount?: InputMaybe<IntComparisonExp>;
+  blockNumber?: InputMaybe<IntComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  identity?: InputMaybe<IdentityBoolExp>;
+  identityId?: InputMaybe<StringComparisonExp>;
+  timestamp?: InputMaybe<TimestamptzComparisonExp>;
+};
+
+/** A Relay connection object on "ud_history" */
+export type UdHistoryConnection = {
+  __typename?: 'UdHistoryConnection';
+  edges: Array<UdHistoryEdge>;
+  pageInfo: PageInfo;
 };
 
 export type UdHistoryEdge = {
-  __typename?: 'UDHistoryEdge';
+  __typename?: 'UdHistoryEdge';
   cursor: Scalars['String']['output'];
   node: UdHistory;
 };
 
-export enum UdHistoryOrderByInput {
-  AmountAsc = 'amount_ASC',
-  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
-  AmountDesc = 'amount_DESC',
-  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  EventIdAsc = 'event_id_ASC',
-  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
-  EventIdDesc = 'event_id_DESC',
-  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
-  EventIndexAsc = 'event_index_ASC',
-  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
-  EventIndexDesc = 'event_index_DESC',
-  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
-  EventNameAsc = 'event_name_ASC',
-  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
-  EventNameDesc = 'event_name_DESC',
-  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
-  EventPalletAsc = 'event_pallet_ASC',
-  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
-  EventPalletDesc = 'event_pallet_DESC',
-  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
-  EventPhaseAsc = 'event_phase_ASC',
-  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
-  EventPhaseDesc = 'event_phase_DESC',
-  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  IdentityCreatedOnAsc = 'identity_createdOn_ASC',
-  IdentityCreatedOnAscNullsFirst = 'identity_createdOn_ASC_NULLS_FIRST',
-  IdentityCreatedOnDesc = 'identity_createdOn_DESC',
-  IdentityCreatedOnDescNullsLast = 'identity_createdOn_DESC_NULLS_LAST',
-  IdentityExpireOnAsc = 'identity_expireOn_ASC',
-  IdentityExpireOnAscNullsFirst = 'identity_expireOn_ASC_NULLS_FIRST',
-  IdentityExpireOnDesc = 'identity_expireOn_DESC',
-  IdentityExpireOnDescNullsLast = 'identity_expireOn_DESC_NULLS_LAST',
-  IdentityIdAsc = 'identity_id_ASC',
-  IdentityIdAscNullsFirst = 'identity_id_ASC_NULLS_FIRST',
-  IdentityIdDesc = 'identity_id_DESC',
-  IdentityIdDescNullsLast = 'identity_id_DESC_NULLS_LAST',
-  IdentityIndexAsc = 'identity_index_ASC',
-  IdentityIndexAscNullsFirst = 'identity_index_ASC_NULLS_FIRST',
-  IdentityIndexDesc = 'identity_index_DESC',
-  IdentityIndexDescNullsLast = 'identity_index_DESC_NULLS_LAST',
-  IdentityIsMemberAsc = 'identity_isMember_ASC',
-  IdentityIsMemberAscNullsFirst = 'identity_isMember_ASC_NULLS_FIRST',
-  IdentityIsMemberDesc = 'identity_isMember_DESC',
-  IdentityIsMemberDescNullsLast = 'identity_isMember_DESC_NULLS_LAST',
-  IdentityLastChangeOnAsc = 'identity_lastChangeOn_ASC',
-  IdentityLastChangeOnAscNullsFirst = 'identity_lastChangeOn_ASC_NULLS_FIRST',
-  IdentityLastChangeOnDesc = 'identity_lastChangeOn_DESC',
-  IdentityLastChangeOnDescNullsLast = 'identity_lastChangeOn_DESC_NULLS_LAST',
-  IdentityNameAsc = 'identity_name_ASC',
-  IdentityNameAscNullsFirst = 'identity_name_ASC_NULLS_FIRST',
-  IdentityNameDesc = 'identity_name_DESC',
-  IdentityNameDescNullsLast = 'identity_name_DESC_NULLS_LAST',
-  IdentitySmithStatusAsc = 'identity_smithStatus_ASC',
-  IdentitySmithStatusAscNullsFirst = 'identity_smithStatus_ASC_NULLS_FIRST',
-  IdentitySmithStatusDesc = 'identity_smithStatus_DESC',
-  IdentitySmithStatusDescNullsLast = 'identity_smithStatus_DESC_NULLS_LAST',
-  IdentityStatusAsc = 'identity_status_ASC',
-  IdentityStatusAscNullsFirst = 'identity_status_ASC_NULLS_FIRST',
-  IdentityStatusDesc = 'identity_status_DESC',
-  IdentityStatusDescNullsLast = 'identity_status_DESC_NULLS_LAST',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
-  TimestampDesc = 'timestamp_DESC',
-  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
-}
-
-export type UdHistoryWhereInput = {
-  AND?: InputMaybe<Array<UdHistoryWhereInput>>;
-  OR?: InputMaybe<Array<UdHistoryWhereInput>>;
-  amount_eq?: InputMaybe<Scalars['Int']['input']>;
-  amount_gt?: InputMaybe<Scalars['Int']['input']>;
-  amount_gte?: InputMaybe<Scalars['Int']['input']>;
-  amount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  amount_lt?: InputMaybe<Scalars['Int']['input']>;
-  amount_lte?: InputMaybe<Scalars['Int']['input']>;
-  amount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  amount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  event?: InputMaybe<EventWhereInput>;
-  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  identity?: InputMaybe<IdentityWhereInput>;
-  identity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+/** order by max() on columns of table "ud_history" */
+export type UdHistoryMaxOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
 };
 
-/** List of reevaluation of Universal Dividend based on changes in monetary mass and number of members. Every 6 months in Ğ1 */
-export type UdReeval = {
-  __typename?: 'UDReeval';
+/** order by min() on columns of table "ud_history" */
+export type UdHistoryMinOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "ud_history". */
+export type UdHistoryOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  identity?: InputMaybe<IdentityOrderBy>;
+  identityId?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "ud_history" */
+export enum UdHistorySelectColumn {
+  /** column name */
+  Amount = 'amount',
+  /** column name */
+  BlockNumber = 'blockNumber',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identityId',
+  /** column name */
+  Timestamp = 'timestamp',
+}
+
+/** order by stddev() on columns of table "ud_history" */
+export type UdHistoryStddevOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** order by stddevPop() on columns of table "ud_history" */
+export type UdHistoryStddevPopOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** order by stddevSamp() on columns of table "ud_history" */
+export type UdHistoryStddevSampOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** order by sum() on columns of table "ud_history" */
+export type UdHistorySumOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** order by varPop() on columns of table "ud_history" */
+export type UdHistoryVarPopOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** order by varSamp() on columns of table "ud_history" */
+export type UdHistoryVarSampOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** order by variance() on columns of table "ud_history" */
+export type UdHistoryVarianceOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+};
+
+/** columns and relationships of "ud_reeval" */
+export type UdReeval = Node & {
+  __typename?: 'UdReeval';
   blockNumber: Scalars['Int']['output'];
-  event: Event;
-  id: Scalars['String']['output'];
+  /** An object relationship */
+  event?: Maybe<Event>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
   membersCount: Scalars['Int']['output'];
-  monetaryMass: Scalars['BigInt']['output'];
+  monetaryMass: Scalars['numeric']['output'];
   newUdAmount: Scalars['Int']['output'];
-  timestamp: Scalars['DateTime']['output'];
+  timestamp: Scalars['timestamptz']['output'];
+};
+
+/** Boolean expression to filter rows from the table "ud_reeval". All fields are combined with a logical 'AND'. */
+export type UdReevalBoolExp = {
+  _and?: InputMaybe<Array<UdReevalBoolExp>>;
+  _not?: InputMaybe<UdReevalBoolExp>;
+  _or?: InputMaybe<Array<UdReevalBoolExp>>;
+  blockNumber?: InputMaybe<IntComparisonExp>;
+  event?: InputMaybe<EventBoolExp>;
+  eventId?: InputMaybe<StringComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  membersCount?: InputMaybe<IntComparisonExp>;
+  monetaryMass?: InputMaybe<NumericComparisonExp>;
+  newUdAmount?: InputMaybe<IntComparisonExp>;
+  timestamp?: InputMaybe<TimestamptzComparisonExp>;
+};
+
+/** A Relay connection object on "ud_reeval" */
+export type UdReevalConnection = {
+  __typename?: 'UdReevalConnection';
+  edges: Array<UdReevalEdge>;
+  pageInfo: PageInfo;
 };
 
 export type UdReevalEdge = {
-  __typename?: 'UDReevalEdge';
+  __typename?: 'UdReevalEdge';
   cursor: Scalars['String']['output'];
   node: UdReeval;
 };
 
-export enum UdReevalOrderByInput {
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  EventIdAsc = 'event_id_ASC',
-  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
-  EventIdDesc = 'event_id_DESC',
-  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
-  EventIndexAsc = 'event_index_ASC',
-  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
-  EventIndexDesc = 'event_index_DESC',
-  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
-  EventNameAsc = 'event_name_ASC',
-  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
-  EventNameDesc = 'event_name_DESC',
-  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
-  EventPalletAsc = 'event_pallet_ASC',
-  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
-  EventPalletDesc = 'event_pallet_DESC',
-  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
-  EventPhaseAsc = 'event_phase_ASC',
-  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
-  EventPhaseDesc = 'event_phase_DESC',
-  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  MembersCountAsc = 'membersCount_ASC',
-  MembersCountAscNullsFirst = 'membersCount_ASC_NULLS_FIRST',
-  MembersCountDesc = 'membersCount_DESC',
-  MembersCountDescNullsLast = 'membersCount_DESC_NULLS_LAST',
-  MonetaryMassAsc = 'monetaryMass_ASC',
-  MonetaryMassAscNullsFirst = 'monetaryMass_ASC_NULLS_FIRST',
-  MonetaryMassDesc = 'monetaryMass_DESC',
-  MonetaryMassDescNullsLast = 'monetaryMass_DESC_NULLS_LAST',
-  NewUdAmountAsc = 'newUdAmount_ASC',
-  NewUdAmountAscNullsFirst = 'newUdAmount_ASC_NULLS_FIRST',
-  NewUdAmountDesc = 'newUdAmount_DESC',
-  NewUdAmountDescNullsLast = 'newUdAmount_DESC_NULLS_LAST',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
-  TimestampDesc = 'timestamp_DESC',
-  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
+/** Ordering options when selecting data from "ud_reeval". */
+export type UdReevalOrderBy = {
+  blockNumber?: InputMaybe<OrderBy>;
+  event?: InputMaybe<EventOrderBy>;
+  eventId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  membersCount?: InputMaybe<OrderBy>;
+  monetaryMass?: InputMaybe<OrderBy>;
+  newUdAmount?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "ud_reeval" */
+export enum UdReevalSelectColumn {
+  /** column name */
+  BlockNumber = 'blockNumber',
+  /** column name */
+  EventId = 'eventId',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  MembersCount = 'membersCount',
+  /** column name */
+  MonetaryMass = 'monetaryMass',
+  /** column name */
+  NewUdAmount = 'newUdAmount',
+  /** column name */
+  Timestamp = 'timestamp',
 }
 
-export type UdReevalWhereInput = {
-  AND?: InputMaybe<Array<UdReevalWhereInput>>;
-  OR?: InputMaybe<Array<UdReevalWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  event?: InputMaybe<EventWhereInput>;
-  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  membersCount_eq?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_gt?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_gte?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  membersCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  membersCount_lt?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_lte?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  monetaryMass_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  monetaryMass_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  monetaryMass_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  newUdAmount_eq?: InputMaybe<Scalars['Int']['input']>;
-  newUdAmount_gt?: InputMaybe<Scalars['Int']['input']>;
-  newUdAmount_gte?: InputMaybe<Scalars['Int']['input']>;
-  newUdAmount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  newUdAmount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  newUdAmount_lt?: InputMaybe<Scalars['Int']['input']>;
-  newUdAmount_lte?: InputMaybe<Scalars['Int']['input']>;
-  newUdAmount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  newUdAmount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-};
-
-export type UdReevalsConnection = {
-  __typename?: 'UDReevalsConnection';
-  edges: Array<UdReevalEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type UdHistoryFilterInput = {
-  amount?: InputMaybe<NumberFilter>;
-  blockNumber?: InputMaybe<NumberFilter>;
-};
-
-/** Each Universal Dividend created since the beginning of the blockchain */
-export type UniversalDividend = {
+/** columns and relationships of "universal_dividend" */
+export type UniversalDividend = Node & {
   __typename?: 'UniversalDividend';
   amount: Scalars['Int']['output'];
   blockNumber: Scalars['Int']['output'];
-  event: Event;
-  id: Scalars['String']['output'];
+  /** An object relationship */
+  event?: Maybe<Event>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
   membersCount: Scalars['Int']['output'];
-  monetaryMass: Scalars['BigInt']['output'];
-  timestamp: Scalars['DateTime']['output'];
+  monetaryMass: Scalars['numeric']['output'];
+  timestamp: Scalars['timestamptz']['output'];
+};
+
+/** Boolean expression to filter rows from the table "universal_dividend". All fields are combined with a logical 'AND'. */
+export type UniversalDividendBoolExp = {
+  _and?: InputMaybe<Array<UniversalDividendBoolExp>>;
+  _not?: InputMaybe<UniversalDividendBoolExp>;
+  _or?: InputMaybe<Array<UniversalDividendBoolExp>>;
+  amount?: InputMaybe<IntComparisonExp>;
+  blockNumber?: InputMaybe<IntComparisonExp>;
+  event?: InputMaybe<EventBoolExp>;
+  eventId?: InputMaybe<StringComparisonExp>;
+  id?: InputMaybe<StringComparisonExp>;
+  membersCount?: InputMaybe<IntComparisonExp>;
+  monetaryMass?: InputMaybe<NumericComparisonExp>;
+  timestamp?: InputMaybe<TimestamptzComparisonExp>;
+};
+
+/** A Relay connection object on "universal_dividend" */
+export type UniversalDividendConnection = {
+  __typename?: 'UniversalDividendConnection';
+  edges: Array<UniversalDividendEdge>;
+  pageInfo: PageInfo;
 };
 
 export type UniversalDividendEdge = {
@@ -3431,131 +3956,578 @@ export type UniversalDividendEdge = {
   node: UniversalDividend;
 };
 
-export enum UniversalDividendOrderByInput {
-  AmountAsc = 'amount_ASC',
-  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
-  AmountDesc = 'amount_DESC',
-  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
-  BlockNumberAsc = 'blockNumber_ASC',
-  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
-  BlockNumberDesc = 'blockNumber_DESC',
-  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
-  EventIdAsc = 'event_id_ASC',
-  EventIdAscNullsFirst = 'event_id_ASC_NULLS_FIRST',
-  EventIdDesc = 'event_id_DESC',
-  EventIdDescNullsLast = 'event_id_DESC_NULLS_LAST',
-  EventIndexAsc = 'event_index_ASC',
-  EventIndexAscNullsFirst = 'event_index_ASC_NULLS_FIRST',
-  EventIndexDesc = 'event_index_DESC',
-  EventIndexDescNullsLast = 'event_index_DESC_NULLS_LAST',
-  EventNameAsc = 'event_name_ASC',
-  EventNameAscNullsFirst = 'event_name_ASC_NULLS_FIRST',
-  EventNameDesc = 'event_name_DESC',
-  EventNameDescNullsLast = 'event_name_DESC_NULLS_LAST',
-  EventPalletAsc = 'event_pallet_ASC',
-  EventPalletAscNullsFirst = 'event_pallet_ASC_NULLS_FIRST',
-  EventPalletDesc = 'event_pallet_DESC',
-  EventPalletDescNullsLast = 'event_pallet_DESC_NULLS_LAST',
-  EventPhaseAsc = 'event_phase_ASC',
-  EventPhaseAscNullsFirst = 'event_phase_ASC_NULLS_FIRST',
-  EventPhaseDesc = 'event_phase_DESC',
-  EventPhaseDescNullsLast = 'event_phase_DESC_NULLS_LAST',
-  IdAsc = 'id_ASC',
-  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
-  IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  MembersCountAsc = 'membersCount_ASC',
-  MembersCountAscNullsFirst = 'membersCount_ASC_NULLS_FIRST',
-  MembersCountDesc = 'membersCount_DESC',
-  MembersCountDescNullsLast = 'membersCount_DESC_NULLS_LAST',
-  MonetaryMassAsc = 'monetaryMass_ASC',
-  MonetaryMassAscNullsFirst = 'monetaryMass_ASC_NULLS_FIRST',
-  MonetaryMassDesc = 'monetaryMass_DESC',
-  MonetaryMassDescNullsLast = 'monetaryMass_DESC_NULLS_LAST',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
-  TimestampDesc = 'timestamp_DESC',
-  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
+/** Ordering options when selecting data from "universal_dividend". */
+export type UniversalDividendOrderBy = {
+  amount?: InputMaybe<OrderBy>;
+  blockNumber?: InputMaybe<OrderBy>;
+  event?: InputMaybe<EventOrderBy>;
+  eventId?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  membersCount?: InputMaybe<OrderBy>;
+  monetaryMass?: InputMaybe<OrderBy>;
+  timestamp?: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "universal_dividend" */
+export enum UniversalDividendSelectColumn {
+  /** column name */
+  Amount = 'amount',
+  /** column name */
+  BlockNumber = 'blockNumber',
+  /** column name */
+  EventId = 'eventId',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  MembersCount = 'membersCount',
+  /** column name */
+  MonetaryMass = 'monetaryMass',
+  /** column name */
+  Timestamp = 'timestamp',
 }
 
-export type UniversalDividendWhereInput = {
-  AND?: InputMaybe<Array<UniversalDividendWhereInput>>;
-  OR?: InputMaybe<Array<UniversalDividendWhereInput>>;
-  amount_eq?: InputMaybe<Scalars['Int']['input']>;
-  amount_gt?: InputMaybe<Scalars['Int']['input']>;
-  amount_gte?: InputMaybe<Scalars['Int']['input']>;
-  amount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  amount_lt?: InputMaybe<Scalars['Int']['input']>;
-  amount_lte?: InputMaybe<Scalars['Int']['input']>;
-  amount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  amount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  blockNumber_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockNumber_lt?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  event?: InputMaybe<EventWhereInput>;
-  event_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  membersCount_eq?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_gt?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_gte?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  membersCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  membersCount_lt?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_lte?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  membersCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  monetaryMass_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  monetaryMass_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  monetaryMass_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  monetaryMass_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+export type AccountAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<AccountSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<AccountBoolExp>;
+  predicate: IntComparisonExp;
 };
 
-export type UniversalDividendsConnection = {
-  __typename?: 'UniversalDividendsConnection';
-  edges: Array<UniversalDividendEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+export type CallAggregateBoolExpBool_And = {
+  arguments: CallSelectColumnCallAggregateBoolExpBool_AndArgumentsColumns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<CallBoolExp>;
+  predicate: BooleanComparisonExp;
 };
 
-export type WhereIdInput = {
-  id: Scalars['String']['input'];
+export type CallAggregateBoolExpBool_Or = {
+  arguments: CallSelectColumnCallAggregateBoolExpBool_OrArgumentsColumns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<CallBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type CallAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<CallSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<CallBoolExp>;
+  predicate: IntComparisonExp;
+};
+
+export type CertAggregateBoolExpBool_And = {
+  arguments: CertSelectColumnCertAggregateBoolExpBool_AndArgumentsColumns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<CertBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type CertAggregateBoolExpBool_Or = {
+  arguments: CertSelectColumnCertAggregateBoolExpBool_OrArgumentsColumns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<CertBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type CertAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<CertSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<CertBoolExp>;
+  predicate: IntComparisonExp;
+};
+
+export type CertEventAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<CertEventSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<CertEventBoolExp>;
+  predicate: IntComparisonExp;
+};
+
+export type ChangeOwnerKeyAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<ChangeOwnerKeyBoolExp>;
+  predicate: IntComparisonExp;
+};
+
+export type EventAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<EventSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<EventBoolExp>;
+  predicate: IntComparisonExp;
+};
+
+export type ExtrinsicAggregateBoolExpBool_And = {
+  arguments: ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_AndArgumentsColumns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<ExtrinsicBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type ExtrinsicAggregateBoolExpBool_Or = {
+  arguments: ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_OrArgumentsColumns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<ExtrinsicBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type ExtrinsicAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<ExtrinsicSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<ExtrinsicBoolExp>;
+  predicate: IntComparisonExp;
+};
+
+export type GetUdHistoryArgs = {
+  identity_row?: InputMaybe<Scalars['identity_scalar']['input']>;
+};
+
+export type MembershipEventAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<MembershipEventSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<MembershipEventBoolExp>;
+  predicate: IntComparisonExp;
+};
+
+export type Query_Root = {
+  __typename?: 'query_root';
+  /** fetch data from the table: "account" */
+  accountConnection: AccountConnection;
+  /** fetch data from the table: "block" */
+  blockConnection: BlockConnection;
+  /** fetch data from the table: "call" */
+  callConnection: CallConnection;
+  /** fetch data from the table: "cert" */
+  certConnection: CertConnection;
+  /** fetch data from the table: "cert_event" */
+  certEventConnection: CertEventConnection;
+  /** fetch data from the table: "change_owner_key" */
+  changeOwnerKeyConnection: ChangeOwnerKeyConnection;
+  /** fetch data from the table: "event" */
+  eventConnection: EventConnection;
+  /** fetch data from the table: "extrinsic" */
+  extrinsicConnection: ExtrinsicConnection;
+  /** execute function "get_ud_history" which returns "ud_history" */
+  getUdHistory_connection: UdHistoryConnection;
+  /** fetch data from the table: "identity" */
+  identityConnection: IdentityConnection;
+  /** fetch data from the table: "items_counter" */
+  itemsCounterConnection: ItemsCounterConnection;
+  /** fetch data from the table: "membership_event" */
+  membershipEventConnection: MembershipEventConnection;
+  node?: Maybe<Node>;
+  /** fetch data from the table: "smith_cert" */
+  smithCertConnection: SmithCertConnection;
+  /** fetch data from the table: "transfer" */
+  transferConnection: TransferConnection;
+  /** fetch data from the table: "ud_history" */
+  udHistoryConnection: UdHistoryConnection;
+  /** fetch data from the table: "ud_reeval" */
+  udReevalConnection: UdReevalConnection;
+  /** fetch data from the table: "universal_dividend" */
+  universalDividendConnection: UniversalDividendConnection;
+};
+
+export type Query_RootAccountConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<AccountSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy>>;
+  where?: InputMaybe<AccountBoolExp>;
+};
+
+export type Query_RootBlockConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<BlockSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<BlockOrderBy>>;
+  where?: InputMaybe<BlockBoolExp>;
+};
+
+export type Query_RootCallConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+export type Query_RootCertConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CertSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderBy>>;
+  where?: InputMaybe<CertBoolExp>;
+};
+
+export type Query_RootCertEventConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CertEventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertEventOrderBy>>;
+  where?: InputMaybe<CertEventBoolExp>;
+};
+
+export type Query_RootChangeOwnerKeyConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
+  where?: InputMaybe<ChangeOwnerKeyBoolExp>;
+};
+
+export type Query_RootEventConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+export type Query_RootExtrinsicConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ExtrinsicSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderBy>>;
+  where?: InputMaybe<ExtrinsicBoolExp>;
+};
+
+export type Query_RootGetUdHistory_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  args: GetUdHistoryArgs;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<UdHistorySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdHistoryOrderBy>>;
+  where?: InputMaybe<UdHistoryBoolExp>;
+};
+
+export type Query_RootIdentityConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<IdentitySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<IdentityOrderBy>>;
+  where?: InputMaybe<IdentityBoolExp>;
+};
+
+export type Query_RootItemsCounterConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ItemsCounterSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ItemsCounterOrderBy>>;
+  where?: InputMaybe<ItemsCounterBoolExp>;
+};
+
+export type Query_RootMembershipEventConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<MembershipEventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MembershipEventOrderBy>>;
+  where?: InputMaybe<MembershipEventBoolExp>;
+};
+
+export type Query_RootNodeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type Query_RootSmithCertConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
+  where?: InputMaybe<SmithCertBoolExp>;
+};
+
+export type Query_RootTransferConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TransferOrderBy>>;
+  where?: InputMaybe<TransferBoolExp>;
+};
+
+export type Query_RootUdHistoryConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<UdHistorySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdHistoryOrderBy>>;
+  where?: InputMaybe<UdHistoryBoolExp>;
+};
+
+export type Query_RootUdReevalConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<UdReevalSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdReevalOrderBy>>;
+  where?: InputMaybe<UdReevalBoolExp>;
+};
+
+export type Query_RootUniversalDividendConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<UniversalDividendSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UniversalDividendOrderBy>>;
+  where?: InputMaybe<UniversalDividendBoolExp>;
+};
+
+export type SmithCertAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<SmithCertSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<SmithCertBoolExp>;
+  predicate: IntComparisonExp;
+};
+
+export type Subscription_Root = {
+  __typename?: 'subscription_root';
+  /** fetch data from the table: "account" */
+  accountConnection: AccountConnection;
+  /** fetch data from the table: "block" */
+  blockConnection: BlockConnection;
+  /** fetch data from the table: "call" */
+  callConnection: CallConnection;
+  /** fetch data from the table: "cert" */
+  certConnection: CertConnection;
+  /** fetch data from the table: "cert_event" */
+  certEventConnection: CertEventConnection;
+  /** fetch data from the table: "change_owner_key" */
+  changeOwnerKeyConnection: ChangeOwnerKeyConnection;
+  /** fetch data from the table: "event" */
+  eventConnection: EventConnection;
+  /** fetch data from the table: "extrinsic" */
+  extrinsicConnection: ExtrinsicConnection;
+  /** execute function "get_ud_history" which returns "ud_history" */
+  getUdHistory_connection: UdHistoryConnection;
+  /** fetch data from the table: "identity" */
+  identityConnection: IdentityConnection;
+  /** fetch data from the table: "items_counter" */
+  itemsCounterConnection: ItemsCounterConnection;
+  /** fetch data from the table: "membership_event" */
+  membershipEventConnection: MembershipEventConnection;
+  node?: Maybe<Node>;
+  /** fetch data from the table: "smith_cert" */
+  smithCertConnection: SmithCertConnection;
+  /** fetch data from the table: "transfer" */
+  transferConnection: TransferConnection;
+  /** fetch data from the table: "ud_history" */
+  udHistoryConnection: UdHistoryConnection;
+  /** fetch data from the table: "ud_reeval" */
+  udReevalConnection: UdReevalConnection;
+  /** fetch data from the table: "universal_dividend" */
+  universalDividendConnection: UniversalDividendConnection;
+};
+
+export type Subscription_RootAccountConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<AccountSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy>>;
+  where?: InputMaybe<AccountBoolExp>;
+};
+
+export type Subscription_RootBlockConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<BlockSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<BlockOrderBy>>;
+  where?: InputMaybe<BlockBoolExp>;
+};
+
+export type Subscription_RootCallConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CallSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderBy>>;
+  where?: InputMaybe<CallBoolExp>;
+};
+
+export type Subscription_RootCertConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CertSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertOrderBy>>;
+  where?: InputMaybe<CertBoolExp>;
+};
+
+export type Subscription_RootCertEventConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<CertEventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CertEventOrderBy>>;
+  where?: InputMaybe<CertEventBoolExp>;
+};
+
+export type Subscription_RootChangeOwnerKeyConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
+  where?: InputMaybe<ChangeOwnerKeyBoolExp>;
+};
+
+export type Subscription_RootEventConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<EventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderBy>>;
+  where?: InputMaybe<EventBoolExp>;
+};
+
+export type Subscription_RootExtrinsicConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ExtrinsicSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderBy>>;
+  where?: InputMaybe<ExtrinsicBoolExp>;
+};
+
+export type Subscription_RootGetUdHistory_ConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  args: GetUdHistoryArgs;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<UdHistorySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdHistoryOrderBy>>;
+  where?: InputMaybe<UdHistoryBoolExp>;
+};
+
+export type Subscription_RootIdentityConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<IdentitySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<IdentityOrderBy>>;
+  where?: InputMaybe<IdentityBoolExp>;
+};
+
+export type Subscription_RootItemsCounterConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<ItemsCounterSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ItemsCounterOrderBy>>;
+  where?: InputMaybe<ItemsCounterBoolExp>;
+};
+
+export type Subscription_RootMembershipEventConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<MembershipEventSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MembershipEventOrderBy>>;
+  where?: InputMaybe<MembershipEventBoolExp>;
+};
+
+export type Subscription_RootNodeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type Subscription_RootSmithCertConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
+  where?: InputMaybe<SmithCertBoolExp>;
+};
+
+export type Subscription_RootTransferConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TransferOrderBy>>;
+  where?: InputMaybe<TransferBoolExp>;
+};
+
+export type Subscription_RootUdHistoryConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<UdHistorySelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdHistoryOrderBy>>;
+  where?: InputMaybe<UdHistoryBoolExp>;
+};
+
+export type Subscription_RootUdReevalConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<UdReevalSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UdReevalOrderBy>>;
+  where?: InputMaybe<UdReevalBoolExp>;
+};
+
+export type Subscription_RootUniversalDividendConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  distinctOn?: InputMaybe<Array<UniversalDividendSelectColumn>>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UniversalDividendOrderBy>>;
+  where?: InputMaybe<UniversalDividendBoolExp>;
+};
+
+export type TransferAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<TransferSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<TransferBoolExp>;
+  predicate: IntComparisonExp;
 };
 
 export type LightIdentityFragment = {
@@ -3563,7 +4535,7 @@ export type LightIdentityFragment = {
   id: string;
   name: string;
   isMember: boolean;
-  account: { __typename?: 'Account'; id: string };
+  accountId?: string | null;
   membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
 };
 
@@ -3575,19 +4547,27 @@ export type LightAccountFragment = {
     id: string;
     name: string;
     isMember: boolean;
-    membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+    accountId?: string | null;
+    membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
   } | null;
 };
 
 export type LightBlockFragment = {
-  __typename: 'Block';
-  id: string;
-  height: number;
-  hash: any;
-  timestamp: any;
-  callsCount: number;
-  eventsCount: number;
-  extrinsicsCount: number;
+  __typename?: 'BlockConnection';
+  edges: Array<{
+    __typename?: 'BlockEdge';
+    node: {
+      __typename: 'Block';
+      id: string;
+      height: number;
+      hash: any;
+      timestamp: any;
+      callsCount: number;
+      eventsCount: number;
+      extrinsicsCount: number;
+    };
+  }>;
+  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
 };
 
 export type BlockByIdQueryVariables = Exact<{
@@ -3595,38 +4575,52 @@ export type BlockByIdQueryVariables = Exact<{
 }>;
 
 export type BlockByIdQuery = {
-  __typename?: 'Query';
-  blockById?: {
-    __typename: 'Block';
-    id: string;
-    height: number;
-    hash: any;
-    timestamp: any;
-    callsCount: number;
-    eventsCount: number;
-    extrinsicsCount: number;
-  } | null;
+  __typename?: 'query_root';
+  blockConnection: {
+    __typename?: 'BlockConnection';
+    edges: Array<{
+      __typename?: 'BlockEdge';
+      node: {
+        __typename: 'Block';
+        id: string;
+        height: number;
+        hash: any;
+        timestamp: any;
+        callsCount: number;
+        eventsCount: number;
+        extrinsicsCount: number;
+      };
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+  };
 };
 
 export type BlocksQueryVariables = Exact<{
-  where?: InputMaybe<BlockWhereInput>;
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy?: InputMaybe<Array<BlockOrderByInput> | BlockOrderByInput>;
+  where?: InputMaybe<BlockBoolExp>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  orderBy?: InputMaybe<Array<BlockOrderBy> | BlockOrderBy>;
 }>;
 
 export type BlocksQuery = {
-  __typename?: 'Query';
-  blocks: Array<{
-    __typename: 'Block';
-    id: string;
-    height: number;
-    hash: any;
-    timestamp: any;
-    callsCount: number;
-    eventsCount: number;
-    extrinsicsCount: number;
-  }>;
+  __typename?: 'query_root';
+  blockConnection: {
+    __typename?: 'BlockConnection';
+    edges: Array<{
+      __typename?: 'BlockEdge';
+      node: {
+        __typename: 'Block';
+        id: string;
+        height: number;
+        hash: any;
+        timestamp: any;
+        callsCount: number;
+        eventsCount: number;
+        extrinsicsCount: number;
+      };
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+  };
 };
 
 export type CertFragment = {
@@ -3634,67 +4628,68 @@ export type CertFragment = {
   id: string;
   expireOn: number;
   createdOn: number;
-  receiver: {
+  receiver?: {
     __typename?: 'Identity';
     id: string;
     name: string;
     isMember: boolean;
-    account: { __typename?: 'Account'; id: string };
+    accountId?: string | null;
     membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-  };
-  issuer: {
+  } | null;
+  issuer?: {
     __typename?: 'Identity';
     id: string;
     name: string;
     isMember: boolean;
-    account: { __typename?: 'Account'; id: string };
+    accountId?: string | null;
     membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-  };
+  } | null;
 };
 
 export type CertsConnectionByIssuerQueryVariables = Exact<{
   address: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-  orderBy: Array<CertOrderByInput> | CertOrderByInput;
+  first: Scalars['Int']['input'];
+  orderBy: Array<CertOrderBy> | CertOrderBy;
   after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type CertsConnectionByIssuerQuery = {
-  __typename?: 'Query';
-  certsConnection: {
-    __typename?: 'CertsConnection';
-    totalCount: number;
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+  __typename?: 'query_root';
+  identityConnection: {
+    __typename?: 'IdentityConnection';
     edges: Array<{
-      __typename?: 'CertEdge';
+      __typename?: 'IdentityEdge';
       node: {
-        __typename: 'Cert';
-        id: string;
-        expireOn: number;
-        createdOn: number;
-        identity: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          account: { __typename?: 'Account'; id: string };
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        };
-        receiver: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          account: { __typename?: 'Account'; id: string };
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        };
-        issuer: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          account: { __typename?: 'Account'; id: string };
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        __typename?: 'Identity';
+        certIssuedAggregate: { __typename?: 'CertAggregate'; aggregate?: { __typename?: 'CertAggregateFields'; count: number } | null };
+        certIssued_connection: {
+          __typename?: 'CertConnection';
+          edges: Array<{
+            __typename?: 'CertEdge';
+            node: {
+              __typename: 'Cert';
+              id: string;
+              expireOn: number;
+              createdOn: number;
+              receiver?: {
+                __typename?: 'Identity';
+                id: string;
+                name: string;
+                isMember: boolean;
+                accountId?: string | null;
+                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+              } | null;
+              issuer?: {
+                __typename?: 'Identity';
+                id: string;
+                name: string;
+                isMember: boolean;
+                accountId?: string | null;
+                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+              } | null;
+            };
+          }>;
+          pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
         };
       };
     }>;
@@ -3703,47 +4698,48 @@ export type CertsConnectionByIssuerQuery = {
 
 export type CertsConnectionByReceiverQueryVariables = Exact<{
   address: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-  orderBy: Array<CertOrderByInput> | CertOrderByInput;
+  first: Scalars['Int']['input'];
+  orderBy: Array<CertOrderBy> | CertOrderBy;
   after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type CertsConnectionByReceiverQuery = {
-  __typename?: 'Query';
-  certsConnection: {
-    __typename?: 'CertsConnection';
-    totalCount: number;
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+  __typename?: 'query_root';
+  identityConnection: {
+    __typename?: 'IdentityConnection';
     edges: Array<{
-      __typename?: 'CertEdge';
+      __typename?: 'IdentityEdge';
       node: {
-        __typename: 'Cert';
-        id: string;
-        expireOn: number;
-        createdOn: number;
-        identity: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          account: { __typename?: 'Account'; id: string };
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        };
-        receiver: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          account: { __typename?: 'Account'; id: string };
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        };
-        issuer: {
-          __typename?: 'Identity';
-          id: string;
-          name: string;
-          isMember: boolean;
-          account: { __typename?: 'Account'; id: string };
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        __typename?: 'Identity';
+        certReceivedAggregate: { __typename?: 'CertAggregate'; aggregate?: { __typename?: 'CertAggregateFields'; count: number } | null };
+        certReceived_connection: {
+          __typename?: 'CertConnection';
+          edges: Array<{
+            __typename?: 'CertEdge';
+            node: {
+              __typename: 'Cert';
+              id: string;
+              expireOn: number;
+              createdOn: number;
+              issuer?: {
+                __typename?: 'Identity';
+                id: string;
+                name: string;
+                isMember: boolean;
+                accountId?: string | null;
+                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+              } | null;
+              receiver?: {
+                __typename?: 'Identity';
+                id: string;
+                name: string;
+                isMember: boolean;
+                accountId?: string | null;
+                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+              } | null;
+            };
+          }>;
+          pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
         };
       };
     }>;
@@ -3756,7 +4752,7 @@ export type TransferFragment = {
   amount: any;
   timestamp: any;
   blockNumber: number;
-  from: {
+  from?: {
     __typename?: 'Account';
     id: string;
     identity?: {
@@ -3764,10 +4760,11 @@ export type TransferFragment = {
       id: string;
       name: string;
       isMember: boolean;
-      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+      accountId?: string | null;
+      membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
     } | null;
-  };
-  to: {
+  } | null;
+  to?: {
     __typename?: 'Account';
     id: string;
     identity?: {
@@ -3775,22 +4772,23 @@ export type TransferFragment = {
       id: string;
       name: string;
       isMember: boolean;
-      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+      accountId?: string | null;
+      membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
     } | null;
-  };
+  } | null;
 };
 
 export type TransfersConnectionByAddressQueryVariables = Exact<{
   address: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-  orderBy: Array<TransferOrderByInput> | TransferOrderByInput;
+  first: Scalars['Int']['input'];
+  orderBy: Array<TransferOrderBy> | TransferOrderBy;
   after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type TransfersConnectionByAddressQuery = {
-  __typename?: 'Query';
-  transfersConnection: {
-    __typename?: 'TransfersConnection';
+  __typename?: 'query_root';
+  transferConnection: {
+    __typename?: 'TransferConnection';
     pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
     edges: Array<{
       __typename?: 'TransferEdge';
@@ -3800,7 +4798,7 @@ export type TransfersConnectionByAddressQuery = {
         amount: any;
         timestamp: any;
         blockNumber: number;
-        from: {
+        from?: {
           __typename?: 'Account';
           id: string;
           identity?: {
@@ -3808,10 +4806,11 @@ export type TransfersConnectionByAddressQuery = {
             id: string;
             name: string;
             isMember: boolean;
-            membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+            accountId?: string | null;
+            membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
           } | null;
-        };
-        to: {
+        } | null;
+        to?: {
           __typename?: 'Account';
           id: string;
           identity?: {
@@ -3819,9 +4818,10 @@ export type TransfersConnectionByAddressQuery = {
             id: string;
             name: string;
             isMember: boolean;
-            membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
+            accountId?: string | null;
+            membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
           } | null;
-        };
+        } | null;
       };
     }>;
   };
@@ -3829,80 +4829,112 @@ export type TransfersConnectionByAddressQuery = {
 
 export type WotSearchByTextQueryVariables = Exact<{
   searchText: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy> | AccountOrderBy>;
 }>;
 
 export type WotSearchByTextQuery = {
-  __typename?: 'Query';
-  accounts: Array<{
-    __typename?: 'Account';
-    id: string;
-    identity?: {
-      __typename?: 'Identity';
-      id: string;
-      name: string;
-      isMember: boolean;
-      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
-    } | null;
-  }>;
+  __typename?: 'query_root';
+  accountConnection: {
+    __typename?: 'AccountConnection';
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: 'AccountEdge';
+      node: {
+        __typename?: 'Account';
+        id: string;
+        identity?: {
+          __typename?: 'Identity';
+          id: string;
+          name: string;
+          isMember: boolean;
+          accountId?: string | null;
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        } | null;
+      };
+    }>;
+  };
 };
 
 export type WotSearchByAddressQueryVariables = Exact<{
   address: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy> | AccountOrderBy>;
 }>;
 
 export type WotSearchByAddressQuery = {
-  __typename?: 'Query';
-  accounts: Array<{
-    __typename?: 'Account';
-    id: string;
-    identity?: {
-      __typename?: 'Identity';
-      id: string;
-      name: string;
-      isMember: boolean;
-      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
-    } | null;
-  }>;
+  __typename?: 'query_root';
+  accountConnection: {
+    __typename?: 'AccountConnection';
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: 'AccountEdge';
+      node: {
+        __typename?: 'Account';
+        id: string;
+        identity?: {
+          __typename?: 'Identity';
+          id: string;
+          name: string;
+          isMember: boolean;
+          accountId?: string | null;
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        } | null;
+      };
+    }>;
+  };
 };
 
 export type WotSearchLastQueryVariables = Exact<{
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy?: InputMaybe<Array<AccountOrderByInput> | AccountOrderByInput>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy> | AccountOrderBy>;
   pending: Scalars['Boolean']['input'];
 }>;
 
 export type WotSearchLastQuery = {
-  __typename?: 'Query';
-  accounts: Array<{
-    __typename?: 'Account';
-    id: string;
-    identity?: {
-      __typename?: 'Identity';
-      id: string;
-      name: string;
-      isMember: boolean;
-      membershipHistory: Array<{ __typename?: 'MembershipEvent'; id: string }>;
-    } | null;
-  }>;
+  __typename?: 'query_root';
+  accountConnection: {
+    __typename?: 'AccountConnection';
+    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: 'AccountEdge';
+      node: {
+        __typename?: 'Account';
+        id: string;
+        identity?: {
+          __typename?: 'Identity';
+          id: string;
+          name: string;
+          isMember: boolean;
+          accountId?: string | null;
+          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
+        } | null;
+      };
+    }>;
+  };
 };
 
 export const LightBlockFragmentDoc = gql`
-  fragment LightBlock on Block {
-    id
-    height
-    hash
-    timestamp
-    callsCount
-    eventsCount
-    extrinsicsCount
-    __typename
+  fragment LightBlock on BlockConnection {
+    edges {
+      node {
+        id
+        height
+        hash
+        timestamp
+        callsCount
+        eventsCount
+        extrinsicsCount
+        __typename
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
   }
 `;
 export const LightIdentityFragmentDoc = gql`
@@ -3910,9 +4942,7 @@ export const LightIdentityFragmentDoc = gql`
     id
     name
     isMember
-    account {
-      id
-    }
+    accountId
     membershipHistory {
       __typename
       id
@@ -3938,14 +4968,10 @@ export const LightAccountFragmentDoc = gql`
   fragment LightAccount on Account {
     id
     identity {
-      id
-      name
-      isMember
-      membershipHistory {
-        id
-      }
+      ...LightIdentity
     }
   }
+  ${LightIdentityFragmentDoc}
 `;
 export const TransferFragmentDoc = gql`
   fragment Transfer on Transfer {
@@ -3965,7 +4991,7 @@ export const TransferFragmentDoc = gql`
 `;
 export const BlockByIdDocument = gql`
   query BlockById($id: String!) {
-    blockById(id: $id) {
+    blockConnection(where: { id: { _eq: $id } }) {
       ...LightBlock
     }
   }
@@ -3983,8 +5009,8 @@ export class BlockByIdGQL extends Apollo.Query<BlockByIdQuery, BlockByIdQueryVar
   }
 }
 export const BlocksDocument = gql`
-  query Blocks($where: BlockWhereInput, $limit: Int!, $offset: Int!, $orderBy: [BlockOrderByInput!]) {
-    blocks(limit: $limit, offset: $offset, orderBy: $orderBy, where: $where) {
+  query Blocks($where: BlockBoolExp, $first: Int!, $after: String, $orderBy: [BlockOrderBy!]) {
+    blockConnection(first: $first, after: $after, orderBy: $orderBy, where: $where) {
       ...LightBlock
     }
   }
@@ -4002,18 +5028,28 @@ export class BlocksGQL extends Apollo.Query<BlocksQuery, BlocksQueryVariables> {
   }
 }
 export const CertsConnectionByIssuerDocument = gql`
-  query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
-    certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { issuer: { account: { id_eq: $address } } }) {
-      totalCount
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
+  query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
+    identityConnection(where: { accountId: { _eq: $address } }) {
       edges {
         node {
-          ...Cert
-          identity: receiver {
-            ...LightIdentity
+          certIssuedAggregate {
+            aggregate {
+              count
+            }
+          }
+          certIssued_connection(first: $first, after: $after, orderBy: $orderBy) {
+            edges {
+              node {
+                ...Cert
+                receiver {
+                  ...LightIdentity
+                }
+              }
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
           }
         }
       }
@@ -4034,18 +5070,28 @@ export class CertsConnectionByIssuerGQL extends Apollo.Query<CertsConnectionByIs
   }
 }
 export const CertsConnectionByReceiverDocument = gql`
-  query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
-    certsConnection(first: $limit, after: $after, orderBy: $orderBy, where: { receiver: { account: { id_eq: $address } } }) {
-      totalCount
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
+  query CertsConnectionByReceiver($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
+    identityConnection(where: { accountId: { _eq: $address } }) {
       edges {
         node {
-          ...Cert
-          identity: issuer {
-            ...LightIdentity
+          certReceivedAggregate {
+            aggregate {
+              count
+            }
+          }
+          certReceived_connection(first: $first, after: $after, orderBy: $orderBy) {
+            edges {
+              node {
+                ...Cert
+                issuer {
+                  ...LightIdentity
+                }
+              }
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
           }
         }
       }
@@ -4066,8 +5112,13 @@ export class CertsConnectionByReceiverGQL extends Apollo.Query<CertsConnectionBy
   }
 }
 export const TransfersConnectionByAddressDocument = gql`
-  query TransfersConnectionByAddress($address: String!, $limit: Int!, $orderBy: [TransferOrderByInput!]!, $after: String) {
-    transfersConnection(first: $limit, after: $after, orderBy: $orderBy, where: { from: { id_eq: $address }, OR: { to: { id_eq: $address } } }) {
+  query TransfersConnectionByAddress($address: String!, $first: Int!, $orderBy: [TransferOrderBy!]!, $after: String) {
+    transferConnection(
+      first: $first
+      after: $after
+      orderBy: $orderBy
+      where: { _or: [{ fromId: { _eq: $address } }, { toId: { _eq: $address } }] }
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -4093,14 +5144,22 @@ export class TransfersConnectionByAddressGQL extends Apollo.Query<TransfersConne
   }
 }
 export const WotSearchByTextDocument = gql`
-  query WotSearchByText($searchText: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
-    accounts(
-      limit: $limit
-      offset: $offset
+  query WotSearchByText($searchText: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
+    accountConnection(
+      first: $first
+      after: $after
       orderBy: $orderBy
-      where: { id_startsWith: $searchText, OR: { identity: { name_containsInsensitive: $searchText } } }
+      where: { _or: [{ id: { _ilike: $searchText } }, { identity: { name: { _ilike: $searchText } } }] }
     ) {
-      ...LightAccount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          ...LightAccount
+        }
+      }
     }
   }
   ${LightAccountFragmentDoc}
@@ -4117,9 +5176,17 @@ export class WotSearchByTextGQL extends Apollo.Query<WotSearchByTextQuery, WotSe
   }
 }
 export const WotSearchByAddressDocument = gql`
-  query WotSearchByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
-    accounts(limit: $limit, offset: $offset, orderBy: $orderBy, where: { id_eq: $address }) {
-      ...LightAccount
+  query WotSearchByAddress($address: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
+    accountConnection(first: $first, after: $after, orderBy: $orderBy, where: { id: { _eq: $address } }) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          ...LightAccount
+        }
+      }
     }
   }
   ${LightAccountFragmentDoc}
@@ -4136,14 +5203,22 @@ export class WotSearchByAddressGQL extends Apollo.Query<WotSearchByAddressQuery,
   }
 }
 export const WotSearchLastDocument = gql`
-  query WotSearchLast($limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!], $pending: Boolean!) {
-    accounts(
-      limit: $limit
-      offset: $offset
+  query WotSearchLast($first: Int!, $after: String, $orderBy: [AccountOrderBy!], $pending: Boolean!) {
+    accountConnection(
+      first: $first
+      after: $after
       orderBy: $orderBy
-      where: { identity: { id_isNull: false }, AND: { identity: { membershipHistory_some: { id_isNull: $pending } } } }
+      where: { _and: [{ identity: { id: { _isNull: false } } }, { identity: { membershipHistory: { eventId: { _isNull: $pending } } } }] }
     ) {
-      ...LightAccount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          ...LightAccount
+        }
+      }
     }
   }
   ${LightAccountFragmentDoc}
@@ -4265,6 +5340,25 @@ export interface PossibleTypesResultData {
   };
 }
 const result: PossibleTypesResultData = {
-  possibleTypes: {},
+  possibleTypes: {
+    Node: [
+      'Account',
+      'Block',
+      'Call',
+      'Cert',
+      'CertEvent',
+      'ChangeOwnerKey',
+      'Event',
+      'Extrinsic',
+      'Identity',
+      'ItemsCounter',
+      'MembershipEvent',
+      'SmithCert',
+      'Transfer',
+      'UdHistory',
+      'UdReeval',
+      'UniversalDividend',
+    ],
+  },
 };
 export default result;
