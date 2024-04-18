@@ -17,7 +17,8 @@ export const environment = <Environment>{
   graphql: {
     fetchPolicy: 'cache-first',
     watchFetchPolicy: 'cache-and-network',
-    persistCache: false, // TODO test enabled
+    persistCache: false,
+    fetchSize: 20,
   },
 
   // Storage
@@ -58,5 +59,8 @@ export const environment = <Environment>{
     //'wss://1000i100.fr/ws',
   ],
 
-  defaultIndexers: ['https://subsquid.gdev.coinduf.eu/graphql', 'https://gdev-squid.axiom-team.fr/graphql'],
+  defaultIndexers: [
+    'https://gdev-squid.axiom-team.fr/v1beta1/relay',
+    //'https://gdev-squid.axiom-team.fr/graphql'
+  ],
 };

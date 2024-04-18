@@ -32,12 +32,12 @@ RUN npm install -g @ionic/cli@${IONIC_CLI_VERSION} @angular/cli@${ANGULAR_CLI_VE
 # Install project dependencies
 RUN npm install --unsafe-perm --force --silent
 
+RUN ls -artl
+
 # Install global tools
 RUN apt-get update && \
     apt-get -y install git zip curl python3-minimal fakeroot openjdk-17-jdk-headless \
     && rm -rf /var/lib/apt/lists/*
-
-RUN ls -artl
 
 WORKDIR /build
 

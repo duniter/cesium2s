@@ -21,6 +21,7 @@ export interface Environment {
     fetchPolicy?: FetchPolicy;
     watchFetchPolicy?: WatchQueryFetchPolicy;
     persistCache?: boolean;
+    fetchSize?: number;
   };
 
   // Storage

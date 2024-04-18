@@ -2,6 +2,13 @@ import { HexString } from '@polkadot/util/types';
 import { ListItem } from '@app/shared/popover/list.popover';
 import { formatAddress } from '@app/shared/currencies';
 
+export interface AddressSquid {
+  index: number;
+  visibility: string;
+  type: string;
+  address: string;
+}
+
 export interface Account {
   address: string;
   publicKey?: Uint8Array;
@@ -15,11 +22,15 @@ export interface AccountMeta {
   genesisHash?: HexString | null;
   isTesting?: boolean;
 
+  // Duniter properties
+  id?: string;
+  index?: number; // member index
+  uid?: string;
+
   // Cesium properties
   self?: boolean;
   default?: boolean;
   publicKeyV1?: string;
-  uid?: string;
   avatar?: string;
   email?: string;
   isMember?: boolean;
@@ -28,14 +39,26 @@ export interface AccountMeta {
 }
 
 export interface AccountData {
-  // FIXME
-  //randomId?: string;
-
   free?: number;
   reserved?: number;
   feeFrozen?: number;
-
   txs?: any[];
+}
+
+/**
+ * Parse the base64 encoded json data from squid to an AddressSquid object
+ */
+export function parseAddressSquid(data: string): AddressSquid {
+  const decodedArray: any[] = JSON.parse(atob(data));
+  if (decodedArray.length !== 4) {
+    throw new Error('Invalid account data');
+  }
+  return {
+    index: decodedArray[0] as number,
+    visibility: decodedArray[1] as string,
+    type: decodedArray[2] as string,
+    address: decodedArray[3] as string,
+  };
 }
 
 export class AccountUtils {
@@ -64,6 +87,7 @@ export interface SelectAccountOptions {
   minBalance?: number;
   showBalance?: boolean;
   positiveBalanceFirst?: boolean;
+  isMember?: boolean;
 }
 
 export declare type LoginMethodType = 'v1' | 'v2' | 'keyfile-v1';

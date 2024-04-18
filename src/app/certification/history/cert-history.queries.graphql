@@ -1,65 +1,87 @@
 
-
-fragment Cert on Cert {
+fragment LightCert on Cert {
   __typename
   id
   expireOn
   createdOn
-  creation {
-    id
-    blockNumber
+}
+fragment Cert on Cert {
+  ...LightCert
+  receiver {
+    ...LightIdentity
   }
-  renewal {
-    id
-    blockNumber
-  }
-  removal {
-    id
-    blockNumber
+  issuer {
+    ...LightIdentity
   }
 }
 
-query CertsConnectionByIssuer($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
-  certsConnection(
-    first: $limit,
-    after: $after,
-    orderBy: $orderBy,
-    where: {issuer: {account: {id_eq: $address}}}
-  ) {
-    totalCount
-    pageInfo {
-      endCursor
-      hasNextPage
+fragment CertConnection on CertConnection {
+  edges {
+    node {
+      ...Cert
     }
+  }
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+}
+fragment CertReceivedConnection on CertConnection {
+  edges {
+    node {
+      ...LightCert
+      issuer {
+        ...LightIdentity
+      }
+    }
+  }
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+}
+fragment CertIssuedConnection on CertConnection {
+  edges {
+    node {
+      ...LightCert
+      receiver {
+        ...LightIdentity
+      }
+    }
+  }
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+}
+query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
+  identityConnection(where: { accountId: { _eq: $address } }) {
     edges {
       node {
-        ...Cert
-        identity: receiver {
-          ...LightIdentity
+        aggregate: certIssuedAggregate {
+          aggregate {
+            count
+          }
+        }
+        connection: certIssued_connection(first: $first, after: $after, orderBy: $orderBy) {
+          ...CertIssuedConnection
         }
       }
     }
   }
 }
 
-
-query CertsConnectionByReceiver($address: String!, $limit: Int!, $orderBy: [CertOrderByInput!]!, $after: String) {
-  certsConnection(
-    first: $limit,
-    after: $after,
-    orderBy: $orderBy,
-    where: {receiver: {account: {id_eq: $address}}}
-  ) {
-    totalCount
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
+query CertsConnectionByReceiver($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
+  identityConnection(where: { accountId: { _eq: $address } }) {
     edges {
       node {
-        ...Cert
-        identity: issuer {
-          ...LightIdentity
+        aggregate: certReceivedAggregate {
+          aggregate {
+            count
+          }
+        }
+        connection: certReceived_connection(first: $first, after: $after, orderBy: $orderBy) {
+          ...CertReceivedConnection
         }
       }
     }

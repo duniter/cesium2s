@@ -136,14 +136,14 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     this._state.connect(
       'receivedCertCount',
       validAddress$.pipe(
-        switchMap((address) => this.networkService.indexer.certsSearch({ receiver: address }, { limit: 0 })),
+        switchMap((address) => this.networkService.indexer.certsSearch({ receiver: address }, { first: 0 })),
         map(({ total }) => total)
       )
     );
     this._state.connect(
       'givenCertCount',
       validAddress$.pipe(
-        switchMap((address) => this.networkService.indexer.certsSearch({ issuer: address }, { limit: 0 })),
+        switchMap((address) => this.networkService.indexer.certsSearch({ issuer: address }, { first: 0 })),
         map(({ total }) => total)
       )
     );

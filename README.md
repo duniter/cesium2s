@@ -1,15 +1,15 @@
+# Cesium²
+
 [![Latest Release](https://git.duniter.org/clients/cesium-grp/cesium2s/-/badges/release.svg)](https://git.duniter.org/clients/cesium-grp/cesium2s/-/releases)
 [![pipeline status](https://git.duniter.org/clients/cesium-grp/cesium2s/badges/develop/pipeline.svg)](https://git.duniter.org/clients/cesium-grp/cesium2s/-/commits/develop)
-
-# Cesium²
 
 Cesium², running on Duniter v2s (Substrate).
 
 Cesium² use Angular, Ionic and Capacitor.
 
-# Build
+## Build
 
-## In a post-it
+### In a post-it
 
 ```bash
 
@@ -26,9 +26,10 @@ npm install
 npm run start
 ```
 
-## Build for Android
+### Build for Android
 
 - Init the android project:
+
   ```bash
   npm run android:prepare
   npm run android:init
@@ -40,7 +41,12 @@ npm run start
   - Run !
 
 - Compile from the command line:
+
   ```bash
   npm run android:prepare
   npm run android:assemble:prod
   ```
+
+## More documentation
+
+You will find more devloper documentation in [doc/](https://git.duniter.org/clients/cesium-grp/cesium2s/-/tree/master/doc) directory.
