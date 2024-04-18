@@ -8,6 +8,8 @@ import { TransferController } from '@app/transfer/send/transfer.controller';
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { fadeInAnimation } from '@app/shared/animations';
 import { SettingsService } from '@app/settings/settings.service';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertController } from '@ionic/angular';
 
 export interface IMenuItem {
   title: string;
@@ -66,6 +68,8 @@ export class AppComponent {
     protected settings: SettingsService,
     private accountService: AccountsService,
     private transferController: TransferController,
+    private translate: TranslateService,
+    private alertController: AlertController,
     private router: Router
   ) {
     this.start();
@@ -84,10 +88,31 @@ export class AppComponent {
   }
 
   async logout() {
-    this.accountService.forgetAll();
-    await this.router.navigateByUrl('/home', {
-      replaceUrl: true,
+    const alert = await this.alertController.create({
+      header: this.translate.instant('CONFIRM.POPUP_TITLE'),
+      //subHeader: 'A Sub Header Is Optional',
+      message: this.translate.instant('CONFIRM.LOGOUT'),
+      buttons: [
+        {
+          text: this.translate.instant('COMMON.BTN_CANCEL'),
+          role: 'cancel',
+        },
+        {
+          text: this.translate.instant('COMMON.BTN_LOGOUT'),
+          role: 'confirm',
+        },
+      ],
     });
+
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+
+    if (role === 'confirm') {
+      this.accountService.forgetAll();
+      await this.router.navigateByUrl('/home', {
+        replaceUrl: true,
+      });
+    }
   }
 
   async detectDeepLink() {
