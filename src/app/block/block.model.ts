@@ -1,6 +1,6 @@
 import { Moment } from 'moment/moment';
 import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
-import { LightBlockFragment } from '@app/network/indexer-types.generated';
+import { BlockEdge } from '@app/network/indexer-types.generated';
 import { fromDateISOString } from '@app/shared/dates';
 
 export interface Block {
@@ -14,16 +14,16 @@ export interface Block {
 }
 
 export class BlockConverter {
-  static toBlocks(inputs: LightBlockFragment[], debug?: boolean): Block[] {
+  static toBlocks(inputs: BlockEdge[], debug?: boolean): Block[] {
     const results = (inputs || []).map((item) => this.toBlock(item));
     if (debug) console.debug('Results:', results);
     return results;
   }
 
-  static toBlock(input: LightBlockFragment): Block {
+  static toBlock(input: BlockEdge): Block {
     return <Block>{
-      ...input,
-      timestamp: fromDateISOString(input.timestamp),
+      ...input.node,
+      timestamp: fromDateISOString(input.node.timestamp),
     };
   }
 }
