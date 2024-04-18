@@ -180,7 +180,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
       address: filter.issuer || filter.receiver,
       first: options.first,
       after: options.after,
-      orderBy: { createdOn: OrderBy.DescNullsLast },
+      orderBy: [{ createdOn: OrderBy.AscNullsFirst }, { expireOn: OrderBy.DescNullsLast }],
     };
     const fetchOptions = { fetchPolicy: options?.fetchPolicy };
     const toEntities = (connection: CertConnection, total: number) => {
