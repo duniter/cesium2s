@@ -454,7 +454,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
   watchByAddress(address: string, opts?: WatchAccountDataOptions): Observable<Account> {
     // Wait start if need, then loop
-    if (!this.started) return from(this.ready()).pipe(switchMap(() => this.watchByAddress(address)));
+    if (!this.started) return from(this.ready()).pipe(switchMap(() => this.watchByAddress(address, opts)));
 
     if (this.isAvailableSync(address)) {
       return this.accounts$.pipe(map((accounts) => accounts?.find((a) => a.address === address)));
@@ -527,7 +527,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     try {
       // Sign and send a transfer from Alice to Bob
-      const txHash = await this.api.tx.balances.transfer(to.address, amount).signAndSend(issuerPair, async ({ status, events }) => {
+      console.log(Object.keys(this.api.tx));
+      const txHash = await this.api.tx.balances.transferKeepAlive(to.address, amount).signAndSend(issuerPair, async ({ status, events }) => {
         if (status.isInBlock) {
           console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
           console.info(`${this._logPrefix}Completed at block hash #${status.hash.toHuman()}`);

@@ -85,31 +85,42 @@ export class IndexerService extends GraphqlService<IndexerState> {
             orderBy: { identity: { index: OrderBy.Asc } },
           },
           {
-            fetchPolicy: options.fetchPolicy,
+            fetchPolicy: options.fetchPolicy || 'cache-first',
           }
-        )
-        .pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
+        );
     } else if (isNotNilOrBlank(filter.searchText)) {
       data$ = this.indexerGraphqlService
-        .wotSearchByText({
-          searchText: `%${filter.searchText}%`,
-          after: options.after,
-          first: options.first,
-          orderBy: { identity: { index: OrderBy.Asc } },
-        })
-        .pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
+        .wotSearchByText(
+          {
+            searchText: `%${filter.searchText}%`,
+            after: options.after,
+            first: options.first + 1,
+            orderBy: { identity: { index: OrderBy.Asc } },
+          },
+          {
+            fetchPolicy: options.fetchPolicy || 'cache-first',
+          }
+        );
     } else {
       data$ = this.indexerGraphqlService
         .wotSearchLastWatch({
-          after: options.after,
-          first: options.first,
-          orderBy: { identity: { index: OrderBy.Asc } },
-          pending: toBoolean(filter.pending, false),
-        })
-        .valueChanges.pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
+            after: options.after,
+            first: options.first + 1, // Add 1 item, to check if can fetch more
+            orderBy: { identity: { index: OrderBy.Asc } },
+            pending: toBoolean(filter.pending, false),
+          },
+          {
+            fetchPolicy: options.fetchPolicy || 'cache-first',
+          }
+        )
+        .valueChanges;
     }
 
     return data$.pipe(
+      map(({ data }) => {
+        const accounts = data?.accountConnection.edges.map((edge) => edge.node);
+        return AccountConverter.toAccounts(accounts);
+      }),
       map((items) => {
         const result: LoadResult<Account> = { data: items };
         if (items.length > options.first) {
@@ -240,9 +251,9 @@ export class IndexerService extends GraphqlService<IndexerState> {
       return this.indexerGraphqlService
         .blocks({
           ...options,
-          where: { height: { _eq: filter.height } },
-          first: 1,
           after: null,
+          first: 1,
+          where: { height: { _eq: filter.height } },
         })
         .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlocks(blockConnection.edges as BlockEdge[], true)));
     }
