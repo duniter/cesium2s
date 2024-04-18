@@ -12,16 +12,19 @@ fragment Transfer on Transfer {
   }
 }
 
-query TransfersConnectionByAddress($address: String!, $first: Int!, $orderBy: [TransferOrderBy!]!, $after: String) {
+fragment TransferConnection on TransferConnection {
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+  edges {
+    node {
+      ...Transfer
+    }
+  }
+}
+query TransferConnectionByAddress($address: String!, $first: Int!, $orderBy: [TransferOrderBy!]!, $after: String) {
   transferConnection(first: $first, after: $after, orderBy: $orderBy, where: { _or: [{ fromId: { _eq: $address } }, { toId: { _eq: $address } }] }) {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-    edges {
-      node {
-        ...Transfer
-      }
-    }
+    ...TransferConnection
   }
 }
