@@ -1,13 +1,10 @@
-
 fragment LightIdentity on Identity {
-  __typename
   id
+  index
   name
-  account {
-    __typename
-    id
-  }
-  membership {
+  isMember
+  accountId
+  membershipHistory {
     __typename
     id
   }
@@ -16,10 +13,18 @@ fragment LightIdentity on Identity {
 fragment LightAccount on Account {
   id
   identity {
-    id
-    name
-    membership {
-      id
+    ...LightIdentity
+  }
+}
+
+fragment LightAccountConnection on AccountConnection {
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+  edges {
+    node {
+      ...LightAccount
     }
   }
 }

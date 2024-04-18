@@ -35,6 +35,7 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
 
   @Input() showToolbar = true;
   @Input() showBalance = false;
+  @Input() showToastOnCertify = true;
   @Input() @RxStateProperty() address: string;
   @Input() @RxStateProperty() account: Account;
 
@@ -57,7 +58,7 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
           if (ownedAddress) {
             return this.accountsService.watchByAddress(address);
           }
-          return this.indexerService.wotSearch({ address }, { limit: 1 }).pipe(map(({ data }) => firstArrayValue(data)));
+          return this.indexerService.wotSearch({ address }, { first: 1 }).pipe(map(({ data }) => firstArrayValue(data)));
         }),
         mergeMap(async (account) => {
           if (account.data) return account;
@@ -81,14 +82,14 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     this._state.connect(
       'receivedCertCount',
       validAddress$.pipe(
-        switchMap((address) => this.indexerService.certsSearch({ receiver: address }, { limit: 0 })),
+        switchMap((address) => this.indexerService.certsSearch({ receiver: address }, { first: 0 })),
         map(({ total }) => total)
       )
     );
     this._state.connect(
       'givenCertCount',
       validAddress$.pipe(
-        switchMap((address) => this.indexerService.certsSearch({ issuer: address }, { limit: 0 })),
+        switchMap((address) => this.indexerService.certsSearch({ issuer: address }, { first: 0 })),
         map(({ total }) => total)
       )
     );
@@ -134,7 +135,24 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     return this.transferController.transfer({ recipient: this.account });
   }
 
-  async certify() {
-    // TODO
+  async certifyTo() {
+    const issuer = await this.accountsService.selectAccount({ isMember: true });
+    if (!issuer) return; // Skip
+
+    this.markAsLoading();
+    this.resetError();
+
+    try {
+      const certHash = await this.accountsService.cert(issuer, this.account);
+
+      if (this.showToastOnCertify) {
+        await this.showToast({ message: 'INFO.CERTIFICATION_DONE' });
+      }
+
+      return certHash;
+    } catch (err) {
+      this.setError(err);
+      this.markAsLoaded();
+    }
   }
 }

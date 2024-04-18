@@ -1,20 +1,168 @@
 # This file was generated. Do not edit manually.
 
 schema {
-  query: Query
+  query: query_root
+  subscription: subscription_root
 }
 
-type Account {
-  "Account address is SS58 format"
-  id: String!
-  "current account for the identity"
+"whether this query should be cached (Hasura Cloud only)"
+directive @cached(
+  "refresh the cache entry"
+  refresh: Boolean! = false,
+  "measured in seconds"
+  ttl: Int! = 60
+) on QUERY
+
+"An object with globally unique ID"
+interface Node {
+  "A globally unique identifier"
+  id: ID!
+}
+
+"columns and relationships of \"account\""
+type Account implements Node {
+  id: ID!
+  "An object relationship"
   identity: Identity
-  "linked to the identity"
+  "An object relationship"
   linkedIdentity: Identity
-  transfersIssued(limit: Int, offset: Int, orderBy: [TransferOrderByInput!], where: TransferWhereInput): [Transfer!]!
-  transfersReceived(limit: Int, offset: Int, orderBy: [TransferOrderByInput!], where: TransferWhereInput): [Transfer!]!
-  "was once account of the identity"
-  wasIdentity(limit: Int, offset: Int, orderBy: [ChangeOwnerKeyOrderByInput!], where: ChangeOwnerKeyWhereInput): [ChangeOwnerKey!]!
+  linkedIdentityId: String
+  "An array relationship"
+  transfersIssued(
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): [Transfer!]!
+  "An aggregate relationship"
+  transfersIssuedAggregate(
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): TransferAggregate!
+  "An array relationship connection"
+  transfersIssued_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): TransferConnection!
+  "An array relationship"
+  transfersReceived(
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): [Transfer!]!
+  "An aggregate relationship"
+  transfersReceivedAggregate(
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): TransferAggregate!
+  "An array relationship connection"
+  transfersReceived_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): TransferConnection!
+  "An array relationship"
+  wasIdentity(
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): [ChangeOwnerKey!]!
+  "An aggregate relationship"
+  wasIdentityAggregate(
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyAggregate!
+  "An array relationship connection"
+  wasIdentity_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyConnection!
+}
+
+"aggregated selection of \"account\""
+type AccountAggregate {
+  aggregate: AccountAggregateFields
+  nodes: [Account!]!
+}
+
+"aggregate fields of \"account\""
+type AccountAggregateFields {
+  count(columns: [AccountSelectColumn!], distinct: Boolean): Int!
+  max: AccountMaxFields
+  min: AccountMinFields
+}
+
+"A Relay connection object on \"account\""
+type AccountConnection {
+  edges: [AccountEdge!]!
+  pageInfo: PageInfo!
 }
 
 type AccountEdge {
@@ -22,32 +170,158 @@ type AccountEdge {
   node: Account!
 }
 
-type AccountsConnection {
-  edges: [AccountEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate max on columns"
+type AccountMaxFields {
+  id: String
+  linkedIdentityId: String
 }
 
-type Block {
-  calls(limit: Int, offset: Int, orderBy: [CallOrderByInput!], where: CallWhereInput): [Call!]!
+"aggregate min on columns"
+type AccountMinFields {
+  id: String
+  linkedIdentityId: String
+}
+
+"columns and relationships of \"block\""
+type Block implements Node {
+  "An array relationship"
+  calls(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): [Call!]!
+  "An aggregate relationship"
+  callsAggregate(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallAggregate!
   callsCount: Int!
-  events(limit: Int, offset: Int, orderBy: [EventOrderByInput!], where: EventWhereInput): [Event!]!
+  "An array relationship connection"
+  calls_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
+  "An array relationship"
+  events(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): [Event!]!
+  "An aggregate relationship"
+  eventsAggregate(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventAggregate!
   eventsCount: Int!
-  extrinsics(limit: Int, offset: Int, orderBy: [ExtrinsicOrderByInput!], where: ExtrinsicWhereInput): [Extrinsic!]!
+  "An array relationship connection"
+  events_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  "An array relationship"
+  extrinsics(
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
+    where: ExtrinsicBoolExp
+  ): [Extrinsic!]!
+  "An aggregate relationship"
+  extrinsicsAggregate(
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
+    where: ExtrinsicBoolExp
+  ): ExtrinsicAggregate!
   extrinsicsCount: Int!
-  extrinsicsicRoot: Bytes!
-  hash: Bytes!
+  "An array relationship connection"
+  extrinsics_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
+    where: ExtrinsicBoolExp
+  ): ExtrinsicConnection!
+  extrinsicsicRoot: bytea!
+  hash: bytea!
   height: Int!
-  "BlockHeight-blockHash - e.g. 0001812319-0001c"
-  id: String!
+  id: ID!
   implName: String!
   implVersion: Int!
-  parentHash: Bytes!
+  parentHash: bytea!
   specName: String!
   specVersion: Int!
-  stateRoot: Bytes!
-  timestamp: DateTime!
-  validator: Bytes
+  stateRoot: bytea!
+  timestamp: timestamptz!
+  validator: bytea
+}
+
+"A Relay connection object on \"block\""
+type BlockConnection {
+  edges: [BlockEdge!]!
+  pageInfo: PageInfo!
 }
 
 type BlockEdge {
@@ -55,26 +329,128 @@ type BlockEdge {
   node: Block!
 }
 
-type BlocksConnection {
-  edges: [BlockEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type Call {
+"columns and relationships of \"call\""
+type Call implements Node {
   address: [Int!]!
-  args: JSON
-  argsStr: [String]
-  block: Block!
-  error: JSON
-  events(limit: Int, offset: Int, orderBy: [EventOrderByInput!], where: EventWhereInput): [Event!]!
+  args(
+    "JSON select path"
+    path: String
+  ): jsonb
+  argsStr: [String!]
+  "An object relationship"
+  block: Block
+  blockId: String
+  error(
+    "JSON select path"
+    path: String
+  ): jsonb
+  "An array relationship"
+  events(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): [Event!]!
+  "An aggregate relationship"
+  eventsAggregate(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventAggregate!
+  "An array relationship connection"
+  events_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  "An object relationship"
   extrinsic: Extrinsic
-  id: String!
+  extrinsicId: String
+  id: ID!
   name: String!
   pallet: String!
+  "An object relationship"
   parent: Call
-  subcalls(limit: Int, offset: Int, orderBy: [CallOrderByInput!], where: CallWhereInput): [Call!]!
+  parentId: String
+  "An array relationship"
+  subcalls(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): [Call!]!
+  "An aggregate relationship"
+  subcallsAggregate(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallAggregate!
+  "An array relationship connection"
+  subcalls_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
   success: Boolean!
+}
+
+"aggregated selection of \"call\""
+type CallAggregate {
+  aggregate: CallAggregateFields
+  nodes: [Call!]!
+}
+
+"aggregate fields of \"call\""
+type CallAggregateFields {
+  count(columns: [CallSelectColumn!], distinct: Boolean): Int!
+  max: CallMaxFields
+  min: CallMinFields
+}
+
+"A Relay connection object on \"call\""
+type CallConnection {
+  edges: [CallEdge!]!
+  pageInfo: PageInfo!
 }
 
 type CallEdge {
@@ -82,44 +458,114 @@ type CallEdge {
   node: Call!
 }
 
-type CallsConnection {
-  edges: [CallEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate max on columns"
+type CallMaxFields {
+  address: [Int!]
+  argsStr: [String!]
+  blockId: String
+  extrinsicId: String
+  id: String
+  name: String
+  pallet: String
+  parentId: String
 }
 
-"Certification"
-type Cert {
-  "whether the certification is currently active or not"
-  active: Boolean!
-  "the last createdOn value"
+"aggregate min on columns"
+type CallMinFields {
+  address: [Int!]
+  argsStr: [String!]
+  blockId: String
+  extrinsicId: String
+  id: String
+  name: String
+  pallet: String
+  parentId: String
+}
+
+"columns and relationships of \"cert\""
+type Cert implements Node {
+  "An array relationship"
+  certHistory(
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): [CertEvent!]!
+  "An aggregate relationship"
+  certHistoryAggregate(
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): CertEventAggregate!
+  "An array relationship connection"
+  certHistory_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): CertEventConnection!
   createdOn: Int!
-  creation(limit: Int, offset: Int, orderBy: [CertCreationOrderByInput!], where: CertCreationWhereInput): [CertCreation!]!
-  "the current expireOn value"
   expireOn: Int!
-  id: String!
-  issuer: Identity!
-  receiver: Identity!
-  removal(limit: Int, offset: Int, orderBy: [CertRemovalOrderByInput!], where: CertRemovalWhereInput): [CertRemoval!]!
-  renewal(limit: Int, offset: Int, orderBy: [CertRenewalOrderByInput!], where: CertRenewalWhereInput): [CertRenewal!]!
+  id: ID!
+  isActive: Boolean!
+  "An object relationship"
+  issuer: Identity
+  issuerId: String
+  "An object relationship"
+  receiver: Identity
+  receiverId: String
 }
 
-"Certification creation"
-type CertCreation {
-  blockNumber: Int!
-  cert: Cert!
-  id: String!
+"aggregated selection of \"cert\""
+type CertAggregate {
+  aggregate: CertAggregateFields
+  nodes: [Cert!]!
 }
 
-type CertCreationEdge {
-  cursor: String!
-  node: CertCreation!
+"aggregate fields of \"cert\""
+type CertAggregateFields {
+  avg: CertAvgFields
+  count(columns: [CertSelectColumn!], distinct: Boolean): Int!
+  max: CertMaxFields
+  min: CertMinFields
+  stddev: CertStddevFields
+  stddevPop: CertStddevPopFields
+  stddevSamp: CertStddevSampFields
+  sum: CertSumFields
+  varPop: CertVarPopFields
+  varSamp: CertVarSampFields
+  variance: CertVarianceFields
 }
 
-type CertCreationsConnection {
-  edges: [CertCreationEdge!]!
+"aggregate avg on columns"
+type CertAvgFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"A Relay connection object on \"cert\""
+type CertConnection {
+  edges: [CertEdge!]!
   pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 type CertEdge {
@@ -127,55 +573,212 @@ type CertEdge {
   node: Cert!
 }
 
-"Certification removal"
-type CertRemoval {
+"columns and relationships of \"cert_event\""
+type CertEvent implements Node {
   blockNumber: Int!
-  cert: Cert!
-  id: String!
+  "An object relationship"
+  cert: Cert
+  certId: String
+  "An object relationship"
+  event: Event
+  eventId: String
+  eventType: EventTypeEnum
+  id: ID!
 }
 
-type CertRemovalEdge {
+"aggregated selection of \"cert_event\""
+type CertEventAggregate {
+  aggregate: CertEventAggregateFields
+  nodes: [CertEvent!]!
+}
+
+"aggregate fields of \"cert_event\""
+type CertEventAggregateFields {
+  avg: CertEventAvgFields
+  count(columns: [CertEventSelectColumn!], distinct: Boolean): Int!
+  max: CertEventMaxFields
+  min: CertEventMinFields
+  stddev: CertEventStddevFields
+  stddevPop: CertEventStddevPopFields
+  stddevSamp: CertEventStddevSampFields
+  sum: CertEventSumFields
+  varPop: CertEventVarPopFields
+  varSamp: CertEventVarSampFields
+  variance: CertEventVarianceFields
+}
+
+"aggregate avg on columns"
+type CertEventAvgFields {
+  blockNumber: Float
+}
+
+"A Relay connection object on \"cert_event\""
+type CertEventConnection {
+  edges: [CertEventEdge!]!
+  pageInfo: PageInfo!
+}
+
+type CertEventEdge {
   cursor: String!
-  node: CertRemoval!
+  node: CertEvent!
 }
 
-type CertRemovalsConnection {
-  edges: [CertRemovalEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate max on columns"
+type CertEventMaxFields {
+  blockNumber: Int
+  certId: String
+  eventId: String
+  id: String
 }
 
-"Certification renewal"
-type CertRenewal {
+"aggregate min on columns"
+type CertEventMinFields {
+  blockNumber: Int
+  certId: String
+  eventId: String
+  id: String
+}
+
+"aggregate stddev on columns"
+type CertEventStddevFields {
+  blockNumber: Float
+}
+
+"aggregate stddevPop on columns"
+type CertEventStddevPopFields {
+  blockNumber: Float
+}
+
+"aggregate stddevSamp on columns"
+type CertEventStddevSampFields {
+  blockNumber: Float
+}
+
+"aggregate sum on columns"
+type CertEventSumFields {
+  blockNumber: Int
+}
+
+"aggregate varPop on columns"
+type CertEventVarPopFields {
+  blockNumber: Float
+}
+
+"aggregate varSamp on columns"
+type CertEventVarSampFields {
+  blockNumber: Float
+}
+
+"aggregate variance on columns"
+type CertEventVarianceFields {
+  blockNumber: Float
+}
+
+"aggregate max on columns"
+type CertMaxFields {
+  createdOn: Int
+  expireOn: Int
+  id: String
+  issuerId: String
+  receiverId: String
+}
+
+"aggregate min on columns"
+type CertMinFields {
+  createdOn: Int
+  expireOn: Int
+  id: String
+  issuerId: String
+  receiverId: String
+}
+
+"aggregate stddev on columns"
+type CertStddevFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate stddevPop on columns"
+type CertStddevPopFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate stddevSamp on columns"
+type CertStddevSampFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate sum on columns"
+type CertSumFields {
+  createdOn: Int
+  expireOn: Int
+}
+
+"aggregate varPop on columns"
+type CertVarPopFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate varSamp on columns"
+type CertVarSampFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate variance on columns"
+type CertVarianceFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"columns and relationships of \"change_owner_key\""
+type ChangeOwnerKey implements Node {
   blockNumber: Int!
-  cert: Cert!
-  id: String!
+  id: ID!
+  "An object relationship"
+  identity: Identity
+  identityId: String
+  "An object relationship"
+  next: Account
+  nextId: String
+  "An object relationship"
+  previous: Account
+  previousId: String
 }
 
-type CertRenewalEdge {
-  cursor: String!
-  node: CertRenewal!
+"aggregated selection of \"change_owner_key\""
+type ChangeOwnerKeyAggregate {
+  aggregate: ChangeOwnerKeyAggregateFields
+  nodes: [ChangeOwnerKey!]!
 }
 
-type CertRenewalsConnection {
-  edges: [CertRenewalEdge!]!
+"aggregate fields of \"change_owner_key\""
+type ChangeOwnerKeyAggregateFields {
+  avg: ChangeOwnerKeyAvgFields
+  count(columns: [ChangeOwnerKeySelectColumn!], distinct: Boolean): Int!
+  max: ChangeOwnerKeyMaxFields
+  min: ChangeOwnerKeyMinFields
+  stddev: ChangeOwnerKeyStddevFields
+  stddevPop: ChangeOwnerKeyStddevPopFields
+  stddevSamp: ChangeOwnerKeyStddevSampFields
+  sum: ChangeOwnerKeySumFields
+  varPop: ChangeOwnerKeyVarPopFields
+  varSamp: ChangeOwnerKeyVarSampFields
+  variance: ChangeOwnerKeyVarianceFields
+}
+
+"aggregate avg on columns"
+type ChangeOwnerKeyAvgFields {
+  blockNumber: Float
+}
+
+"A Relay connection object on \"change_owner_key\""
+type ChangeOwnerKeyConnection {
+  edges: [ChangeOwnerKeyEdge!]!
   pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type CertsConnection {
-  edges: [CertEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-"owner key change"
-type ChangeOwnerKey {
-  blockNumber: Int!
-  id: String!
-  identity: Identity!
-  next: Account!
-  previous: Account!
 }
 
 type ChangeOwnerKeyEdge {
@@ -183,24 +786,112 @@ type ChangeOwnerKeyEdge {
   node: ChangeOwnerKey!
 }
 
-type ChangeOwnerKeysConnection {
-  edges: [ChangeOwnerKeyEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate max on columns"
+type ChangeOwnerKeyMaxFields {
+  blockNumber: Int
+  id: String
+  identityId: String
+  nextId: String
+  previousId: String
 }
 
-type Event {
-  args: JSON
-  argsStr: [String]
-  block: Block!
+"aggregate min on columns"
+type ChangeOwnerKeyMinFields {
+  blockNumber: Int
+  id: String
+  identityId: String
+  nextId: String
+  previousId: String
+}
+
+"aggregate stddev on columns"
+type ChangeOwnerKeyStddevFields {
+  blockNumber: Float
+}
+
+"aggregate stddevPop on columns"
+type ChangeOwnerKeyStddevPopFields {
+  blockNumber: Float
+}
+
+"aggregate stddevSamp on columns"
+type ChangeOwnerKeyStddevSampFields {
+  blockNumber: Float
+}
+
+"aggregate sum on columns"
+type ChangeOwnerKeySumFields {
+  blockNumber: Int
+}
+
+"aggregate varPop on columns"
+type ChangeOwnerKeyVarPopFields {
+  blockNumber: Float
+}
+
+"aggregate varSamp on columns"
+type ChangeOwnerKeyVarSampFields {
+  blockNumber: Float
+}
+
+"aggregate variance on columns"
+type ChangeOwnerKeyVarianceFields {
+  blockNumber: Float
+}
+
+"columns and relationships of \"event\""
+type Event implements Node {
+  args(
+    "JSON select path"
+    path: String
+  ): jsonb
+  argsStr: [String!]
+  "An object relationship"
+  block: Block
+  blockId: String
+  "An object relationship"
   call: Call
+  callId: String
+  "An object relationship"
   extrinsic: Extrinsic
-  "Event id - e.g. 0000000001-000000-272d6"
-  id: String!
+  extrinsicId: String
+  id: ID!
   index: Int!
   name: String!
   pallet: String!
   phase: String!
+}
+
+"aggregated selection of \"event\""
+type EventAggregate {
+  aggregate: EventAggregateFields
+  nodes: [Event!]!
+}
+
+"aggregate fields of \"event\""
+type EventAggregateFields {
+  avg: EventAvgFields
+  count(columns: [EventSelectColumn!], distinct: Boolean): Int!
+  max: EventMaxFields
+  min: EventMinFields
+  stddev: EventStddevFields
+  stddevPop: EventStddevPopFields
+  stddevSamp: EventStddevSampFields
+  sum: EventSumFields
+  varPop: EventVarPopFields
+  varSamp: EventVarSampFields
+  variance: EventVarianceFields
+}
+
+"aggregate avg on columns"
+type EventAvgFields {
+  index: Float
+}
+
+"A Relay connection object on \"event\""
+type EventConnection {
+  edges: [EventEdge!]!
+  pageInfo: PageInfo!
 }
 
 type EventEdge {
@@ -208,26 +899,203 @@ type EventEdge {
   node: Event!
 }
 
-type EventsConnection {
-  edges: [EventEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate max on columns"
+type EventMaxFields {
+  argsStr: [String!]
+  blockId: String
+  callId: String
+  extrinsicId: String
+  id: String
+  index: Int
+  name: String
+  pallet: String
+  phase: String
 }
 
-type Extrinsic {
-  block: Block!
-  call: Call!
-  calls(limit: Int, offset: Int, orderBy: [CallOrderByInput!], where: CallWhereInput): [Call!]!
-  error: JSON
-  events(limit: Int, offset: Int, orderBy: [EventOrderByInput!], where: EventWhereInput): [Event!]!
-  fee: BigInt
-  hash: Bytes!
-  id: String!
+"aggregate min on columns"
+type EventMinFields {
+  argsStr: [String!]
+  blockId: String
+  callId: String
+  extrinsicId: String
+  id: String
+  index: Int
+  name: String
+  pallet: String
+  phase: String
+}
+
+"aggregate stddev on columns"
+type EventStddevFields {
+  index: Float
+}
+
+"aggregate stddevPop on columns"
+type EventStddevPopFields {
+  index: Float
+}
+
+"aggregate stddevSamp on columns"
+type EventStddevSampFields {
+  index: Float
+}
+
+"aggregate sum on columns"
+type EventSumFields {
+  index: Int
+}
+
+"aggregate varPop on columns"
+type EventVarPopFields {
+  index: Float
+}
+
+"aggregate varSamp on columns"
+type EventVarSampFields {
+  index: Float
+}
+
+"aggregate variance on columns"
+type EventVarianceFields {
+  index: Float
+}
+
+"columns and relationships of \"extrinsic\""
+type Extrinsic implements Node {
+  "An object relationship"
+  block: Block
+  blockId: String
+  "An object relationship"
+  call: Call
+  callId: String
+  "An array relationship"
+  calls(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): [Call!]!
+  "An aggregate relationship"
+  callsAggregate(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallAggregate!
+  "An array relationship connection"
+  calls_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
+  error(
+    "JSON select path"
+    path: String
+  ): jsonb
+  "An array relationship"
+  events(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): [Event!]!
+  "An aggregate relationship"
+  eventsAggregate(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventAggregate!
+  "An array relationship connection"
+  events_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  fee: numeric
+  hash: bytea!
+  id: ID!
   index: Int!
-  signature: ExtrinsicSignature
+  signature(
+    "JSON select path"
+    path: String
+  ): jsonb
   success: Boolean
-  tip: BigInt
+  tip: numeric
   version: Int!
+}
+
+"aggregated selection of \"extrinsic\""
+type ExtrinsicAggregate {
+  aggregate: ExtrinsicAggregateFields
+  nodes: [Extrinsic!]!
+}
+
+"aggregate fields of \"extrinsic\""
+type ExtrinsicAggregateFields {
+  avg: ExtrinsicAvgFields
+  count(columns: [ExtrinsicSelectColumn!], distinct: Boolean): Int!
+  max: ExtrinsicMaxFields
+  min: ExtrinsicMinFields
+  stddev: ExtrinsicStddevFields
+  stddevPop: ExtrinsicStddevPopFields
+  stddevSamp: ExtrinsicStddevSampFields
+  sum: ExtrinsicSumFields
+  varPop: ExtrinsicVarPopFields
+  varSamp: ExtrinsicVarSampFields
+  variance: ExtrinsicVarianceFields
+}
+
+"aggregate avg on columns"
+type ExtrinsicAvgFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"A Relay connection object on \"extrinsic\""
+type ExtrinsicConnection {
+  edges: [ExtrinsicEdge!]!
+  pageInfo: PageInfo!
 }
 
 type ExtrinsicEdge {
@@ -235,49 +1103,393 @@ type ExtrinsicEdge {
   node: Extrinsic!
 }
 
-type ExtrinsicSignature {
-  address: JSON
-  signature: JSON
-  signedExtensions: JSON
+"aggregate max on columns"
+type ExtrinsicMaxFields {
+  blockId: String
+  callId: String
+  fee: numeric
+  id: String
+  index: Int
+  tip: numeric
+  version: Int
 }
 
-type ExtrinsicsConnection {
-  edges: [ExtrinsicEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate min on columns"
+type ExtrinsicMinFields {
+  blockId: String
+  callId: String
+  fee: numeric
+  id: String
+  index: Int
+  tip: numeric
+  version: Int
 }
 
-type IdentitiesConnection {
+"aggregate stddev on columns"
+type ExtrinsicStddevFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate stddevPop on columns"
+type ExtrinsicStddevPopFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate stddevSamp on columns"
+type ExtrinsicStddevSampFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate sum on columns"
+type ExtrinsicSumFields {
+  fee: numeric
+  index: Int
+  tip: numeric
+  version: Int
+}
+
+"aggregate varPop on columns"
+type ExtrinsicVarPopFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate varSamp on columns"
+type ExtrinsicVarSampFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate variance on columns"
+type ExtrinsicVarianceFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"columns and relationships of \"identity\""
+type Identity implements Node {
+  "An object relationship"
+  account: Account
+  accountId: String
+  "An array relationship"
+  certIssued(
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): [Cert!]!
+  "An aggregate relationship"
+  certIssuedAggregate(
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertAggregate!
+  "An array relationship connection"
+  certIssued_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertConnection!
+  "An array relationship"
+  certReceived(
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): [Cert!]!
+  "An aggregate relationship"
+  certReceivedAggregate(
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertAggregate!
+  "An array relationship connection"
+  certReceived_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertConnection!
+  "An object relationship"
+  createdIn: Event
+  createdInId: String
+  createdOn: Int!
+  expireOn: Int!
+  id: ID!
+  index: Int!
+  isMember: Boolean!
+  lastChangeOn: Int!
+  "An array relationship"
+  linkedAccount(
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): [Account!]!
+  "An aggregate relationship"
+  linkedAccountAggregate(
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): AccountAggregate!
+  "An array relationship connection"
+  linkedAccount_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): AccountConnection!
+  "An array relationship"
+  membershipHistory(
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): [MembershipEvent!]!
+  "An aggregate relationship"
+  membershipHistoryAggregate(
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): MembershipEventAggregate!
+  "An array relationship connection"
+  membershipHistory_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): MembershipEventConnection!
+  name: String!
+  "An array relationship"
+  ownerKeyChange(
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): [ChangeOwnerKey!]!
+  "An aggregate relationship"
+  ownerKeyChangeAggregate(
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyAggregate!
+  "An array relationship connection"
+  ownerKeyChange_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyConnection!
+  "An array relationship"
+  smithCertIssued(
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): [SmithCert!]!
+  "An aggregate relationship"
+  smithCertIssuedAggregate(
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertAggregate!
+  "An array relationship connection"
+  smithCertIssued_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertConnection!
+  "An array relationship"
+  smithCertReceived(
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): [SmithCert!]!
+  "An aggregate relationship"
+  smithCertReceivedAggregate(
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertAggregate!
+  "An array relationship connection"
+  smithCertReceived_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertConnection!
+  smithStatus: SmithStatusEnum
+  status: IdentityStatusEnum
+  "\"Get UD History by Identity\""
+  udHistory(
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): [UdHistory!]
+}
+
+"A Relay connection object on \"identity\""
+type IdentityConnection {
   edges: [IdentityEdge!]!
   pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-"Identity"
-type Identity {
-  "Current account"
-  account: Account!
-  "Certifications issued"
-  certIssued(limit: Int, offset: Int, orderBy: [CertOrderByInput!], where: CertWhereInput): [Cert!]!
-  "Certifications received"
-  certReceived(limit: Int, offset: Int, orderBy: [CertOrderByInput!], where: CertWhereInput): [Cert!]!
-  id: String!
-  "Identity index"
-  index: Int!
-  "linked accounts"
-  linkedAccount(limit: Int, offset: Int, orderBy: [AccountOrderByInput!], where: AccountWhereInput): [Account!]!
-  "Membership of the identity"
-  membership: Membership
-  "Name"
-  name: String!
-  "Owner key changes"
-  ownerKeyChange(limit: Int, offset: Int, orderBy: [ChangeOwnerKeyOrderByInput!], where: ChangeOwnerKeyWhereInput): [ChangeOwnerKey!]!
-  "Smith certifications issued"
-  smithCertIssued(limit: Int, offset: Int, orderBy: [SmithCertOrderByInput!], where: SmithCertWhereInput): [SmithCert!]!
-  "Smith certifications received"
-  smithCertReceived(limit: Int, offset: Int, orderBy: [SmithCertOrderByInput!], where: SmithCertWhereInput): [SmithCert!]!
-  "Smith Membership of the identity"
-  smithMembership: SmithMembership
 }
 
 type IdentityEdge {
@@ -285,11 +1497,18 @@ type IdentityEdge {
   node: Identity!
 }
 
-type ItemsCounter {
-  id: String!
-  level: CounterLevel!
+"columns and relationships of \"items_counter\""
+type ItemsCounter implements Node {
+  id: ID!
+  level: CounterLevelEnum
   total: Int!
-  type: ItemType!
+  type: ItemTypeEnum
+}
+
+"A Relay connection object on \"items_counter\""
+type ItemsCounterConnection {
+  edges: [ItemsCounterEdge!]!
+  pageInfo: PageInfo!
 }
 
 type ItemsCounterEdge {
@@ -297,28 +1516,105 @@ type ItemsCounterEdge {
   node: ItemsCounter!
 }
 
-type ItemsCountersConnection {
-  edges: [ItemsCounterEdge!]!
+"columns and relationships of \"membership_event\""
+type MembershipEvent implements Node {
+  blockNumber: Int!
+  "An object relationship"
+  event: Event
+  eventId: String
+  eventType: EventTypeEnum
+  id: ID!
+  "An object relationship"
+  identity: Identity
+  identityId: String
+}
+
+"aggregated selection of \"membership_event\""
+type MembershipEventAggregate {
+  aggregate: MembershipEventAggregateFields
+  nodes: [MembershipEvent!]!
+}
+
+"aggregate fields of \"membership_event\""
+type MembershipEventAggregateFields {
+  avg: MembershipEventAvgFields
+  count(columns: [MembershipEventSelectColumn!], distinct: Boolean): Int!
+  max: MembershipEventMaxFields
+  min: MembershipEventMinFields
+  stddev: MembershipEventStddevFields
+  stddevPop: MembershipEventStddevPopFields
+  stddevSamp: MembershipEventStddevSampFields
+  sum: MembershipEventSumFields
+  varPop: MembershipEventVarPopFields
+  varSamp: MembershipEventVarSampFields
+  variance: MembershipEventVarianceFields
+}
+
+"aggregate avg on columns"
+type MembershipEventAvgFields {
+  blockNumber: Float
+}
+
+"A Relay connection object on \"membership_event\""
+type MembershipEventConnection {
+  edges: [MembershipEventEdge!]!
   pageInfo: PageInfo!
-  totalCount: Int!
 }
 
-"Membership"
-type Membership {
-  expireOn: Int!
-  id: String!
-  identity: Identity!
-}
-
-type MembershipEdge {
+type MembershipEventEdge {
   cursor: String!
-  node: Membership!
+  node: MembershipEvent!
 }
 
-type MembershipsConnection {
-  edges: [MembershipEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate max on columns"
+type MembershipEventMaxFields {
+  blockNumber: Int
+  eventId: String
+  id: String
+  identityId: String
+}
+
+"aggregate min on columns"
+type MembershipEventMinFields {
+  blockNumber: Int
+  eventId: String
+  id: String
+  identityId: String
+}
+
+"aggregate stddev on columns"
+type MembershipEventStddevFields {
+  blockNumber: Float
+}
+
+"aggregate stddevPop on columns"
+type MembershipEventStddevPopFields {
+  blockNumber: Float
+}
+
+"aggregate stddevSamp on columns"
+type MembershipEventStddevSampFields {
+  blockNumber: Float
+}
+
+"aggregate sum on columns"
+type MembershipEventSumFields {
+  blockNumber: Int
+}
+
+"aggregate varPop on columns"
+type MembershipEventVarPopFields {
+  blockNumber: Float
+}
+
+"aggregate varSamp on columns"
+type MembershipEventVarSampFields {
+  blockNumber: Float
+}
+
+"aggregate variance on columns"
+type MembershipEventVarianceFields {
+  blockNumber: Float
 }
 
 type PageInfo {
@@ -328,114 +1624,48 @@ type PageInfo {
   startCursor: String!
 }
 
-type Query {
-  accountById(id: String!): Account
-  accountByUniqueInput(where: WhereIdInput!): Account @deprecated(reason: "Use accountById")
-  accounts(limit: Int, offset: Int, orderBy: [AccountOrderByInput!], where: AccountWhereInput): [Account!]!
-  accountsConnection(after: String, first: Int, orderBy: [AccountOrderByInput!]!, where: AccountWhereInput): AccountsConnection!
-  blockById(id: String!): Block
-  blockByUniqueInput(where: WhereIdInput!): Block @deprecated(reason: "Use blockById")
-  blocks(limit: Int, offset: Int, orderBy: [BlockOrderByInput!], where: BlockWhereInput): [Block!]!
-  blocksConnection(after: String, first: Int, orderBy: [BlockOrderByInput!]!, where: BlockWhereInput): BlocksConnection!
-  callById(id: String!): Call
-  callByUniqueInput(where: WhereIdInput!): Call @deprecated(reason: "Use callById")
-  calls(limit: Int, offset: Int, orderBy: [CallOrderByInput!], where: CallWhereInput): [Call!]!
-  callsConnection(after: String, first: Int, orderBy: [CallOrderByInput!]!, where: CallWhereInput): CallsConnection!
-  certById(id: String!): Cert
-  certByUniqueInput(where: WhereIdInput!): Cert @deprecated(reason: "Use certById")
-  certCreationById(id: String!): CertCreation
-  certCreationByUniqueInput(where: WhereIdInput!): CertCreation @deprecated(reason: "Use certCreationById")
-  certCreations(limit: Int, offset: Int, orderBy: [CertCreationOrderByInput!], where: CertCreationWhereInput): [CertCreation!]!
-  certCreationsConnection(after: String, first: Int, orderBy: [CertCreationOrderByInput!]!, where: CertCreationWhereInput): CertCreationsConnection!
-  certRemovalById(id: String!): CertRemoval
-  certRemovalByUniqueInput(where: WhereIdInput!): CertRemoval @deprecated(reason: "Use certRemovalById")
-  certRemovals(limit: Int, offset: Int, orderBy: [CertRemovalOrderByInput!], where: CertRemovalWhereInput): [CertRemoval!]!
-  certRemovalsConnection(after: String, first: Int, orderBy: [CertRemovalOrderByInput!]!, where: CertRemovalWhereInput): CertRemovalsConnection!
-  certRenewalById(id: String!): CertRenewal
-  certRenewalByUniqueInput(where: WhereIdInput!): CertRenewal @deprecated(reason: "Use certRenewalById")
-  certRenewals(limit: Int, offset: Int, orderBy: [CertRenewalOrderByInput!], where: CertRenewalWhereInput): [CertRenewal!]!
-  certRenewalsConnection(after: String, first: Int, orderBy: [CertRenewalOrderByInput!]!, where: CertRenewalWhereInput): CertRenewalsConnection!
-  certs(limit: Int, offset: Int, orderBy: [CertOrderByInput!], where: CertWhereInput): [Cert!]!
-  certsConnection(after: String, first: Int, orderBy: [CertOrderByInput!]!, where: CertWhereInput): CertsConnection!
-  changeOwnerKeyById(id: String!): ChangeOwnerKey
-  changeOwnerKeyByUniqueInput(where: WhereIdInput!): ChangeOwnerKey @deprecated(reason: "Use changeOwnerKeyById")
-  changeOwnerKeys(limit: Int, offset: Int, orderBy: [ChangeOwnerKeyOrderByInput!], where: ChangeOwnerKeyWhereInput): [ChangeOwnerKey!]!
-  changeOwnerKeysConnection(after: String, first: Int, orderBy: [ChangeOwnerKeyOrderByInput!]!, where: ChangeOwnerKeyWhereInput): ChangeOwnerKeysConnection!
-  eventById(id: String!): Event
-  eventByUniqueInput(where: WhereIdInput!): Event @deprecated(reason: "Use eventById")
-  events(limit: Int, offset: Int, orderBy: [EventOrderByInput!], where: EventWhereInput): [Event!]!
-  eventsConnection(after: String, first: Int, orderBy: [EventOrderByInput!]!, where: EventWhereInput): EventsConnection!
-  extrinsicById(id: String!): Extrinsic
-  extrinsicByUniqueInput(where: WhereIdInput!): Extrinsic @deprecated(reason: "Use extrinsicById")
-  extrinsics(limit: Int, offset: Int, orderBy: [ExtrinsicOrderByInput!], where: ExtrinsicWhereInput): [Extrinsic!]!
-  extrinsicsConnection(after: String, first: Int, orderBy: [ExtrinsicOrderByInput!]!, where: ExtrinsicWhereInput): ExtrinsicsConnection!
-  identities(limit: Int, offset: Int, orderBy: [IdentityOrderByInput!], where: IdentityWhereInput): [Identity!]!
-  identitiesConnection(after: String, first: Int, orderBy: [IdentityOrderByInput!]!, where: IdentityWhereInput): IdentitiesConnection!
-  identityById(id: String!): Identity
-  identityByUniqueInput(where: WhereIdInput!): Identity @deprecated(reason: "Use identityById")
-  itemsCounterById(id: String!): ItemsCounter
-  itemsCounterByUniqueInput(where: WhereIdInput!): ItemsCounter @deprecated(reason: "Use itemsCounterById")
-  itemsCounters(limit: Int, offset: Int, orderBy: [ItemsCounterOrderByInput!], where: ItemsCounterWhereInput): [ItemsCounter!]!
-  itemsCountersConnection(after: String, first: Int, orderBy: [ItemsCounterOrderByInput!]!, where: ItemsCounterWhereInput): ItemsCountersConnection!
-  membershipById(id: String!): Membership
-  membershipByUniqueInput(where: WhereIdInput!): Membership @deprecated(reason: "Use membershipById")
-  memberships(limit: Int, offset: Int, orderBy: [MembershipOrderByInput!], where: MembershipWhereInput): [Membership!]!
-  membershipsConnection(after: String, first: Int, orderBy: [MembershipOrderByInput!]!, where: MembershipWhereInput): MembershipsConnection!
-  smithCertById(id: String!): SmithCert
-  smithCertByUniqueInput(where: WhereIdInput!): SmithCert @deprecated(reason: "Use smithCertById")
-  smithCertCreationById(id: String!): SmithCertCreation
-  smithCertCreationByUniqueInput(where: WhereIdInput!): SmithCertCreation @deprecated(reason: "Use smithCertCreationById")
-  smithCertCreations(limit: Int, offset: Int, orderBy: [SmithCertCreationOrderByInput!], where: SmithCertCreationWhereInput): [SmithCertCreation!]!
-  smithCertCreationsConnection(after: String, first: Int, orderBy: [SmithCertCreationOrderByInput!]!, where: SmithCertCreationWhereInput): SmithCertCreationsConnection!
-  smithCertRemovalById(id: String!): SmithCertRemoval
-  smithCertRemovalByUniqueInput(where: WhereIdInput!): SmithCertRemoval @deprecated(reason: "Use smithCertRemovalById")
-  smithCertRemovals(limit: Int, offset: Int, orderBy: [SmithCertRemovalOrderByInput!], where: SmithCertRemovalWhereInput): [SmithCertRemoval!]!
-  smithCertRemovalsConnection(after: String, first: Int, orderBy: [SmithCertRemovalOrderByInput!]!, where: SmithCertRemovalWhereInput): SmithCertRemovalsConnection!
-  smithCertRenewalById(id: String!): SmithCertRenewal
-  smithCertRenewalByUniqueInput(where: WhereIdInput!): SmithCertRenewal @deprecated(reason: "Use smithCertRenewalById")
-  smithCertRenewals(limit: Int, offset: Int, orderBy: [SmithCertRenewalOrderByInput!], where: SmithCertRenewalWhereInput): [SmithCertRenewal!]!
-  smithCertRenewalsConnection(after: String, first: Int, orderBy: [SmithCertRenewalOrderByInput!]!, where: SmithCertRenewalWhereInput): SmithCertRenewalsConnection!
-  smithCerts(limit: Int, offset: Int, orderBy: [SmithCertOrderByInput!], where: SmithCertWhereInput): [SmithCert!]!
-  smithCertsConnection(after: String, first: Int, orderBy: [SmithCertOrderByInput!]!, where: SmithCertWhereInput): SmithCertsConnection!
-  smithMembershipById(id: String!): SmithMembership
-  smithMembershipByUniqueInput(where: WhereIdInput!): SmithMembership @deprecated(reason: "Use smithMembershipById")
-  smithMemberships(limit: Int, offset: Int, orderBy: [SmithMembershipOrderByInput!], where: SmithMembershipWhereInput): [SmithMembership!]!
-  smithMembershipsConnection(after: String, first: Int, orderBy: [SmithMembershipOrderByInput!]!, where: SmithMembershipWhereInput): SmithMembershipsConnection!
-  squidStatus: SquidStatus
-  transferById(id: String!): Transfer
-  transferByUniqueInput(where: WhereIdInput!): Transfer @deprecated(reason: "Use transferById")
-  transfers(limit: Int, offset: Int, orderBy: [TransferOrderByInput!], where: TransferWhereInput): [Transfer!]!
-  transfersConnection(after: String, first: Int, orderBy: [TransferOrderByInput!]!, where: TransferWhereInput): TransfersConnection!
-}
-
-"Smith certification"
-type SmithCert {
-  active: Boolean!
+"columns and relationships of \"smith_cert\""
+type SmithCert implements Node {
   createdOn: Int!
-  creation(limit: Int, offset: Int, orderBy: [SmithCertCreationOrderByInput!], where: SmithCertCreationWhereInput): [SmithCertCreation!]!
-  expireOn: Int!
-  id: String!
-  issuer: Identity!
-  receiver: Identity!
-  removal(limit: Int, offset: Int, orderBy: [SmithCertRemovalOrderByInput!], where: SmithCertRemovalWhereInput): [SmithCertRemoval!]!
-  renewal(limit: Int, offset: Int, orderBy: [SmithCertRenewalOrderByInput!], where: SmithCertRenewalWhereInput): [SmithCertRenewal!]!
+  id: ID!
+  "An object relationship"
+  issuer: Identity
+  issuerId: String
+  "An object relationship"
+  receiver: Identity
+  receiverId: String
 }
 
-type SmithCertCreation {
-  blockNumber: Int!
-  cert: SmithCert!
-  id: String!
+"aggregated selection of \"smith_cert\""
+type SmithCertAggregate {
+  aggregate: SmithCertAggregateFields
+  nodes: [SmithCert!]!
 }
 
-type SmithCertCreationEdge {
-  cursor: String!
-  node: SmithCertCreation!
+"aggregate fields of \"smith_cert\""
+type SmithCertAggregateFields {
+  avg: SmithCertAvgFields
+  count(columns: [SmithCertSelectColumn!], distinct: Boolean): Int!
+  max: SmithCertMaxFields
+  min: SmithCertMinFields
+  stddev: SmithCertStddevFields
+  stddevPop: SmithCertStddevPopFields
+  stddevSamp: SmithCertStddevSampFields
+  sum: SmithCertSumFields
+  varPop: SmithCertVarPopFields
+  varSamp: SmithCertVarSampFields
+  variance: SmithCertVarianceFields
 }
 
-type SmithCertCreationsConnection {
-  edges: [SmithCertCreationEdge!]!
+"aggregate avg on columns"
+type SmithCertAvgFields {
+  createdOn: Float
+}
+
+"A Relay connection object on \"smith_cert\""
+type SmithCertConnection {
+  edges: [SmithCertEdge!]!
   pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 type SmithCertEdge {
@@ -443,77 +1673,103 @@ type SmithCertEdge {
   node: SmithCert!
 }
 
-type SmithCertRemoval {
-  blockNumber: Int!
-  cert: SmithCert!
-  id: String!
+"aggregate max on columns"
+type SmithCertMaxFields {
+  createdOn: Int
+  id: String
+  issuerId: String
+  receiverId: String
 }
 
-type SmithCertRemovalEdge {
-  cursor: String!
-  node: SmithCertRemoval!
+"aggregate min on columns"
+type SmithCertMinFields {
+  createdOn: Int
+  id: String
+  issuerId: String
+  receiverId: String
 }
 
-type SmithCertRemovalsConnection {
-  edges: [SmithCertRemovalEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate stddev on columns"
+type SmithCertStddevFields {
+  createdOn: Float
 }
 
-type SmithCertRenewal {
-  blockNumber: Int!
-  cert: SmithCert!
-  id: String!
+"aggregate stddevPop on columns"
+type SmithCertStddevPopFields {
+  createdOn: Float
 }
 
-type SmithCertRenewalEdge {
-  cursor: String!
-  node: SmithCertRenewal!
+"aggregate stddevSamp on columns"
+type SmithCertStddevSampFields {
+  createdOn: Float
 }
 
-type SmithCertRenewalsConnection {
-  edges: [SmithCertRenewalEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate sum on columns"
+type SmithCertSumFields {
+  createdOn: Int
 }
 
-type SmithCertsConnection {
-  edges: [SmithCertEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+"aggregate varPop on columns"
+type SmithCertVarPopFields {
+  createdOn: Float
 }
 
-"Smith membership"
-type SmithMembership {
-  expireOn: Int!
-  id: String!
-  identity: Identity!
+"aggregate varSamp on columns"
+type SmithCertVarSampFields {
+  createdOn: Float
 }
 
-type SmithMembershipEdge {
-  cursor: String!
-  node: SmithMembership!
+"aggregate variance on columns"
+type SmithCertVarianceFields {
+  createdOn: Float
 }
 
-type SmithMembershipsConnection {
-  edges: [SmithMembershipEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type SquidStatus {
-  "The height of the processed part of the chain"
-  height: Int
-}
-
-type Transfer {
-  amount: BigInt!
+"columns and relationships of \"transfer\""
+type Transfer implements Node {
+  amount: numeric!
   blockNumber: Int!
   comment: String
-  from: Account!
-  id: String!
-  timestamp: DateTime!
-  to: Account!
+  "An object relationship"
+  from: Account
+  fromId: String
+  id: ID!
+  timestamp: timestamptz!
+  "An object relationship"
+  to: Account
+  toId: String
+}
+
+"aggregated selection of \"transfer\""
+type TransferAggregate {
+  aggregate: TransferAggregateFields
+  nodes: [Transfer!]!
+}
+
+"aggregate fields of \"transfer\""
+type TransferAggregateFields {
+  avg: TransferAvgFields
+  count(columns: [TransferSelectColumn!], distinct: Boolean): Int!
+  max: TransferMaxFields
+  min: TransferMinFields
+  stddev: TransferStddevFields
+  stddevPop: TransferStddevPopFields
+  stddevSamp: TransferStddevSampFields
+  sum: TransferSumFields
+  varPop: TransferVarPopFields
+  varSamp: TransferVarSampFields
+  variance: TransferVarianceFields
+}
+
+"aggregate avg on columns"
+type TransferAvgFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"A Relay connection object on \"transfer\""
+type TransferConnection {
+  edges: [TransferEdge!]!
+  pageInfo: PageInfo!
 }
 
 type TransferEdge {
@@ -521,1956 +1777,2636 @@ type TransferEdge {
   node: Transfer!
 }
 
-type TransfersConnection {
-  edges: [TransferEdge!]!
+"aggregate max on columns"
+type TransferMaxFields {
+  amount: numeric
+  blockNumber: Int
+  comment: String
+  fromId: String
+  id: String
+  timestamp: timestamptz
+  toId: String
+}
+
+"aggregate min on columns"
+type TransferMinFields {
+  amount: numeric
+  blockNumber: Int
+  comment: String
+  fromId: String
+  id: String
+  timestamp: timestamptz
+  toId: String
+}
+
+"aggregate stddev on columns"
+type TransferStddevFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate stddevPop on columns"
+type TransferStddevPopFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate stddevSamp on columns"
+type TransferStddevSampFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate sum on columns"
+type TransferSumFields {
+  amount: numeric
+  blockNumber: Int
+}
+
+"aggregate varPop on columns"
+type TransferVarPopFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate varSamp on columns"
+type TransferVarSampFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate variance on columns"
+type TransferVarianceFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"columns and relationships of \"ud_history\""
+type UdHistory implements Node {
+  amount: Int!
+  blockNumber: Int!
+  id: ID!
+  "An object relationship"
+  identity: Identity
+  identityId: String
+  timestamp: timestamptz!
+}
+
+"A Relay connection object on \"ud_history\""
+type UdHistoryConnection {
+  edges: [UdHistoryEdge!]!
   pageInfo: PageInfo!
-  totalCount: Int!
 }
 
-enum AccountOrderByInput {
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  identity_id_ASC
-  identity_id_ASC_NULLS_FIRST
-  identity_id_DESC
-  identity_id_DESC_NULLS_LAST
-  identity_index_ASC
-  identity_index_ASC_NULLS_FIRST
-  identity_index_DESC
-  identity_index_DESC_NULLS_LAST
-  identity_name_ASC
-  identity_name_ASC_NULLS_FIRST
-  identity_name_DESC
-  identity_name_DESC_NULLS_LAST
-  linkedIdentity_id_ASC
-  linkedIdentity_id_ASC_NULLS_FIRST
-  linkedIdentity_id_DESC
-  linkedIdentity_id_DESC_NULLS_LAST
-  linkedIdentity_index_ASC
-  linkedIdentity_index_ASC_NULLS_FIRST
-  linkedIdentity_index_DESC
-  linkedIdentity_index_DESC_NULLS_LAST
-  linkedIdentity_name_ASC
-  linkedIdentity_name_ASC_NULLS_FIRST
-  linkedIdentity_name_DESC
-  linkedIdentity_name_DESC_NULLS_LAST
+type UdHistoryEdge {
+  cursor: String!
+  node: UdHistory!
 }
 
-enum BlockOrderByInput {
-  callsCount_ASC
-  callsCount_ASC_NULLS_FIRST
-  callsCount_DESC
-  callsCount_DESC_NULLS_LAST
-  eventsCount_ASC
-  eventsCount_ASC_NULLS_FIRST
-  eventsCount_DESC
-  eventsCount_DESC_NULLS_LAST
-  extrinsicsCount_ASC
-  extrinsicsCount_ASC_NULLS_FIRST
-  extrinsicsCount_DESC
-  extrinsicsCount_DESC_NULLS_LAST
-  extrinsicsicRoot_ASC
-  extrinsicsicRoot_ASC_NULLS_FIRST
-  extrinsicsicRoot_DESC
-  extrinsicsicRoot_DESC_NULLS_LAST
-  hash_ASC
-  hash_ASC_NULLS_FIRST
-  hash_DESC
-  hash_DESC_NULLS_LAST
-  height_ASC
-  height_ASC_NULLS_FIRST
-  height_DESC
-  height_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  implName_ASC
-  implName_ASC_NULLS_FIRST
-  implName_DESC
-  implName_DESC_NULLS_LAST
-  implVersion_ASC
-  implVersion_ASC_NULLS_FIRST
-  implVersion_DESC
-  implVersion_DESC_NULLS_LAST
-  parentHash_ASC
-  parentHash_ASC_NULLS_FIRST
-  parentHash_DESC
-  parentHash_DESC_NULLS_LAST
-  specName_ASC
-  specName_ASC_NULLS_FIRST
-  specName_DESC
-  specName_DESC_NULLS_LAST
-  specVersion_ASC
-  specVersion_ASC_NULLS_FIRST
-  specVersion_DESC
-  specVersion_DESC_NULLS_LAST
-  stateRoot_ASC
-  stateRoot_ASC_NULLS_FIRST
-  stateRoot_DESC
-  stateRoot_DESC_NULLS_LAST
-  timestamp_ASC
-  timestamp_ASC_NULLS_FIRST
-  timestamp_DESC
-  timestamp_DESC_NULLS_LAST
-  validator_ASC
-  validator_ASC_NULLS_FIRST
-  validator_DESC
-  validator_DESC_NULLS_LAST
+"columns and relationships of \"ud_reeval\""
+type UdReeval implements Node {
+  blockNumber: Int!
+  "An object relationship"
+  event: Event
+  eventId: String
+  id: ID!
+  membersCount: Int!
+  monetaryMass: numeric!
+  newUdAmount: Int!
+  timestamp: timestamptz!
 }
 
-enum CallOrderByInput {
-  block_callsCount_ASC
-  block_callsCount_ASC_NULLS_FIRST
-  block_callsCount_DESC
-  block_callsCount_DESC_NULLS_LAST
-  block_eventsCount_ASC
-  block_eventsCount_ASC_NULLS_FIRST
-  block_eventsCount_DESC
-  block_eventsCount_DESC_NULLS_LAST
-  block_extrinsicsCount_ASC
-  block_extrinsicsCount_ASC_NULLS_FIRST
-  block_extrinsicsCount_DESC
-  block_extrinsicsCount_DESC_NULLS_LAST
-  block_extrinsicsicRoot_ASC
-  block_extrinsicsicRoot_ASC_NULLS_FIRST
-  block_extrinsicsicRoot_DESC
-  block_extrinsicsicRoot_DESC_NULLS_LAST
-  block_hash_ASC
-  block_hash_ASC_NULLS_FIRST
-  block_hash_DESC
-  block_hash_DESC_NULLS_LAST
-  block_height_ASC
-  block_height_ASC_NULLS_FIRST
-  block_height_DESC
-  block_height_DESC_NULLS_LAST
-  block_id_ASC
-  block_id_ASC_NULLS_FIRST
-  block_id_DESC
-  block_id_DESC_NULLS_LAST
-  block_implName_ASC
-  block_implName_ASC_NULLS_FIRST
-  block_implName_DESC
-  block_implName_DESC_NULLS_LAST
-  block_implVersion_ASC
-  block_implVersion_ASC_NULLS_FIRST
-  block_implVersion_DESC
-  block_implVersion_DESC_NULLS_LAST
-  block_parentHash_ASC
-  block_parentHash_ASC_NULLS_FIRST
-  block_parentHash_DESC
-  block_parentHash_DESC_NULLS_LAST
-  block_specName_ASC
-  block_specName_ASC_NULLS_FIRST
-  block_specName_DESC
-  block_specName_DESC_NULLS_LAST
-  block_specVersion_ASC
-  block_specVersion_ASC_NULLS_FIRST
-  block_specVersion_DESC
-  block_specVersion_DESC_NULLS_LAST
-  block_stateRoot_ASC
-  block_stateRoot_ASC_NULLS_FIRST
-  block_stateRoot_DESC
-  block_stateRoot_DESC_NULLS_LAST
-  block_timestamp_ASC
-  block_timestamp_ASC_NULLS_FIRST
-  block_timestamp_DESC
-  block_timestamp_DESC_NULLS_LAST
-  block_validator_ASC
-  block_validator_ASC_NULLS_FIRST
-  block_validator_DESC
-  block_validator_DESC_NULLS_LAST
-  extrinsic_fee_ASC
-  extrinsic_fee_ASC_NULLS_FIRST
-  extrinsic_fee_DESC
-  extrinsic_fee_DESC_NULLS_LAST
-  extrinsic_hash_ASC
-  extrinsic_hash_ASC_NULLS_FIRST
-  extrinsic_hash_DESC
-  extrinsic_hash_DESC_NULLS_LAST
-  extrinsic_id_ASC
-  extrinsic_id_ASC_NULLS_FIRST
-  extrinsic_id_DESC
-  extrinsic_id_DESC_NULLS_LAST
-  extrinsic_index_ASC
-  extrinsic_index_ASC_NULLS_FIRST
-  extrinsic_index_DESC
-  extrinsic_index_DESC_NULLS_LAST
-  extrinsic_success_ASC
-  extrinsic_success_ASC_NULLS_FIRST
-  extrinsic_success_DESC
-  extrinsic_success_DESC_NULLS_LAST
-  extrinsic_tip_ASC
-  extrinsic_tip_ASC_NULLS_FIRST
-  extrinsic_tip_DESC
-  extrinsic_tip_DESC_NULLS_LAST
-  extrinsic_version_ASC
-  extrinsic_version_ASC_NULLS_FIRST
-  extrinsic_version_DESC
-  extrinsic_version_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  name_ASC
-  name_ASC_NULLS_FIRST
-  name_DESC
-  name_DESC_NULLS_LAST
-  pallet_ASC
-  pallet_ASC_NULLS_FIRST
-  pallet_DESC
-  pallet_DESC_NULLS_LAST
-  parent_id_ASC
-  parent_id_ASC_NULLS_FIRST
-  parent_id_DESC
-  parent_id_DESC_NULLS_LAST
-  parent_name_ASC
-  parent_name_ASC_NULLS_FIRST
-  parent_name_DESC
-  parent_name_DESC_NULLS_LAST
-  parent_pallet_ASC
-  parent_pallet_ASC_NULLS_FIRST
-  parent_pallet_DESC
-  parent_pallet_DESC_NULLS_LAST
-  parent_success_ASC
-  parent_success_ASC_NULLS_FIRST
-  parent_success_DESC
-  parent_success_DESC_NULLS_LAST
-  success_ASC
-  success_ASC_NULLS_FIRST
-  success_DESC
-  success_DESC_NULLS_LAST
+"A Relay connection object on \"ud_reeval\""
+type UdReevalConnection {
+  edges: [UdReevalEdge!]!
+  pageInfo: PageInfo!
 }
 
-enum CertCreationOrderByInput {
-  blockNumber_ASC
-  blockNumber_ASC_NULLS_FIRST
-  blockNumber_DESC
-  blockNumber_DESC_NULLS_LAST
-  cert_active_ASC
-  cert_active_ASC_NULLS_FIRST
-  cert_active_DESC
-  cert_active_DESC_NULLS_LAST
-  cert_createdOn_ASC
-  cert_createdOn_ASC_NULLS_FIRST
-  cert_createdOn_DESC
-  cert_createdOn_DESC_NULLS_LAST
-  cert_expireOn_ASC
-  cert_expireOn_ASC_NULLS_FIRST
-  cert_expireOn_DESC
-  cert_expireOn_DESC_NULLS_LAST
-  cert_id_ASC
-  cert_id_ASC_NULLS_FIRST
-  cert_id_DESC
-  cert_id_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
+type UdReevalEdge {
+  cursor: String!
+  node: UdReeval!
 }
 
-enum CertOrderByInput {
-  active_ASC
-  active_ASC_NULLS_FIRST
-  active_DESC
-  active_DESC_NULLS_LAST
-  createdOn_ASC
-  createdOn_ASC_NULLS_FIRST
-  createdOn_DESC
-  createdOn_DESC_NULLS_LAST
-  expireOn_ASC
-  expireOn_ASC_NULLS_FIRST
-  expireOn_DESC
-  expireOn_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  issuer_id_ASC
-  issuer_id_ASC_NULLS_FIRST
-  issuer_id_DESC
-  issuer_id_DESC_NULLS_LAST
-  issuer_index_ASC
-  issuer_index_ASC_NULLS_FIRST
-  issuer_index_DESC
-  issuer_index_DESC_NULLS_LAST
-  issuer_name_ASC
-  issuer_name_ASC_NULLS_FIRST
-  issuer_name_DESC
-  issuer_name_DESC_NULLS_LAST
-  receiver_id_ASC
-  receiver_id_ASC_NULLS_FIRST
-  receiver_id_DESC
-  receiver_id_DESC_NULLS_LAST
-  receiver_index_ASC
-  receiver_index_ASC_NULLS_FIRST
-  receiver_index_DESC
-  receiver_index_DESC_NULLS_LAST
-  receiver_name_ASC
-  receiver_name_ASC_NULLS_FIRST
-  receiver_name_DESC
-  receiver_name_DESC_NULLS_LAST
+"columns and relationships of \"universal_dividend\""
+type UniversalDividend implements Node {
+  amount: Int!
+  blockNumber: Int!
+  "An object relationship"
+  event: Event
+  eventId: String
+  id: ID!
+  membersCount: Int!
+  monetaryMass: numeric!
+  timestamp: timestamptz!
 }
 
-enum CertRemovalOrderByInput {
-  blockNumber_ASC
-  blockNumber_ASC_NULLS_FIRST
-  blockNumber_DESC
-  blockNumber_DESC_NULLS_LAST
-  cert_active_ASC
-  cert_active_ASC_NULLS_FIRST
-  cert_active_DESC
-  cert_active_DESC_NULLS_LAST
-  cert_createdOn_ASC
-  cert_createdOn_ASC_NULLS_FIRST
-  cert_createdOn_DESC
-  cert_createdOn_DESC_NULLS_LAST
-  cert_expireOn_ASC
-  cert_expireOn_ASC_NULLS_FIRST
-  cert_expireOn_DESC
-  cert_expireOn_DESC_NULLS_LAST
-  cert_id_ASC
-  cert_id_ASC_NULLS_FIRST
-  cert_id_DESC
-  cert_id_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
+"A Relay connection object on \"universal_dividend\""
+type UniversalDividendConnection {
+  edges: [UniversalDividendEdge!]!
+  pageInfo: PageInfo!
 }
 
-enum CertRenewalOrderByInput {
-  blockNumber_ASC
-  blockNumber_ASC_NULLS_FIRST
-  blockNumber_DESC
-  blockNumber_DESC_NULLS_LAST
-  cert_active_ASC
-  cert_active_ASC_NULLS_FIRST
-  cert_active_DESC
-  cert_active_DESC_NULLS_LAST
-  cert_createdOn_ASC
-  cert_createdOn_ASC_NULLS_FIRST
-  cert_createdOn_DESC
-  cert_createdOn_DESC_NULLS_LAST
-  cert_expireOn_ASC
-  cert_expireOn_ASC_NULLS_FIRST
-  cert_expireOn_DESC
-  cert_expireOn_DESC_NULLS_LAST
-  cert_id_ASC
-  cert_id_ASC_NULLS_FIRST
-  cert_id_DESC
-  cert_id_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
+type UniversalDividendEdge {
+  cursor: String!
+  node: UniversalDividend!
 }
 
-enum ChangeOwnerKeyOrderByInput {
-  blockNumber_ASC
-  blockNumber_ASC_NULLS_FIRST
-  blockNumber_DESC
-  blockNumber_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  identity_id_ASC
-  identity_id_ASC_NULLS_FIRST
-  identity_id_DESC
-  identity_id_DESC_NULLS_LAST
-  identity_index_ASC
-  identity_index_ASC_NULLS_FIRST
-  identity_index_DESC
-  identity_index_DESC_NULLS_LAST
-  identity_name_ASC
-  identity_name_ASC_NULLS_FIRST
-  identity_name_DESC
-  identity_name_DESC_NULLS_LAST
-  next_id_ASC
-  next_id_ASC_NULLS_FIRST
-  next_id_DESC
-  next_id_DESC_NULLS_LAST
-  previous_id_ASC
-  previous_id_ASC_NULLS_FIRST
-  previous_id_DESC
-  previous_id_DESC_NULLS_LAST
+type query_root {
+  "fetch data from the table: \"account\""
+  accountConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): AccountConnection!
+  "fetch data from the table: \"block\""
+  blockConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [BlockSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [BlockOrderBy!],
+    "filter the rows returned"
+    where: BlockBoolExp
+  ): BlockConnection!
+  "fetch data from the table: \"call\""
+  callConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
+  "fetch data from the table: \"cert\""
+  certConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertConnection!
+  "fetch data from the table: \"cert_event\""
+  certEventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): CertEventConnection!
+  "fetch data from the table: \"change_owner_key\""
+  changeOwnerKeyConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyConnection!
+  "fetch data from the table: \"event\""
+  eventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  "fetch data from the table: \"extrinsic\""
+  extrinsicConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
+    where: ExtrinsicBoolExp
+  ): ExtrinsicConnection!
+  "execute function \"get_ud_history\" which returns \"ud_history\""
+  getUdHistory_connection(
+    after: String,
+    "input parameters for function \"getUdHistory\""
+    args: getUdHistoryArgs!,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): UdHistoryConnection!
+  "fetch data from the table: \"identity\""
+  identityConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [IdentitySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [IdentityOrderBy!],
+    "filter the rows returned"
+    where: IdentityBoolExp
+  ): IdentityConnection!
+  "fetch data from the table: \"items_counter\""
+  itemsCounterConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ItemsCounterSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ItemsCounterOrderBy!],
+    "filter the rows returned"
+    where: ItemsCounterBoolExp
+  ): ItemsCounterConnection!
+  "fetch data from the table: \"membership_event\""
+  membershipEventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): MembershipEventConnection!
+  node(
+    "A globally unique id"
+    id: ID!
+  ): Node
+  "fetch data from the table: \"smith_cert\""
+  smithCertConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertConnection!
+  "fetch data from the table: \"transfer\""
+  transferConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): TransferConnection!
+  "fetch data from the table: \"ud_history\""
+  udHistoryConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): UdHistoryConnection!
+  "fetch data from the table: \"ud_reeval\""
+  udReevalConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdReevalSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdReevalOrderBy!],
+    "filter the rows returned"
+    where: UdReevalBoolExp
+  ): UdReevalConnection!
+  "fetch data from the table: \"universal_dividend\""
+  universalDividendConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UniversalDividendSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UniversalDividendOrderBy!],
+    "filter the rows returned"
+    where: UniversalDividendBoolExp
+  ): UniversalDividendConnection!
 }
 
-enum CounterLevel {
-  Global
-  Item
-  Pallet
+type subscription_root {
+  "fetch data from the table: \"account\""
+  accountConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): AccountConnection!
+  "fetch data from the table: \"block\""
+  blockConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [BlockSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [BlockOrderBy!],
+    "filter the rows returned"
+    where: BlockBoolExp
+  ): BlockConnection!
+  "fetch data from the table: \"call\""
+  callConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
+  "fetch data from the table: \"cert\""
+  certConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertConnection!
+  "fetch data from the table: \"cert_event\""
+  certEventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): CertEventConnection!
+  "fetch data from the table: \"change_owner_key\""
+  changeOwnerKeyConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyConnection!
+  "fetch data from the table: \"event\""
+  eventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  "fetch data from the table: \"extrinsic\""
+  extrinsicConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
+    where: ExtrinsicBoolExp
+  ): ExtrinsicConnection!
+  "execute function \"get_ud_history\" which returns \"ud_history\""
+  getUdHistory_connection(
+    after: String,
+    "input parameters for function \"getUdHistory\""
+    args: getUdHistoryArgs!,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): UdHistoryConnection!
+  "fetch data from the table: \"identity\""
+  identityConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [IdentitySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [IdentityOrderBy!],
+    "filter the rows returned"
+    where: IdentityBoolExp
+  ): IdentityConnection!
+  "fetch data from the table: \"items_counter\""
+  itemsCounterConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ItemsCounterSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ItemsCounterOrderBy!],
+    "filter the rows returned"
+    where: ItemsCounterBoolExp
+  ): ItemsCounterConnection!
+  "fetch data from the table: \"membership_event\""
+  membershipEventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): MembershipEventConnection!
+  node(
+    "A globally unique id"
+    id: ID!
+  ): Node
+  "fetch data from the table: \"smith_cert\""
+  smithCertConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertConnection!
+  "fetch data from the table: \"transfer\""
+  transferConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): TransferConnection!
+  "fetch data from the table: \"ud_history\""
+  udHistoryConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): UdHistoryConnection!
+  "fetch data from the table: \"ud_reeval\""
+  udReevalConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdReevalSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdReevalOrderBy!],
+    "filter the rows returned"
+    where: UdReevalBoolExp
+  ): UdReevalConnection!
+  "fetch data from the table: \"universal_dividend\""
+  universalDividendConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UniversalDividendSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UniversalDividendOrderBy!],
+    "filter the rows returned"
+    where: UniversalDividendBoolExp
+  ): UniversalDividendConnection!
 }
 
-enum EventOrderByInput {
-  block_callsCount_ASC
-  block_callsCount_ASC_NULLS_FIRST
-  block_callsCount_DESC
-  block_callsCount_DESC_NULLS_LAST
-  block_eventsCount_ASC
-  block_eventsCount_ASC_NULLS_FIRST
-  block_eventsCount_DESC
-  block_eventsCount_DESC_NULLS_LAST
-  block_extrinsicsCount_ASC
-  block_extrinsicsCount_ASC_NULLS_FIRST
-  block_extrinsicsCount_DESC
-  block_extrinsicsCount_DESC_NULLS_LAST
-  block_extrinsicsicRoot_ASC
-  block_extrinsicsicRoot_ASC_NULLS_FIRST
-  block_extrinsicsicRoot_DESC
-  block_extrinsicsicRoot_DESC_NULLS_LAST
-  block_hash_ASC
-  block_hash_ASC_NULLS_FIRST
-  block_hash_DESC
-  block_hash_DESC_NULLS_LAST
-  block_height_ASC
-  block_height_ASC_NULLS_FIRST
-  block_height_DESC
-  block_height_DESC_NULLS_LAST
-  block_id_ASC
-  block_id_ASC_NULLS_FIRST
-  block_id_DESC
-  block_id_DESC_NULLS_LAST
-  block_implName_ASC
-  block_implName_ASC_NULLS_FIRST
-  block_implName_DESC
-  block_implName_DESC_NULLS_LAST
-  block_implVersion_ASC
-  block_implVersion_ASC_NULLS_FIRST
-  block_implVersion_DESC
-  block_implVersion_DESC_NULLS_LAST
-  block_parentHash_ASC
-  block_parentHash_ASC_NULLS_FIRST
-  block_parentHash_DESC
-  block_parentHash_DESC_NULLS_LAST
-  block_specName_ASC
-  block_specName_ASC_NULLS_FIRST
-  block_specName_DESC
-  block_specName_DESC_NULLS_LAST
-  block_specVersion_ASC
-  block_specVersion_ASC_NULLS_FIRST
-  block_specVersion_DESC
-  block_specVersion_DESC_NULLS_LAST
-  block_stateRoot_ASC
-  block_stateRoot_ASC_NULLS_FIRST
-  block_stateRoot_DESC
-  block_stateRoot_DESC_NULLS_LAST
-  block_timestamp_ASC
-  block_timestamp_ASC_NULLS_FIRST
-  block_timestamp_DESC
-  block_timestamp_DESC_NULLS_LAST
-  block_validator_ASC
-  block_validator_ASC_NULLS_FIRST
-  block_validator_DESC
-  block_validator_DESC_NULLS_LAST
-  call_id_ASC
-  call_id_ASC_NULLS_FIRST
-  call_id_DESC
-  call_id_DESC_NULLS_LAST
-  call_name_ASC
-  call_name_ASC_NULLS_FIRST
-  call_name_DESC
-  call_name_DESC_NULLS_LAST
-  call_pallet_ASC
-  call_pallet_ASC_NULLS_FIRST
-  call_pallet_DESC
-  call_pallet_DESC_NULLS_LAST
-  call_success_ASC
-  call_success_ASC_NULLS_FIRST
-  call_success_DESC
-  call_success_DESC_NULLS_LAST
-  extrinsic_fee_ASC
-  extrinsic_fee_ASC_NULLS_FIRST
-  extrinsic_fee_DESC
-  extrinsic_fee_DESC_NULLS_LAST
-  extrinsic_hash_ASC
-  extrinsic_hash_ASC_NULLS_FIRST
-  extrinsic_hash_DESC
-  extrinsic_hash_DESC_NULLS_LAST
-  extrinsic_id_ASC
-  extrinsic_id_ASC_NULLS_FIRST
-  extrinsic_id_DESC
-  extrinsic_id_DESC_NULLS_LAST
-  extrinsic_index_ASC
-  extrinsic_index_ASC_NULLS_FIRST
-  extrinsic_index_DESC
-  extrinsic_index_DESC_NULLS_LAST
-  extrinsic_success_ASC
-  extrinsic_success_ASC_NULLS_FIRST
-  extrinsic_success_DESC
-  extrinsic_success_DESC_NULLS_LAST
-  extrinsic_tip_ASC
-  extrinsic_tip_ASC_NULLS_FIRST
-  extrinsic_tip_DESC
-  extrinsic_tip_DESC_NULLS_LAST
-  extrinsic_version_ASC
-  extrinsic_version_ASC_NULLS_FIRST
-  extrinsic_version_DESC
-  extrinsic_version_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  index_ASC
-  index_ASC_NULLS_FIRST
-  index_DESC
-  index_DESC_NULLS_LAST
-  name_ASC
-  name_ASC_NULLS_FIRST
-  name_DESC
-  name_DESC_NULLS_LAST
-  pallet_ASC
-  pallet_ASC_NULLS_FIRST
-  pallet_DESC
-  pallet_DESC_NULLS_LAST
-  phase_ASC
-  phase_ASC_NULLS_FIRST
-  phase_DESC
-  phase_DESC_NULLS_LAST
+"select columns of table \"account\""
+enum AccountSelectColumn {
+  "column name"
+  id
+  "column name"
+  linkedIdentityId
 }
 
-enum ExtrinsicOrderByInput {
-  block_callsCount_ASC
-  block_callsCount_ASC_NULLS_FIRST
-  block_callsCount_DESC
-  block_callsCount_DESC_NULLS_LAST
-  block_eventsCount_ASC
-  block_eventsCount_ASC_NULLS_FIRST
-  block_eventsCount_DESC
-  block_eventsCount_DESC_NULLS_LAST
-  block_extrinsicsCount_ASC
-  block_extrinsicsCount_ASC_NULLS_FIRST
-  block_extrinsicsCount_DESC
-  block_extrinsicsCount_DESC_NULLS_LAST
-  block_extrinsicsicRoot_ASC
-  block_extrinsicsicRoot_ASC_NULLS_FIRST
-  block_extrinsicsicRoot_DESC
-  block_extrinsicsicRoot_DESC_NULLS_LAST
-  block_hash_ASC
-  block_hash_ASC_NULLS_FIRST
-  block_hash_DESC
-  block_hash_DESC_NULLS_LAST
-  block_height_ASC
-  block_height_ASC_NULLS_FIRST
-  block_height_DESC
-  block_height_DESC_NULLS_LAST
-  block_id_ASC
-  block_id_ASC_NULLS_FIRST
-  block_id_DESC
-  block_id_DESC_NULLS_LAST
-  block_implName_ASC
-  block_implName_ASC_NULLS_FIRST
-  block_implName_DESC
-  block_implName_DESC_NULLS_LAST
-  block_implVersion_ASC
-  block_implVersion_ASC_NULLS_FIRST
-  block_implVersion_DESC
-  block_implVersion_DESC_NULLS_LAST
-  block_parentHash_ASC
-  block_parentHash_ASC_NULLS_FIRST
-  block_parentHash_DESC
-  block_parentHash_DESC_NULLS_LAST
-  block_specName_ASC
-  block_specName_ASC_NULLS_FIRST
-  block_specName_DESC
-  block_specName_DESC_NULLS_LAST
-  block_specVersion_ASC
-  block_specVersion_ASC_NULLS_FIRST
-  block_specVersion_DESC
-  block_specVersion_DESC_NULLS_LAST
-  block_stateRoot_ASC
-  block_stateRoot_ASC_NULLS_FIRST
-  block_stateRoot_DESC
-  block_stateRoot_DESC_NULLS_LAST
-  block_timestamp_ASC
-  block_timestamp_ASC_NULLS_FIRST
-  block_timestamp_DESC
-  block_timestamp_DESC_NULLS_LAST
-  block_validator_ASC
-  block_validator_ASC_NULLS_FIRST
-  block_validator_DESC
-  block_validator_DESC_NULLS_LAST
-  call_id_ASC
-  call_id_ASC_NULLS_FIRST
-  call_id_DESC
-  call_id_DESC_NULLS_LAST
-  call_name_ASC
-  call_name_ASC_NULLS_FIRST
-  call_name_DESC
-  call_name_DESC_NULLS_LAST
-  call_pallet_ASC
-  call_pallet_ASC_NULLS_FIRST
-  call_pallet_DESC
-  call_pallet_DESC_NULLS_LAST
-  call_success_ASC
-  call_success_ASC_NULLS_FIRST
-  call_success_DESC
-  call_success_DESC_NULLS_LAST
-  fee_ASC
-  fee_ASC_NULLS_FIRST
-  fee_DESC
-  fee_DESC_NULLS_LAST
-  hash_ASC
-  hash_ASC_NULLS_FIRST
-  hash_DESC
-  hash_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  index_ASC
-  index_ASC_NULLS_FIRST
-  index_DESC
-  index_DESC_NULLS_LAST
-  success_ASC
-  success_ASC_NULLS_FIRST
-  success_DESC
-  success_DESC_NULLS_LAST
-  tip_ASC
-  tip_ASC_NULLS_FIRST
-  tip_DESC
-  tip_DESC_NULLS_LAST
-  version_ASC
-  version_ASC_NULLS_FIRST
-  version_DESC
-  version_DESC_NULLS_LAST
+"select columns of table \"block\""
+enum BlockSelectColumn {
+  "column name"
+  callsCount
+  "column name"
+  eventsCount
+  "column name"
+  extrinsicsCount
+  "column name"
+  extrinsicsicRoot
+  "column name"
+  hash
+  "column name"
+  height
+  "column name"
+  id
+  "column name"
+  implName
+  "column name"
+  implVersion
+  "column name"
+  parentHash
+  "column name"
+  specName
+  "column name"
+  specVersion
+  "column name"
+  stateRoot
+  "column name"
+  timestamp
+  "column name"
+  validator
 }
 
-enum IdentityOrderByInput {
-  account_id_ASC
-  account_id_ASC_NULLS_FIRST
-  account_id_DESC
-  account_id_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  index_ASC
-  index_ASC_NULLS_FIRST
-  index_DESC
-  index_DESC_NULLS_LAST
-  membership_expireOn_ASC
-  membership_expireOn_ASC_NULLS_FIRST
-  membership_expireOn_DESC
-  membership_expireOn_DESC_NULLS_LAST
-  membership_id_ASC
-  membership_id_ASC_NULLS_FIRST
-  membership_id_DESC
-  membership_id_DESC_NULLS_LAST
-  name_ASC
-  name_ASC_NULLS_FIRST
-  name_DESC
-  name_DESC_NULLS_LAST
-  smithMembership_expireOn_ASC
-  smithMembership_expireOn_ASC_NULLS_FIRST
-  smithMembership_expireOn_DESC
-  smithMembership_expireOn_DESC_NULLS_LAST
-  smithMembership_id_ASC
-  smithMembership_id_ASC_NULLS_FIRST
-  smithMembership_id_DESC
-  smithMembership_id_DESC_NULLS_LAST
+"select columns of table \"call\""
+enum CallSelectColumn {
+  "column name"
+  address
+  "column name"
+  args
+  "column name"
+  argsStr
+  "column name"
+  blockId
+  "column name"
+  error
+  "column name"
+  extrinsicId
+  "column name"
+  id
+  "column name"
+  name
+  "column name"
+  pallet
+  "column name"
+  parentId
+  "column name"
+  success
 }
 
-enum ItemType {
-  Calls
-  Events
-  Extrinsics
+"select \"callAggregateBoolExpBool_andArgumentsColumns\" columns of table \"call\""
+enum CallSelectColumnCallAggregateBoolExpBool_andArgumentsColumns {
+  "column name"
+  success
 }
 
-enum ItemsCounterOrderByInput {
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  level_ASC
-  level_ASC_NULLS_FIRST
-  level_DESC
-  level_DESC_NULLS_LAST
-  total_ASC
-  total_ASC_NULLS_FIRST
-  total_DESC
-  total_DESC_NULLS_LAST
-  type_ASC
-  type_ASC_NULLS_FIRST
-  type_DESC
-  type_DESC_NULLS_LAST
+"select \"callAggregateBoolExpBool_orArgumentsColumns\" columns of table \"call\""
+enum CallSelectColumnCallAggregateBoolExpBool_orArgumentsColumns {
+  "column name"
+  success
 }
 
-enum MembershipOrderByInput {
-  expireOn_ASC
-  expireOn_ASC_NULLS_FIRST
-  expireOn_DESC
-  expireOn_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  identity_id_ASC
-  identity_id_ASC_NULLS_FIRST
-  identity_id_DESC
-  identity_id_DESC_NULLS_LAST
-  identity_index_ASC
-  identity_index_ASC_NULLS_FIRST
-  identity_index_DESC
-  identity_index_DESC_NULLS_LAST
-  identity_name_ASC
-  identity_name_ASC_NULLS_FIRST
-  identity_name_DESC
-  identity_name_DESC_NULLS_LAST
+"select columns of table \"cert_event\""
+enum CertEventSelectColumn {
+  "column name"
+  blockNumber
+  "column name"
+  certId
+  "column name"
+  eventId
+  "column name"
+  eventType
+  "column name"
+  id
 }
 
-enum SmithCertCreationOrderByInput {
-  blockNumber_ASC
-  blockNumber_ASC_NULLS_FIRST
-  blockNumber_DESC
-  blockNumber_DESC_NULLS_LAST
-  cert_active_ASC
-  cert_active_ASC_NULLS_FIRST
-  cert_active_DESC
-  cert_active_DESC_NULLS_LAST
-  cert_createdOn_ASC
-  cert_createdOn_ASC_NULLS_FIRST
-  cert_createdOn_DESC
-  cert_createdOn_DESC_NULLS_LAST
-  cert_expireOn_ASC
-  cert_expireOn_ASC_NULLS_FIRST
-  cert_expireOn_DESC
-  cert_expireOn_DESC_NULLS_LAST
-  cert_id_ASC
-  cert_id_ASC_NULLS_FIRST
-  cert_id_DESC
-  cert_id_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
+"select columns of table \"cert\""
+enum CertSelectColumn {
+  "column name"
+  createdOn
+  "column name"
+  expireOn
+  "column name"
+  id
+  "column name"
+  isActive
+  "column name"
+  issuerId
+  "column name"
+  receiverId
 }
 
-enum SmithCertOrderByInput {
-  active_ASC
-  active_ASC_NULLS_FIRST
-  active_DESC
-  active_DESC_NULLS_LAST
-  createdOn_ASC
-  createdOn_ASC_NULLS_FIRST
-  createdOn_DESC
-  createdOn_DESC_NULLS_LAST
-  expireOn_ASC
-  expireOn_ASC_NULLS_FIRST
-  expireOn_DESC
-  expireOn_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  issuer_id_ASC
-  issuer_id_ASC_NULLS_FIRST
-  issuer_id_DESC
-  issuer_id_DESC_NULLS_LAST
-  issuer_index_ASC
-  issuer_index_ASC_NULLS_FIRST
-  issuer_index_DESC
-  issuer_index_DESC_NULLS_LAST
-  issuer_name_ASC
-  issuer_name_ASC_NULLS_FIRST
-  issuer_name_DESC
-  issuer_name_DESC_NULLS_LAST
-  receiver_id_ASC
-  receiver_id_ASC_NULLS_FIRST
-  receiver_id_DESC
-  receiver_id_DESC_NULLS_LAST
-  receiver_index_ASC
-  receiver_index_ASC_NULLS_FIRST
-  receiver_index_DESC
-  receiver_index_DESC_NULLS_LAST
-  receiver_name_ASC
-  receiver_name_ASC_NULLS_FIRST
-  receiver_name_DESC
-  receiver_name_DESC_NULLS_LAST
+"select \"certAggregateBoolExpBool_andArgumentsColumns\" columns of table \"cert\""
+enum CertSelectColumnCertAggregateBoolExpBool_andArgumentsColumns {
+  "column name"
+  isActive
 }
 
-enum SmithCertRemovalOrderByInput {
-  blockNumber_ASC
-  blockNumber_ASC_NULLS_FIRST
-  blockNumber_DESC
-  blockNumber_DESC_NULLS_LAST
-  cert_active_ASC
-  cert_active_ASC_NULLS_FIRST
-  cert_active_DESC
-  cert_active_DESC_NULLS_LAST
-  cert_createdOn_ASC
-  cert_createdOn_ASC_NULLS_FIRST
-  cert_createdOn_DESC
-  cert_createdOn_DESC_NULLS_LAST
-  cert_expireOn_ASC
-  cert_expireOn_ASC_NULLS_FIRST
-  cert_expireOn_DESC
-  cert_expireOn_DESC_NULLS_LAST
-  cert_id_ASC
-  cert_id_ASC_NULLS_FIRST
-  cert_id_DESC
-  cert_id_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
+"select \"certAggregateBoolExpBool_orArgumentsColumns\" columns of table \"cert\""
+enum CertSelectColumnCertAggregateBoolExpBool_orArgumentsColumns {
+  "column name"
+  isActive
 }
 
-enum SmithCertRenewalOrderByInput {
-  blockNumber_ASC
-  blockNumber_ASC_NULLS_FIRST
-  blockNumber_DESC
-  blockNumber_DESC_NULLS_LAST
-  cert_active_ASC
-  cert_active_ASC_NULLS_FIRST
-  cert_active_DESC
-  cert_active_DESC_NULLS_LAST
-  cert_createdOn_ASC
-  cert_createdOn_ASC_NULLS_FIRST
-  cert_createdOn_DESC
-  cert_createdOn_DESC_NULLS_LAST
-  cert_expireOn_ASC
-  cert_expireOn_ASC_NULLS_FIRST
-  cert_expireOn_DESC
-  cert_expireOn_DESC_NULLS_LAST
-  cert_id_ASC
-  cert_id_ASC_NULLS_FIRST
-  cert_id_DESC
-  cert_id_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
+"select columns of table \"change_owner_key\""
+enum ChangeOwnerKeySelectColumn {
+  "column name"
+  blockNumber
+  "column name"
+  id
+  "column name"
+  identityId
+  "column name"
+  nextId
+  "column name"
+  previousId
 }
 
-enum SmithMembershipOrderByInput {
-  expireOn_ASC
-  expireOn_ASC_NULLS_FIRST
-  expireOn_DESC
-  expireOn_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  identity_id_ASC
-  identity_id_ASC_NULLS_FIRST
-  identity_id_DESC
-  identity_id_DESC_NULLS_LAST
-  identity_index_ASC
-  identity_index_ASC_NULLS_FIRST
-  identity_index_DESC
-  identity_index_DESC_NULLS_LAST
-  identity_name_ASC
-  identity_name_ASC_NULLS_FIRST
-  identity_name_DESC
-  identity_name_DESC_NULLS_LAST
+enum CounterLevelEnum {
+  GLOBAL
+  ITEM
+  PALLET
 }
 
-enum TransferOrderByInput {
-  amount_ASC
-  amount_ASC_NULLS_FIRST
-  amount_DESC
-  amount_DESC_NULLS_LAST
-  blockNumber_ASC
-  blockNumber_ASC_NULLS_FIRST
-  blockNumber_DESC
-  blockNumber_DESC_NULLS_LAST
-  comment_ASC
-  comment_ASC_NULLS_FIRST
-  comment_DESC
-  comment_DESC_NULLS_LAST
-  from_id_ASC
-  from_id_ASC_NULLS_FIRST
-  from_id_DESC
-  from_id_DESC_NULLS_LAST
-  id_ASC
-  id_ASC_NULLS_FIRST
-  id_DESC
-  id_DESC_NULLS_LAST
-  timestamp_ASC
-  timestamp_ASC_NULLS_FIRST
-  timestamp_DESC
-  timestamp_DESC_NULLS_LAST
-  to_id_ASC
-  to_id_ASC_NULLS_FIRST
-  to_id_DESC
-  to_id_DESC_NULLS_LAST
+"select columns of table \"event\""
+enum EventSelectColumn {
+  "column name"
+  args
+  "column name"
+  argsStr
+  "column name"
+  blockId
+  "column name"
+  callId
+  "column name"
+  extrinsicId
+  "column name"
+  id
+  "column name"
+  index
+  "column name"
+  name
+  "column name"
+  pallet
+  "column name"
+  phase
 }
 
-"Big number integer"
-scalar BigInt
-
-"Binary data encoded as a hex string always prefixed with 0x"
-scalar Bytes
-
-"A date-time string in simplified extended ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)"
-scalar DateTime
-
-"A scalar that can represent any JSON value"
-scalar JSON
-
-input AccountWhereInput {
-  AND: [AccountWhereInput!]
-  OR: [AccountWhereInput!]
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  identity: IdentityWhereInput
-  identity_isNull: Boolean
-  linkedIdentity: IdentityWhereInput
-  linkedIdentity_isNull: Boolean
-  transfersIssued_every: TransferWhereInput
-  transfersIssued_none: TransferWhereInput
-  transfersIssued_some: TransferWhereInput
-  transfersReceived_every: TransferWhereInput
-  transfersReceived_none: TransferWhereInput
-  transfersReceived_some: TransferWhereInput
-  wasIdentity_every: ChangeOwnerKeyWhereInput
-  wasIdentity_none: ChangeOwnerKeyWhereInput
-  wasIdentity_some: ChangeOwnerKeyWhereInput
+enum EventTypeEnum {
+  CREATION
+  REMOVAL
+  RENEWAL
 }
 
-input BlockWhereInput {
-  AND: [BlockWhereInput!]
-  OR: [BlockWhereInput!]
-  callsCount_eq: Int
-  callsCount_gt: Int
-  callsCount_gte: Int
-  callsCount_in: [Int!]
-  callsCount_isNull: Boolean
-  callsCount_lt: Int
-  callsCount_lte: Int
-  callsCount_not_eq: Int
-  callsCount_not_in: [Int!]
-  calls_every: CallWhereInput
-  calls_none: CallWhereInput
-  calls_some: CallWhereInput
-  eventsCount_eq: Int
-  eventsCount_gt: Int
-  eventsCount_gte: Int
-  eventsCount_in: [Int!]
-  eventsCount_isNull: Boolean
-  eventsCount_lt: Int
-  eventsCount_lte: Int
-  eventsCount_not_eq: Int
-  eventsCount_not_in: [Int!]
-  events_every: EventWhereInput
-  events_none: EventWhereInput
-  events_some: EventWhereInput
-  extrinsicsCount_eq: Int
-  extrinsicsCount_gt: Int
-  extrinsicsCount_gte: Int
-  extrinsicsCount_in: [Int!]
-  extrinsicsCount_isNull: Boolean
-  extrinsicsCount_lt: Int
-  extrinsicsCount_lte: Int
-  extrinsicsCount_not_eq: Int
-  extrinsicsCount_not_in: [Int!]
-  extrinsics_every: ExtrinsicWhereInput
-  extrinsics_none: ExtrinsicWhereInput
-  extrinsics_some: ExtrinsicWhereInput
-  extrinsicsicRoot_eq: Bytes
-  extrinsicsicRoot_isNull: Boolean
-  extrinsicsicRoot_not_eq: Bytes
-  hash_eq: Bytes
-  hash_isNull: Boolean
-  hash_not_eq: Bytes
-  height_eq: Int
-  height_gt: Int
-  height_gte: Int
-  height_in: [Int!]
-  height_isNull: Boolean
-  height_lt: Int
-  height_lte: Int
-  height_not_eq: Int
-  height_not_in: [Int!]
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  implName_contains: String
-  implName_containsInsensitive: String
-  implName_endsWith: String
-  implName_eq: String
-  implName_gt: String
-  implName_gte: String
-  implName_in: [String!]
-  implName_isNull: Boolean
-  implName_lt: String
-  implName_lte: String
-  implName_not_contains: String
-  implName_not_containsInsensitive: String
-  implName_not_endsWith: String
-  implName_not_eq: String
-  implName_not_in: [String!]
-  implName_not_startsWith: String
-  implName_startsWith: String
-  implVersion_eq: Int
-  implVersion_gt: Int
-  implVersion_gte: Int
-  implVersion_in: [Int!]
-  implVersion_isNull: Boolean
-  implVersion_lt: Int
-  implVersion_lte: Int
-  implVersion_not_eq: Int
-  implVersion_not_in: [Int!]
-  parentHash_eq: Bytes
-  parentHash_isNull: Boolean
-  parentHash_not_eq: Bytes
-  specName_contains: String
-  specName_containsInsensitive: String
-  specName_endsWith: String
-  specName_eq: String
-  specName_gt: String
-  specName_gte: String
-  specName_in: [String!]
-  specName_isNull: Boolean
-  specName_lt: String
-  specName_lte: String
-  specName_not_contains: String
-  specName_not_containsInsensitive: String
-  specName_not_endsWith: String
-  specName_not_eq: String
-  specName_not_in: [String!]
-  specName_not_startsWith: String
-  specName_startsWith: String
-  specVersion_eq: Int
-  specVersion_gt: Int
-  specVersion_gte: Int
-  specVersion_in: [Int!]
-  specVersion_isNull: Boolean
-  specVersion_lt: Int
-  specVersion_lte: Int
-  specVersion_not_eq: Int
-  specVersion_not_in: [Int!]
-  stateRoot_eq: Bytes
-  stateRoot_isNull: Boolean
-  stateRoot_not_eq: Bytes
-  timestamp_eq: DateTime
-  timestamp_gt: DateTime
-  timestamp_gte: DateTime
-  timestamp_in: [DateTime!]
-  timestamp_isNull: Boolean
-  timestamp_lt: DateTime
-  timestamp_lte: DateTime
-  timestamp_not_eq: DateTime
-  timestamp_not_in: [DateTime!]
-  validator_eq: Bytes
-  validator_isNull: Boolean
-  validator_not_eq: Bytes
+"select columns of table \"extrinsic\""
+enum ExtrinsicSelectColumn {
+  "column name"
+  blockId
+  "column name"
+  callId
+  "column name"
+  error
+  "column name"
+  fee
+  "column name"
+  hash
+  "column name"
+  id
+  "column name"
+  index
+  "column name"
+  signature
+  "column name"
+  success
+  "column name"
+  tip
+  "column name"
+  version
 }
 
-input CallWhereInput {
-  AND: [CallWhereInput!]
-  OR: [CallWhereInput!]
-  address_containsAll: [Int!]
-  address_containsAny: [Int!]
-  address_containsNone: [Int!]
-  address_isNull: Boolean
-  argsStr_containsAll: [String]
-  argsStr_containsAny: [String]
-  argsStr_containsNone: [String]
-  argsStr_isNull: Boolean
-  args_eq: JSON
-  args_isNull: Boolean
-  args_jsonContains: JSON
-  args_jsonHasKey: JSON
-  args_not_eq: JSON
-  block: BlockWhereInput
-  block_isNull: Boolean
-  error_eq: JSON
-  error_isNull: Boolean
-  error_jsonContains: JSON
-  error_jsonHasKey: JSON
-  error_not_eq: JSON
-  events_every: EventWhereInput
-  events_none: EventWhereInput
-  events_some: EventWhereInput
-  extrinsic: ExtrinsicWhereInput
-  extrinsic_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  name_contains: String
-  name_containsInsensitive: String
-  name_endsWith: String
-  name_eq: String
-  name_gt: String
-  name_gte: String
-  name_in: [String!]
-  name_isNull: Boolean
-  name_lt: String
-  name_lte: String
-  name_not_contains: String
-  name_not_containsInsensitive: String
-  name_not_endsWith: String
-  name_not_eq: String
-  name_not_in: [String!]
-  name_not_startsWith: String
-  name_startsWith: String
-  pallet_contains: String
-  pallet_containsInsensitive: String
-  pallet_endsWith: String
-  pallet_eq: String
-  pallet_gt: String
-  pallet_gte: String
-  pallet_in: [String!]
-  pallet_isNull: Boolean
-  pallet_lt: String
-  pallet_lte: String
-  pallet_not_contains: String
-  pallet_not_containsInsensitive: String
-  pallet_not_endsWith: String
-  pallet_not_eq: String
-  pallet_not_in: [String!]
-  pallet_not_startsWith: String
-  pallet_startsWith: String
-  parent: CallWhereInput
-  parent_isNull: Boolean
-  subcalls_every: CallWhereInput
-  subcalls_none: CallWhereInput
-  subcalls_some: CallWhereInput
-  success_eq: Boolean
-  success_isNull: Boolean
-  success_not_eq: Boolean
+"select \"extrinsicAggregateBoolExpBool_andArgumentsColumns\" columns of table \"extrinsic\""
+enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_andArgumentsColumns {
+  "column name"
+  success
 }
 
-input CertCreationWhereInput {
-  AND: [CertCreationWhereInput!]
-  OR: [CertCreationWhereInput!]
-  blockNumber_eq: Int
-  blockNumber_gt: Int
-  blockNumber_gte: Int
-  blockNumber_in: [Int!]
-  blockNumber_isNull: Boolean
-  blockNumber_lt: Int
-  blockNumber_lte: Int
-  blockNumber_not_eq: Int
-  blockNumber_not_in: [Int!]
-  cert: CertWhereInput
-  cert_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
+"select \"extrinsicAggregateBoolExpBool_orArgumentsColumns\" columns of table \"extrinsic\""
+enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_orArgumentsColumns {
+  "column name"
+  success
 }
 
-input CertRemovalWhereInput {
-  AND: [CertRemovalWhereInput!]
-  OR: [CertRemovalWhereInput!]
-  blockNumber_eq: Int
-  blockNumber_gt: Int
-  blockNumber_gte: Int
-  blockNumber_in: [Int!]
-  blockNumber_isNull: Boolean
-  blockNumber_lt: Int
-  blockNumber_lte: Int
-  blockNumber_not_eq: Int
-  blockNumber_not_in: [Int!]
-  cert: CertWhereInput
-  cert_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
+"select columns of table \"identity\""
+enum IdentitySelectColumn {
+  "column name"
+  accountId
+  "column name"
+  createdInId
+  "column name"
+  createdOn
+  "column name"
+  expireOn
+  "column name"
+  id
+  "column name"
+  index
+  "column name"
+  isMember
+  "column name"
+  lastChangeOn
+  "column name"
+  name
+  "column name"
+  smithStatus
+  "column name"
+  status
 }
 
-input CertRenewalWhereInput {
-  AND: [CertRenewalWhereInput!]
-  OR: [CertRenewalWhereInput!]
-  blockNumber_eq: Int
-  blockNumber_gt: Int
-  blockNumber_gte: Int
-  blockNumber_in: [Int!]
-  blockNumber_isNull: Boolean
-  blockNumber_lt: Int
-  blockNumber_lte: Int
-  blockNumber_not_eq: Int
-  blockNumber_not_in: [Int!]
-  cert: CertWhereInput
-  cert_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
+enum IdentityStatusEnum {
+  MEMBER
+  NOTMEMBER
+  REMOVED
+  REVOKED
+  UNCONFIRMED
+  UNVALIDATED
 }
 
-input CertWhereInput {
-  AND: [CertWhereInput!]
-  OR: [CertWhereInput!]
-  active_eq: Boolean
-  active_isNull: Boolean
-  active_not_eq: Boolean
-  createdOn_eq: Int
-  createdOn_gt: Int
-  createdOn_gte: Int
-  createdOn_in: [Int!]
-  createdOn_isNull: Boolean
-  createdOn_lt: Int
-  createdOn_lte: Int
-  createdOn_not_eq: Int
-  createdOn_not_in: [Int!]
-  creation_every: CertCreationWhereInput
-  creation_none: CertCreationWhereInput
-  creation_some: CertCreationWhereInput
-  expireOn_eq: Int
-  expireOn_gt: Int
-  expireOn_gte: Int
-  expireOn_in: [Int!]
-  expireOn_isNull: Boolean
-  expireOn_lt: Int
-  expireOn_lte: Int
-  expireOn_not_eq: Int
-  expireOn_not_in: [Int!]
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  issuer: IdentityWhereInput
-  issuer_isNull: Boolean
-  receiver: IdentityWhereInput
-  receiver_isNull: Boolean
-  removal_every: CertRemovalWhereInput
-  removal_none: CertRemovalWhereInput
-  removal_some: CertRemovalWhereInput
-  renewal_every: CertRenewalWhereInput
-  renewal_none: CertRenewalWhereInput
-  renewal_some: CertRenewalWhereInput
+enum ItemTypeEnum {
+  CALLS
+  EVENTS
+  EXTRINSICS
 }
 
-input ChangeOwnerKeyWhereInput {
-  AND: [ChangeOwnerKeyWhereInput!]
-  OR: [ChangeOwnerKeyWhereInput!]
-  blockNumber_eq: Int
-  blockNumber_gt: Int
-  blockNumber_gte: Int
-  blockNumber_in: [Int!]
-  blockNumber_isNull: Boolean
-  blockNumber_lt: Int
-  blockNumber_lte: Int
-  blockNumber_not_eq: Int
-  blockNumber_not_in: [Int!]
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  identity: IdentityWhereInput
-  identity_isNull: Boolean
-  next: AccountWhereInput
-  next_isNull: Boolean
-  previous: AccountWhereInput
-  previous_isNull: Boolean
+"select columns of table \"items_counter\""
+enum ItemsCounterSelectColumn {
+  "column name"
+  id
+  "column name"
+  level
+  "column name"
+  total
+  "column name"
+  type
 }
 
-input EventWhereInput {
-  AND: [EventWhereInput!]
-  OR: [EventWhereInput!]
-  argsStr_containsAll: [String]
-  argsStr_containsAny: [String]
-  argsStr_containsNone: [String]
-  argsStr_isNull: Boolean
-  args_eq: JSON
-  args_isNull: Boolean
-  args_jsonContains: JSON
-  args_jsonHasKey: JSON
-  args_not_eq: JSON
-  block: BlockWhereInput
-  block_isNull: Boolean
-  call: CallWhereInput
-  call_isNull: Boolean
-  extrinsic: ExtrinsicWhereInput
-  extrinsic_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  index_eq: Int
-  index_gt: Int
-  index_gte: Int
-  index_in: [Int!]
-  index_isNull: Boolean
-  index_lt: Int
-  index_lte: Int
-  index_not_eq: Int
-  index_not_in: [Int!]
-  name_contains: String
-  name_containsInsensitive: String
-  name_endsWith: String
-  name_eq: String
-  name_gt: String
-  name_gte: String
-  name_in: [String!]
-  name_isNull: Boolean
-  name_lt: String
-  name_lte: String
-  name_not_contains: String
-  name_not_containsInsensitive: String
-  name_not_endsWith: String
-  name_not_eq: String
-  name_not_in: [String!]
-  name_not_startsWith: String
-  name_startsWith: String
-  pallet_contains: String
-  pallet_containsInsensitive: String
-  pallet_endsWith: String
-  pallet_eq: String
-  pallet_gt: String
-  pallet_gte: String
-  pallet_in: [String!]
-  pallet_isNull: Boolean
-  pallet_lt: String
-  pallet_lte: String
-  pallet_not_contains: String
-  pallet_not_containsInsensitive: String
-  pallet_not_endsWith: String
-  pallet_not_eq: String
-  pallet_not_in: [String!]
-  pallet_not_startsWith: String
-  pallet_startsWith: String
-  phase_contains: String
-  phase_containsInsensitive: String
-  phase_endsWith: String
-  phase_eq: String
-  phase_gt: String
-  phase_gte: String
-  phase_in: [String!]
-  phase_isNull: Boolean
-  phase_lt: String
-  phase_lte: String
-  phase_not_contains: String
-  phase_not_containsInsensitive: String
-  phase_not_endsWith: String
-  phase_not_eq: String
-  phase_not_in: [String!]
-  phase_not_startsWith: String
-  phase_startsWith: String
+"select columns of table \"membership_event\""
+enum MembershipEventSelectColumn {
+  "column name"
+  blockNumber
+  "column name"
+  eventId
+  "column name"
+  eventType
+  "column name"
+  id
+  "column name"
+  identityId
 }
 
-input ExtrinsicSignatureWhereInput {
-  address_eq: JSON
-  address_isNull: Boolean
-  address_jsonContains: JSON
-  address_jsonHasKey: JSON
-  address_not_eq: JSON
-  signature_eq: JSON
-  signature_isNull: Boolean
-  signature_jsonContains: JSON
-  signature_jsonHasKey: JSON
-  signature_not_eq: JSON
-  signedExtensions_eq: JSON
-  signedExtensions_isNull: Boolean
-  signedExtensions_jsonContains: JSON
-  signedExtensions_jsonHasKey: JSON
-  signedExtensions_not_eq: JSON
+"column ordering options"
+enum OrderBy {
+  "in ascending order, nulls last"
+  ASC
+  "in ascending order, nulls first"
+  ASC_NULLS_FIRST
+  "in ascending order, nulls last"
+  ASC_NULLS_LAST
+  "in descending order, nulls first"
+  DESC
+  "in descending order, nulls first"
+  DESC_NULLS_FIRST
+  "in descending order, nulls last"
+  DESC_NULLS_LAST
 }
 
-input ExtrinsicWhereInput {
-  AND: [ExtrinsicWhereInput!]
-  OR: [ExtrinsicWhereInput!]
-  block: BlockWhereInput
-  block_isNull: Boolean
-  call: CallWhereInput
-  call_isNull: Boolean
-  calls_every: CallWhereInput
-  calls_none: CallWhereInput
-  calls_some: CallWhereInput
-  error_eq: JSON
-  error_isNull: Boolean
-  error_jsonContains: JSON
-  error_jsonHasKey: JSON
-  error_not_eq: JSON
-  events_every: EventWhereInput
-  events_none: EventWhereInput
-  events_some: EventWhereInput
-  fee_eq: BigInt
-  fee_gt: BigInt
-  fee_gte: BigInt
-  fee_in: [BigInt!]
-  fee_isNull: Boolean
-  fee_lt: BigInt
-  fee_lte: BigInt
-  fee_not_eq: BigInt
-  fee_not_in: [BigInt!]
-  hash_eq: Bytes
-  hash_isNull: Boolean
-  hash_not_eq: Bytes
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  index_eq: Int
-  index_gt: Int
-  index_gte: Int
-  index_in: [Int!]
-  index_isNull: Boolean
-  index_lt: Int
-  index_lte: Int
-  index_not_eq: Int
-  index_not_in: [Int!]
-  signature: ExtrinsicSignatureWhereInput
-  signature_isNull: Boolean
-  success_eq: Boolean
-  success_isNull: Boolean
-  success_not_eq: Boolean
-  tip_eq: BigInt
-  tip_gt: BigInt
-  tip_gte: BigInt
-  tip_in: [BigInt!]
-  tip_isNull: Boolean
-  tip_lt: BigInt
-  tip_lte: BigInt
-  tip_not_eq: BigInt
-  tip_not_in: [BigInt!]
-  version_eq: Int
-  version_gt: Int
-  version_gte: Int
-  version_in: [Int!]
-  version_isNull: Boolean
-  version_lt: Int
-  version_lte: Int
-  version_not_eq: Int
-  version_not_in: [Int!]
+"select columns of table \"smith_cert\""
+enum SmithCertSelectColumn {
+  "column name"
+  createdOn
+  "column name"
+  id
+  "column name"
+  issuerId
+  "column name"
+  receiverId
 }
 
-input IdentityWhereInput {
-  AND: [IdentityWhereInput!]
-  OR: [IdentityWhereInput!]
-  account: AccountWhereInput
-  account_isNull: Boolean
-  certIssued_every: CertWhereInput
-  certIssued_none: CertWhereInput
-  certIssued_some: CertWhereInput
-  certReceived_every: CertWhereInput
-  certReceived_none: CertWhereInput
-  certReceived_some: CertWhereInput
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  index_eq: Int
-  index_gt: Int
-  index_gte: Int
-  index_in: [Int!]
-  index_isNull: Boolean
-  index_lt: Int
-  index_lte: Int
-  index_not_eq: Int
-  index_not_in: [Int!]
-  linkedAccount_every: AccountWhereInput
-  linkedAccount_none: AccountWhereInput
-  linkedAccount_some: AccountWhereInput
-  membership: MembershipWhereInput
-  membership_isNull: Boolean
-  name_contains: String
-  name_containsInsensitive: String
-  name_endsWith: String
-  name_eq: String
-  name_gt: String
-  name_gte: String
-  name_in: [String!]
-  name_isNull: Boolean
-  name_lt: String
-  name_lte: String
-  name_not_contains: String
-  name_not_containsInsensitive: String
-  name_not_endsWith: String
-  name_not_eq: String
-  name_not_in: [String!]
-  name_not_startsWith: String
-  name_startsWith: String
-  ownerKeyChange_every: ChangeOwnerKeyWhereInput
-  ownerKeyChange_none: ChangeOwnerKeyWhereInput
-  ownerKeyChange_some: ChangeOwnerKeyWhereInput
-  smithCertIssued_every: SmithCertWhereInput
-  smithCertIssued_none: SmithCertWhereInput
-  smithCertIssued_some: SmithCertWhereInput
-  smithCertReceived_every: SmithCertWhereInput
-  smithCertReceived_none: SmithCertWhereInput
-  smithCertReceived_some: SmithCertWhereInput
-  smithMembership: SmithMembershipWhereInput
-  smithMembership_isNull: Boolean
+enum SmithStatusEnum {
+  EXCLUDED
+  INVITED
+  PENDING
+  SMITH
 }
 
-input ItemsCounterWhereInput {
-  AND: [ItemsCounterWhereInput!]
-  OR: [ItemsCounterWhereInput!]
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  level_eq: CounterLevel
-  level_in: [CounterLevel!]
-  level_isNull: Boolean
-  level_not_eq: CounterLevel
-  level_not_in: [CounterLevel!]
-  total_eq: Int
-  total_gt: Int
-  total_gte: Int
-  total_in: [Int!]
-  total_isNull: Boolean
-  total_lt: Int
-  total_lte: Int
-  total_not_eq: Int
-  total_not_in: [Int!]
-  type_eq: ItemType
-  type_in: [ItemType!]
-  type_isNull: Boolean
-  type_not_eq: ItemType
-  type_not_in: [ItemType!]
+"select columns of table \"transfer\""
+enum TransferSelectColumn {
+  "column name"
+  amount
+  "column name"
+  blockNumber
+  "column name"
+  comment
+  "column name"
+  fromId
+  "column name"
+  id
+  "column name"
+  timestamp
+  "column name"
+  toId
 }
 
-input MembershipWhereInput {
-  AND: [MembershipWhereInput!]
-  OR: [MembershipWhereInput!]
-  expireOn_eq: Int
-  expireOn_gt: Int
-  expireOn_gte: Int
-  expireOn_in: [Int!]
-  expireOn_isNull: Boolean
-  expireOn_lt: Int
-  expireOn_lte: Int
-  expireOn_not_eq: Int
-  expireOn_not_in: [Int!]
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  identity: IdentityWhereInput
-  identity_isNull: Boolean
+"select columns of table \"ud_history\""
+enum UdHistorySelectColumn {
+  "column name"
+  amount
+  "column name"
+  blockNumber
+  "column name"
+  id
+  "column name"
+  identityId
+  "column name"
+  timestamp
 }
 
-input SmithCertCreationWhereInput {
-  AND: [SmithCertCreationWhereInput!]
-  OR: [SmithCertCreationWhereInput!]
-  blockNumber_eq: Int
-  blockNumber_gt: Int
-  blockNumber_gte: Int
-  blockNumber_in: [Int!]
-  blockNumber_isNull: Boolean
-  blockNumber_lt: Int
-  blockNumber_lte: Int
-  blockNumber_not_eq: Int
-  blockNumber_not_in: [Int!]
-  cert: SmithCertWhereInput
-  cert_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
+"select columns of table \"ud_reeval\""
+enum UdReevalSelectColumn {
+  "column name"
+  blockNumber
+  "column name"
+  eventId
+  "column name"
+  id
+  "column name"
+  membersCount
+  "column name"
+  monetaryMass
+  "column name"
+  newUdAmount
+  "column name"
+  timestamp
 }
 
-input SmithCertRemovalWhereInput {
-  AND: [SmithCertRemovalWhereInput!]
-  OR: [SmithCertRemovalWhereInput!]
-  blockNumber_eq: Int
-  blockNumber_gt: Int
-  blockNumber_gte: Int
-  blockNumber_in: [Int!]
-  blockNumber_isNull: Boolean
-  blockNumber_lt: Int
-  blockNumber_lte: Int
-  blockNumber_not_eq: Int
-  blockNumber_not_in: [Int!]
-  cert: SmithCertWhereInput
-  cert_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
+"select columns of table \"universal_dividend\""
+enum UniversalDividendSelectColumn {
+  "column name"
+  amount
+  "column name"
+  blockNumber
+  "column name"
+  eventId
+  "column name"
+  id
+  "column name"
+  membersCount
+  "column name"
+  monetaryMass
+  "column name"
+  timestamp
 }
 
-input SmithCertRenewalWhereInput {
-  AND: [SmithCertRenewalWhereInput!]
-  OR: [SmithCertRenewalWhereInput!]
-  blockNumber_eq: Int
-  blockNumber_gt: Int
-  blockNumber_gte: Int
-  blockNumber_in: [Int!]
-  blockNumber_isNull: Boolean
-  blockNumber_lt: Int
-  blockNumber_lte: Int
-  blockNumber_not_eq: Int
-  blockNumber_not_in: [Int!]
-  cert: SmithCertWhereInput
-  cert_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
+scalar bytea
+
+scalar identity_scalar
+
+scalar jsonb
+
+scalar numeric
+
+scalar timestamptz
+
+input AccountAggregateBoolExp {
+  count: accountAggregateBoolExpCount
 }
 
-input SmithCertWhereInput {
-  AND: [SmithCertWhereInput!]
-  OR: [SmithCertWhereInput!]
-  active_eq: Boolean
-  active_isNull: Boolean
-  active_not_eq: Boolean
-  createdOn_eq: Int
-  createdOn_gt: Int
-  createdOn_gte: Int
-  createdOn_in: [Int!]
-  createdOn_isNull: Boolean
-  createdOn_lt: Int
-  createdOn_lte: Int
-  createdOn_not_eq: Int
-  createdOn_not_in: [Int!]
-  creation_every: SmithCertCreationWhereInput
-  creation_none: SmithCertCreationWhereInput
-  creation_some: SmithCertCreationWhereInput
-  expireOn_eq: Int
-  expireOn_gt: Int
-  expireOn_gte: Int
-  expireOn_in: [Int!]
-  expireOn_isNull: Boolean
-  expireOn_lt: Int
-  expireOn_lte: Int
-  expireOn_not_eq: Int
-  expireOn_not_in: [Int!]
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  issuer: IdentityWhereInput
-  issuer_isNull: Boolean
-  receiver: IdentityWhereInput
-  receiver_isNull: Boolean
-  removal_every: SmithCertRemovalWhereInput
-  removal_none: SmithCertRemovalWhereInput
-  removal_some: SmithCertRemovalWhereInput
-  renewal_every: SmithCertRenewalWhereInput
-  renewal_none: SmithCertRenewalWhereInput
-  renewal_some: SmithCertRenewalWhereInput
+"order by aggregate values of table \"account\""
+input AccountAggregateOrderBy {
+  count: OrderBy
+  max: AccountMaxOrderBy
+  min: AccountMinOrderBy
 }
 
-input SmithMembershipWhereInput {
-  AND: [SmithMembershipWhereInput!]
-  OR: [SmithMembershipWhereInput!]
-  expireOn_eq: Int
-  expireOn_gt: Int
-  expireOn_gte: Int
-  expireOn_in: [Int!]
-  expireOn_isNull: Boolean
-  expireOn_lt: Int
-  expireOn_lte: Int
-  expireOn_not_eq: Int
-  expireOn_not_in: [Int!]
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  identity: IdentityWhereInput
-  identity_isNull: Boolean
+"Boolean expression to filter rows from the table \"account\". All fields are combined with a logical 'AND'."
+input AccountBoolExp {
+  _and: [AccountBoolExp!]
+  _not: AccountBoolExp
+  _or: [AccountBoolExp!]
+  id: StringComparisonExp
+  identity: IdentityBoolExp
+  linkedIdentity: IdentityBoolExp
+  linkedIdentityId: StringComparisonExp
+  transfersIssued: TransferBoolExp
+  transfersIssuedAggregate: TransferAggregateBoolExp
+  transfersReceived: TransferBoolExp
+  transfersReceivedAggregate: TransferAggregateBoolExp
+  wasIdentity: ChangeOwnerKeyBoolExp
+  wasIdentityAggregate: ChangeOwnerKeyAggregateBoolExp
 }
 
-input TransferWhereInput {
-  AND: [TransferWhereInput!]
-  OR: [TransferWhereInput!]
-  amount_eq: BigInt
-  amount_gt: BigInt
-  amount_gte: BigInt
-  amount_in: [BigInt!]
-  amount_isNull: Boolean
-  amount_lt: BigInt
-  amount_lte: BigInt
-  amount_not_eq: BigInt
-  amount_not_in: [BigInt!]
-  blockNumber_eq: Int
-  blockNumber_gt: Int
-  blockNumber_gte: Int
-  blockNumber_in: [Int!]
-  blockNumber_isNull: Boolean
-  blockNumber_lt: Int
-  blockNumber_lte: Int
-  blockNumber_not_eq: Int
-  blockNumber_not_in: [Int!]
-  comment_contains: String
-  comment_containsInsensitive: String
-  comment_endsWith: String
-  comment_eq: String
-  comment_gt: String
-  comment_gte: String
-  comment_in: [String!]
-  comment_isNull: Boolean
-  comment_lt: String
-  comment_lte: String
-  comment_not_contains: String
-  comment_not_containsInsensitive: String
-  comment_not_endsWith: String
-  comment_not_eq: String
-  comment_not_in: [String!]
-  comment_not_startsWith: String
-  comment_startsWith: String
-  from: AccountWhereInput
-  from_isNull: Boolean
-  id_contains: String
-  id_containsInsensitive: String
-  id_endsWith: String
-  id_eq: String
-  id_gt: String
-  id_gte: String
-  id_in: [String!]
-  id_isNull: Boolean
-  id_lt: String
-  id_lte: String
-  id_not_contains: String
-  id_not_containsInsensitive: String
-  id_not_endsWith: String
-  id_not_eq: String
-  id_not_in: [String!]
-  id_not_startsWith: String
-  id_startsWith: String
-  timestamp_eq: DateTime
-  timestamp_gt: DateTime
-  timestamp_gte: DateTime
-  timestamp_in: [DateTime!]
-  timestamp_isNull: Boolean
-  timestamp_lt: DateTime
-  timestamp_lte: DateTime
-  timestamp_not_eq: DateTime
-  timestamp_not_in: [DateTime!]
-  to: AccountWhereInput
-  to_isNull: Boolean
+"order by max() on columns of table \"account\""
+input AccountMaxOrderBy {
+  id: OrderBy
+  linkedIdentityId: OrderBy
 }
 
-input WhereIdInput {
-  id: String!
+"order by min() on columns of table \"account\""
+input AccountMinOrderBy {
+  id: OrderBy
+  linkedIdentityId: OrderBy
+}
+
+"Ordering options when selecting data from \"account\"."
+input AccountOrderBy {
+  id: OrderBy
+  identity: IdentityOrderBy
+  linkedIdentity: IdentityOrderBy
+  linkedIdentityId: OrderBy
+  transfersIssuedAggregate: TransferAggregateOrderBy
+  transfersReceivedAggregate: TransferAggregateOrderBy
+  wasIdentityAggregate: ChangeOwnerKeyAggregateOrderBy
+}
+
+"Boolean expression to filter rows from the table \"block\". All fields are combined with a logical 'AND'."
+input BlockBoolExp {
+  _and: [BlockBoolExp!]
+  _not: BlockBoolExp
+  _or: [BlockBoolExp!]
+  calls: CallBoolExp
+  callsAggregate: CallAggregateBoolExp
+  callsCount: IntComparisonExp
+  events: EventBoolExp
+  eventsAggregate: EventAggregateBoolExp
+  eventsCount: IntComparisonExp
+  extrinsics: ExtrinsicBoolExp
+  extrinsicsAggregate: ExtrinsicAggregateBoolExp
+  extrinsicsCount: IntComparisonExp
+  extrinsicsicRoot: ByteaComparisonExp
+  hash: ByteaComparisonExp
+  height: IntComparisonExp
+  id: StringComparisonExp
+  implName: StringComparisonExp
+  implVersion: IntComparisonExp
+  parentHash: ByteaComparisonExp
+  specName: StringComparisonExp
+  specVersion: IntComparisonExp
+  stateRoot: ByteaComparisonExp
+  timestamp: TimestamptzComparisonExp
+  validator: ByteaComparisonExp
+}
+
+"Ordering options when selecting data from \"block\"."
+input BlockOrderBy {
+  callsAggregate: CallAggregateOrderBy
+  callsCount: OrderBy
+  eventsAggregate: EventAggregateOrderBy
+  eventsCount: OrderBy
+  extrinsicsAggregate: ExtrinsicAggregateOrderBy
+  extrinsicsCount: OrderBy
+  extrinsicsicRoot: OrderBy
+  hash: OrderBy
+  height: OrderBy
+  id: OrderBy
+  implName: OrderBy
+  implVersion: OrderBy
+  parentHash: OrderBy
+  specName: OrderBy
+  specVersion: OrderBy
+  stateRoot: OrderBy
+  timestamp: OrderBy
+  validator: OrderBy
+}
+
+"Boolean expression to compare columns of type \"Boolean\". All fields are combined with logical 'AND'."
+input BooleanComparisonExp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _isNull: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
+
+"Boolean expression to compare columns of type \"bytea\". All fields are combined with logical 'AND'."
+input ByteaComparisonExp {
+  _eq: bytea
+  _gt: bytea
+  _gte: bytea
+  _in: [bytea!]
+  _isNull: Boolean
+  _lt: bytea
+  _lte: bytea
+  _neq: bytea
+  _nin: [bytea!]
+}
+
+input CallAggregateBoolExp {
+  bool_and: callAggregateBoolExpBool_and
+  bool_or: callAggregateBoolExpBool_or
+  count: callAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"call\""
+input CallAggregateOrderBy {
+  count: OrderBy
+  max: CallMaxOrderBy
+  min: CallMinOrderBy
+}
+
+"Boolean expression to filter rows from the table \"call\". All fields are combined with a logical 'AND'."
+input CallBoolExp {
+  _and: [CallBoolExp!]
+  _not: CallBoolExp
+  _or: [CallBoolExp!]
+  address: IntArrayComparisonExp
+  args: JsonbComparisonExp
+  argsStr: StringArrayComparisonExp
+  block: BlockBoolExp
+  blockId: StringComparisonExp
+  error: JsonbComparisonExp
+  events: EventBoolExp
+  eventsAggregate: EventAggregateBoolExp
+  extrinsic: ExtrinsicBoolExp
+  extrinsicId: StringComparisonExp
+  id: StringComparisonExp
+  name: StringComparisonExp
+  pallet: StringComparisonExp
+  parent: CallBoolExp
+  parentId: StringComparisonExp
+  subcalls: CallBoolExp
+  subcallsAggregate: CallAggregateBoolExp
+  success: BooleanComparisonExp
+}
+
+"order by max() on columns of table \"call\""
+input CallMaxOrderBy {
+  address: OrderBy
+  argsStr: OrderBy
+  blockId: OrderBy
+  extrinsicId: OrderBy
+  id: OrderBy
+  name: OrderBy
+  pallet: OrderBy
+  parentId: OrderBy
+}
+
+"order by min() on columns of table \"call\""
+input CallMinOrderBy {
+  address: OrderBy
+  argsStr: OrderBy
+  blockId: OrderBy
+  extrinsicId: OrderBy
+  id: OrderBy
+  name: OrderBy
+  pallet: OrderBy
+  parentId: OrderBy
+}
+
+"Ordering options when selecting data from \"call\"."
+input CallOrderBy {
+  address: OrderBy
+  args: OrderBy
+  argsStr: OrderBy
+  block: BlockOrderBy
+  blockId: OrderBy
+  error: OrderBy
+  eventsAggregate: EventAggregateOrderBy
+  extrinsic: ExtrinsicOrderBy
+  extrinsicId: OrderBy
+  id: OrderBy
+  name: OrderBy
+  pallet: OrderBy
+  parent: CallOrderBy
+  parentId: OrderBy
+  subcallsAggregate: CallAggregateOrderBy
+  success: OrderBy
+}
+
+input CertAggregateBoolExp {
+  bool_and: certAggregateBoolExpBool_and
+  bool_or: certAggregateBoolExpBool_or
+  count: certAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"cert\""
+input CertAggregateOrderBy {
+  avg: CertAvgOrderBy
+  count: OrderBy
+  max: CertMaxOrderBy
+  min: CertMinOrderBy
+  stddev: CertStddevOrderBy
+  stddevPop: CertStddevPopOrderBy
+  stddevSamp: CertStddevSampOrderBy
+  sum: CertSumOrderBy
+  varPop: CertVarPopOrderBy
+  varSamp: CertVarSampOrderBy
+  variance: CertVarianceOrderBy
+}
+
+"order by avg() on columns of table \"cert\""
+input CertAvgOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"cert\". All fields are combined with a logical 'AND'."
+input CertBoolExp {
+  _and: [CertBoolExp!]
+  _not: CertBoolExp
+  _or: [CertBoolExp!]
+  certHistory: CertEventBoolExp
+  certHistoryAggregate: CertEventAggregateBoolExp
+  createdOn: IntComparisonExp
+  expireOn: IntComparisonExp
+  id: StringComparisonExp
+  isActive: BooleanComparisonExp
+  issuer: IdentityBoolExp
+  issuerId: StringComparisonExp
+  receiver: IdentityBoolExp
+  receiverId: StringComparisonExp
+}
+
+input CertEventAggregateBoolExp {
+  count: certEventAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"cert_event\""
+input CertEventAggregateOrderBy {
+  avg: CertEventAvgOrderBy
+  count: OrderBy
+  max: CertEventMaxOrderBy
+  min: CertEventMinOrderBy
+  stddev: CertEventStddevOrderBy
+  stddevPop: CertEventStddevPopOrderBy
+  stddevSamp: CertEventStddevSampOrderBy
+  sum: CertEventSumOrderBy
+  varPop: CertEventVarPopOrderBy
+  varSamp: CertEventVarSampOrderBy
+  variance: CertEventVarianceOrderBy
+}
+
+"order by avg() on columns of table \"cert_event\""
+input CertEventAvgOrderBy {
+  blockNumber: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"cert_event\". All fields are combined with a logical 'AND'."
+input CertEventBoolExp {
+  _and: [CertEventBoolExp!]
+  _not: CertEventBoolExp
+  _or: [CertEventBoolExp!]
+  blockNumber: IntComparisonExp
+  cert: CertBoolExp
+  certId: StringComparisonExp
+  event: EventBoolExp
+  eventId: StringComparisonExp
+  eventType: EventTypeEnumComparisonExp
+  id: StringComparisonExp
+}
+
+"order by max() on columns of table \"cert_event\""
+input CertEventMaxOrderBy {
+  blockNumber: OrderBy
+  certId: OrderBy
+  eventId: OrderBy
+  id: OrderBy
+}
+
+"order by min() on columns of table \"cert_event\""
+input CertEventMinOrderBy {
+  blockNumber: OrderBy
+  certId: OrderBy
+  eventId: OrderBy
+  id: OrderBy
+}
+
+"Ordering options when selecting data from \"cert_event\"."
+input CertEventOrderBy {
+  blockNumber: OrderBy
+  cert: CertOrderBy
+  certId: OrderBy
+  event: EventOrderBy
+  eventId: OrderBy
+  eventType: OrderBy
+  id: OrderBy
+}
+
+"order by stddev() on columns of table \"cert_event\""
+input CertEventStddevOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by stddevPop() on columns of table \"cert_event\""
+input CertEventStddevPopOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"cert_event\""
+input CertEventStddevSampOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by sum() on columns of table \"cert_event\""
+input CertEventSumOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by varPop() on columns of table \"cert_event\""
+input CertEventVarPopOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by varSamp() on columns of table \"cert_event\""
+input CertEventVarSampOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by variance() on columns of table \"cert_event\""
+input CertEventVarianceOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by max() on columns of table \"cert\""
+input CertMaxOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+  id: OrderBy
+  issuerId: OrderBy
+  receiverId: OrderBy
+}
+
+"order by min() on columns of table \"cert\""
+input CertMinOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+  id: OrderBy
+  issuerId: OrderBy
+  receiverId: OrderBy
+}
+
+"Ordering options when selecting data from \"cert\"."
+input CertOrderBy {
+  certHistoryAggregate: CertEventAggregateOrderBy
+  createdOn: OrderBy
+  expireOn: OrderBy
+  id: OrderBy
+  isActive: OrderBy
+  issuer: IdentityOrderBy
+  issuerId: OrderBy
+  receiver: IdentityOrderBy
+  receiverId: OrderBy
+}
+
+"order by stddev() on columns of table \"cert\""
+input CertStddevOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+}
+
+"order by stddevPop() on columns of table \"cert\""
+input CertStddevPopOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"cert\""
+input CertStddevSampOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+}
+
+"order by sum() on columns of table \"cert\""
+input CertSumOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+}
+
+"order by varPop() on columns of table \"cert\""
+input CertVarPopOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+}
+
+"order by varSamp() on columns of table \"cert\""
+input CertVarSampOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+}
+
+"order by variance() on columns of table \"cert\""
+input CertVarianceOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
+}
+
+input ChangeOwnerKeyAggregateBoolExp {
+  count: changeOwnerKeyAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"change_owner_key\""
+input ChangeOwnerKeyAggregateOrderBy {
+  avg: ChangeOwnerKeyAvgOrderBy
+  count: OrderBy
+  max: ChangeOwnerKeyMaxOrderBy
+  min: ChangeOwnerKeyMinOrderBy
+  stddev: ChangeOwnerKeyStddevOrderBy
+  stddevPop: ChangeOwnerKeyStddevPopOrderBy
+  stddevSamp: ChangeOwnerKeyStddevSampOrderBy
+  sum: ChangeOwnerKeySumOrderBy
+  varPop: ChangeOwnerKeyVarPopOrderBy
+  varSamp: ChangeOwnerKeyVarSampOrderBy
+  variance: ChangeOwnerKeyVarianceOrderBy
+}
+
+"order by avg() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyAvgOrderBy {
+  blockNumber: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"change_owner_key\". All fields are combined with a logical 'AND'."
+input ChangeOwnerKeyBoolExp {
+  _and: [ChangeOwnerKeyBoolExp!]
+  _not: ChangeOwnerKeyBoolExp
+  _or: [ChangeOwnerKeyBoolExp!]
+  blockNumber: IntComparisonExp
+  id: StringComparisonExp
+  identity: IdentityBoolExp
+  identityId: StringComparisonExp
+  next: AccountBoolExp
+  nextId: StringComparisonExp
+  previous: AccountBoolExp
+  previousId: StringComparisonExp
+}
+
+"order by max() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyMaxOrderBy {
+  blockNumber: OrderBy
+  id: OrderBy
+  identityId: OrderBy
+  nextId: OrderBy
+  previousId: OrderBy
+}
+
+"order by min() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyMinOrderBy {
+  blockNumber: OrderBy
+  id: OrderBy
+  identityId: OrderBy
+  nextId: OrderBy
+  previousId: OrderBy
+}
+
+"Ordering options when selecting data from \"change_owner_key\"."
+input ChangeOwnerKeyOrderBy {
+  blockNumber: OrderBy
+  id: OrderBy
+  identity: IdentityOrderBy
+  identityId: OrderBy
+  next: AccountOrderBy
+  nextId: OrderBy
+  previous: AccountOrderBy
+  previousId: OrderBy
+}
+
+"order by stddev() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyStddevOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by stddevPop() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyStddevPopOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyStddevSampOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by sum() on columns of table \"change_owner_key\""
+input ChangeOwnerKeySumOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by varPop() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyVarPopOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by varSamp() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyVarSampOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by variance() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyVarianceOrderBy {
+  blockNumber: OrderBy
+}
+
+"Boolean expression to compare columns of type \"CounterLevelEnum\". All fields are combined with logical 'AND'."
+input CounterLevelEnumComparisonExp {
+  _eq: CounterLevelEnum
+  _in: [CounterLevelEnum!]
+  _isNull: Boolean
+  _neq: CounterLevelEnum
+  _nin: [CounterLevelEnum!]
+}
+
+input EventAggregateBoolExp {
+  count: eventAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"event\""
+input EventAggregateOrderBy {
+  avg: EventAvgOrderBy
+  count: OrderBy
+  max: EventMaxOrderBy
+  min: EventMinOrderBy
+  stddev: EventStddevOrderBy
+  stddevPop: EventStddevPopOrderBy
+  stddevSamp: EventStddevSampOrderBy
+  sum: EventSumOrderBy
+  varPop: EventVarPopOrderBy
+  varSamp: EventVarSampOrderBy
+  variance: EventVarianceOrderBy
+}
+
+"order by avg() on columns of table \"event\""
+input EventAvgOrderBy {
+  index: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"event\". All fields are combined with a logical 'AND'."
+input EventBoolExp {
+  _and: [EventBoolExp!]
+  _not: EventBoolExp
+  _or: [EventBoolExp!]
+  args: JsonbComparisonExp
+  argsStr: StringArrayComparisonExp
+  block: BlockBoolExp
+  blockId: StringComparisonExp
+  call: CallBoolExp
+  callId: StringComparisonExp
+  extrinsic: ExtrinsicBoolExp
+  extrinsicId: StringComparisonExp
+  id: StringComparisonExp
+  index: IntComparisonExp
+  name: StringComparisonExp
+  pallet: StringComparisonExp
+  phase: StringComparisonExp
+}
+
+"order by max() on columns of table \"event\""
+input EventMaxOrderBy {
+  argsStr: OrderBy
+  blockId: OrderBy
+  callId: OrderBy
+  extrinsicId: OrderBy
+  id: OrderBy
+  index: OrderBy
+  name: OrderBy
+  pallet: OrderBy
+  phase: OrderBy
+}
+
+"order by min() on columns of table \"event\""
+input EventMinOrderBy {
+  argsStr: OrderBy
+  blockId: OrderBy
+  callId: OrderBy
+  extrinsicId: OrderBy
+  id: OrderBy
+  index: OrderBy
+  name: OrderBy
+  pallet: OrderBy
+  phase: OrderBy
+}
+
+"Ordering options when selecting data from \"event\"."
+input EventOrderBy {
+  args: OrderBy
+  argsStr: OrderBy
+  block: BlockOrderBy
+  blockId: OrderBy
+  call: CallOrderBy
+  callId: OrderBy
+  extrinsic: ExtrinsicOrderBy
+  extrinsicId: OrderBy
+  id: OrderBy
+  index: OrderBy
+  name: OrderBy
+  pallet: OrderBy
+  phase: OrderBy
+}
+
+"order by stddev() on columns of table \"event\""
+input EventStddevOrderBy {
+  index: OrderBy
+}
+
+"order by stddevPop() on columns of table \"event\""
+input EventStddevPopOrderBy {
+  index: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"event\""
+input EventStddevSampOrderBy {
+  index: OrderBy
+}
+
+"order by sum() on columns of table \"event\""
+input EventSumOrderBy {
+  index: OrderBy
+}
+
+"Boolean expression to compare columns of type \"EventTypeEnum\". All fields are combined with logical 'AND'."
+input EventTypeEnumComparisonExp {
+  _eq: EventTypeEnum
+  _in: [EventTypeEnum!]
+  _isNull: Boolean
+  _neq: EventTypeEnum
+  _nin: [EventTypeEnum!]
+}
+
+"order by varPop() on columns of table \"event\""
+input EventVarPopOrderBy {
+  index: OrderBy
+}
+
+"order by varSamp() on columns of table \"event\""
+input EventVarSampOrderBy {
+  index: OrderBy
+}
+
+"order by variance() on columns of table \"event\""
+input EventVarianceOrderBy {
+  index: OrderBy
+}
+
+input ExtrinsicAggregateBoolExp {
+  bool_and: extrinsicAggregateBoolExpBool_and
+  bool_or: extrinsicAggregateBoolExpBool_or
+  count: extrinsicAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"extrinsic\""
+input ExtrinsicAggregateOrderBy {
+  avg: ExtrinsicAvgOrderBy
+  count: OrderBy
+  max: ExtrinsicMaxOrderBy
+  min: ExtrinsicMinOrderBy
+  stddev: ExtrinsicStddevOrderBy
+  stddevPop: ExtrinsicStddevPopOrderBy
+  stddevSamp: ExtrinsicStddevSampOrderBy
+  sum: ExtrinsicSumOrderBy
+  varPop: ExtrinsicVarPopOrderBy
+  varSamp: ExtrinsicVarSampOrderBy
+  variance: ExtrinsicVarianceOrderBy
+}
+
+"order by avg() on columns of table \"extrinsic\""
+input ExtrinsicAvgOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"extrinsic\". All fields are combined with a logical 'AND'."
+input ExtrinsicBoolExp {
+  _and: [ExtrinsicBoolExp!]
+  _not: ExtrinsicBoolExp
+  _or: [ExtrinsicBoolExp!]
+  block: BlockBoolExp
+  blockId: StringComparisonExp
+  call: CallBoolExp
+  callId: StringComparisonExp
+  calls: CallBoolExp
+  callsAggregate: CallAggregateBoolExp
+  error: JsonbComparisonExp
+  events: EventBoolExp
+  eventsAggregate: EventAggregateBoolExp
+  fee: NumericComparisonExp
+  hash: ByteaComparisonExp
+  id: StringComparisonExp
+  index: IntComparisonExp
+  signature: JsonbComparisonExp
+  success: BooleanComparisonExp
+  tip: NumericComparisonExp
+  version: IntComparisonExp
+}
+
+"order by max() on columns of table \"extrinsic\""
+input ExtrinsicMaxOrderBy {
+  blockId: OrderBy
+  callId: OrderBy
+  fee: OrderBy
+  id: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"order by min() on columns of table \"extrinsic\""
+input ExtrinsicMinOrderBy {
+  blockId: OrderBy
+  callId: OrderBy
+  fee: OrderBy
+  id: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"Ordering options when selecting data from \"extrinsic\"."
+input ExtrinsicOrderBy {
+  block: BlockOrderBy
+  blockId: OrderBy
+  call: CallOrderBy
+  callId: OrderBy
+  callsAggregate: CallAggregateOrderBy
+  error: OrderBy
+  eventsAggregate: EventAggregateOrderBy
+  fee: OrderBy
+  hash: OrderBy
+  id: OrderBy
+  index: OrderBy
+  signature: OrderBy
+  success: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"order by stddev() on columns of table \"extrinsic\""
+input ExtrinsicStddevOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"order by stddevPop() on columns of table \"extrinsic\""
+input ExtrinsicStddevPopOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"extrinsic\""
+input ExtrinsicStddevSampOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"order by sum() on columns of table \"extrinsic\""
+input ExtrinsicSumOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"order by varPop() on columns of table \"extrinsic\""
+input ExtrinsicVarPopOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"order by varSamp() on columns of table \"extrinsic\""
+input ExtrinsicVarSampOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"order by variance() on columns of table \"extrinsic\""
+input ExtrinsicVarianceOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"identity\". All fields are combined with a logical 'AND'."
+input IdentityBoolExp {
+  _and: [IdentityBoolExp!]
+  _not: IdentityBoolExp
+  _or: [IdentityBoolExp!]
+  account: AccountBoolExp
+  accountId: StringComparisonExp
+  certIssued: CertBoolExp
+  certIssuedAggregate: CertAggregateBoolExp
+  certReceived: CertBoolExp
+  certReceivedAggregate: CertAggregateBoolExp
+  createdIn: EventBoolExp
+  createdInId: StringComparisonExp
+  createdOn: IntComparisonExp
+  expireOn: IntComparisonExp
+  id: StringComparisonExp
+  index: IntComparisonExp
+  isMember: BooleanComparisonExp
+  lastChangeOn: IntComparisonExp
+  linkedAccount: AccountBoolExp
+  linkedAccountAggregate: AccountAggregateBoolExp
+  membershipHistory: MembershipEventBoolExp
+  membershipHistoryAggregate: MembershipEventAggregateBoolExp
+  name: StringComparisonExp
+  ownerKeyChange: ChangeOwnerKeyBoolExp
+  ownerKeyChangeAggregate: ChangeOwnerKeyAggregateBoolExp
+  smithCertIssued: SmithCertBoolExp
+  smithCertIssuedAggregate: SmithCertAggregateBoolExp
+  smithCertReceived: SmithCertBoolExp
+  smithCertReceivedAggregate: SmithCertAggregateBoolExp
+  smithStatus: SmithStatusEnumComparisonExp
+  status: IdentityStatusEnumComparisonExp
+  udHistory: UdHistoryBoolExp
+}
+
+"Ordering options when selecting data from \"identity\"."
+input IdentityOrderBy {
+  account: AccountOrderBy
+  accountId: OrderBy
+  certIssuedAggregate: CertAggregateOrderBy
+  certReceivedAggregate: CertAggregateOrderBy
+  createdIn: EventOrderBy
+  createdInId: OrderBy
+  createdOn: OrderBy
+  expireOn: OrderBy
+  id: OrderBy
+  index: OrderBy
+  isMember: OrderBy
+  lastChangeOn: OrderBy
+  linkedAccountAggregate: AccountAggregateOrderBy
+  membershipHistoryAggregate: MembershipEventAggregateOrderBy
+  name: OrderBy
+  ownerKeyChangeAggregate: ChangeOwnerKeyAggregateOrderBy
+  smithCertIssuedAggregate: SmithCertAggregateOrderBy
+  smithCertReceivedAggregate: SmithCertAggregateOrderBy
+  smithStatus: OrderBy
+  status: OrderBy
+  udHistoryAggregate: UdHistoryAggregateOrderBy
+}
+
+"Boolean expression to compare columns of type \"IdentityStatusEnum\". All fields are combined with logical 'AND'."
+input IdentityStatusEnumComparisonExp {
+  _eq: IdentityStatusEnum
+  _in: [IdentityStatusEnum!]
+  _isNull: Boolean
+  _neq: IdentityStatusEnum
+  _nin: [IdentityStatusEnum!]
+}
+
+"Boolean expression to compare columns of type \"Int\". All fields are combined with logical 'AND'."
+input IntArrayComparisonExp {
+  "is the array contained in the given array value"
+  _containedIn: [Int!]
+  "does the array contain the given value"
+  _contains: [Int!]
+  _eq: [Int!]
+  _gt: [Int!]
+  _gte: [Int!]
+  _in: [[Int!]!]
+  _isNull: Boolean
+  _lt: [Int!]
+  _lte: [Int!]
+  _neq: [Int!]
+  _nin: [[Int!]!]
+}
+
+"Boolean expression to compare columns of type \"Int\". All fields are combined with logical 'AND'."
+input IntComparisonExp {
+  _eq: Int
+  _gt: Int
+  _gte: Int
+  _in: [Int!]
+  _isNull: Boolean
+  _lt: Int
+  _lte: Int
+  _neq: Int
+  _nin: [Int!]
+}
+
+"Boolean expression to compare columns of type \"ItemTypeEnum\". All fields are combined with logical 'AND'."
+input ItemTypeEnumComparisonExp {
+  _eq: ItemTypeEnum
+  _in: [ItemTypeEnum!]
+  _isNull: Boolean
+  _neq: ItemTypeEnum
+  _nin: [ItemTypeEnum!]
+}
+
+"Boolean expression to filter rows from the table \"items_counter\". All fields are combined with a logical 'AND'."
+input ItemsCounterBoolExp {
+  _and: [ItemsCounterBoolExp!]
+  _not: ItemsCounterBoolExp
+  _or: [ItemsCounterBoolExp!]
+  id: StringComparisonExp
+  level: CounterLevelEnumComparisonExp
+  total: IntComparisonExp
+  type: ItemTypeEnumComparisonExp
+}
+
+"Ordering options when selecting data from \"items_counter\"."
+input ItemsCounterOrderBy {
+  id: OrderBy
+  level: OrderBy
+  total: OrderBy
+  type: OrderBy
+}
+
+input JsonbCastExp {
+  String: StringComparisonExp
+}
+
+"Boolean expression to compare columns of type \"jsonb\". All fields are combined with logical 'AND'."
+input JsonbComparisonExp {
+  _cast: JsonbCastExp
+  "is the column contained in the given json value"
+  _containedIn: jsonb
+  "does the column contain the given json value at the top level"
+  _contains: jsonb
+  _eq: jsonb
+  _gt: jsonb
+  _gte: jsonb
+  "does the string exist as a top-level key in the column"
+  _hasKey: String
+  "do all of these strings exist as top-level keys in the column"
+  _hasKeysAll: [String!]
+  "do any of these strings exist as top-level keys in the column"
+  _hasKeysAny: [String!]
+  _in: [jsonb!]
+  _isNull: Boolean
+  _lt: jsonb
+  _lte: jsonb
+  _neq: jsonb
+  _nin: [jsonb!]
+}
+
+input MembershipEventAggregateBoolExp {
+  count: membershipEventAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"membership_event\""
+input MembershipEventAggregateOrderBy {
+  avg: MembershipEventAvgOrderBy
+  count: OrderBy
+  max: MembershipEventMaxOrderBy
+  min: MembershipEventMinOrderBy
+  stddev: MembershipEventStddevOrderBy
+  stddevPop: MembershipEventStddevPopOrderBy
+  stddevSamp: MembershipEventStddevSampOrderBy
+  sum: MembershipEventSumOrderBy
+  varPop: MembershipEventVarPopOrderBy
+  varSamp: MembershipEventVarSampOrderBy
+  variance: MembershipEventVarianceOrderBy
+}
+
+"order by avg() on columns of table \"membership_event\""
+input MembershipEventAvgOrderBy {
+  blockNumber: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"membership_event\". All fields are combined with a logical 'AND'."
+input MembershipEventBoolExp {
+  _and: [MembershipEventBoolExp!]
+  _not: MembershipEventBoolExp
+  _or: [MembershipEventBoolExp!]
+  blockNumber: IntComparisonExp
+  event: EventBoolExp
+  eventId: StringComparisonExp
+  eventType: EventTypeEnumComparisonExp
+  id: StringComparisonExp
+  identity: IdentityBoolExp
+  identityId: StringComparisonExp
+}
+
+"order by max() on columns of table \"membership_event\""
+input MembershipEventMaxOrderBy {
+  blockNumber: OrderBy
+  eventId: OrderBy
+  id: OrderBy
+  identityId: OrderBy
+}
+
+"order by min() on columns of table \"membership_event\""
+input MembershipEventMinOrderBy {
+  blockNumber: OrderBy
+  eventId: OrderBy
+  id: OrderBy
+  identityId: OrderBy
+}
+
+"Ordering options when selecting data from \"membership_event\"."
+input MembershipEventOrderBy {
+  blockNumber: OrderBy
+  event: EventOrderBy
+  eventId: OrderBy
+  eventType: OrderBy
+  id: OrderBy
+  identity: IdentityOrderBy
+  identityId: OrderBy
+}
+
+"order by stddev() on columns of table \"membership_event\""
+input MembershipEventStddevOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by stddevPop() on columns of table \"membership_event\""
+input MembershipEventStddevPopOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"membership_event\""
+input MembershipEventStddevSampOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by sum() on columns of table \"membership_event\""
+input MembershipEventSumOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by varPop() on columns of table \"membership_event\""
+input MembershipEventVarPopOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by varSamp() on columns of table \"membership_event\""
+input MembershipEventVarSampOrderBy {
+  blockNumber: OrderBy
+}
+
+"order by variance() on columns of table \"membership_event\""
+input MembershipEventVarianceOrderBy {
+  blockNumber: OrderBy
+}
+
+"Boolean expression to compare columns of type \"numeric\". All fields are combined with logical 'AND'."
+input NumericComparisonExp {
+  _eq: numeric
+  _gt: numeric
+  _gte: numeric
+  _in: [numeric!]
+  _isNull: Boolean
+  _lt: numeric
+  _lte: numeric
+  _neq: numeric
+  _nin: [numeric!]
+}
+
+input SmithCertAggregateBoolExp {
+  count: smithCertAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"smith_cert\""
+input SmithCertAggregateOrderBy {
+  avg: SmithCertAvgOrderBy
+  count: OrderBy
+  max: SmithCertMaxOrderBy
+  min: SmithCertMinOrderBy
+  stddev: SmithCertStddevOrderBy
+  stddevPop: SmithCertStddevPopOrderBy
+  stddevSamp: SmithCertStddevSampOrderBy
+  sum: SmithCertSumOrderBy
+  varPop: SmithCertVarPopOrderBy
+  varSamp: SmithCertVarSampOrderBy
+  variance: SmithCertVarianceOrderBy
+}
+
+"order by avg() on columns of table \"smith_cert\""
+input SmithCertAvgOrderBy {
+  createdOn: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"smith_cert\". All fields are combined with a logical 'AND'."
+input SmithCertBoolExp {
+  _and: [SmithCertBoolExp!]
+  _not: SmithCertBoolExp
+  _or: [SmithCertBoolExp!]
+  createdOn: IntComparisonExp
+  id: StringComparisonExp
+  issuer: IdentityBoolExp
+  issuerId: StringComparisonExp
+  receiver: IdentityBoolExp
+  receiverId: StringComparisonExp
+}
+
+"order by max() on columns of table \"smith_cert\""
+input SmithCertMaxOrderBy {
+  createdOn: OrderBy
+  id: OrderBy
+  issuerId: OrderBy
+  receiverId: OrderBy
+}
+
+"order by min() on columns of table \"smith_cert\""
+input SmithCertMinOrderBy {
+  createdOn: OrderBy
+  id: OrderBy
+  issuerId: OrderBy
+  receiverId: OrderBy
+}
+
+"Ordering options when selecting data from \"smith_cert\"."
+input SmithCertOrderBy {
+  createdOn: OrderBy
+  id: OrderBy
+  issuer: IdentityOrderBy
+  issuerId: OrderBy
+  receiver: IdentityOrderBy
+  receiverId: OrderBy
+}
+
+"order by stddev() on columns of table \"smith_cert\""
+input SmithCertStddevOrderBy {
+  createdOn: OrderBy
+}
+
+"order by stddevPop() on columns of table \"smith_cert\""
+input SmithCertStddevPopOrderBy {
+  createdOn: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"smith_cert\""
+input SmithCertStddevSampOrderBy {
+  createdOn: OrderBy
+}
+
+"order by sum() on columns of table \"smith_cert\""
+input SmithCertSumOrderBy {
+  createdOn: OrderBy
+}
+
+"order by varPop() on columns of table \"smith_cert\""
+input SmithCertVarPopOrderBy {
+  createdOn: OrderBy
+}
+
+"order by varSamp() on columns of table \"smith_cert\""
+input SmithCertVarSampOrderBy {
+  createdOn: OrderBy
+}
+
+"order by variance() on columns of table \"smith_cert\""
+input SmithCertVarianceOrderBy {
+  createdOn: OrderBy
+}
+
+"Boolean expression to compare columns of type \"SmithStatusEnum\". All fields are combined with logical 'AND'."
+input SmithStatusEnumComparisonExp {
+  _eq: SmithStatusEnum
+  _in: [SmithStatusEnum!]
+  _isNull: Boolean
+  _neq: SmithStatusEnum
+  _nin: [SmithStatusEnum!]
+}
+
+"Boolean expression to compare columns of type \"String\". All fields are combined with logical 'AND'."
+input StringArrayComparisonExp {
+  "is the array contained in the given array value"
+  _containedIn: [String!]
+  "does the array contain the given value"
+  _contains: [String!]
+  _eq: [String!]
+  _gt: [String!]
+  _gte: [String!]
+  _in: [[String!]!]
+  _isNull: Boolean
+  _lt: [String!]
+  _lte: [String!]
+  _neq: [String!]
+  _nin: [[String!]!]
+}
+
+"Boolean expression to compare columns of type \"String\". All fields are combined with logical 'AND'."
+input StringComparisonExp {
+  _eq: String
+  _gt: String
+  _gte: String
+  "does the column match the given case-insensitive pattern"
+  _ilike: String
+  _in: [String!]
+  "does the column match the given POSIX regular expression, case insensitive"
+  _iregex: String
+  _isNull: Boolean
+  "does the column match the given pattern"
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+  "does the column NOT match the given case-insensitive pattern"
+  _nilike: String
+  _nin: [String!]
+  "does the column NOT match the given POSIX regular expression, case insensitive"
+  _niregex: String
+  "does the column NOT match the given pattern"
+  _nlike: String
+  "does the column NOT match the given POSIX regular expression, case sensitive"
+  _nregex: String
+  "does the column NOT match the given SQL regular expression"
+  _nsimilar: String
+  "does the column match the given POSIX regular expression, case sensitive"
+  _regex: String
+  "does the column match the given SQL regular expression"
+  _similar: String
+}
+
+"Boolean expression to compare columns of type \"timestamptz\". All fields are combined with logical 'AND'."
+input TimestamptzComparisonExp {
+  _eq: timestamptz
+  _gt: timestamptz
+  _gte: timestamptz
+  _in: [timestamptz!]
+  _isNull: Boolean
+  _lt: timestamptz
+  _lte: timestamptz
+  _neq: timestamptz
+  _nin: [timestamptz!]
+}
+
+input TransferAggregateBoolExp {
+  count: transferAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"transfer\""
+input TransferAggregateOrderBy {
+  avg: TransferAvgOrderBy
+  count: OrderBy
+  max: TransferMaxOrderBy
+  min: TransferMinOrderBy
+  stddev: TransferStddevOrderBy
+  stddevPop: TransferStddevPopOrderBy
+  stddevSamp: TransferStddevSampOrderBy
+  sum: TransferSumOrderBy
+  varPop: TransferVarPopOrderBy
+  varSamp: TransferVarSampOrderBy
+  variance: TransferVarianceOrderBy
+}
+
+"order by avg() on columns of table \"transfer\""
+input TransferAvgOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"transfer\". All fields are combined with a logical 'AND'."
+input TransferBoolExp {
+  _and: [TransferBoolExp!]
+  _not: TransferBoolExp
+  _or: [TransferBoolExp!]
+  amount: NumericComparisonExp
+  blockNumber: IntComparisonExp
+  comment: StringComparisonExp
+  from: AccountBoolExp
+  fromId: StringComparisonExp
+  id: StringComparisonExp
+  timestamp: TimestamptzComparisonExp
+  to: AccountBoolExp
+  toId: StringComparisonExp
+}
+
+"order by max() on columns of table \"transfer\""
+input TransferMaxOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+  comment: OrderBy
+  fromId: OrderBy
+  id: OrderBy
+  timestamp: OrderBy
+  toId: OrderBy
+}
+
+"order by min() on columns of table \"transfer\""
+input TransferMinOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+  comment: OrderBy
+  fromId: OrderBy
+  id: OrderBy
+  timestamp: OrderBy
+  toId: OrderBy
+}
+
+"Ordering options when selecting data from \"transfer\"."
+input TransferOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+  comment: OrderBy
+  from: AccountOrderBy
+  fromId: OrderBy
+  id: OrderBy
+  timestamp: OrderBy
+  to: AccountOrderBy
+  toId: OrderBy
+}
+
+"order by stddev() on columns of table \"transfer\""
+input TransferStddevOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by stddevPop() on columns of table \"transfer\""
+input TransferStddevPopOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"transfer\""
+input TransferStddevSampOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by sum() on columns of table \"transfer\""
+input TransferSumOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by varPop() on columns of table \"transfer\""
+input TransferVarPopOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by varSamp() on columns of table \"transfer\""
+input TransferVarSampOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by variance() on columns of table \"transfer\""
+input TransferVarianceOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by aggregate values of table \"ud_history\""
+input UdHistoryAggregateOrderBy {
+  avg: UdHistoryAvgOrderBy
+  count: OrderBy
+  max: UdHistoryMaxOrderBy
+  min: UdHistoryMinOrderBy
+  stddev: UdHistoryStddevOrderBy
+  stddevPop: UdHistoryStddevPopOrderBy
+  stddevSamp: UdHistoryStddevSampOrderBy
+  sum: UdHistorySumOrderBy
+  varPop: UdHistoryVarPopOrderBy
+  varSamp: UdHistoryVarSampOrderBy
+  variance: UdHistoryVarianceOrderBy
+}
+
+"order by avg() on columns of table \"ud_history\""
+input UdHistoryAvgOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"ud_history\". All fields are combined with a logical 'AND'."
+input UdHistoryBoolExp {
+  _and: [UdHistoryBoolExp!]
+  _not: UdHistoryBoolExp
+  _or: [UdHistoryBoolExp!]
+  amount: IntComparisonExp
+  blockNumber: IntComparisonExp
+  id: StringComparisonExp
+  identity: IdentityBoolExp
+  identityId: StringComparisonExp
+  timestamp: TimestamptzComparisonExp
+}
+
+"order by max() on columns of table \"ud_history\""
+input UdHistoryMaxOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+  id: OrderBy
+  identityId: OrderBy
+  timestamp: OrderBy
+}
+
+"order by min() on columns of table \"ud_history\""
+input UdHistoryMinOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+  id: OrderBy
+  identityId: OrderBy
+  timestamp: OrderBy
+}
+
+"Ordering options when selecting data from \"ud_history\"."
+input UdHistoryOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+  id: OrderBy
+  identity: IdentityOrderBy
+  identityId: OrderBy
+  timestamp: OrderBy
+}
+
+"order by stddev() on columns of table \"ud_history\""
+input UdHistoryStddevOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by stddevPop() on columns of table \"ud_history\""
+input UdHistoryStddevPopOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by stddevSamp() on columns of table \"ud_history\""
+input UdHistoryStddevSampOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by sum() on columns of table \"ud_history\""
+input UdHistorySumOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by varPop() on columns of table \"ud_history\""
+input UdHistoryVarPopOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by varSamp() on columns of table \"ud_history\""
+input UdHistoryVarSampOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"order by variance() on columns of table \"ud_history\""
+input UdHistoryVarianceOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"ud_reeval\". All fields are combined with a logical 'AND'."
+input UdReevalBoolExp {
+  _and: [UdReevalBoolExp!]
+  _not: UdReevalBoolExp
+  _or: [UdReevalBoolExp!]
+  blockNumber: IntComparisonExp
+  event: EventBoolExp
+  eventId: StringComparisonExp
+  id: StringComparisonExp
+  membersCount: IntComparisonExp
+  monetaryMass: NumericComparisonExp
+  newUdAmount: IntComparisonExp
+  timestamp: TimestamptzComparisonExp
+}
+
+"Ordering options when selecting data from \"ud_reeval\"."
+input UdReevalOrderBy {
+  blockNumber: OrderBy
+  event: EventOrderBy
+  eventId: OrderBy
+  id: OrderBy
+  membersCount: OrderBy
+  monetaryMass: OrderBy
+  newUdAmount: OrderBy
+  timestamp: OrderBy
+}
+
+"Boolean expression to filter rows from the table \"universal_dividend\". All fields are combined with a logical 'AND'."
+input UniversalDividendBoolExp {
+  _and: [UniversalDividendBoolExp!]
+  _not: UniversalDividendBoolExp
+  _or: [UniversalDividendBoolExp!]
+  amount: IntComparisonExp
+  blockNumber: IntComparisonExp
+  event: EventBoolExp
+  eventId: StringComparisonExp
+  id: StringComparisonExp
+  membersCount: IntComparisonExp
+  monetaryMass: NumericComparisonExp
+  timestamp: TimestamptzComparisonExp
+}
+
+"Ordering options when selecting data from \"universal_dividend\"."
+input UniversalDividendOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
+  event: EventOrderBy
+  eventId: OrderBy
+  id: OrderBy
+  membersCount: OrderBy
+  monetaryMass: OrderBy
+  timestamp: OrderBy
+}
+
+input accountAggregateBoolExpCount {
+  arguments: [AccountSelectColumn!]
+  distinct: Boolean
+  filter: AccountBoolExp
+  predicate: IntComparisonExp!
+}
+
+input callAggregateBoolExpBool_and {
+  arguments: CallSelectColumnCallAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: CallBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input callAggregateBoolExpBool_or {
+  arguments: CallSelectColumnCallAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: CallBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input callAggregateBoolExpCount {
+  arguments: [CallSelectColumn!]
+  distinct: Boolean
+  filter: CallBoolExp
+  predicate: IntComparisonExp!
+}
+
+input certAggregateBoolExpBool_and {
+  arguments: CertSelectColumnCertAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: CertBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input certAggregateBoolExpBool_or {
+  arguments: CertSelectColumnCertAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: CertBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input certAggregateBoolExpCount {
+  arguments: [CertSelectColumn!]
+  distinct: Boolean
+  filter: CertBoolExp
+  predicate: IntComparisonExp!
+}
+
+input certEventAggregateBoolExpCount {
+  arguments: [CertEventSelectColumn!]
+  distinct: Boolean
+  filter: CertEventBoolExp
+  predicate: IntComparisonExp!
+}
+
+input changeOwnerKeyAggregateBoolExpCount {
+  arguments: [ChangeOwnerKeySelectColumn!]
+  distinct: Boolean
+  filter: ChangeOwnerKeyBoolExp
+  predicate: IntComparisonExp!
+}
+
+input eventAggregateBoolExpCount {
+  arguments: [EventSelectColumn!]
+  distinct: Boolean
+  filter: EventBoolExp
+  predicate: IntComparisonExp!
+}
+
+input extrinsicAggregateBoolExpBool_and {
+  arguments: ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: ExtrinsicBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input extrinsicAggregateBoolExpBool_or {
+  arguments: ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: ExtrinsicBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input extrinsicAggregateBoolExpCount {
+  arguments: [ExtrinsicSelectColumn!]
+  distinct: Boolean
+  filter: ExtrinsicBoolExp
+  predicate: IntComparisonExp!
+}
+
+input getUdHistoryArgs {
+  identity_row: identity_scalar
+}
+
+input membershipEventAggregateBoolExpCount {
+  arguments: [MembershipEventSelectColumn!]
+  distinct: Boolean
+  filter: MembershipEventBoolExp
+  predicate: IntComparisonExp!
+}
+
+input smithCertAggregateBoolExpCount {
+  arguments: [SmithCertSelectColumn!]
+  distinct: Boolean
+  filter: SmithCertBoolExp
+  predicate: IntComparisonExp!
+}
+
+input transferAggregateBoolExpCount {
+  arguments: [TransferSelectColumn!]
+  distinct: Boolean
+  filter: TransferBoolExp
+  predicate: IntComparisonExp!
 }

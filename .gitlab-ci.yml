@@ -160,7 +160,6 @@ build:env:
 
 build:
   extends: .build
-  needs: ["build:env"]
   image: ${CI_BUILD_IMAGE}
   only:
     - develop
@@ -366,7 +365,7 @@ gitlab-release:
     - echo "--- Building 'www'"
     - export NODE_OPTIONS=--max-old-space-size=4096
     - npm run build:prod
-    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}.zip
+    - fileName=${CI_PROJECT_NAME}-${APP_VERSION}-web.zip
     - releaseFile=${CI_PROJECT_DIR}/release/${fileName}
     - if [[ -f "${releaseFile}" ]]; then rm "${releaseFile}"; fi
     - cd ${CI_PROJECT_DIR}/www || exit 1

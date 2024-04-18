@@ -1,33 +1,27 @@
-
-query WotSearchByText($searchText: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
-  accounts(
-    limit: $limit
-    offset: $offset
+query WotSearchByText($searchText: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
+  accountConnection(
+    first: $first
+    after: $after
     orderBy: $orderBy
-    where: { id_startsWith: $searchText, OR: { identity: { name_containsInsensitive: $searchText } } }
+    where: { _or: [{ id: { _ilike: $searchText } }, { identity: { name: { _ilike: $searchText } } }] }
   ) {
-    ...LightAccount
+    ...LightAccountConnection
   }
 }
 
-query WotSearchByAddress($address: String!, $limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!]) {
-  accounts(
-    limit: $limit
-    offset: $offset
-    orderBy: $orderBy
-    where: { id_eq: $address }
-  ) {
-    ...LightAccount
+query WotSearchByAddress($address: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
+  accountConnection(first: $first, after: $after, orderBy: $orderBy, where: { id: { _eq: $address } }) {
+    ...LightAccountConnection
   }
 }
 
-query WotSearchLast($limit: Int!, $offset: Int!, $orderBy: [AccountOrderByInput!], $pending: Boolean!) {
-  accounts(
-    limit: $limit
-    offset: $offset
+query WotSearchLast($first: Int!, $after: String, $orderBy: [AccountOrderBy!], $pending: Boolean!) {
+  accountConnection(
+    first: $first
+    after: $after
     orderBy: $orderBy
-    where: {identity: {id_isNull: false}, AND: {identity: {membership_isNull: $pending} }}
+    where: { _and: [{ identity: { id: { _isNull: false } } }, { identity: { membershipHistory: { eventId: { _isNull: $pending } } } }] }
   ) {
-    ...LightAccount
+    ...LightAccountConnection
   }
 }

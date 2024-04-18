@@ -33,6 +33,7 @@ export interface AccountListComponentInputs extends SelectAccountOptions {}
 export class AccountListComponent extends AppPage<AccountListComponentState> implements AccountListComponentInputs {
   @Input() @RxStateProperty() accounts: Account[];
   @Input() minBalance: number;
+  @Input() isMember: boolean = null;
   @Input() showBalance = false;
   @Input() positiveBalanceFirst = false;
 
@@ -49,7 +50,7 @@ export class AccountListComponent extends AppPage<AccountListComponentState> imp
     super.ngOnInit();
     this._state.connect(
       'accounts',
-      this.accountsService.watchAll({ positiveBalanceFirst: this.positiveBalanceFirst })
+      this.accountsService.watchAll({ positiveBalanceFirst: this.positiveBalanceFirst, isMember: this.isMember })
       //.pipe(debounceTime(2000))
     );
   }

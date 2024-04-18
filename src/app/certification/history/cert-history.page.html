@@ -49,9 +49,6 @@
             class="tx-account"
             [class.member]="isMember"
           >
-            <small>
-              <ion-icon [name]="item.account.meta?.uid ? 'person' : 'key'"></ion-icon>
-            </small>
             {{ item.account | accountName }}
           </a>
         </h3>

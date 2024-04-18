@@ -1,126 +1,141 @@
-# Building from source
+# Building from Source
 
-Cesium² is an Angular App (Angular with Ionic).
+Cesium² is an Angular app built with Ionic. This article will guide you through setting up your environment and building the application.
 
-This article will explain how to install your environment, then build the application.
-
-## Installation tools, and get sources
+## Installation Tools and Getting the Sources
 
 1. Install [NVM](https://github.com/nvm-sh/nvm)
 
-2. Install Node v18 (e.g. v18.19.0)
-```bash
-nvm install 18.19.0
-```
+2. Install Node v18 (e.g., v18.19.0):
 
-3. Install global dependency: 
-```bash
-npm install -g @ionic/cli @angular/cli
-```
+   ```bash
+   nvm install 18.19.0
+   ```
 
-4. Get sources (clone the repo) : `git clone ...`
+3. Install global dependencies:
 
-### Install additional tools (optional)
+   ```bash
+   npm install -g @ionic/cli @angular/cli
+   ```
+
+4. Get the sources by cloning the repository:
+
+   ```bash
+   git clone ...
+   ```
+
+### Optional: Install Additional Tools
+
 ```bash
 sudo apt-get install chromium-browser docker.io
 ```
 
-## Web build
+## Web Build
 
-### For development and test
+### Development and Testing
 
-1. Install project's dependencies:
-```bash
-cd cesium
-npm install
-```
+1. Install the project's dependencies:
 
-2. Check environment configuration:
+   ```bash
+   cd cesium
+   npm install
+   ```
 
+2. Check the environment configuration:
    - Edit the file `src/environment/environment.ts`
-   
-3. Start the app
-    ```bash
-    cd cesium
-    npm start
-    ```
+
+3. Start the app:
+
+   ```bash
+   cd cesium
+   npm start
+   ```
+
    By default, the app should be accessible at [http://localhost:4200](http://localhost:4200)
-   
+
    To change the default port, use this command instead:
-    
-    ```bash
-    cd cesium
-    ng serve --port [port]
-    ```
 
-### Web build for production
+   ```bash
+   cd cesium
+   ng serve --port [port]
+   ```
 
-1. Check environment configuration:
+### Production Web Build
 
+1. Check the environment configuration:
    - Edit the file `src/environment/environment-prod.ts`
 
 2. Create the release:
-    ```bash
-    npm run build:prod
-    ```
 
-## Android build 
+   ```bash
+   npm run build:prod
+   ```
 
-### Build a debug APK, for development and test
+## Android Build
 
-1. Install the android build environment:
-    ```bash
-    cd sumaris-app/scripts
-    ./env-android.sh
-    ```
+### Debug APK for Development and Testing
+
+1. Install the Android build environment:
+
+   ```bash
+   cd sumaris-app/scripts
+   ./env-android.sh
+   ```
 
 2. Create a debug APK file:
-    ```bash
-    cd sumaris-app/scripts
-    ./build-android.sh
-    ```
 
-### Build a release APK, for production
+   ```bash
+   cd sumaris-app/scripts
+   ./build-android.sh
+   ```
 
-1. Check environment configuration:
+### Release APK for Production
 
+1. Check the environment configuration:
    - Edit the file `src/environment/environment-prod.ts`
 
 2. Create a release APK file:
-    ```bash
-    cd sumaris-app/scripts
-    ./release-android.sh
-    ```
 
-## Useful links
+   ```bash
+   cd sumaris-app/scripts
+   ./release-android.sh
+   ```
 
-- Ionic 4 colors: https://www.joshmorony.com/a-primer-on-css-4-variables-for-ionic-4/
-- Migration to Ionic 4 tips: https://www.joshmorony.com/my-method-for-upgrading-from-ionic-3-to-ionic-4/
-- Signing Android APK: See doc at 
-   https://www.c-sharpcorner.com/article/create-ionic-4-release-build-for-android/
+## Useful Links
+
+- [Ionic 4 Colors](https://www.joshmorony.com/a-primer-on-css-4-variables-for-ionic-4/)
+- [Migration to Ionic 4 Tips](https://www.joshmorony.com/my-method-for-upgrading-from-ionic-3-to-ionic-4/)
+- [Signing Android APK](https://www.c-sharpcorner.com/article/create-ionic-4-release-build-for-android/)
 
 ## Troubleshooting
 
-### Error on datasource, or angular material table
+### Error on Datasource or Angular Material Table
 
-- Checkout the project https://github.com/e-is/angular4-material-table
-```bash
-git clone https://github.com/e-is/angular4-material-table.git
-cd angular4-material-table
-```
-- Build the project: 
-```bash
-npm install
-npm run build
-cp package*.json ./dist
-```
-- Link to your local NPM repo:
-```bash
-cd dist
-npm link 
-```
-- Use it from Sumaris project:
-```bash
-cd <sumaris_app_root>
-npm link angular4-material-table
-```
+1. Check out the project:
+
+   ```bash
+   git clone https://github.com/e-is/angular4-material-table.git
+   cd angular4-material-table
+   ```
+
+2. Build the project:
+
+   ```bash
+   npm install
+   npm run build
+   cp package*.json ./dist
+   ```
+
+3. Link to your local NPM repo:
+
+   ```bash
+   cd dist
+   npm link
+   ```
+
+4. Use it from the Sumaris project:
+
+   ```bash
+   cd <sumaris_app_root>
+   npm link angular4-material-table
+   ```
