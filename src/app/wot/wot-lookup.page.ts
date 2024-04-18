@@ -13,7 +13,7 @@ import { RxState } from '@rx-angular/state';
 import { InfiniteScrollCustomEvent, IonPopover, ModalController } from '@ionic/angular';
 
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { IndexerService, PAGE_SIZE } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 
 export interface WotLookupState extends AppPageState {
@@ -21,7 +21,7 @@ export interface WotLookupState extends AppPageState {
   filter: WotSearchFilter;
   items: Account[];
   count: number;
-  first: number;
+  fetchSize: number;
   canFetchMore: boolean;
   fetchMoreFn: FetchMoreFn<LoadResult<Account>>;
   autoLoad: boolean;
@@ -47,6 +47,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   @RxStateProperty() count: number;
   @RxStateProperty() fetchMoreFn: FetchMoreFn<LoadResult<Account>>;
   @RxStateProperty() canFetchMore: boolean;
+  @Input() @RxStateProperty() fetchSize: number;
 
   @Input() isModal = false;
   @Input() debounceTime = 650;
@@ -57,7 +58,6 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
   @Input() showFilterButtons = true;
   @Input() @RxStateProperty() filter: WotSearchFilter;
   @Input() @RxStateProperty() searchText: string;
-  @Input() @RxStateProperty() first: number;
   @Input() @RxStateProperty() autoLoad: boolean;
 
   @Output() searchClick = new EventEmitter<Event>();
@@ -95,16 +95,16 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
         this.refresh.pipe(
           tap(() => this.markAsLoading()),
           debounceTime(100), // Wait filter to be update
-          map(() => ({ filter: this.filter, first: this.first, autoLoad: true }))
+          map(() => ({ filter: this.filter, fetchSize: this.fetchSize, autoLoad: true }))
         ),
-        this._state.select(['filter', 'first', 'autoLoad'], (res) => res, {
+        this._state.select(['filter', 'fetchSize', 'autoLoad'], (res) => res, {
           filter: WotSearchFilterUtils.isEquals,
-          first: (l1, l2) => l1 === l2,
+          fetchSize: (l1, l2) => l1 === l2,
         })
       ).pipe(
         filter(({ autoLoad }) => autoLoad || this.mobile),
         filter(({ filter }) => !WotSearchFilterUtils.isEmpty(filter) && filter.address !== 'default'),
-        mergeMap(({ filter, first }) => this.search(filter, { after: null, first })),
+        mergeMap(({ filter, fetchSize }) => this.search(filter, { after: null, first: fetchSize })),
         map(({ data, fetchMore }) => {
           this.fetchMoreFn = fetchMore;
           this.canFetchMore = !!fetchMore;
@@ -122,7 +122,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     this.showItemActions = toBoolean(this.showItemActions, !this.itemClick.observed);
     this.showFilterButtons = toBoolean(this.showFilterButtons, true);
     this.autoLoad = toBoolean(this.autoLoad, this.showFilterButtons);
-    this.first = toNumber(this.first, PAGE_SIZE);
+    this.fetchSize = toNumber(this.fetchSize, this.indexerService.fetchSize);
 
     if (this.isModal) {
       this.registerSubscription(this.itemClick.subscribe((item) => this.modalCtrl.dismiss(item)));

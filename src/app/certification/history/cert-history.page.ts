@@ -11,7 +11,7 @@ import { AccountsService } from '@app/account/accounts.service';
 import { firstValueFrom, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { IndexerService, PAGE_SIZE } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 import { Certification, CertificationSearchFilter, CertificationSearchFilterUtils } from './cert-history.model';
 import { ListItems } from '@app/shared/types';
@@ -55,7 +55,7 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
   @RxStateProperty() canFetchMore: boolean;
 
   @Input() @RxStateProperty() filter: CertificationSearchFilter;
-  @Input() @RxStateProperty() first: number;
+  @Input() @RxStateProperty() fetchSize: number;
 
   @Output() refresh = new EventEmitter<RefresherCustomEvent>();
 
@@ -169,16 +169,16 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
       merge(
         this.refresh.pipe(
           filter(() => !this.loading),
-          map(() => ({ filter: this.filter, first: this.first }))
+          map(() => ({ filter: this.filter, fetchSize: this.fetchSize }))
         ),
-        this._state.select(['filter', 'first', 'account'], (res) => res, {
+        this._state.select(['filter', 'fetchSize', 'account'], (res) => res, {
           filter: CertificationSearchFilterUtils.isEquals,
-          first: (l1, l2) => l1 === l2,
+          fetchSize: (l1, l2) => l1 === l2,
           account: AccountUtils.isEquals,
         })
       ).pipe(
         filter(({ filter }) => !CertificationSearchFilterUtils.isEmpty(filter)),
-        mergeMap(({ filter, first }) => this.search(filter, { first })),
+        mergeMap(({ filter, fetchSize }) => this.search(filter, { first: fetchSize })),
         map(({ total, data, fetchMore }) => {
           this.fetchMoreFn = fetchMore;
           this.canFetchMore = !!fetchMore;
@@ -193,7 +193,7 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
     console.info(this._logPrefix + 'Initializing...');
     super.ngOnInit();
 
-    this.first = toNumber(this.first, PAGE_SIZE);
+    this.fetchSize = toNumber(this.fetchSize, this.indexer.fetchSize);
   }
 
   search(searchFilter?: CertificationSearchFilter, options?: { first: number }): Observable<LoadResult<Certification>> {
@@ -246,8 +246,8 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
       let { data, fetchMore } = await this.fetchMoreFn();
 
       // Fetch more again, since we fetch using a timestamp
-      while (data.length < this.first && fetchMore) {
-        const res = await fetchMore(this.first);
+      while (data.length < this.fetchSize && fetchMore) {
+        const res = await fetchMore(this.fetchSize);
         if (res.data?.length) data = [...data, ...res.data];
         fetchMore = res.fetchMore;
       }

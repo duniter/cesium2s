@@ -17,7 +17,8 @@ export const environment = <Environment>{
   graphql: {
     fetchPolicy: 'cache-first',
     watchFetchPolicy: 'cache-and-network',
-    persistCache: false, // TODO test enabled
+    persistCache: false,
+    fetchSize: 20,
   },
 
   // Storage

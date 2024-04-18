@@ -174,7 +174,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
       // Load account's data
       try {
-        await Promise.all(accounts.map((a) => this.loadData(a)));
+        await Promise.all(accounts.map((a) => this.loadData(a, { withMembership: true })));
 
         // DEBUG
         console.info(this._logPrefix + `Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
@@ -362,13 +362,23 @@ export class AccountsService extends RxStartableService<AccountsState> {
       });
   }
 
-  watchAll(opts?: { positiveBalanceFirst?: boolean }): Observable<Account[]> {
+  watchAll(opts?: { positiveBalanceFirst?: boolean; minBalance?: number; isMember?: boolean }): Observable<Account[]> {
     if (!this.started) {
       return from(this.ready()).pipe(switchMap(() => this.watchAll(opts)));
     }
 
     return this.select('accounts').pipe(
       map((accounts) => {
+        // Filter is member
+        if (isNotNil(opts?.isMember)) {
+          accounts = accounts.filter((a) => (a.meta.isMember || false) === opts.isMember);
+        }
+
+        // Filter min balance
+        if (isNotNil(opts?.minBalance)) {
+          accounts = accounts.filter((a) => AccountUtils.getBalance(a) >= opts.minBalance);
+        }
+
         // Sort with a balance first
         if (opts?.positiveBalanceFirst) {
           accounts.sort((a1, a2) => {
@@ -444,7 +454,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
   watchByAddress(address: string, opts?: WatchAccountDataOptions): Observable<Account> {
     // Wait start if need, then loop
-    if (!this.started) return from(this.ready()).pipe(switchMap(() => this.watchByAddress(address)));
+    if (!this.started) return from(this.ready()).pipe(switchMap(() => this.watchByAddress(address, opts)));
 
     if (this.isAvailableSync(address)) {
       return this.accounts$.pipe(map((accounts) => accounts?.find((a) => a.address === address)));
@@ -457,7 +467,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
   }
 
   /**
-   *
+   * Transfer some money to an address
    * @param from
    * @param to
    * @param amount the TX amount, using decimals
@@ -517,8 +527,10 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     try {
       // Sign and send a transfer from Alice to Bob
-      const txHash = await this.api.tx.balances.transfer(to.address, amount).signAndSend(issuerPair, async ({ status, events }) => {
+      console.log(Object.keys(this.api.tx));
+      const txHash = await this.api.tx.balances.transferKeepAlive(to.address, amount).signAndSend(issuerPair, async ({ status, events }) => {
         if (status.isInBlock) {
+          console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
           console.info(`${this._logPrefix}Completed at block hash #${status.hash.toHuman()}`);
 
           if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
@@ -547,6 +559,59 @@ export class AccountsService extends RxStartableService<AccountsState> {
     } catch (err) {
       console.error(err);
       throw new Error('ERROR.SEND_TX_FAILED');
+    }
+  }
+
+  /**
+   *
+   * @param from
+   * @param to
+   */
+  async cert(from: Partial<Account>, to: Partial<Account>): Promise<string> {
+    if (!from || !to) throw new Error("Missing argument 'from' or 'to' !");
+    if (isNil(to.meta?.index)) throw new Error("Missing argument 'to.meta.index' !");
+
+    // Check currency
+    const currency = this.network.currency;
+    if (!currency) throw new Error('ERROR.CHECK_NETWORK_CONNECTION');
+
+    // Check issuer != recipient
+    if (from.address === to.address) {
+      throw new Error('ERROR.SELF_CERTIFICATION');
+    }
+
+    // Get issuer account
+    const issuerAccount = await this.getByAddress(from.address);
+
+    console.info(`${this._logPrefix}Certifying...\nfrom: ${from.address}\nto ${to.address}`);
+
+    // Get pair, and unlock it
+    const issuerPair = keyring.getPair(issuerAccount.address);
+    if (issuerPair.isLocked) {
+      console.debug(`[account-service] Unlocking address ${from.address} ...`);
+      const isAuth = await this.auth();
+      if (!isAuth) throw new Error('ERROR.AUTH_REQUIRED');
+      issuerPair.unlock(this._password);
+    }
+
+    try {
+      await this.ready();
+      const certHash = await this.api.tx.certification.addCert(to.meta?.index).signAndSend(issuerPair, async ({ status, events }) => {
+        if (status.isInBlock) {
+          console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
+          console.info(`${this._logPrefix}Certifying completed at block hash #${status.hash.toHuman()}`);
+
+          if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
+        }
+      });
+
+      // Show the hash
+      console.info(`${this._logPrefix}Finalized hash ${certHash}`);
+
+      return certHash.toString();
+    } catch (err) {
+      console.error(err);
+      throw new Error('ERROR.SEND_CERT_FAILED');
     }
   }
 
@@ -589,12 +654,14 @@ export class AccountsService extends RxStartableService<AccountsState> {
             .wotSearch({ address: account.address }, { first: 1, fetchPolicy: 'network-only' })
             .pipe(map(({ data }) => firstArrayValue(data)))
         );
-        account.meta = {
-          ...account.meta,
-          uid: indexedAccount.meta?.uid,
-          isMember: indexedAccount.meta?.isMember,
-        };
-        changed = true;
+        if (indexedAccount) {
+          account.meta = {
+            ...account.meta,
+            uid: indexedAccount.meta?.uid,
+            isMember: indexedAccount.meta?.isMember,
+          };
+          changed = true;
+        }
       }
 
       // Load TX

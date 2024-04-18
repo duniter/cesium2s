@@ -5,29 +5,13 @@ query WotSearchByText($searchText: String!, $first: Int!, $after: String, $order
     orderBy: $orderBy
     where: { _or: [{ id: { _ilike: $searchText } }, { identity: { name: { _ilike: $searchText } } }] }
   ) {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-    edges {
-      node {
-        ...LightAccount
-      }
-    }
+    ...LightAccountConnection
   }
 }
 
 query WotSearchByAddress($address: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
   accountConnection(first: $first, after: $after, orderBy: $orderBy, where: { id: { _eq: $address } }) {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-    edges {
-      node {
-        ...LightAccount
-      }
-    }
+    ...LightAccountConnection
   }
 }
 
@@ -38,14 +22,6 @@ query WotSearchLast($first: Int!, $after: String, $orderBy: [AccountOrderBy!], $
     orderBy: $orderBy
     where: { _and: [{ identity: { id: { _isNull: false } } }, { identity: { membershipHistory: { eventId: { _isNull: $pending } } } }] }
   ) {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-    edges {
-      node {
-        ...LightAccount
-      }
-    }
+    ...LightAccountConnection
   }
 }

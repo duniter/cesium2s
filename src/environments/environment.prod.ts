@@ -16,6 +16,7 @@ export const environment = <Environment>{
     fetchPolicy: 'cache-first',
     watchFetchPolicy: 'cache-and-network',
     persistCache: false, // TODO test enabled
+    fetchSize: 20,
   },
 
   // Storage

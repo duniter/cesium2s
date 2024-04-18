@@ -1,5 +1,6 @@
 fragment LightIdentity on Identity {
   id
+  index
   name
   isMember
   accountId
@@ -13,5 +14,17 @@ fragment LightAccount on Account {
   id
   identity {
     ...LightIdentity
+  }
+}
+
+fragment LightAccountConnection on AccountConnection {
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+  edges {
+    node {
+      ...LightAccount
+    }
   }
 }

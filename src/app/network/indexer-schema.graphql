@@ -1,249 +1,165 @@
+# This file was generated. Do not edit manually.
+
 schema {
   query: query_root
   subscription: subscription_root
 }
 
-"""whether this query should be cached (Hasura Cloud only)"""
+"whether this query should be cached (Hasura Cloud only)"
 directive @cached(
-  """measured in seconds"""
+  "refresh the cache entry"
+  refresh: Boolean! = false,
+  "measured in seconds"
   ttl: Int! = 60
-
-  """refresh the cache entry"""
-  refresh: Boolean! = false
 ) on QUERY
 
-"""
-columns and relationships of "account"
-"""
+"An object with globally unique ID"
+interface Node {
+  "A globally unique identifier"
+  id: ID!
+}
+
+"columns and relationships of \"account\""
 type Account implements Node {
   id: ID!
-
-  """An object relationship"""
+  "An object relationship"
   identity: Identity
-
-  """An object relationship"""
+  "An object relationship"
   linkedIdentity: Identity
   linkedIdentityId: String
-
-  """An array relationship"""
+  "An array relationship"
   transfersIssued(
-    """distinct select on columns"""
-    distinctOn: [TransferSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [TransferOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
     where: TransferBoolExp
   ): [Transfer!]!
-
-  """An aggregate relationship"""
+  "An aggregate relationship"
   transfersIssuedAggregate(
-    """distinct select on columns"""
-    distinctOn: [TransferSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [TransferOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
     where: TransferBoolExp
   ): TransferAggregate!
-
-  """An array relationship connection"""
+  "An array relationship connection"
   transfersIssued_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [TransferSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [TransferOrderBy!]
-
-    """filter the rows returned"""
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
     where: TransferBoolExp
   ): TransferConnection!
-
-  """An array relationship"""
+  "An array relationship"
   transfersReceived(
-    """distinct select on columns"""
-    distinctOn: [TransferSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [TransferOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
     where: TransferBoolExp
   ): [Transfer!]!
-
-  """An aggregate relationship"""
+  "An aggregate relationship"
   transfersReceivedAggregate(
-    """distinct select on columns"""
-    distinctOn: [TransferSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [TransferOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
     where: TransferBoolExp
   ): TransferAggregate!
-
-  """An array relationship connection"""
+  "An array relationship connection"
   transfersReceived_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [TransferSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [TransferOrderBy!]
-
-    """filter the rows returned"""
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
     where: TransferBoolExp
   ): TransferConnection!
-
-  """An array relationship"""
+  "An array relationship"
   wasIdentity(
-    """distinct select on columns"""
-    distinctOn: [ChangeOwnerKeySelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ChangeOwnerKeyOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
     where: ChangeOwnerKeyBoolExp
   ): [ChangeOwnerKey!]!
-
-  """An aggregate relationship"""
+  "An aggregate relationship"
   wasIdentityAggregate(
-    """distinct select on columns"""
-    distinctOn: [ChangeOwnerKeySelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ChangeOwnerKeyOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
     where: ChangeOwnerKeyBoolExp
   ): ChangeOwnerKeyAggregate!
-
-  """An array relationship connection"""
+  "An array relationship connection"
   wasIdentity_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ChangeOwnerKeySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ChangeOwnerKeyOrderBy!]
-
-    """filter the rows returned"""
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
     where: ChangeOwnerKeyBoolExp
   ): ChangeOwnerKeyConnection!
 }
 
-"""
-aggregated selection of "account"
-"""
+"aggregated selection of \"account\""
 type AccountAggregate {
   aggregate: AccountAggregateFields
   nodes: [Account!]!
 }
 
-input AccountAggregateBoolExp {
-  count: accountAggregateBoolExpCount
-}
-
-input accountAggregateBoolExpCount {
-  arguments: [AccountSelectColumn!]
-  distinct: Boolean
-  filter: AccountBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "account"
-"""
+"aggregate fields of \"account\""
 type AccountAggregateFields {
   count(columns: [AccountSelectColumn!], distinct: Boolean): Int!
   max: AccountMaxFields
   min: AccountMinFields
 }
 
-"""
-order by aggregate values of table "account"
-"""
-input AccountAggregateOrderBy {
-  count: OrderBy
-  max: AccountMaxOrderBy
-  min: AccountMinOrderBy
-}
-
-"""
-Boolean expression to filter rows from the table "account". All fields are combined with a logical 'AND'.
-"""
-input AccountBoolExp {
-  _and: [AccountBoolExp!]
-  _not: AccountBoolExp
-  _or: [AccountBoolExp!]
-  id: StringComparisonExp
-  identity: IdentityBoolExp
-  linkedIdentity: IdentityBoolExp
-  linkedIdentityId: StringComparisonExp
-  transfersIssued: TransferBoolExp
-  transfersIssuedAggregate: TransferAggregateBoolExp
-  transfersReceived: TransferBoolExp
-  transfersReceivedAggregate: TransferAggregateBoolExp
-  wasIdentity: ChangeOwnerKeyBoolExp
-  wasIdentityAggregate: ChangeOwnerKeyAggregateBoolExp
-}
-
-"""
-A Relay connection object on "account"
-"""
+"A Relay connection object on \"account\""
 type AccountConnection {
   edges: [AccountEdge!]!
   pageInfo: PageInfo!
@@ -254,219 +170,138 @@ type AccountEdge {
   node: Account!
 }
 
-"""aggregate max on columns"""
+"aggregate max on columns"
 type AccountMaxFields {
   id: String
   linkedIdentityId: String
 }
 
-"""
-order by max() on columns of table "account"
-"""
-input AccountMaxOrderBy {
-  id: OrderBy
-  linkedIdentityId: OrderBy
-}
-
-"""aggregate min on columns"""
+"aggregate min on columns"
 type AccountMinFields {
   id: String
   linkedIdentityId: String
 }
 
-"""
-order by min() on columns of table "account"
-"""
-input AccountMinOrderBy {
-  id: OrderBy
-  linkedIdentityId: OrderBy
-}
-
-"""Ordering options when selecting data from "account"."""
-input AccountOrderBy {
-  id: OrderBy
-  identity: IdentityOrderBy
-  linkedIdentity: IdentityOrderBy
-  linkedIdentityId: OrderBy
-  transfersIssuedAggregate: TransferAggregateOrderBy
-  transfersReceivedAggregate: TransferAggregateOrderBy
-  wasIdentityAggregate: ChangeOwnerKeyAggregateOrderBy
-}
-
-"""
-select columns of table "account"
-"""
-enum AccountSelectColumn {
-  """column name"""
-  id
-
-  """column name"""
-  linkedIdentityId
-}
-
-"""
-columns and relationships of "block"
-"""
+"columns and relationships of \"block\""
 type Block implements Node {
-  """An array relationship"""
+  "An array relationship"
   calls(
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
     where: CallBoolExp
   ): [Call!]!
-
-  """An aggregate relationship"""
+  "An aggregate relationship"
   callsAggregate(
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
     where: CallBoolExp
   ): CallAggregate!
   callsCount: Int!
-
-  """An array relationship connection"""
+  "An array relationship connection"
   calls_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
     where: CallBoolExp
   ): CallConnection!
-
-  """An array relationship"""
+  "An array relationship"
   events(
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
     where: EventBoolExp
   ): [Event!]!
-
-  """An aggregate relationship"""
+  "An aggregate relationship"
   eventsAggregate(
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
     where: EventBoolExp
   ): EventAggregate!
   eventsCount: Int!
-
-  """An array relationship connection"""
+  "An array relationship connection"
   events_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
     where: EventBoolExp
   ): EventConnection!
-
-  """An array relationship"""
+  "An array relationship"
   extrinsics(
-    """distinct select on columns"""
-    distinctOn: [ExtrinsicSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ExtrinsicOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
     where: ExtrinsicBoolExp
   ): [Extrinsic!]!
-
-  """An aggregate relationship"""
+  "An aggregate relationship"
   extrinsicsAggregate(
-    """distinct select on columns"""
-    distinctOn: [ExtrinsicSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ExtrinsicOrderBy!]
-
-    """filter the rows returned"""
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
     where: ExtrinsicBoolExp
   ): ExtrinsicAggregate!
   extrinsicsCount: Int!
-
-  """An array relationship connection"""
+  "An array relationship connection"
   extrinsics_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ExtrinsicSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ExtrinsicOrderBy!]
-
-    """filter the rows returned"""
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
     where: ExtrinsicBoolExp
   ): ExtrinsicConnection!
   extrinsicsicRoot: bytea!
@@ -483,9 +318,2501 @@ type Block implements Node {
   validator: bytea
 }
 
-"""
-Boolean expression to filter rows from the table "block". All fields are combined with a logical 'AND'.
-"""
+"A Relay connection object on \"block\""
+type BlockConnection {
+  edges: [BlockEdge!]!
+  pageInfo: PageInfo!
+}
+
+type BlockEdge {
+  cursor: String!
+  node: Block!
+}
+
+"columns and relationships of \"call\""
+type Call implements Node {
+  address: [Int!]!
+  args(
+    "JSON select path"
+    path: String
+  ): jsonb
+  argsStr: [String!]
+  "An object relationship"
+  block: Block
+  blockId: String
+  error(
+    "JSON select path"
+    path: String
+  ): jsonb
+  "An array relationship"
+  events(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): [Event!]!
+  "An aggregate relationship"
+  eventsAggregate(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventAggregate!
+  "An array relationship connection"
+  events_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  "An object relationship"
+  extrinsic: Extrinsic
+  extrinsicId: String
+  id: ID!
+  name: String!
+  pallet: String!
+  "An object relationship"
+  parent: Call
+  parentId: String
+  "An array relationship"
+  subcalls(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): [Call!]!
+  "An aggregate relationship"
+  subcallsAggregate(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallAggregate!
+  "An array relationship connection"
+  subcalls_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
+  success: Boolean!
+}
+
+"aggregated selection of \"call\""
+type CallAggregate {
+  aggregate: CallAggregateFields
+  nodes: [Call!]!
+}
+
+"aggregate fields of \"call\""
+type CallAggregateFields {
+  count(columns: [CallSelectColumn!], distinct: Boolean): Int!
+  max: CallMaxFields
+  min: CallMinFields
+}
+
+"A Relay connection object on \"call\""
+type CallConnection {
+  edges: [CallEdge!]!
+  pageInfo: PageInfo!
+}
+
+type CallEdge {
+  cursor: String!
+  node: Call!
+}
+
+"aggregate max on columns"
+type CallMaxFields {
+  address: [Int!]
+  argsStr: [String!]
+  blockId: String
+  extrinsicId: String
+  id: String
+  name: String
+  pallet: String
+  parentId: String
+}
+
+"aggregate min on columns"
+type CallMinFields {
+  address: [Int!]
+  argsStr: [String!]
+  blockId: String
+  extrinsicId: String
+  id: String
+  name: String
+  pallet: String
+  parentId: String
+}
+
+"columns and relationships of \"cert\""
+type Cert implements Node {
+  "An array relationship"
+  certHistory(
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): [CertEvent!]!
+  "An aggregate relationship"
+  certHistoryAggregate(
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): CertEventAggregate!
+  "An array relationship connection"
+  certHistory_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): CertEventConnection!
+  createdOn: Int!
+  expireOn: Int!
+  id: ID!
+  isActive: Boolean!
+  "An object relationship"
+  issuer: Identity
+  issuerId: String
+  "An object relationship"
+  receiver: Identity
+  receiverId: String
+}
+
+"aggregated selection of \"cert\""
+type CertAggregate {
+  aggregate: CertAggregateFields
+  nodes: [Cert!]!
+}
+
+"aggregate fields of \"cert\""
+type CertAggregateFields {
+  avg: CertAvgFields
+  count(columns: [CertSelectColumn!], distinct: Boolean): Int!
+  max: CertMaxFields
+  min: CertMinFields
+  stddev: CertStddevFields
+  stddevPop: CertStddevPopFields
+  stddevSamp: CertStddevSampFields
+  sum: CertSumFields
+  varPop: CertVarPopFields
+  varSamp: CertVarSampFields
+  variance: CertVarianceFields
+}
+
+"aggregate avg on columns"
+type CertAvgFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"A Relay connection object on \"cert\""
+type CertConnection {
+  edges: [CertEdge!]!
+  pageInfo: PageInfo!
+}
+
+type CertEdge {
+  cursor: String!
+  node: Cert!
+}
+
+"columns and relationships of \"cert_event\""
+type CertEvent implements Node {
+  blockNumber: Int!
+  "An object relationship"
+  cert: Cert
+  certId: String
+  "An object relationship"
+  event: Event
+  eventId: String
+  eventType: EventTypeEnum
+  id: ID!
+}
+
+"aggregated selection of \"cert_event\""
+type CertEventAggregate {
+  aggregate: CertEventAggregateFields
+  nodes: [CertEvent!]!
+}
+
+"aggregate fields of \"cert_event\""
+type CertEventAggregateFields {
+  avg: CertEventAvgFields
+  count(columns: [CertEventSelectColumn!], distinct: Boolean): Int!
+  max: CertEventMaxFields
+  min: CertEventMinFields
+  stddev: CertEventStddevFields
+  stddevPop: CertEventStddevPopFields
+  stddevSamp: CertEventStddevSampFields
+  sum: CertEventSumFields
+  varPop: CertEventVarPopFields
+  varSamp: CertEventVarSampFields
+  variance: CertEventVarianceFields
+}
+
+"aggregate avg on columns"
+type CertEventAvgFields {
+  blockNumber: Float
+}
+
+"A Relay connection object on \"cert_event\""
+type CertEventConnection {
+  edges: [CertEventEdge!]!
+  pageInfo: PageInfo!
+}
+
+type CertEventEdge {
+  cursor: String!
+  node: CertEvent!
+}
+
+"aggregate max on columns"
+type CertEventMaxFields {
+  blockNumber: Int
+  certId: String
+  eventId: String
+  id: String
+}
+
+"aggregate min on columns"
+type CertEventMinFields {
+  blockNumber: Int
+  certId: String
+  eventId: String
+  id: String
+}
+
+"aggregate stddev on columns"
+type CertEventStddevFields {
+  blockNumber: Float
+}
+
+"aggregate stddevPop on columns"
+type CertEventStddevPopFields {
+  blockNumber: Float
+}
+
+"aggregate stddevSamp on columns"
+type CertEventStddevSampFields {
+  blockNumber: Float
+}
+
+"aggregate sum on columns"
+type CertEventSumFields {
+  blockNumber: Int
+}
+
+"aggregate varPop on columns"
+type CertEventVarPopFields {
+  blockNumber: Float
+}
+
+"aggregate varSamp on columns"
+type CertEventVarSampFields {
+  blockNumber: Float
+}
+
+"aggregate variance on columns"
+type CertEventVarianceFields {
+  blockNumber: Float
+}
+
+"aggregate max on columns"
+type CertMaxFields {
+  createdOn: Int
+  expireOn: Int
+  id: String
+  issuerId: String
+  receiverId: String
+}
+
+"aggregate min on columns"
+type CertMinFields {
+  createdOn: Int
+  expireOn: Int
+  id: String
+  issuerId: String
+  receiverId: String
+}
+
+"aggregate stddev on columns"
+type CertStddevFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate stddevPop on columns"
+type CertStddevPopFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate stddevSamp on columns"
+type CertStddevSampFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate sum on columns"
+type CertSumFields {
+  createdOn: Int
+  expireOn: Int
+}
+
+"aggregate varPop on columns"
+type CertVarPopFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate varSamp on columns"
+type CertVarSampFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"aggregate variance on columns"
+type CertVarianceFields {
+  createdOn: Float
+  expireOn: Float
+}
+
+"columns and relationships of \"change_owner_key\""
+type ChangeOwnerKey implements Node {
+  blockNumber: Int!
+  id: ID!
+  "An object relationship"
+  identity: Identity
+  identityId: String
+  "An object relationship"
+  next: Account
+  nextId: String
+  "An object relationship"
+  previous: Account
+  previousId: String
+}
+
+"aggregated selection of \"change_owner_key\""
+type ChangeOwnerKeyAggregate {
+  aggregate: ChangeOwnerKeyAggregateFields
+  nodes: [ChangeOwnerKey!]!
+}
+
+"aggregate fields of \"change_owner_key\""
+type ChangeOwnerKeyAggregateFields {
+  avg: ChangeOwnerKeyAvgFields
+  count(columns: [ChangeOwnerKeySelectColumn!], distinct: Boolean): Int!
+  max: ChangeOwnerKeyMaxFields
+  min: ChangeOwnerKeyMinFields
+  stddev: ChangeOwnerKeyStddevFields
+  stddevPop: ChangeOwnerKeyStddevPopFields
+  stddevSamp: ChangeOwnerKeyStddevSampFields
+  sum: ChangeOwnerKeySumFields
+  varPop: ChangeOwnerKeyVarPopFields
+  varSamp: ChangeOwnerKeyVarSampFields
+  variance: ChangeOwnerKeyVarianceFields
+}
+
+"aggregate avg on columns"
+type ChangeOwnerKeyAvgFields {
+  blockNumber: Float
+}
+
+"A Relay connection object on \"change_owner_key\""
+type ChangeOwnerKeyConnection {
+  edges: [ChangeOwnerKeyEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ChangeOwnerKeyEdge {
+  cursor: String!
+  node: ChangeOwnerKey!
+}
+
+"aggregate max on columns"
+type ChangeOwnerKeyMaxFields {
+  blockNumber: Int
+  id: String
+  identityId: String
+  nextId: String
+  previousId: String
+}
+
+"aggregate min on columns"
+type ChangeOwnerKeyMinFields {
+  blockNumber: Int
+  id: String
+  identityId: String
+  nextId: String
+  previousId: String
+}
+
+"aggregate stddev on columns"
+type ChangeOwnerKeyStddevFields {
+  blockNumber: Float
+}
+
+"aggregate stddevPop on columns"
+type ChangeOwnerKeyStddevPopFields {
+  blockNumber: Float
+}
+
+"aggregate stddevSamp on columns"
+type ChangeOwnerKeyStddevSampFields {
+  blockNumber: Float
+}
+
+"aggregate sum on columns"
+type ChangeOwnerKeySumFields {
+  blockNumber: Int
+}
+
+"aggregate varPop on columns"
+type ChangeOwnerKeyVarPopFields {
+  blockNumber: Float
+}
+
+"aggregate varSamp on columns"
+type ChangeOwnerKeyVarSampFields {
+  blockNumber: Float
+}
+
+"aggregate variance on columns"
+type ChangeOwnerKeyVarianceFields {
+  blockNumber: Float
+}
+
+"columns and relationships of \"event\""
+type Event implements Node {
+  args(
+    "JSON select path"
+    path: String
+  ): jsonb
+  argsStr: [String!]
+  "An object relationship"
+  block: Block
+  blockId: String
+  "An object relationship"
+  call: Call
+  callId: String
+  "An object relationship"
+  extrinsic: Extrinsic
+  extrinsicId: String
+  id: ID!
+  index: Int!
+  name: String!
+  pallet: String!
+  phase: String!
+}
+
+"aggregated selection of \"event\""
+type EventAggregate {
+  aggregate: EventAggregateFields
+  nodes: [Event!]!
+}
+
+"aggregate fields of \"event\""
+type EventAggregateFields {
+  avg: EventAvgFields
+  count(columns: [EventSelectColumn!], distinct: Boolean): Int!
+  max: EventMaxFields
+  min: EventMinFields
+  stddev: EventStddevFields
+  stddevPop: EventStddevPopFields
+  stddevSamp: EventStddevSampFields
+  sum: EventSumFields
+  varPop: EventVarPopFields
+  varSamp: EventVarSampFields
+  variance: EventVarianceFields
+}
+
+"aggregate avg on columns"
+type EventAvgFields {
+  index: Float
+}
+
+"A Relay connection object on \"event\""
+type EventConnection {
+  edges: [EventEdge!]!
+  pageInfo: PageInfo!
+}
+
+type EventEdge {
+  cursor: String!
+  node: Event!
+}
+
+"aggregate max on columns"
+type EventMaxFields {
+  argsStr: [String!]
+  blockId: String
+  callId: String
+  extrinsicId: String
+  id: String
+  index: Int
+  name: String
+  pallet: String
+  phase: String
+}
+
+"aggregate min on columns"
+type EventMinFields {
+  argsStr: [String!]
+  blockId: String
+  callId: String
+  extrinsicId: String
+  id: String
+  index: Int
+  name: String
+  pallet: String
+  phase: String
+}
+
+"aggregate stddev on columns"
+type EventStddevFields {
+  index: Float
+}
+
+"aggregate stddevPop on columns"
+type EventStddevPopFields {
+  index: Float
+}
+
+"aggregate stddevSamp on columns"
+type EventStddevSampFields {
+  index: Float
+}
+
+"aggregate sum on columns"
+type EventSumFields {
+  index: Int
+}
+
+"aggregate varPop on columns"
+type EventVarPopFields {
+  index: Float
+}
+
+"aggregate varSamp on columns"
+type EventVarSampFields {
+  index: Float
+}
+
+"aggregate variance on columns"
+type EventVarianceFields {
+  index: Float
+}
+
+"columns and relationships of \"extrinsic\""
+type Extrinsic implements Node {
+  "An object relationship"
+  block: Block
+  blockId: String
+  "An object relationship"
+  call: Call
+  callId: String
+  "An array relationship"
+  calls(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): [Call!]!
+  "An aggregate relationship"
+  callsAggregate(
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallAggregate!
+  "An array relationship connection"
+  calls_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
+  error(
+    "JSON select path"
+    path: String
+  ): jsonb
+  "An array relationship"
+  events(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): [Event!]!
+  "An aggregate relationship"
+  eventsAggregate(
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventAggregate!
+  "An array relationship connection"
+  events_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  fee: numeric
+  hash: bytea!
+  id: ID!
+  index: Int!
+  signature(
+    "JSON select path"
+    path: String
+  ): jsonb
+  success: Boolean
+  tip: numeric
+  version: Int!
+}
+
+"aggregated selection of \"extrinsic\""
+type ExtrinsicAggregate {
+  aggregate: ExtrinsicAggregateFields
+  nodes: [Extrinsic!]!
+}
+
+"aggregate fields of \"extrinsic\""
+type ExtrinsicAggregateFields {
+  avg: ExtrinsicAvgFields
+  count(columns: [ExtrinsicSelectColumn!], distinct: Boolean): Int!
+  max: ExtrinsicMaxFields
+  min: ExtrinsicMinFields
+  stddev: ExtrinsicStddevFields
+  stddevPop: ExtrinsicStddevPopFields
+  stddevSamp: ExtrinsicStddevSampFields
+  sum: ExtrinsicSumFields
+  varPop: ExtrinsicVarPopFields
+  varSamp: ExtrinsicVarSampFields
+  variance: ExtrinsicVarianceFields
+}
+
+"aggregate avg on columns"
+type ExtrinsicAvgFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"A Relay connection object on \"extrinsic\""
+type ExtrinsicConnection {
+  edges: [ExtrinsicEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ExtrinsicEdge {
+  cursor: String!
+  node: Extrinsic!
+}
+
+"aggregate max on columns"
+type ExtrinsicMaxFields {
+  blockId: String
+  callId: String
+  fee: numeric
+  id: String
+  index: Int
+  tip: numeric
+  version: Int
+}
+
+"aggregate min on columns"
+type ExtrinsicMinFields {
+  blockId: String
+  callId: String
+  fee: numeric
+  id: String
+  index: Int
+  tip: numeric
+  version: Int
+}
+
+"aggregate stddev on columns"
+type ExtrinsicStddevFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate stddevPop on columns"
+type ExtrinsicStddevPopFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate stddevSamp on columns"
+type ExtrinsicStddevSampFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate sum on columns"
+type ExtrinsicSumFields {
+  fee: numeric
+  index: Int
+  tip: numeric
+  version: Int
+}
+
+"aggregate varPop on columns"
+type ExtrinsicVarPopFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate varSamp on columns"
+type ExtrinsicVarSampFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"aggregate variance on columns"
+type ExtrinsicVarianceFields {
+  fee: Float
+  index: Float
+  tip: Float
+  version: Float
+}
+
+"columns and relationships of \"identity\""
+type Identity implements Node {
+  "An object relationship"
+  account: Account
+  accountId: String
+  "An array relationship"
+  certIssued(
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): [Cert!]!
+  "An aggregate relationship"
+  certIssuedAggregate(
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertAggregate!
+  "An array relationship connection"
+  certIssued_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertConnection!
+  "An array relationship"
+  certReceived(
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): [Cert!]!
+  "An aggregate relationship"
+  certReceivedAggregate(
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertAggregate!
+  "An array relationship connection"
+  certReceived_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertConnection!
+  "An object relationship"
+  createdIn: Event
+  createdInId: String
+  createdOn: Int!
+  expireOn: Int!
+  id: ID!
+  index: Int!
+  isMember: Boolean!
+  lastChangeOn: Int!
+  "An array relationship"
+  linkedAccount(
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): [Account!]!
+  "An aggregate relationship"
+  linkedAccountAggregate(
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): AccountAggregate!
+  "An array relationship connection"
+  linkedAccount_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): AccountConnection!
+  "An array relationship"
+  membershipHistory(
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): [MembershipEvent!]!
+  "An aggregate relationship"
+  membershipHistoryAggregate(
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): MembershipEventAggregate!
+  "An array relationship connection"
+  membershipHistory_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): MembershipEventConnection!
+  name: String!
+  "An array relationship"
+  ownerKeyChange(
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): [ChangeOwnerKey!]!
+  "An aggregate relationship"
+  ownerKeyChangeAggregate(
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyAggregate!
+  "An array relationship connection"
+  ownerKeyChange_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyConnection!
+  "An array relationship"
+  smithCertIssued(
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): [SmithCert!]!
+  "An aggregate relationship"
+  smithCertIssuedAggregate(
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertAggregate!
+  "An array relationship connection"
+  smithCertIssued_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertConnection!
+  "An array relationship"
+  smithCertReceived(
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): [SmithCert!]!
+  "An aggregate relationship"
+  smithCertReceivedAggregate(
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertAggregate!
+  "An array relationship connection"
+  smithCertReceived_connection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertConnection!
+  smithStatus: SmithStatusEnum
+  status: IdentityStatusEnum
+  "\"Get UD History by Identity\""
+  udHistory(
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    "limit the number of rows returned"
+    limit: Int,
+    "skip the first n rows. Use only with order_by"
+    offset: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): [UdHistory!]
+}
+
+"A Relay connection object on \"identity\""
+type IdentityConnection {
+  edges: [IdentityEdge!]!
+  pageInfo: PageInfo!
+}
+
+type IdentityEdge {
+  cursor: String!
+  node: Identity!
+}
+
+"columns and relationships of \"items_counter\""
+type ItemsCounter implements Node {
+  id: ID!
+  level: CounterLevelEnum
+  total: Int!
+  type: ItemTypeEnum
+}
+
+"A Relay connection object on \"items_counter\""
+type ItemsCounterConnection {
+  edges: [ItemsCounterEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ItemsCounterEdge {
+  cursor: String!
+  node: ItemsCounter!
+}
+
+"columns and relationships of \"membership_event\""
+type MembershipEvent implements Node {
+  blockNumber: Int!
+  "An object relationship"
+  event: Event
+  eventId: String
+  eventType: EventTypeEnum
+  id: ID!
+  "An object relationship"
+  identity: Identity
+  identityId: String
+}
+
+"aggregated selection of \"membership_event\""
+type MembershipEventAggregate {
+  aggregate: MembershipEventAggregateFields
+  nodes: [MembershipEvent!]!
+}
+
+"aggregate fields of \"membership_event\""
+type MembershipEventAggregateFields {
+  avg: MembershipEventAvgFields
+  count(columns: [MembershipEventSelectColumn!], distinct: Boolean): Int!
+  max: MembershipEventMaxFields
+  min: MembershipEventMinFields
+  stddev: MembershipEventStddevFields
+  stddevPop: MembershipEventStddevPopFields
+  stddevSamp: MembershipEventStddevSampFields
+  sum: MembershipEventSumFields
+  varPop: MembershipEventVarPopFields
+  varSamp: MembershipEventVarSampFields
+  variance: MembershipEventVarianceFields
+}
+
+"aggregate avg on columns"
+type MembershipEventAvgFields {
+  blockNumber: Float
+}
+
+"A Relay connection object on \"membership_event\""
+type MembershipEventConnection {
+  edges: [MembershipEventEdge!]!
+  pageInfo: PageInfo!
+}
+
+type MembershipEventEdge {
+  cursor: String!
+  node: MembershipEvent!
+}
+
+"aggregate max on columns"
+type MembershipEventMaxFields {
+  blockNumber: Int
+  eventId: String
+  id: String
+  identityId: String
+}
+
+"aggregate min on columns"
+type MembershipEventMinFields {
+  blockNumber: Int
+  eventId: String
+  id: String
+  identityId: String
+}
+
+"aggregate stddev on columns"
+type MembershipEventStddevFields {
+  blockNumber: Float
+}
+
+"aggregate stddevPop on columns"
+type MembershipEventStddevPopFields {
+  blockNumber: Float
+}
+
+"aggregate stddevSamp on columns"
+type MembershipEventStddevSampFields {
+  blockNumber: Float
+}
+
+"aggregate sum on columns"
+type MembershipEventSumFields {
+  blockNumber: Int
+}
+
+"aggregate varPop on columns"
+type MembershipEventVarPopFields {
+  blockNumber: Float
+}
+
+"aggregate varSamp on columns"
+type MembershipEventVarSampFields {
+  blockNumber: Float
+}
+
+"aggregate variance on columns"
+type MembershipEventVarianceFields {
+  blockNumber: Float
+}
+
+type PageInfo {
+  endCursor: String!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String!
+}
+
+"columns and relationships of \"smith_cert\""
+type SmithCert implements Node {
+  createdOn: Int!
+  id: ID!
+  "An object relationship"
+  issuer: Identity
+  issuerId: String
+  "An object relationship"
+  receiver: Identity
+  receiverId: String
+}
+
+"aggregated selection of \"smith_cert\""
+type SmithCertAggregate {
+  aggregate: SmithCertAggregateFields
+  nodes: [SmithCert!]!
+}
+
+"aggregate fields of \"smith_cert\""
+type SmithCertAggregateFields {
+  avg: SmithCertAvgFields
+  count(columns: [SmithCertSelectColumn!], distinct: Boolean): Int!
+  max: SmithCertMaxFields
+  min: SmithCertMinFields
+  stddev: SmithCertStddevFields
+  stddevPop: SmithCertStddevPopFields
+  stddevSamp: SmithCertStddevSampFields
+  sum: SmithCertSumFields
+  varPop: SmithCertVarPopFields
+  varSamp: SmithCertVarSampFields
+  variance: SmithCertVarianceFields
+}
+
+"aggregate avg on columns"
+type SmithCertAvgFields {
+  createdOn: Float
+}
+
+"A Relay connection object on \"smith_cert\""
+type SmithCertConnection {
+  edges: [SmithCertEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SmithCertEdge {
+  cursor: String!
+  node: SmithCert!
+}
+
+"aggregate max on columns"
+type SmithCertMaxFields {
+  createdOn: Int
+  id: String
+  issuerId: String
+  receiverId: String
+}
+
+"aggregate min on columns"
+type SmithCertMinFields {
+  createdOn: Int
+  id: String
+  issuerId: String
+  receiverId: String
+}
+
+"aggregate stddev on columns"
+type SmithCertStddevFields {
+  createdOn: Float
+}
+
+"aggregate stddevPop on columns"
+type SmithCertStddevPopFields {
+  createdOn: Float
+}
+
+"aggregate stddevSamp on columns"
+type SmithCertStddevSampFields {
+  createdOn: Float
+}
+
+"aggregate sum on columns"
+type SmithCertSumFields {
+  createdOn: Int
+}
+
+"aggregate varPop on columns"
+type SmithCertVarPopFields {
+  createdOn: Float
+}
+
+"aggregate varSamp on columns"
+type SmithCertVarSampFields {
+  createdOn: Float
+}
+
+"aggregate variance on columns"
+type SmithCertVarianceFields {
+  createdOn: Float
+}
+
+"columns and relationships of \"transfer\""
+type Transfer implements Node {
+  amount: numeric!
+  blockNumber: Int!
+  comment: String
+  "An object relationship"
+  from: Account
+  fromId: String
+  id: ID!
+  timestamp: timestamptz!
+  "An object relationship"
+  to: Account
+  toId: String
+}
+
+"aggregated selection of \"transfer\""
+type TransferAggregate {
+  aggregate: TransferAggregateFields
+  nodes: [Transfer!]!
+}
+
+"aggregate fields of \"transfer\""
+type TransferAggregateFields {
+  avg: TransferAvgFields
+  count(columns: [TransferSelectColumn!], distinct: Boolean): Int!
+  max: TransferMaxFields
+  min: TransferMinFields
+  stddev: TransferStddevFields
+  stddevPop: TransferStddevPopFields
+  stddevSamp: TransferStddevSampFields
+  sum: TransferSumFields
+  varPop: TransferVarPopFields
+  varSamp: TransferVarSampFields
+  variance: TransferVarianceFields
+}
+
+"aggregate avg on columns"
+type TransferAvgFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"A Relay connection object on \"transfer\""
+type TransferConnection {
+  edges: [TransferEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransferEdge {
+  cursor: String!
+  node: Transfer!
+}
+
+"aggregate max on columns"
+type TransferMaxFields {
+  amount: numeric
+  blockNumber: Int
+  comment: String
+  fromId: String
+  id: String
+  timestamp: timestamptz
+  toId: String
+}
+
+"aggregate min on columns"
+type TransferMinFields {
+  amount: numeric
+  blockNumber: Int
+  comment: String
+  fromId: String
+  id: String
+  timestamp: timestamptz
+  toId: String
+}
+
+"aggregate stddev on columns"
+type TransferStddevFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate stddevPop on columns"
+type TransferStddevPopFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate stddevSamp on columns"
+type TransferStddevSampFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate sum on columns"
+type TransferSumFields {
+  amount: numeric
+  blockNumber: Int
+}
+
+"aggregate varPop on columns"
+type TransferVarPopFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate varSamp on columns"
+type TransferVarSampFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"aggregate variance on columns"
+type TransferVarianceFields {
+  amount: Float
+  blockNumber: Float
+}
+
+"columns and relationships of \"ud_history\""
+type UdHistory implements Node {
+  amount: Int!
+  blockNumber: Int!
+  id: ID!
+  "An object relationship"
+  identity: Identity
+  identityId: String
+  timestamp: timestamptz!
+}
+
+"A Relay connection object on \"ud_history\""
+type UdHistoryConnection {
+  edges: [UdHistoryEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UdHistoryEdge {
+  cursor: String!
+  node: UdHistory!
+}
+
+"columns and relationships of \"ud_reeval\""
+type UdReeval implements Node {
+  blockNumber: Int!
+  "An object relationship"
+  event: Event
+  eventId: String
+  id: ID!
+  membersCount: Int!
+  monetaryMass: numeric!
+  newUdAmount: Int!
+  timestamp: timestamptz!
+}
+
+"A Relay connection object on \"ud_reeval\""
+type UdReevalConnection {
+  edges: [UdReevalEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UdReevalEdge {
+  cursor: String!
+  node: UdReeval!
+}
+
+"columns and relationships of \"universal_dividend\""
+type UniversalDividend implements Node {
+  amount: Int!
+  blockNumber: Int!
+  "An object relationship"
+  event: Event
+  eventId: String
+  id: ID!
+  membersCount: Int!
+  monetaryMass: numeric!
+  timestamp: timestamptz!
+}
+
+"A Relay connection object on \"universal_dividend\""
+type UniversalDividendConnection {
+  edges: [UniversalDividendEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UniversalDividendEdge {
+  cursor: String!
+  node: UniversalDividend!
+}
+
+type query_root {
+  "fetch data from the table: \"account\""
+  accountConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): AccountConnection!
+  "fetch data from the table: \"block\""
+  blockConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [BlockSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [BlockOrderBy!],
+    "filter the rows returned"
+    where: BlockBoolExp
+  ): BlockConnection!
+  "fetch data from the table: \"call\""
+  callConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
+  "fetch data from the table: \"cert\""
+  certConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertConnection!
+  "fetch data from the table: \"cert_event\""
+  certEventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): CertEventConnection!
+  "fetch data from the table: \"change_owner_key\""
+  changeOwnerKeyConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyConnection!
+  "fetch data from the table: \"event\""
+  eventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  "fetch data from the table: \"extrinsic\""
+  extrinsicConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
+    where: ExtrinsicBoolExp
+  ): ExtrinsicConnection!
+  "execute function \"get_ud_history\" which returns \"ud_history\""
+  getUdHistory_connection(
+    after: String,
+    "input parameters for function \"getUdHistory\""
+    args: getUdHistoryArgs!,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): UdHistoryConnection!
+  "fetch data from the table: \"identity\""
+  identityConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [IdentitySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [IdentityOrderBy!],
+    "filter the rows returned"
+    where: IdentityBoolExp
+  ): IdentityConnection!
+  "fetch data from the table: \"items_counter\""
+  itemsCounterConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ItemsCounterSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ItemsCounterOrderBy!],
+    "filter the rows returned"
+    where: ItemsCounterBoolExp
+  ): ItemsCounterConnection!
+  "fetch data from the table: \"membership_event\""
+  membershipEventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): MembershipEventConnection!
+  node(
+    "A globally unique id"
+    id: ID!
+  ): Node
+  "fetch data from the table: \"smith_cert\""
+  smithCertConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertConnection!
+  "fetch data from the table: \"transfer\""
+  transferConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): TransferConnection!
+  "fetch data from the table: \"ud_history\""
+  udHistoryConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): UdHistoryConnection!
+  "fetch data from the table: \"ud_reeval\""
+  udReevalConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdReevalSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdReevalOrderBy!],
+    "filter the rows returned"
+    where: UdReevalBoolExp
+  ): UdReevalConnection!
+  "fetch data from the table: \"universal_dividend\""
+  universalDividendConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UniversalDividendSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UniversalDividendOrderBy!],
+    "filter the rows returned"
+    where: UniversalDividendBoolExp
+  ): UniversalDividendConnection!
+}
+
+type subscription_root {
+  "fetch data from the table: \"account\""
+  accountConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [AccountSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [AccountOrderBy!],
+    "filter the rows returned"
+    where: AccountBoolExp
+  ): AccountConnection!
+  "fetch data from the table: \"block\""
+  blockConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [BlockSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [BlockOrderBy!],
+    "filter the rows returned"
+    where: BlockBoolExp
+  ): BlockConnection!
+  "fetch data from the table: \"call\""
+  callConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CallSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CallOrderBy!],
+    "filter the rows returned"
+    where: CallBoolExp
+  ): CallConnection!
+  "fetch data from the table: \"cert\""
+  certConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertOrderBy!],
+    "filter the rows returned"
+    where: CertBoolExp
+  ): CertConnection!
+  "fetch data from the table: \"cert_event\""
+  certEventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [CertEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [CertEventOrderBy!],
+    "filter the rows returned"
+    where: CertEventBoolExp
+  ): CertEventConnection!
+  "fetch data from the table: \"change_owner_key\""
+  changeOwnerKeyConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ChangeOwnerKeySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ChangeOwnerKeyOrderBy!],
+    "filter the rows returned"
+    where: ChangeOwnerKeyBoolExp
+  ): ChangeOwnerKeyConnection!
+  "fetch data from the table: \"event\""
+  eventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [EventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [EventOrderBy!],
+    "filter the rows returned"
+    where: EventBoolExp
+  ): EventConnection!
+  "fetch data from the table: \"extrinsic\""
+  extrinsicConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ExtrinsicSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ExtrinsicOrderBy!],
+    "filter the rows returned"
+    where: ExtrinsicBoolExp
+  ): ExtrinsicConnection!
+  "execute function \"get_ud_history\" which returns \"ud_history\""
+  getUdHistory_connection(
+    after: String,
+    "input parameters for function \"getUdHistory\""
+    args: getUdHistoryArgs!,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): UdHistoryConnection!
+  "fetch data from the table: \"identity\""
+  identityConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [IdentitySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [IdentityOrderBy!],
+    "filter the rows returned"
+    where: IdentityBoolExp
+  ): IdentityConnection!
+  "fetch data from the table: \"items_counter\""
+  itemsCounterConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [ItemsCounterSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [ItemsCounterOrderBy!],
+    "filter the rows returned"
+    where: ItemsCounterBoolExp
+  ): ItemsCounterConnection!
+  "fetch data from the table: \"membership_event\""
+  membershipEventConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [MembershipEventSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [MembershipEventOrderBy!],
+    "filter the rows returned"
+    where: MembershipEventBoolExp
+  ): MembershipEventConnection!
+  node(
+    "A globally unique id"
+    id: ID!
+  ): Node
+  "fetch data from the table: \"smith_cert\""
+  smithCertConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [SmithCertSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [SmithCertOrderBy!],
+    "filter the rows returned"
+    where: SmithCertBoolExp
+  ): SmithCertConnection!
+  "fetch data from the table: \"transfer\""
+  transferConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [TransferSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [TransferOrderBy!],
+    "filter the rows returned"
+    where: TransferBoolExp
+  ): TransferConnection!
+  "fetch data from the table: \"ud_history\""
+  udHistoryConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdHistorySelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdHistoryOrderBy!],
+    "filter the rows returned"
+    where: UdHistoryBoolExp
+  ): UdHistoryConnection!
+  "fetch data from the table: \"ud_reeval\""
+  udReevalConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UdReevalSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UdReevalOrderBy!],
+    "filter the rows returned"
+    where: UdReevalBoolExp
+  ): UdReevalConnection!
+  "fetch data from the table: \"universal_dividend\""
+  universalDividendConnection(
+    after: String,
+    before: String,
+    "distinct select on columns"
+    distinctOn: [UniversalDividendSelectColumn!],
+    first: Int,
+    last: Int,
+    "sort the rows by one or more columns"
+    orderBy: [UniversalDividendOrderBy!],
+    "filter the rows returned"
+    where: UniversalDividendBoolExp
+  ): UniversalDividendConnection!
+}
+
+"select columns of table \"account\""
+enum AccountSelectColumn {
+  "column name"
+  id
+  "column name"
+  linkedIdentityId
+}
+
+"select columns of table \"block\""
+enum BlockSelectColumn {
+  "column name"
+  callsCount
+  "column name"
+  eventsCount
+  "column name"
+  extrinsicsCount
+  "column name"
+  extrinsicsicRoot
+  "column name"
+  hash
+  "column name"
+  height
+  "column name"
+  id
+  "column name"
+  implName
+  "column name"
+  implVersion
+  "column name"
+  parentHash
+  "column name"
+  specName
+  "column name"
+  specVersion
+  "column name"
+  stateRoot
+  "column name"
+  timestamp
+  "column name"
+  validator
+}
+
+"select columns of table \"call\""
+enum CallSelectColumn {
+  "column name"
+  address
+  "column name"
+  args
+  "column name"
+  argsStr
+  "column name"
+  blockId
+  "column name"
+  error
+  "column name"
+  extrinsicId
+  "column name"
+  id
+  "column name"
+  name
+  "column name"
+  pallet
+  "column name"
+  parentId
+  "column name"
+  success
+}
+
+"select \"callAggregateBoolExpBool_andArgumentsColumns\" columns of table \"call\""
+enum CallSelectColumnCallAggregateBoolExpBool_andArgumentsColumns {
+  "column name"
+  success
+}
+
+"select \"callAggregateBoolExpBool_orArgumentsColumns\" columns of table \"call\""
+enum CallSelectColumnCallAggregateBoolExpBool_orArgumentsColumns {
+  "column name"
+  success
+}
+
+"select columns of table \"cert_event\""
+enum CertEventSelectColumn {
+  "column name"
+  blockNumber
+  "column name"
+  certId
+  "column name"
+  eventId
+  "column name"
+  eventType
+  "column name"
+  id
+}
+
+"select columns of table \"cert\""
+enum CertSelectColumn {
+  "column name"
+  createdOn
+  "column name"
+  expireOn
+  "column name"
+  id
+  "column name"
+  isActive
+  "column name"
+  issuerId
+  "column name"
+  receiverId
+}
+
+"select \"certAggregateBoolExpBool_andArgumentsColumns\" columns of table \"cert\""
+enum CertSelectColumnCertAggregateBoolExpBool_andArgumentsColumns {
+  "column name"
+  isActive
+}
+
+"select \"certAggregateBoolExpBool_orArgumentsColumns\" columns of table \"cert\""
+enum CertSelectColumnCertAggregateBoolExpBool_orArgumentsColumns {
+  "column name"
+  isActive
+}
+
+"select columns of table \"change_owner_key\""
+enum ChangeOwnerKeySelectColumn {
+  "column name"
+  blockNumber
+  "column name"
+  id
+  "column name"
+  identityId
+  "column name"
+  nextId
+  "column name"
+  previousId
+}
+
+enum CounterLevelEnum {
+  GLOBAL
+  ITEM
+  PALLET
+}
+
+"select columns of table \"event\""
+enum EventSelectColumn {
+  "column name"
+  args
+  "column name"
+  argsStr
+  "column name"
+  blockId
+  "column name"
+  callId
+  "column name"
+  extrinsicId
+  "column name"
+  id
+  "column name"
+  index
+  "column name"
+  name
+  "column name"
+  pallet
+  "column name"
+  phase
+}
+
+enum EventTypeEnum {
+  CREATION
+  REMOVAL
+  RENEWAL
+}
+
+"select columns of table \"extrinsic\""
+enum ExtrinsicSelectColumn {
+  "column name"
+  blockId
+  "column name"
+  callId
+  "column name"
+  error
+  "column name"
+  fee
+  "column name"
+  hash
+  "column name"
+  id
+  "column name"
+  index
+  "column name"
+  signature
+  "column name"
+  success
+  "column name"
+  tip
+  "column name"
+  version
+}
+
+"select \"extrinsicAggregateBoolExpBool_andArgumentsColumns\" columns of table \"extrinsic\""
+enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_andArgumentsColumns {
+  "column name"
+  success
+}
+
+"select \"extrinsicAggregateBoolExpBool_orArgumentsColumns\" columns of table \"extrinsic\""
+enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_orArgumentsColumns {
+  "column name"
+  success
+}
+
+"select columns of table \"identity\""
+enum IdentitySelectColumn {
+  "column name"
+  accountId
+  "column name"
+  createdInId
+  "column name"
+  createdOn
+  "column name"
+  expireOn
+  "column name"
+  id
+  "column name"
+  index
+  "column name"
+  isMember
+  "column name"
+  lastChangeOn
+  "column name"
+  name
+  "column name"
+  smithStatus
+  "column name"
+  status
+}
+
+enum IdentityStatusEnum {
+  MEMBER
+  NOTMEMBER
+  REMOVED
+  REVOKED
+  UNCONFIRMED
+  UNVALIDATED
+}
+
+enum ItemTypeEnum {
+  CALLS
+  EVENTS
+  EXTRINSICS
+}
+
+"select columns of table \"items_counter\""
+enum ItemsCounterSelectColumn {
+  "column name"
+  id
+  "column name"
+  level
+  "column name"
+  total
+  "column name"
+  type
+}
+
+"select columns of table \"membership_event\""
+enum MembershipEventSelectColumn {
+  "column name"
+  blockNumber
+  "column name"
+  eventId
+  "column name"
+  eventType
+  "column name"
+  id
+  "column name"
+  identityId
+}
+
+"column ordering options"
+enum OrderBy {
+  "in ascending order, nulls last"
+  ASC
+  "in ascending order, nulls first"
+  ASC_NULLS_FIRST
+  "in ascending order, nulls last"
+  ASC_NULLS_LAST
+  "in descending order, nulls first"
+  DESC
+  "in descending order, nulls first"
+  DESC_NULLS_FIRST
+  "in descending order, nulls last"
+  DESC_NULLS_LAST
+}
+
+"select columns of table \"smith_cert\""
+enum SmithCertSelectColumn {
+  "column name"
+  createdOn
+  "column name"
+  id
+  "column name"
+  issuerId
+  "column name"
+  receiverId
+}
+
+enum SmithStatusEnum {
+  EXCLUDED
+  INVITED
+  PENDING
+  SMITH
+}
+
+"select columns of table \"transfer\""
+enum TransferSelectColumn {
+  "column name"
+  amount
+  "column name"
+  blockNumber
+  "column name"
+  comment
+  "column name"
+  fromId
+  "column name"
+  id
+  "column name"
+  timestamp
+  "column name"
+  toId
+}
+
+"select columns of table \"ud_history\""
+enum UdHistorySelectColumn {
+  "column name"
+  amount
+  "column name"
+  blockNumber
+  "column name"
+  id
+  "column name"
+  identityId
+  "column name"
+  timestamp
+}
+
+"select columns of table \"ud_reeval\""
+enum UdReevalSelectColumn {
+  "column name"
+  blockNumber
+  "column name"
+  eventId
+  "column name"
+  id
+  "column name"
+  membersCount
+  "column name"
+  monetaryMass
+  "column name"
+  newUdAmount
+  "column name"
+  timestamp
+}
+
+"select columns of table \"universal_dividend\""
+enum UniversalDividendSelectColumn {
+  "column name"
+  amount
+  "column name"
+  blockNumber
+  "column name"
+  eventId
+  "column name"
+  id
+  "column name"
+  membersCount
+  "column name"
+  monetaryMass
+  "column name"
+  timestamp
+}
+
+scalar bytea
+
+scalar identity_scalar
+
+scalar jsonb
+
+scalar numeric
+
+scalar timestamptz
+
+input AccountAggregateBoolExp {
+  count: accountAggregateBoolExpCount
+}
+
+"order by aggregate values of table \"account\""
+input AccountAggregateOrderBy {
+  count: OrderBy
+  max: AccountMaxOrderBy
+  min: AccountMinOrderBy
+}
+
+"Boolean expression to filter rows from the table \"account\". All fields are combined with a logical 'AND'."
+input AccountBoolExp {
+  _and: [AccountBoolExp!]
+  _not: AccountBoolExp
+  _or: [AccountBoolExp!]
+  id: StringComparisonExp
+  identity: IdentityBoolExp
+  linkedIdentity: IdentityBoolExp
+  linkedIdentityId: StringComparisonExp
+  transfersIssued: TransferBoolExp
+  transfersIssuedAggregate: TransferAggregateBoolExp
+  transfersReceived: TransferBoolExp
+  transfersReceivedAggregate: TransferAggregateBoolExp
+  wasIdentity: ChangeOwnerKeyBoolExp
+  wasIdentityAggregate: ChangeOwnerKeyAggregateBoolExp
+}
+
+"order by max() on columns of table \"account\""
+input AccountMaxOrderBy {
+  id: OrderBy
+  linkedIdentityId: OrderBy
+}
+
+"order by min() on columns of table \"account\""
+input AccountMinOrderBy {
+  id: OrderBy
+  linkedIdentityId: OrderBy
+}
+
+"Ordering options when selecting data from \"account\"."
+input AccountOrderBy {
+  id: OrderBy
+  identity: IdentityOrderBy
+  linkedIdentity: IdentityOrderBy
+  linkedIdentityId: OrderBy
+  transfersIssuedAggregate: TransferAggregateOrderBy
+  transfersReceivedAggregate: TransferAggregateOrderBy
+  wasIdentityAggregate: ChangeOwnerKeyAggregateOrderBy
+}
+
+"Boolean expression to filter rows from the table \"block\". All fields are combined with a logical 'AND'."
 input BlockBoolExp {
   _and: [BlockBoolExp!]
   _not: BlockBoolExp
@@ -513,20 +2840,7 @@ input BlockBoolExp {
   validator: ByteaComparisonExp
 }
 
-"""
-A Relay connection object on "block"
-"""
-type BlockConnection {
-  edges: [BlockEdge!]!
-  pageInfo: PageInfo!
-}
-
-type BlockEdge {
-  cursor: String!
-  node: Block!
-}
-
-"""Ordering options when selecting data from "block"."""
+"Ordering options when selecting data from \"block\"."
 input BlockOrderBy {
   callsAggregate: CallAggregateOrderBy
   callsCount: OrderBy
@@ -548,59 +2862,7 @@ input BlockOrderBy {
   validator: OrderBy
 }
 
-"""
-select columns of table "block"
-"""
-enum BlockSelectColumn {
-  """column name"""
-  callsCount
-
-  """column name"""
-  eventsCount
-
-  """column name"""
-  extrinsicsCount
-
-  """column name"""
-  extrinsicsicRoot
-
-  """column name"""
-  hash
-
-  """column name"""
-  height
-
-  """column name"""
-  id
-
-  """column name"""
-  implName
-
-  """column name"""
-  implVersion
-
-  """column name"""
-  parentHash
-
-  """column name"""
-  specName
-
-  """column name"""
-  specVersion
-
-  """column name"""
-  stateRoot
-
-  """column name"""
-  timestamp
-
-  """column name"""
-  validator
-}
-
-"""
-Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"Boolean\". All fields are combined with logical 'AND'."
 input BooleanComparisonExp {
   _eq: Boolean
   _gt: Boolean
@@ -613,11 +2875,7 @@ input BooleanComparisonExp {
   _nin: [Boolean!]
 }
 
-scalar bytea
-
-"""
-Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"bytea\". All fields are combined with logical 'AND'."
 input ByteaComparisonExp {
   _eq: bytea
   _gt: bytea
@@ -630,200 +2888,20 @@ input ByteaComparisonExp {
   _nin: [bytea!]
 }
 
-"""
-columns and relationships of "call"
-"""
-type Call implements Node {
-  address: [Int!]!
-  args(
-    """JSON select path"""
-    path: String
-  ): jsonb
-  argsStr: [String!]
-
-  """An object relationship"""
-  block: Block
-  blockId: String
-  error(
-    """JSON select path"""
-    path: String
-  ): jsonb
-
-  """An array relationship"""
-  events(
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
-    where: EventBoolExp
-  ): [Event!]!
-
-  """An aggregate relationship"""
-  eventsAggregate(
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
-    where: EventBoolExp
-  ): EventAggregate!
-
-  """An array relationship connection"""
-  events_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
-    where: EventBoolExp
-  ): EventConnection!
-
-  """An object relationship"""
-  extrinsic: Extrinsic
-  extrinsicId: String
-  id: ID!
-  name: String!
-  pallet: String!
-
-  """An object relationship"""
-  parent: Call
-  parentId: String
-
-  """An array relationship"""
-  subcalls(
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
-    where: CallBoolExp
-  ): [Call!]!
-
-  """An aggregate relationship"""
-  subcallsAggregate(
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
-    where: CallBoolExp
-  ): CallAggregate!
-
-  """An array relationship connection"""
-  subcalls_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
-    where: CallBoolExp
-  ): CallConnection!
-  success: Boolean!
-}
-
-"""
-aggregated selection of "call"
-"""
-type CallAggregate {
-  aggregate: CallAggregateFields
-  nodes: [Call!]!
-}
-
 input CallAggregateBoolExp {
   bool_and: callAggregateBoolExpBool_and
   bool_or: callAggregateBoolExpBool_or
   count: callAggregateBoolExpCount
 }
 
-input callAggregateBoolExpBool_and {
-  arguments: CallSelectColumnCallAggregateBoolExpBool_andArgumentsColumns!
-  distinct: Boolean
-  filter: CallBoolExp
-  predicate: BooleanComparisonExp!
-}
-
-input callAggregateBoolExpBool_or {
-  arguments: CallSelectColumnCallAggregateBoolExpBool_orArgumentsColumns!
-  distinct: Boolean
-  filter: CallBoolExp
-  predicate: BooleanComparisonExp!
-}
-
-input callAggregateBoolExpCount {
-  arguments: [CallSelectColumn!]
-  distinct: Boolean
-  filter: CallBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "call"
-"""
-type CallAggregateFields {
-  count(columns: [CallSelectColumn!], distinct: Boolean): Int!
-  max: CallMaxFields
-  min: CallMinFields
-}
-
-"""
-order by aggregate values of table "call"
-"""
+"order by aggregate values of table \"call\""
 input CallAggregateOrderBy {
   count: OrderBy
   max: CallMaxOrderBy
   min: CallMinOrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "call". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"call\". All fields are combined with a logical 'AND'."
 input CallBoolExp {
   _and: [CallBoolExp!]
   _not: CallBoolExp
@@ -848,34 +2926,7 @@ input CallBoolExp {
   success: BooleanComparisonExp
 }
 
-"""
-A Relay connection object on "call"
-"""
-type CallConnection {
-  edges: [CallEdge!]!
-  pageInfo: PageInfo!
-}
-
-type CallEdge {
-  cursor: String!
-  node: Call!
-}
-
-"""aggregate max on columns"""
-type CallMaxFields {
-  address: [Int!]
-  argsStr: [String!]
-  blockId: String
-  extrinsicId: String
-  id: String
-  name: String
-  pallet: String
-  parentId: String
-}
-
-"""
-order by max() on columns of table "call"
-"""
+"order by max() on columns of table \"call\""
 input CallMaxOrderBy {
   address: OrderBy
   argsStr: OrderBy
@@ -887,21 +2938,7 @@ input CallMaxOrderBy {
   parentId: OrderBy
 }
 
-"""aggregate min on columns"""
-type CallMinFields {
-  address: [Int!]
-  argsStr: [String!]
-  blockId: String
-  extrinsicId: String
-  id: String
-  name: String
-  pallet: String
-  parentId: String
-}
-
-"""
-order by min() on columns of table "call"
-"""
+"order by min() on columns of table \"call\""
 input CallMinOrderBy {
   address: OrderBy
   argsStr: OrderBy
@@ -913,7 +2950,7 @@ input CallMinOrderBy {
   parentId: OrderBy
 }
 
-"""Ordering options when selecting data from "call"."""
+"Ordering options when selecting data from \"call\"."
 input CallOrderBy {
   address: OrderBy
   args: OrderBy
@@ -933,185 +2970,13 @@ input CallOrderBy {
   success: OrderBy
 }
 
-"""
-select columns of table "call"
-"""
-enum CallSelectColumn {
-  """column name"""
-  address
-
-  """column name"""
-  args
-
-  """column name"""
-  argsStr
-
-  """column name"""
-  blockId
-
-  """column name"""
-  error
-
-  """column name"""
-  extrinsicId
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  pallet
-
-  """column name"""
-  parentId
-
-  """column name"""
-  success
-}
-
-"""
-select "callAggregateBoolExpBool_andArgumentsColumns" columns of table "call"
-"""
-enum CallSelectColumnCallAggregateBoolExpBool_andArgumentsColumns {
-  """column name"""
-  success
-}
-
-"""
-select "callAggregateBoolExpBool_orArgumentsColumns" columns of table "call"
-"""
-enum CallSelectColumnCallAggregateBoolExpBool_orArgumentsColumns {
-  """column name"""
-  success
-}
-
-"""
-columns and relationships of "cert"
-"""
-type Cert implements Node {
-  """An array relationship"""
-  certHistory(
-    """distinct select on columns"""
-    distinctOn: [CertEventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertEventOrderBy!]
-
-    """filter the rows returned"""
-    where: CertEventBoolExp
-  ): [CertEvent!]!
-
-  """An aggregate relationship"""
-  certHistoryAggregate(
-    """distinct select on columns"""
-    distinctOn: [CertEventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertEventOrderBy!]
-
-    """filter the rows returned"""
-    where: CertEventBoolExp
-  ): CertEventAggregate!
-
-  """An array relationship connection"""
-  certHistory_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CertEventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertEventOrderBy!]
-
-    """filter the rows returned"""
-    where: CertEventBoolExp
-  ): CertEventConnection!
-  createdOn: Int!
-  expireOn: Int!
-  id: ID!
-  isActive: Boolean!
-
-  """An object relationship"""
-  issuer: Identity
-  issuerId: String
-
-  """An object relationship"""
-  receiver: Identity
-  receiverId: String
-}
-
-"""
-aggregated selection of "cert"
-"""
-type CertAggregate {
-  aggregate: CertAggregateFields
-  nodes: [Cert!]!
-}
-
 input CertAggregateBoolExp {
   bool_and: certAggregateBoolExpBool_and
   bool_or: certAggregateBoolExpBool_or
   count: certAggregateBoolExpCount
 }
 
-input certAggregateBoolExpBool_and {
-  arguments: CertSelectColumnCertAggregateBoolExpBool_andArgumentsColumns!
-  distinct: Boolean
-  filter: CertBoolExp
-  predicate: BooleanComparisonExp!
-}
-
-input certAggregateBoolExpBool_or {
-  arguments: CertSelectColumnCertAggregateBoolExpBool_orArgumentsColumns!
-  distinct: Boolean
-  filter: CertBoolExp
-  predicate: BooleanComparisonExp!
-}
-
-input certAggregateBoolExpCount {
-  arguments: [CertSelectColumn!]
-  distinct: Boolean
-  filter: CertBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "cert"
-"""
-type CertAggregateFields {
-  avg: CertAvgFields
-  count(columns: [CertSelectColumn!], distinct: Boolean): Int!
-  max: CertMaxFields
-  min: CertMinFields
-  stddev: CertStddevFields
-  stddevPop: CertStddevPopFields
-  stddevSamp: CertStddevSampFields
-  sum: CertSumFields
-  varPop: CertVarPopFields
-  varSamp: CertVarSampFields
-  variance: CertVarianceFields
-}
-
-"""
-order by aggregate values of table "cert"
-"""
+"order by aggregate values of table \"cert\""
 input CertAggregateOrderBy {
   avg: CertAvgOrderBy
   count: OrderBy
@@ -1126,23 +2991,13 @@ input CertAggregateOrderBy {
   variance: CertVarianceOrderBy
 }
 
-"""aggregate avg on columns"""
-type CertAvgFields {
-  createdOn: Float
-  expireOn: Float
-}
-
-"""
-order by avg() on columns of table "cert"
-"""
+"order by avg() on columns of table \"cert\""
 input CertAvgOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "cert". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"cert\". All fields are combined with a logical 'AND'."
 input CertBoolExp {
   _and: [CertBoolExp!]
   _not: CertBoolExp
@@ -1159,75 +3014,11 @@ input CertBoolExp {
   receiverId: StringComparisonExp
 }
 
-"""
-A Relay connection object on "cert"
-"""
-type CertConnection {
-  edges: [CertEdge!]!
-  pageInfo: PageInfo!
-}
-
-type CertEdge {
-  cursor: String!
-  node: Cert!
-}
-
-"""
-columns and relationships of "cert_event"
-"""
-type CertEvent implements Node {
-  blockNumber: Int!
-
-  """An object relationship"""
-  cert: Cert
-  certId: String
-
-  """An object relationship"""
-  event: Event
-  eventId: String
-  eventType: EventTypeEnum
-  id: ID!
-}
-
-"""
-aggregated selection of "cert_event"
-"""
-type CertEventAggregate {
-  aggregate: CertEventAggregateFields
-  nodes: [CertEvent!]!
-}
-
 input CertEventAggregateBoolExp {
   count: certEventAggregateBoolExpCount
 }
 
-input certEventAggregateBoolExpCount {
-  arguments: [CertEventSelectColumn!]
-  distinct: Boolean
-  filter: CertEventBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "cert_event"
-"""
-type CertEventAggregateFields {
-  avg: CertEventAvgFields
-  count(columns: [CertEventSelectColumn!], distinct: Boolean): Int!
-  max: CertEventMaxFields
-  min: CertEventMinFields
-  stddev: CertEventStddevFields
-  stddevPop: CertEventStddevPopFields
-  stddevSamp: CertEventStddevSampFields
-  sum: CertEventSumFields
-  varPop: CertEventVarPopFields
-  varSamp: CertEventVarSampFields
-  variance: CertEventVarianceFields
-}
-
-"""
-order by aggregate values of table "cert_event"
-"""
+"order by aggregate values of table \"cert_event\""
 input CertEventAggregateOrderBy {
   avg: CertEventAvgOrderBy
   count: OrderBy
@@ -1242,21 +3033,12 @@ input CertEventAggregateOrderBy {
   variance: CertEventVarianceOrderBy
 }
 
-"""aggregate avg on columns"""
-type CertEventAvgFields {
-  blockNumber: Float
-}
-
-"""
-order by avg() on columns of table "cert_event"
-"""
+"order by avg() on columns of table \"cert_event\""
 input CertEventAvgOrderBy {
   blockNumber: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "cert_event". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"cert_event\". All fields are combined with a logical 'AND'."
 input CertEventBoolExp {
   _and: [CertEventBoolExp!]
   _not: CertEventBoolExp
@@ -1270,30 +3052,7 @@ input CertEventBoolExp {
   id: StringComparisonExp
 }
 
-"""
-A Relay connection object on "cert_event"
-"""
-type CertEventConnection {
-  edges: [CertEventEdge!]!
-  pageInfo: PageInfo!
-}
-
-type CertEventEdge {
-  cursor: String!
-  node: CertEvent!
-}
-
-"""aggregate max on columns"""
-type CertEventMaxFields {
-  blockNumber: Int
-  certId: String
-  eventId: String
-  id: String
-}
-
-"""
-order by max() on columns of table "cert_event"
-"""
+"order by max() on columns of table \"cert_event\""
 input CertEventMaxOrderBy {
   blockNumber: OrderBy
   certId: OrderBy
@@ -1301,17 +3060,7 @@ input CertEventMaxOrderBy {
   id: OrderBy
 }
 
-"""aggregate min on columns"""
-type CertEventMinFields {
-  blockNumber: Int
-  certId: String
-  eventId: String
-  id: String
-}
-
-"""
-order by min() on columns of table "cert_event"
-"""
+"order by min() on columns of table \"cert_event\""
 input CertEventMinOrderBy {
   blockNumber: OrderBy
   certId: OrderBy
@@ -1319,7 +3068,7 @@ input CertEventMinOrderBy {
   id: OrderBy
 }
 
-"""Ordering options when selecting data from "cert_event"."""
+"Ordering options when selecting data from \"cert_event\"."
 input CertEventOrderBy {
   blockNumber: OrderBy
   cert: CertOrderBy
@@ -1330,122 +3079,42 @@ input CertEventOrderBy {
   id: OrderBy
 }
 
-"""
-select columns of table "cert_event"
-"""
-enum CertEventSelectColumn {
-  """column name"""
-  blockNumber
-
-  """column name"""
-  certId
-
-  """column name"""
-  eventId
-
-  """column name"""
-  eventType
-
-  """column name"""
-  id
-}
-
-"""aggregate stddev on columns"""
-type CertEventStddevFields {
-  blockNumber: Float
-}
-
-"""
-order by stddev() on columns of table "cert_event"
-"""
+"order by stddev() on columns of table \"cert_event\""
 input CertEventStddevOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate stddevPop on columns"""
-type CertEventStddevPopFields {
-  blockNumber: Float
-}
-
-"""
-order by stddevPop() on columns of table "cert_event"
-"""
+"order by stddevPop() on columns of table \"cert_event\""
 input CertEventStddevPopOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate stddevSamp on columns"""
-type CertEventStddevSampFields {
-  blockNumber: Float
-}
-
-"""
-order by stddevSamp() on columns of table "cert_event"
-"""
+"order by stddevSamp() on columns of table \"cert_event\""
 input CertEventStddevSampOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate sum on columns"""
-type CertEventSumFields {
-  blockNumber: Int
-}
-
-"""
-order by sum() on columns of table "cert_event"
-"""
+"order by sum() on columns of table \"cert_event\""
 input CertEventSumOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate variance on columns"""
-type CertEventVarianceFields {
-  blockNumber: Float
-}
-
-"""
-order by variance() on columns of table "cert_event"
-"""
-input CertEventVarianceOrderBy {
-  blockNumber: OrderBy
-}
-
-"""aggregate varPop on columns"""
-type CertEventVarPopFields {
-  blockNumber: Float
-}
-
-"""
-order by varPop() on columns of table "cert_event"
-"""
+"order by varPop() on columns of table \"cert_event\""
 input CertEventVarPopOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate varSamp on columns"""
-type CertEventVarSampFields {
-  blockNumber: Float
-}
-
-"""
-order by varSamp() on columns of table "cert_event"
-"""
+"order by varSamp() on columns of table \"cert_event\""
 input CertEventVarSampOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate max on columns"""
-type CertMaxFields {
-  createdOn: Int
-  expireOn: Int
-  id: String
-  issuerId: String
-  receiverId: String
+"order by variance() on columns of table \"cert_event\""
+input CertEventVarianceOrderBy {
+  blockNumber: OrderBy
 }
 
-"""
-order by max() on columns of table "cert"
-"""
+"order by max() on columns of table \"cert\""
 input CertMaxOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
@@ -1454,18 +3123,7 @@ input CertMaxOrderBy {
   receiverId: OrderBy
 }
 
-"""aggregate min on columns"""
-type CertMinFields {
-  createdOn: Int
-  expireOn: Int
-  id: String
-  issuerId: String
-  receiverId: String
-}
-
-"""
-order by min() on columns of table "cert"
-"""
+"order by min() on columns of table \"cert\""
 input CertMinOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
@@ -1474,7 +3132,7 @@ input CertMinOrderBy {
   receiverId: OrderBy
 }
 
-"""Ordering options when selecting data from "cert"."""
+"Ordering options when selecting data from \"cert\"."
 input CertOrderBy {
   certHistoryAggregate: CertEventAggregateOrderBy
   createdOn: OrderBy
@@ -1487,202 +3145,53 @@ input CertOrderBy {
   receiverId: OrderBy
 }
 
-"""
-select columns of table "cert"
-"""
-enum CertSelectColumn {
-  """column name"""
-  createdOn
-
-  """column name"""
-  expireOn
-
-  """column name"""
-  id
-
-  """column name"""
-  isActive
-
-  """column name"""
-  issuerId
-
-  """column name"""
-  receiverId
-}
-
-"""
-select "certAggregateBoolExpBool_andArgumentsColumns" columns of table "cert"
-"""
-enum CertSelectColumnCertAggregateBoolExpBool_andArgumentsColumns {
-  """column name"""
-  isActive
-}
-
-"""
-select "certAggregateBoolExpBool_orArgumentsColumns" columns of table "cert"
-"""
-enum CertSelectColumnCertAggregateBoolExpBool_orArgumentsColumns {
-  """column name"""
-  isActive
-}
-
-"""aggregate stddev on columns"""
-type CertStddevFields {
-  createdOn: Float
-  expireOn: Float
-}
-
-"""
-order by stddev() on columns of table "cert"
-"""
+"order by stddev() on columns of table \"cert\""
 input CertStddevOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
 }
 
-"""aggregate stddevPop on columns"""
-type CertStddevPopFields {
-  createdOn: Float
-  expireOn: Float
-}
-
-"""
-order by stddevPop() on columns of table "cert"
-"""
+"order by stddevPop() on columns of table \"cert\""
 input CertStddevPopOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
 }
 
-"""aggregate stddevSamp on columns"""
-type CertStddevSampFields {
-  createdOn: Float
-  expireOn: Float
-}
-
-"""
-order by stddevSamp() on columns of table "cert"
-"""
+"order by stddevSamp() on columns of table \"cert\""
 input CertStddevSampOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
 }
 
-"""aggregate sum on columns"""
-type CertSumFields {
-  createdOn: Int
-  expireOn: Int
-}
-
-"""
-order by sum() on columns of table "cert"
-"""
+"order by sum() on columns of table \"cert\""
 input CertSumOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
 }
 
-"""aggregate variance on columns"""
-type CertVarianceFields {
-  createdOn: Float
-  expireOn: Float
-}
-
-"""
-order by variance() on columns of table "cert"
-"""
-input CertVarianceOrderBy {
-  createdOn: OrderBy
-  expireOn: OrderBy
-}
-
-"""aggregate varPop on columns"""
-type CertVarPopFields {
-  createdOn: Float
-  expireOn: Float
-}
-
-"""
-order by varPop() on columns of table "cert"
-"""
+"order by varPop() on columns of table \"cert\""
 input CertVarPopOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
 }
 
-"""aggregate varSamp on columns"""
-type CertVarSampFields {
-  createdOn: Float
-  expireOn: Float
-}
-
-"""
-order by varSamp() on columns of table "cert"
-"""
+"order by varSamp() on columns of table \"cert\""
 input CertVarSampOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
 }
 
-"""
-columns and relationships of "change_owner_key"
-"""
-type ChangeOwnerKey implements Node {
-  blockNumber: Int!
-  id: ID!
-
-  """An object relationship"""
-  identity: Identity
-  identityId: String
-
-  """An object relationship"""
-  next: Account
-  nextId: String
-
-  """An object relationship"""
-  previous: Account
-  previousId: String
-}
-
-"""
-aggregated selection of "change_owner_key"
-"""
-type ChangeOwnerKeyAggregate {
-  aggregate: ChangeOwnerKeyAggregateFields
-  nodes: [ChangeOwnerKey!]!
+"order by variance() on columns of table \"cert\""
+input CertVarianceOrderBy {
+  createdOn: OrderBy
+  expireOn: OrderBy
 }
 
 input ChangeOwnerKeyAggregateBoolExp {
   count: changeOwnerKeyAggregateBoolExpCount
 }
 
-input changeOwnerKeyAggregateBoolExpCount {
-  arguments: [ChangeOwnerKeySelectColumn!]
-  distinct: Boolean
-  filter: ChangeOwnerKeyBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "change_owner_key"
-"""
-type ChangeOwnerKeyAggregateFields {
-  avg: ChangeOwnerKeyAvgFields
-  count(columns: [ChangeOwnerKeySelectColumn!], distinct: Boolean): Int!
-  max: ChangeOwnerKeyMaxFields
-  min: ChangeOwnerKeyMinFields
-  stddev: ChangeOwnerKeyStddevFields
-  stddevPop: ChangeOwnerKeyStddevPopFields
-  stddevSamp: ChangeOwnerKeyStddevSampFields
-  sum: ChangeOwnerKeySumFields
-  varPop: ChangeOwnerKeyVarPopFields
-  varSamp: ChangeOwnerKeyVarSampFields
-  variance: ChangeOwnerKeyVarianceFields
-}
-
-"""
-order by aggregate values of table "change_owner_key"
-"""
+"order by aggregate values of table \"change_owner_key\""
 input ChangeOwnerKeyAggregateOrderBy {
   avg: ChangeOwnerKeyAvgOrderBy
   count: OrderBy
@@ -1697,21 +3206,12 @@ input ChangeOwnerKeyAggregateOrderBy {
   variance: ChangeOwnerKeyVarianceOrderBy
 }
 
-"""aggregate avg on columns"""
-type ChangeOwnerKeyAvgFields {
-  blockNumber: Float
-}
-
-"""
-order by avg() on columns of table "change_owner_key"
-"""
+"order by avg() on columns of table \"change_owner_key\""
 input ChangeOwnerKeyAvgOrderBy {
   blockNumber: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "change_owner_key". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"change_owner_key\". All fields are combined with a logical 'AND'."
 input ChangeOwnerKeyBoolExp {
   _and: [ChangeOwnerKeyBoolExp!]
   _not: ChangeOwnerKeyBoolExp
@@ -1726,31 +3226,7 @@ input ChangeOwnerKeyBoolExp {
   previousId: StringComparisonExp
 }
 
-"""
-A Relay connection object on "change_owner_key"
-"""
-type ChangeOwnerKeyConnection {
-  edges: [ChangeOwnerKeyEdge!]!
-  pageInfo: PageInfo!
-}
-
-type ChangeOwnerKeyEdge {
-  cursor: String!
-  node: ChangeOwnerKey!
-}
-
-"""aggregate max on columns"""
-type ChangeOwnerKeyMaxFields {
-  blockNumber: Int
-  id: String
-  identityId: String
-  nextId: String
-  previousId: String
-}
-
-"""
-order by max() on columns of table "change_owner_key"
-"""
+"order by max() on columns of table \"change_owner_key\""
 input ChangeOwnerKeyMaxOrderBy {
   blockNumber: OrderBy
   id: OrderBy
@@ -1759,18 +3235,7 @@ input ChangeOwnerKeyMaxOrderBy {
   previousId: OrderBy
 }
 
-"""aggregate min on columns"""
-type ChangeOwnerKeyMinFields {
-  blockNumber: Int
-  id: String
-  identityId: String
-  nextId: String
-  previousId: String
-}
-
-"""
-order by min() on columns of table "change_owner_key"
-"""
+"order by min() on columns of table \"change_owner_key\""
 input ChangeOwnerKeyMinOrderBy {
   blockNumber: OrderBy
   id: OrderBy
@@ -1779,7 +3244,7 @@ input ChangeOwnerKeyMinOrderBy {
   previousId: OrderBy
 }
 
-"""Ordering options when selecting data from "change_owner_key"."""
+"Ordering options when selecting data from \"change_owner_key\"."
 input ChangeOwnerKeyOrderBy {
   blockNumber: OrderBy
   id: OrderBy
@@ -1791,119 +3256,42 @@ input ChangeOwnerKeyOrderBy {
   previousId: OrderBy
 }
 
-"""
-select columns of table "change_owner_key"
-"""
-enum ChangeOwnerKeySelectColumn {
-  """column name"""
-  blockNumber
-
-  """column name"""
-  id
-
-  """column name"""
-  identityId
-
-  """column name"""
-  nextId
-
-  """column name"""
-  previousId
-}
-
-"""aggregate stddev on columns"""
-type ChangeOwnerKeyStddevFields {
-  blockNumber: Float
-}
-
-"""
-order by stddev() on columns of table "change_owner_key"
-"""
+"order by stddev() on columns of table \"change_owner_key\""
 input ChangeOwnerKeyStddevOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate stddevPop on columns"""
-type ChangeOwnerKeyStddevPopFields {
-  blockNumber: Float
-}
-
-"""
-order by stddevPop() on columns of table "change_owner_key"
-"""
+"order by stddevPop() on columns of table \"change_owner_key\""
 input ChangeOwnerKeyStddevPopOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate stddevSamp on columns"""
-type ChangeOwnerKeyStddevSampFields {
-  blockNumber: Float
-}
-
-"""
-order by stddevSamp() on columns of table "change_owner_key"
-"""
+"order by stddevSamp() on columns of table \"change_owner_key\""
 input ChangeOwnerKeyStddevSampOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate sum on columns"""
-type ChangeOwnerKeySumFields {
-  blockNumber: Int
-}
-
-"""
-order by sum() on columns of table "change_owner_key"
-"""
+"order by sum() on columns of table \"change_owner_key\""
 input ChangeOwnerKeySumOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate variance on columns"""
-type ChangeOwnerKeyVarianceFields {
-  blockNumber: Float
-}
-
-"""
-order by variance() on columns of table "change_owner_key"
-"""
-input ChangeOwnerKeyVarianceOrderBy {
-  blockNumber: OrderBy
-}
-
-"""aggregate varPop on columns"""
-type ChangeOwnerKeyVarPopFields {
-  blockNumber: Float
-}
-
-"""
-order by varPop() on columns of table "change_owner_key"
-"""
+"order by varPop() on columns of table \"change_owner_key\""
 input ChangeOwnerKeyVarPopOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate varSamp on columns"""
-type ChangeOwnerKeyVarSampFields {
-  blockNumber: Float
-}
-
-"""
-order by varSamp() on columns of table "change_owner_key"
-"""
+"order by varSamp() on columns of table \"change_owner_key\""
 input ChangeOwnerKeyVarSampOrderBy {
   blockNumber: OrderBy
 }
 
-enum CounterLevelEnum {
-  GLOBAL
-  ITEM
-  PALLET
+"order by variance() on columns of table \"change_owner_key\""
+input ChangeOwnerKeyVarianceOrderBy {
+  blockNumber: OrderBy
 }
 
-"""
-Boolean expression to compare columns of type "CounterLevelEnum". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"CounterLevelEnum\". All fields are combined with logical 'AND'."
 input CounterLevelEnumComparisonExp {
   _eq: CounterLevelEnum
   _in: [CounterLevelEnum!]
@@ -1912,73 +3300,11 @@ input CounterLevelEnumComparisonExp {
   _nin: [CounterLevelEnum!]
 }
 
-"""
-columns and relationships of "event"
-"""
-type Event implements Node {
-  args(
-    """JSON select path"""
-    path: String
-  ): jsonb
-  argsStr: [String!]
-
-  """An object relationship"""
-  block: Block
-  blockId: String
-
-  """An object relationship"""
-  call: Call
-  callId: String
-
-  """An object relationship"""
-  extrinsic: Extrinsic
-  extrinsicId: String
-  id: ID!
-  index: Int!
-  name: String!
-  pallet: String!
-  phase: String!
-}
-
-"""
-aggregated selection of "event"
-"""
-type EventAggregate {
-  aggregate: EventAggregateFields
-  nodes: [Event!]!
-}
-
 input EventAggregateBoolExp {
   count: eventAggregateBoolExpCount
 }
 
-input eventAggregateBoolExpCount {
-  arguments: [EventSelectColumn!]
-  distinct: Boolean
-  filter: EventBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "event"
-"""
-type EventAggregateFields {
-  avg: EventAvgFields
-  count(columns: [EventSelectColumn!], distinct: Boolean): Int!
-  max: EventMaxFields
-  min: EventMinFields
-  stddev: EventStddevFields
-  stddevPop: EventStddevPopFields
-  stddevSamp: EventStddevSampFields
-  sum: EventSumFields
-  varPop: EventVarPopFields
-  varSamp: EventVarSampFields
-  variance: EventVarianceFields
-}
-
-"""
-order by aggregate values of table "event"
-"""
+"order by aggregate values of table \"event\""
 input EventAggregateOrderBy {
   avg: EventAvgOrderBy
   count: OrderBy
@@ -1993,21 +3319,12 @@ input EventAggregateOrderBy {
   variance: EventVarianceOrderBy
 }
 
-"""aggregate avg on columns"""
-type EventAvgFields {
-  index: Float
-}
-
-"""
-order by avg() on columns of table "event"
-"""
+"order by avg() on columns of table \"event\""
 input EventAvgOrderBy {
   index: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "event". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"event\". All fields are combined with a logical 'AND'."
 input EventBoolExp {
   _and: [EventBoolExp!]
   _not: EventBoolExp
@@ -2027,35 +3344,7 @@ input EventBoolExp {
   phase: StringComparisonExp
 }
 
-"""
-A Relay connection object on "event"
-"""
-type EventConnection {
-  edges: [EventEdge!]!
-  pageInfo: PageInfo!
-}
-
-type EventEdge {
-  cursor: String!
-  node: Event!
-}
-
-"""aggregate max on columns"""
-type EventMaxFields {
-  argsStr: [String!]
-  blockId: String
-  callId: String
-  extrinsicId: String
-  id: String
-  index: Int
-  name: String
-  pallet: String
-  phase: String
-}
-
-"""
-order by max() on columns of table "event"
-"""
+"order by max() on columns of table \"event\""
 input EventMaxOrderBy {
   argsStr: OrderBy
   blockId: OrderBy
@@ -2068,22 +3357,7 @@ input EventMaxOrderBy {
   phase: OrderBy
 }
 
-"""aggregate min on columns"""
-type EventMinFields {
-  argsStr: [String!]
-  blockId: String
-  callId: String
-  extrinsicId: String
-  id: String
-  index: Int
-  name: String
-  pallet: String
-  phase: String
-}
-
-"""
-order by min() on columns of table "event"
-"""
+"order by min() on columns of table \"event\""
 input EventMinOrderBy {
   argsStr: OrderBy
   blockId: OrderBy
@@ -2096,7 +3370,7 @@ input EventMinOrderBy {
   phase: OrderBy
 }
 
-"""Ordering options when selecting data from "event"."""
+"Ordering options when selecting data from \"event\"."
 input EventOrderBy {
   args: OrderBy
   argsStr: OrderBy
@@ -2113,98 +3387,27 @@ input EventOrderBy {
   phase: OrderBy
 }
 
-"""
-select columns of table "event"
-"""
-enum EventSelectColumn {
-  """column name"""
-  args
-
-  """column name"""
-  argsStr
-
-  """column name"""
-  blockId
-
-  """column name"""
-  callId
-
-  """column name"""
-  extrinsicId
-
-  """column name"""
-  id
-
-  """column name"""
-  index
-
-  """column name"""
-  name
-
-  """column name"""
-  pallet
-
-  """column name"""
-  phase
-}
-
-"""aggregate stddev on columns"""
-type EventStddevFields {
-  index: Float
-}
-
-"""
-order by stddev() on columns of table "event"
-"""
+"order by stddev() on columns of table \"event\""
 input EventStddevOrderBy {
   index: OrderBy
 }
 
-"""aggregate stddevPop on columns"""
-type EventStddevPopFields {
-  index: Float
-}
-
-"""
-order by stddevPop() on columns of table "event"
-"""
+"order by stddevPop() on columns of table \"event\""
 input EventStddevPopOrderBy {
   index: OrderBy
 }
 
-"""aggregate stddevSamp on columns"""
-type EventStddevSampFields {
-  index: Float
-}
-
-"""
-order by stddevSamp() on columns of table "event"
-"""
+"order by stddevSamp() on columns of table \"event\""
 input EventStddevSampOrderBy {
   index: OrderBy
 }
 
-"""aggregate sum on columns"""
-type EventSumFields {
-  index: Int
-}
-
-"""
-order by sum() on columns of table "event"
-"""
+"order by sum() on columns of table \"event\""
 input EventSumOrderBy {
   index: OrderBy
 }
 
-enum EventTypeEnum {
-  CREATION
-  REMOVAL
-  RENEWAL
-}
-
-"""
-Boolean expression to compare columns of type "EventTypeEnum". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"EventTypeEnum\". All fields are combined with logical 'AND'."
 input EventTypeEnumComparisonExp {
   _eq: EventTypeEnum
   _in: [EventTypeEnum!]
@@ -2213,182 +3416,19 @@ input EventTypeEnumComparisonExp {
   _nin: [EventTypeEnum!]
 }
 
-"""aggregate variance on columns"""
-type EventVarianceFields {
-  index: Float
-}
-
-"""
-order by variance() on columns of table "event"
-"""
-input EventVarianceOrderBy {
-  index: OrderBy
-}
-
-"""aggregate varPop on columns"""
-type EventVarPopFields {
-  index: Float
-}
-
-"""
-order by varPop() on columns of table "event"
-"""
+"order by varPop() on columns of table \"event\""
 input EventVarPopOrderBy {
   index: OrderBy
 }
 
-"""aggregate varSamp on columns"""
-type EventVarSampFields {
-  index: Float
-}
-
-"""
-order by varSamp() on columns of table "event"
-"""
+"order by varSamp() on columns of table \"event\""
 input EventVarSampOrderBy {
   index: OrderBy
 }
 
-"""
-columns and relationships of "extrinsic"
-"""
-type Extrinsic implements Node {
-  """An object relationship"""
-  block: Block
-  blockId: String
-
-  """An object relationship"""
-  call: Call
-  callId: String
-
-  """An array relationship"""
-  calls(
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
-    where: CallBoolExp
-  ): [Call!]!
-
-  """An aggregate relationship"""
-  callsAggregate(
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
-    where: CallBoolExp
-  ): CallAggregate!
-
-  """An array relationship connection"""
-  calls_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
-    where: CallBoolExp
-  ): CallConnection!
-  error(
-    """JSON select path"""
-    path: String
-  ): jsonb
-
-  """An array relationship"""
-  events(
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
-    where: EventBoolExp
-  ): [Event!]!
-
-  """An aggregate relationship"""
-  eventsAggregate(
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
-    where: EventBoolExp
-  ): EventAggregate!
-
-  """An array relationship connection"""
-  events_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
-    where: EventBoolExp
-  ): EventConnection!
-  fee: numeric
-  hash: bytea!
-  id: ID!
-  index: Int!
-  signature(
-    """JSON select path"""
-    path: String
-  ): jsonb
-  success: Boolean
-  tip: numeric
-  version: Int!
-}
-
-"""
-aggregated selection of "extrinsic"
-"""
-type ExtrinsicAggregate {
-  aggregate: ExtrinsicAggregateFields
-  nodes: [Extrinsic!]!
+"order by variance() on columns of table \"event\""
+input EventVarianceOrderBy {
+  index: OrderBy
 }
 
 input ExtrinsicAggregateBoolExp {
@@ -2397,47 +3437,7 @@ input ExtrinsicAggregateBoolExp {
   count: extrinsicAggregateBoolExpCount
 }
 
-input extrinsicAggregateBoolExpBool_and {
-  arguments: ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_andArgumentsColumns!
-  distinct: Boolean
-  filter: ExtrinsicBoolExp
-  predicate: BooleanComparisonExp!
-}
-
-input extrinsicAggregateBoolExpBool_or {
-  arguments: ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_orArgumentsColumns!
-  distinct: Boolean
-  filter: ExtrinsicBoolExp
-  predicate: BooleanComparisonExp!
-}
-
-input extrinsicAggregateBoolExpCount {
-  arguments: [ExtrinsicSelectColumn!]
-  distinct: Boolean
-  filter: ExtrinsicBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "extrinsic"
-"""
-type ExtrinsicAggregateFields {
-  avg: ExtrinsicAvgFields
-  count(columns: [ExtrinsicSelectColumn!], distinct: Boolean): Int!
-  max: ExtrinsicMaxFields
-  min: ExtrinsicMinFields
-  stddev: ExtrinsicStddevFields
-  stddevPop: ExtrinsicStddevPopFields
-  stddevSamp: ExtrinsicStddevSampFields
-  sum: ExtrinsicSumFields
-  varPop: ExtrinsicVarPopFields
-  varSamp: ExtrinsicVarSampFields
-  variance: ExtrinsicVarianceFields
-}
-
-"""
-order by aggregate values of table "extrinsic"
-"""
+"order by aggregate values of table \"extrinsic\""
 input ExtrinsicAggregateOrderBy {
   avg: ExtrinsicAvgOrderBy
   count: OrderBy
@@ -2452,17 +3452,7 @@ input ExtrinsicAggregateOrderBy {
   variance: ExtrinsicVarianceOrderBy
 }
 
-"""aggregate avg on columns"""
-type ExtrinsicAvgFields {
-  fee: Float
-  index: Float
-  tip: Float
-  version: Float
-}
-
-"""
-order by avg() on columns of table "extrinsic"
-"""
+"order by avg() on columns of table \"extrinsic\""
 input ExtrinsicAvgOrderBy {
   fee: OrderBy
   index: OrderBy
@@ -2470,9 +3460,7 @@ input ExtrinsicAvgOrderBy {
   version: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "extrinsic". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"extrinsic\". All fields are combined with a logical 'AND'."
 input ExtrinsicBoolExp {
   _and: [ExtrinsicBoolExp!]
   _not: ExtrinsicBoolExp
@@ -2496,33 +3484,7 @@ input ExtrinsicBoolExp {
   version: IntComparisonExp
 }
 
-"""
-A Relay connection object on "extrinsic"
-"""
-type ExtrinsicConnection {
-  edges: [ExtrinsicEdge!]!
-  pageInfo: PageInfo!
-}
-
-type ExtrinsicEdge {
-  cursor: String!
-  node: Extrinsic!
-}
-
-"""aggregate max on columns"""
-type ExtrinsicMaxFields {
-  blockId: String
-  callId: String
-  fee: numeric
-  id: String
-  index: Int
-  tip: numeric
-  version: Int
-}
-
-"""
-order by max() on columns of table "extrinsic"
-"""
+"order by max() on columns of table \"extrinsic\""
 input ExtrinsicMaxOrderBy {
   blockId: OrderBy
   callId: OrderBy
@@ -2533,20 +3495,7 @@ input ExtrinsicMaxOrderBy {
   version: OrderBy
 }
 
-"""aggregate min on columns"""
-type ExtrinsicMinFields {
-  blockId: String
-  callId: String
-  fee: numeric
-  id: String
-  index: Int
-  tip: numeric
-  version: Int
-}
-
-"""
-order by min() on columns of table "extrinsic"
-"""
+"order by min() on columns of table \"extrinsic\""
 input ExtrinsicMinOrderBy {
   blockId: OrderBy
   callId: OrderBy
@@ -2557,7 +3506,7 @@ input ExtrinsicMinOrderBy {
   version: OrderBy
 }
 
-"""Ordering options when selecting data from "extrinsic"."""
+"Ordering options when selecting data from \"extrinsic\"."
 input ExtrinsicOrderBy {
   block: BlockOrderBy
   blockId: OrderBy
@@ -2576,71 +3525,7 @@ input ExtrinsicOrderBy {
   version: OrderBy
 }
 
-"""
-select columns of table "extrinsic"
-"""
-enum ExtrinsicSelectColumn {
-  """column name"""
-  blockId
-
-  """column name"""
-  callId
-
-  """column name"""
-  error
-
-  """column name"""
-  fee
-
-  """column name"""
-  hash
-
-  """column name"""
-  id
-
-  """column name"""
-  index
-
-  """column name"""
-  signature
-
-  """column name"""
-  success
-
-  """column name"""
-  tip
-
-  """column name"""
-  version
-}
-
-"""
-select "extrinsicAggregateBoolExpBool_andArgumentsColumns" columns of table "extrinsic"
-"""
-enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_andArgumentsColumns {
-  """column name"""
-  success
-}
-
-"""
-select "extrinsicAggregateBoolExpBool_orArgumentsColumns" columns of table "extrinsic"
-"""
-enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_orArgumentsColumns {
-  """column name"""
-  success
-}
-
-"""aggregate stddev on columns"""
-type ExtrinsicStddevFields {
-  fee: Float
-  index: Float
-  tip: Float
-  version: Float
-}
-
-"""
-order by stddev() on columns of table "extrinsic"
-"""
+"order by stddev() on columns of table \"extrinsic\""
 input ExtrinsicStddevOrderBy {
   fee: OrderBy
   index: OrderBy
@@ -2648,17 +3533,7 @@ input ExtrinsicStddevOrderBy {
   version: OrderBy
 }
 
-"""aggregate stddevPop on columns"""
-type ExtrinsicStddevPopFields {
-  fee: Float
-  index: Float
-  tip: Float
-  version: Float
-}
-
-"""
-order by stddevPop() on columns of table "extrinsic"
-"""
+"order by stddevPop() on columns of table \"extrinsic\""
 input ExtrinsicStddevPopOrderBy {
   fee: OrderBy
   index: OrderBy
@@ -2666,17 +3541,7 @@ input ExtrinsicStddevPopOrderBy {
   version: OrderBy
 }
 
-"""aggregate stddevSamp on columns"""
-type ExtrinsicStddevSampFields {
-  fee: Float
-  index: Float
-  tip: Float
-  version: Float
-}
-
-"""
-order by stddevSamp() on columns of table "extrinsic"
-"""
+"order by stddevSamp() on columns of table \"extrinsic\""
 input ExtrinsicStddevSampOrderBy {
   fee: OrderBy
   index: OrderBy
@@ -2684,17 +3549,7 @@ input ExtrinsicStddevSampOrderBy {
   version: OrderBy
 }
 
-"""aggregate sum on columns"""
-type ExtrinsicSumFields {
-  fee: numeric
-  index: Int
-  tip: numeric
-  version: Int
-}
-
-"""
-order by sum() on columns of table "extrinsic"
-"""
+"order by sum() on columns of table \"extrinsic\""
 input ExtrinsicSumOrderBy {
   fee: OrderBy
   index: OrderBy
@@ -2702,35 +3557,7 @@ input ExtrinsicSumOrderBy {
   version: OrderBy
 }
 
-"""aggregate variance on columns"""
-type ExtrinsicVarianceFields {
-  fee: Float
-  index: Float
-  tip: Float
-  version: Float
-}
-
-"""
-order by variance() on columns of table "extrinsic"
-"""
-input ExtrinsicVarianceOrderBy {
-  fee: OrderBy
-  index: OrderBy
-  tip: OrderBy
-  version: OrderBy
-}
-
-"""aggregate varPop on columns"""
-type ExtrinsicVarPopFields {
-  fee: Float
-  index: Float
-  tip: Float
-  version: Float
-}
-
-"""
-order by varPop() on columns of table "extrinsic"
-"""
+"order by varPop() on columns of table \"extrinsic\""
 input ExtrinsicVarPopOrderBy {
   fee: OrderBy
   index: OrderBy
@@ -2738,17 +3565,7 @@ input ExtrinsicVarPopOrderBy {
   version: OrderBy
 }
 
-"""aggregate varSamp on columns"""
-type ExtrinsicVarSampFields {
-  fee: Float
-  index: Float
-  tip: Float
-  version: Float
-}
-
-"""
-order by varSamp() on columns of table "extrinsic"
-"""
+"order by varSamp() on columns of table \"extrinsic\""
 input ExtrinsicVarSampOrderBy {
   fee: OrderBy
   index: OrderBy
@@ -2756,428 +3573,15 @@ input ExtrinsicVarSampOrderBy {
   version: OrderBy
 }
 
-input getUdHistoryArgs {
-  identity_row: identity_scalar
+"order by variance() on columns of table \"extrinsic\""
+input ExtrinsicVarianceOrderBy {
+  fee: OrderBy
+  index: OrderBy
+  tip: OrderBy
+  version: OrderBy
 }
 
-"""
-columns and relationships of "identity"
-"""
-type Identity implements Node {
-  """An object relationship"""
-  account: Account
-  accountId: String
-
-  """An array relationship"""
-  certIssued(
-    """distinct select on columns"""
-    distinctOn: [CertSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertOrderBy!]
-
-    """filter the rows returned"""
-    where: CertBoolExp
-  ): [Cert!]!
-
-  """An aggregate relationship"""
-  certIssuedAggregate(
-    """distinct select on columns"""
-    distinctOn: [CertSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertOrderBy!]
-
-    """filter the rows returned"""
-    where: CertBoolExp
-  ): CertAggregate!
-
-  """An array relationship connection"""
-  certIssued_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CertSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertOrderBy!]
-
-    """filter the rows returned"""
-    where: CertBoolExp
-  ): CertConnection!
-
-  """An array relationship"""
-  certReceived(
-    """distinct select on columns"""
-    distinctOn: [CertSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertOrderBy!]
-
-    """filter the rows returned"""
-    where: CertBoolExp
-  ): [Cert!]!
-
-  """An aggregate relationship"""
-  certReceivedAggregate(
-    """distinct select on columns"""
-    distinctOn: [CertSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertOrderBy!]
-
-    """filter the rows returned"""
-    where: CertBoolExp
-  ): CertAggregate!
-
-  """An array relationship connection"""
-  certReceived_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CertSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertOrderBy!]
-
-    """filter the rows returned"""
-    where: CertBoolExp
-  ): CertConnection!
-
-  """An object relationship"""
-  createdIn: Event
-  createdInId: String
-  createdOn: Int!
-  expireOn: Int!
-  id: ID!
-  index: Int!
-  isMember: Boolean!
-  lastChangeOn: Int!
-
-  """An array relationship"""
-  linkedAccount(
-    """distinct select on columns"""
-    distinctOn: [AccountSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AccountOrderBy!]
-
-    """filter the rows returned"""
-    where: AccountBoolExp
-  ): [Account!]!
-
-  """An aggregate relationship"""
-  linkedAccountAggregate(
-    """distinct select on columns"""
-    distinctOn: [AccountSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AccountOrderBy!]
-
-    """filter the rows returned"""
-    where: AccountBoolExp
-  ): AccountAggregate!
-
-  """An array relationship connection"""
-  linkedAccount_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [AccountSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AccountOrderBy!]
-
-    """filter the rows returned"""
-    where: AccountBoolExp
-  ): AccountConnection!
-
-  """An array relationship"""
-  membershipHistory(
-    """distinct select on columns"""
-    distinctOn: [MembershipEventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [MembershipEventOrderBy!]
-
-    """filter the rows returned"""
-    where: MembershipEventBoolExp
-  ): [MembershipEvent!]!
-
-  """An aggregate relationship"""
-  membershipHistoryAggregate(
-    """distinct select on columns"""
-    distinctOn: [MembershipEventSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [MembershipEventOrderBy!]
-
-    """filter the rows returned"""
-    where: MembershipEventBoolExp
-  ): MembershipEventAggregate!
-
-  """An array relationship connection"""
-  membershipHistory_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [MembershipEventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [MembershipEventOrderBy!]
-
-    """filter the rows returned"""
-    where: MembershipEventBoolExp
-  ): MembershipEventConnection!
-  name: String!
-
-  """An array relationship"""
-  ownerKeyChange(
-    """distinct select on columns"""
-    distinctOn: [ChangeOwnerKeySelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ChangeOwnerKeyOrderBy!]
-
-    """filter the rows returned"""
-    where: ChangeOwnerKeyBoolExp
-  ): [ChangeOwnerKey!]!
-
-  """An aggregate relationship"""
-  ownerKeyChangeAggregate(
-    """distinct select on columns"""
-    distinctOn: [ChangeOwnerKeySelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ChangeOwnerKeyOrderBy!]
-
-    """filter the rows returned"""
-    where: ChangeOwnerKeyBoolExp
-  ): ChangeOwnerKeyAggregate!
-
-  """An array relationship connection"""
-  ownerKeyChange_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ChangeOwnerKeySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ChangeOwnerKeyOrderBy!]
-
-    """filter the rows returned"""
-    where: ChangeOwnerKeyBoolExp
-  ): ChangeOwnerKeyConnection!
-
-  """An array relationship"""
-  smithCertIssued(
-    """distinct select on columns"""
-    distinctOn: [SmithCertSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [SmithCertOrderBy!]
-
-    """filter the rows returned"""
-    where: SmithCertBoolExp
-  ): [SmithCert!]!
-
-  """An aggregate relationship"""
-  smithCertIssuedAggregate(
-    """distinct select on columns"""
-    distinctOn: [SmithCertSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [SmithCertOrderBy!]
-
-    """filter the rows returned"""
-    where: SmithCertBoolExp
-  ): SmithCertAggregate!
-
-  """An array relationship connection"""
-  smithCertIssued_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [SmithCertSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [SmithCertOrderBy!]
-
-    """filter the rows returned"""
-    where: SmithCertBoolExp
-  ): SmithCertConnection!
-
-  """An array relationship"""
-  smithCertReceived(
-    """distinct select on columns"""
-    distinctOn: [SmithCertSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [SmithCertOrderBy!]
-
-    """filter the rows returned"""
-    where: SmithCertBoolExp
-  ): [SmithCert!]!
-
-  """An aggregate relationship"""
-  smithCertReceivedAggregate(
-    """distinct select on columns"""
-    distinctOn: [SmithCertSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [SmithCertOrderBy!]
-
-    """filter the rows returned"""
-    where: SmithCertBoolExp
-  ): SmithCertAggregate!
-
-  """An array relationship connection"""
-  smithCertReceived_connection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [SmithCertSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [SmithCertOrderBy!]
-
-    """filter the rows returned"""
-    where: SmithCertBoolExp
-  ): SmithCertConnection!
-  smithStatus: SmithStatusEnum
-  status: IdentityStatusEnum
-
-  """
-  "Get UD History by Identity"
-  """
-  udHistory(
-    """distinct select on columns"""
-    distinctOn: [UdHistorySelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UdHistoryOrderBy!]
-
-    """filter the rows returned"""
-    where: UdHistoryBoolExp
-  ): [UdHistory!]
-}
-
-scalar identity_scalar
-
-"""
-Boolean expression to filter rows from the table "identity". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"identity\". All fields are combined with a logical 'AND'."
 input IdentityBoolExp {
   _and: [IdentityBoolExp!]
   _not: IdentityBoolExp
@@ -3212,20 +3616,7 @@ input IdentityBoolExp {
   udHistory: UdHistoryBoolExp
 }
 
-"""
-A Relay connection object on "identity"
-"""
-type IdentityConnection {
-  edges: [IdentityEdge!]!
-  pageInfo: PageInfo!
-}
-
-type IdentityEdge {
-  cursor: String!
-  node: Identity!
-}
-
-"""Ordering options when selecting data from "identity"."""
+"Ordering options when selecting data from \"identity\"."
 input IdentityOrderBy {
   account: AccountOrderBy
   accountId: OrderBy
@@ -3250,56 +3641,7 @@ input IdentityOrderBy {
   udHistoryAggregate: UdHistoryAggregateOrderBy
 }
 
-"""
-select columns of table "identity"
-"""
-enum IdentitySelectColumn {
-  """column name"""
-  accountId
-
-  """column name"""
-  createdInId
-
-  """column name"""
-  createdOn
-
-  """column name"""
-  expireOn
-
-  """column name"""
-  id
-
-  """column name"""
-  index
-
-  """column name"""
-  isMember
-
-  """column name"""
-  lastChangeOn
-
-  """column name"""
-  name
-
-  """column name"""
-  smithStatus
-
-  """column name"""
-  status
-}
-
-enum IdentityStatusEnum {
-  MEMBER
-  NOTMEMBER
-  REMOVED
-  REVOKED
-  UNCONFIRMED
-  UNVALIDATED
-}
-
-"""
-Boolean expression to compare columns of type "IdentityStatusEnum". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"IdentityStatusEnum\". All fields are combined with logical 'AND'."
 input IdentityStatusEnumComparisonExp {
   _eq: IdentityStatusEnum
   _in: [IdentityStatusEnum!]
@@ -3308,14 +3650,11 @@ input IdentityStatusEnumComparisonExp {
   _nin: [IdentityStatusEnum!]
 }
 
-"""
-Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"Int\". All fields are combined with logical 'AND'."
 input IntArrayComparisonExp {
-  """is the array contained in the given array value"""
+  "is the array contained in the given array value"
   _containedIn: [Int!]
-
-  """does the array contain the given value"""
+  "does the array contain the given value"
   _contains: [Int!]
   _eq: [Int!]
   _gt: [Int!]
@@ -3328,9 +3667,7 @@ input IntArrayComparisonExp {
   _nin: [[Int!]!]
 }
 
-"""
-Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"Int\". All fields are combined with logical 'AND'."
 input IntComparisonExp {
   _eq: Int
   _gt: Int
@@ -3343,19 +3680,16 @@ input IntComparisonExp {
   _nin: [Int!]
 }
 
-"""
-columns and relationships of "items_counter"
-"""
-type ItemsCounter implements Node {
-  id: ID!
-  level: CounterLevelEnum
-  total: Int!
-  type: ItemTypeEnum
+"Boolean expression to compare columns of type \"ItemTypeEnum\". All fields are combined with logical 'AND'."
+input ItemTypeEnumComparisonExp {
+  _eq: ItemTypeEnum
+  _in: [ItemTypeEnum!]
+  _isNull: Boolean
+  _neq: ItemTypeEnum
+  _nin: [ItemTypeEnum!]
 }
 
-"""
-Boolean expression to filter rows from the table "items_counter". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"items_counter\". All fields are combined with a logical 'AND'."
 input ItemsCounterBoolExp {
   _and: [ItemsCounterBoolExp!]
   _not: ItemsCounterBoolExp
@@ -3366,20 +3700,7 @@ input ItemsCounterBoolExp {
   type: ItemTypeEnumComparisonExp
 }
 
-"""
-A Relay connection object on "items_counter"
-"""
-type ItemsCounterConnection {
-  edges: [ItemsCounterEdge!]!
-  pageInfo: PageInfo!
-}
-
-type ItemsCounterEdge {
-  cursor: String!
-  node: ItemsCounter!
-}
-
-"""Ordering options when selecting data from "items_counter"."""
+"Ordering options when selecting data from \"items_counter\"."
 input ItemsCounterOrderBy {
   id: OrderBy
   level: OrderBy
@@ -3387,68 +3708,25 @@ input ItemsCounterOrderBy {
   type: OrderBy
 }
 
-"""
-select columns of table "items_counter"
-"""
-enum ItemsCounterSelectColumn {
-  """column name"""
-  id
-
-  """column name"""
-  level
-
-  """column name"""
-  total
-
-  """column name"""
-  type
-}
-
-enum ItemTypeEnum {
-  CALLS
-  EVENTS
-  EXTRINSICS
-}
-
-"""
-Boolean expression to compare columns of type "ItemTypeEnum". All fields are combined with logical 'AND'.
-"""
-input ItemTypeEnumComparisonExp {
-  _eq: ItemTypeEnum
-  _in: [ItemTypeEnum!]
-  _isNull: Boolean
-  _neq: ItemTypeEnum
-  _nin: [ItemTypeEnum!]
-}
-
-scalar jsonb
-
 input JsonbCastExp {
   String: StringComparisonExp
 }
 
-"""
-Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"jsonb\". All fields are combined with logical 'AND'."
 input JsonbComparisonExp {
   _cast: JsonbCastExp
-
-  """is the column contained in the given json value"""
+  "is the column contained in the given json value"
   _containedIn: jsonb
-
-  """does the column contain the given json value at the top level"""
+  "does the column contain the given json value at the top level"
   _contains: jsonb
   _eq: jsonb
   _gt: jsonb
   _gte: jsonb
-
-  """does the string exist as a top-level key in the column"""
+  "does the string exist as a top-level key in the column"
   _hasKey: String
-
-  """do all of these strings exist as top-level keys in the column"""
+  "do all of these strings exist as top-level keys in the column"
   _hasKeysAll: [String!]
-
-  """do any of these strings exist as top-level keys in the column"""
+  "do any of these strings exist as top-level keys in the column"
   _hasKeysAny: [String!]
   _in: [jsonb!]
   _isNull: Boolean
@@ -3458,62 +3736,11 @@ input JsonbComparisonExp {
   _nin: [jsonb!]
 }
 
-"""
-columns and relationships of "membership_event"
-"""
-type MembershipEvent implements Node {
-  blockNumber: Int!
-
-  """An object relationship"""
-  event: Event
-  eventId: String
-  eventType: EventTypeEnum
-  id: ID!
-
-  """An object relationship"""
-  identity: Identity
-  identityId: String
-}
-
-"""
-aggregated selection of "membership_event"
-"""
-type MembershipEventAggregate {
-  aggregate: MembershipEventAggregateFields
-  nodes: [MembershipEvent!]!
-}
-
 input MembershipEventAggregateBoolExp {
   count: membershipEventAggregateBoolExpCount
 }
 
-input membershipEventAggregateBoolExpCount {
-  arguments: [MembershipEventSelectColumn!]
-  distinct: Boolean
-  filter: MembershipEventBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "membership_event"
-"""
-type MembershipEventAggregateFields {
-  avg: MembershipEventAvgFields
-  count(columns: [MembershipEventSelectColumn!], distinct: Boolean): Int!
-  max: MembershipEventMaxFields
-  min: MembershipEventMinFields
-  stddev: MembershipEventStddevFields
-  stddevPop: MembershipEventStddevPopFields
-  stddevSamp: MembershipEventStddevSampFields
-  sum: MembershipEventSumFields
-  varPop: MembershipEventVarPopFields
-  varSamp: MembershipEventVarSampFields
-  variance: MembershipEventVarianceFields
-}
-
-"""
-order by aggregate values of table "membership_event"
-"""
+"order by aggregate values of table \"membership_event\""
 input MembershipEventAggregateOrderBy {
   avg: MembershipEventAvgOrderBy
   count: OrderBy
@@ -3528,21 +3755,12 @@ input MembershipEventAggregateOrderBy {
   variance: MembershipEventVarianceOrderBy
 }
 
-"""aggregate avg on columns"""
-type MembershipEventAvgFields {
-  blockNumber: Float
-}
-
-"""
-order by avg() on columns of table "membership_event"
-"""
+"order by avg() on columns of table \"membership_event\""
 input MembershipEventAvgOrderBy {
   blockNumber: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "membership_event". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"membership_event\". All fields are combined with a logical 'AND'."
 input MembershipEventBoolExp {
   _and: [MembershipEventBoolExp!]
   _not: MembershipEventBoolExp
@@ -3556,30 +3774,7 @@ input MembershipEventBoolExp {
   identityId: StringComparisonExp
 }
 
-"""
-A Relay connection object on "membership_event"
-"""
-type MembershipEventConnection {
-  edges: [MembershipEventEdge!]!
-  pageInfo: PageInfo!
-}
-
-type MembershipEventEdge {
-  cursor: String!
-  node: MembershipEvent!
-}
-
-"""aggregate max on columns"""
-type MembershipEventMaxFields {
-  blockNumber: Int
-  eventId: String
-  id: String
-  identityId: String
-}
-
-"""
-order by max() on columns of table "membership_event"
-"""
+"order by max() on columns of table \"membership_event\""
 input MembershipEventMaxOrderBy {
   blockNumber: OrderBy
   eventId: OrderBy
@@ -3587,17 +3782,7 @@ input MembershipEventMaxOrderBy {
   identityId: OrderBy
 }
 
-"""aggregate min on columns"""
-type MembershipEventMinFields {
-  blockNumber: Int
-  eventId: String
-  id: String
-  identityId: String
-}
-
-"""
-order by min() on columns of table "membership_event"
-"""
+"order by min() on columns of table \"membership_event\""
 input MembershipEventMinOrderBy {
   blockNumber: OrderBy
   eventId: OrderBy
@@ -3605,7 +3790,7 @@ input MembershipEventMinOrderBy {
   identityId: OrderBy
 }
 
-"""Ordering options when selecting data from "membership_event"."""
+"Ordering options when selecting data from \"membership_event\"."
 input MembershipEventOrderBy {
   blockNumber: OrderBy
   event: EventOrderBy
@@ -3616,121 +3801,42 @@ input MembershipEventOrderBy {
   identityId: OrderBy
 }
 
-"""
-select columns of table "membership_event"
-"""
-enum MembershipEventSelectColumn {
-  """column name"""
-  blockNumber
-
-  """column name"""
-  eventId
-
-  """column name"""
-  eventType
-
-  """column name"""
-  id
-
-  """column name"""
-  identityId
-}
-
-"""aggregate stddev on columns"""
-type MembershipEventStddevFields {
-  blockNumber: Float
-}
-
-"""
-order by stddev() on columns of table "membership_event"
-"""
+"order by stddev() on columns of table \"membership_event\""
 input MembershipEventStddevOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate stddevPop on columns"""
-type MembershipEventStddevPopFields {
-  blockNumber: Float
-}
-
-"""
-order by stddevPop() on columns of table "membership_event"
-"""
+"order by stddevPop() on columns of table \"membership_event\""
 input MembershipEventStddevPopOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate stddevSamp on columns"""
-type MembershipEventStddevSampFields {
-  blockNumber: Float
-}
-
-"""
-order by stddevSamp() on columns of table "membership_event"
-"""
+"order by stddevSamp() on columns of table \"membership_event\""
 input MembershipEventStddevSampOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate sum on columns"""
-type MembershipEventSumFields {
-  blockNumber: Int
-}
-
-"""
-order by sum() on columns of table "membership_event"
-"""
+"order by sum() on columns of table \"membership_event\""
 input MembershipEventSumOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate variance on columns"""
-type MembershipEventVarianceFields {
-  blockNumber: Float
-}
-
-"""
-order by variance() on columns of table "membership_event"
-"""
-input MembershipEventVarianceOrderBy {
-  blockNumber: OrderBy
-}
-
-"""aggregate varPop on columns"""
-type MembershipEventVarPopFields {
-  blockNumber: Float
-}
-
-"""
-order by varPop() on columns of table "membership_event"
-"""
+"order by varPop() on columns of table \"membership_event\""
 input MembershipEventVarPopOrderBy {
   blockNumber: OrderBy
 }
 
-"""aggregate varSamp on columns"""
-type MembershipEventVarSampFields {
-  blockNumber: Float
-}
-
-"""
-order by varSamp() on columns of table "membership_event"
-"""
+"order by varSamp() on columns of table \"membership_event\""
 input MembershipEventVarSampOrderBy {
   blockNumber: OrderBy
 }
 
-"""An object with globally unique ID"""
-interface Node {
-  """A globally unique identifier"""
-  id: ID!
+"order by variance() on columns of table \"membership_event\""
+input MembershipEventVarianceOrderBy {
+  blockNumber: OrderBy
 }
 
-scalar numeric
-
-"""
-Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"numeric\". All fields are combined with logical 'AND'."
 input NumericComparisonExp {
   _eq: numeric
   _gt: numeric
@@ -3743,423 +3849,11 @@ input NumericComparisonExp {
   _nin: [numeric!]
 }
 
-"""column ordering options"""
-enum OrderBy {
-  """in ascending order, nulls last"""
-  ASC
-
-  """in ascending order, nulls first"""
-  ASC_NULLS_FIRST
-
-  """in ascending order, nulls last"""
-  ASC_NULLS_LAST
-
-  """in descending order, nulls first"""
-  DESC
-
-  """in descending order, nulls first"""
-  DESC_NULLS_FIRST
-
-  """in descending order, nulls last"""
-  DESC_NULLS_LAST
-}
-
-type PageInfo {
-  endCursor: String!
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String!
-}
-
-type query_root {
-  """
-  fetch data from the table: "account"
-  """
-  accountConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [AccountSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AccountOrderBy!]
-
-    """filter the rows returned"""
-    where: AccountBoolExp
-  ): AccountConnection!
-
-  """
-  fetch data from the table: "block"
-  """
-  blockConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [BlockSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [BlockOrderBy!]
-
-    """filter the rows returned"""
-    where: BlockBoolExp
-  ): BlockConnection!
-
-  """
-  fetch data from the table: "call"
-  """
-  callConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
-    where: CallBoolExp
-  ): CallConnection!
-
-  """
-  fetch data from the table: "cert"
-  """
-  certConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CertSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertOrderBy!]
-
-    """filter the rows returned"""
-    where: CertBoolExp
-  ): CertConnection!
-
-  """
-  fetch data from the table: "cert_event"
-  """
-  certEventConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CertEventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertEventOrderBy!]
-
-    """filter the rows returned"""
-    where: CertEventBoolExp
-  ): CertEventConnection!
-
-  """
-  fetch data from the table: "change_owner_key"
-  """
-  changeOwnerKeyConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ChangeOwnerKeySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ChangeOwnerKeyOrderBy!]
-
-    """filter the rows returned"""
-    where: ChangeOwnerKeyBoolExp
-  ): ChangeOwnerKeyConnection!
-
-  """
-  fetch data from the table: "event"
-  """
-  eventConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
-    where: EventBoolExp
-  ): EventConnection!
-
-  """
-  fetch data from the table: "extrinsic"
-  """
-  extrinsicConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ExtrinsicSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ExtrinsicOrderBy!]
-
-    """filter the rows returned"""
-    where: ExtrinsicBoolExp
-  ): ExtrinsicConnection!
-
-  """
-  execute function "get_ud_history" which returns "ud_history"
-  """
-  getUdHistory_connection(
-    after: String
-
-    """
-    input parameters for function "getUdHistory"
-    """
-    args: getUdHistoryArgs!
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [UdHistorySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UdHistoryOrderBy!]
-
-    """filter the rows returned"""
-    where: UdHistoryBoolExp
-  ): UdHistoryConnection!
-
-  """
-  fetch data from the table: "identity"
-  """
-  identityConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [IdentitySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [IdentityOrderBy!]
-
-    """filter the rows returned"""
-    where: IdentityBoolExp
-  ): IdentityConnection!
-
-  """
-  fetch data from the table: "items_counter"
-  """
-  itemsCounterConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ItemsCounterSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ItemsCounterOrderBy!]
-
-    """filter the rows returned"""
-    where: ItemsCounterBoolExp
-  ): ItemsCounterConnection!
-
-  """
-  fetch data from the table: "membership_event"
-  """
-  membershipEventConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [MembershipEventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [MembershipEventOrderBy!]
-
-    """filter the rows returned"""
-    where: MembershipEventBoolExp
-  ): MembershipEventConnection!
-  node(
-    """A globally unique id"""
-    id: ID!
-  ): Node
-
-  """
-  fetch data from the table: "smith_cert"
-  """
-  smithCertConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [SmithCertSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [SmithCertOrderBy!]
-
-    """filter the rows returned"""
-    where: SmithCertBoolExp
-  ): SmithCertConnection!
-
-  """
-  fetch data from the table: "transfer"
-  """
-  transferConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [TransferSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [TransferOrderBy!]
-
-    """filter the rows returned"""
-    where: TransferBoolExp
-  ): TransferConnection!
-
-  """
-  fetch data from the table: "ud_history"
-  """
-  udHistoryConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [UdHistorySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UdHistoryOrderBy!]
-
-    """filter the rows returned"""
-    where: UdHistoryBoolExp
-  ): UdHistoryConnection!
-
-  """
-  fetch data from the table: "ud_reeval"
-  """
-  udReevalConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [UdReevalSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UdReevalOrderBy!]
-
-    """filter the rows returned"""
-    where: UdReevalBoolExp
-  ): UdReevalConnection!
-
-  """
-  fetch data from the table: "universal_dividend"
-  """
-  universalDividendConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [UniversalDividendSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UniversalDividendOrderBy!]
-
-    """filter the rows returned"""
-    where: UniversalDividendBoolExp
-  ): UniversalDividendConnection!
-}
-
-"""
-columns and relationships of "smith_cert"
-"""
-type SmithCert implements Node {
-  createdOn: Int!
-  id: ID!
-
-  """An object relationship"""
-  issuer: Identity
-  issuerId: String
-
-  """An object relationship"""
-  receiver: Identity
-  receiverId: String
-}
-
-"""
-aggregated selection of "smith_cert"
-"""
-type SmithCertAggregate {
-  aggregate: SmithCertAggregateFields
-  nodes: [SmithCert!]!
-}
-
 input SmithCertAggregateBoolExp {
   count: smithCertAggregateBoolExpCount
 }
 
-input smithCertAggregateBoolExpCount {
-  arguments: [SmithCertSelectColumn!]
-  distinct: Boolean
-  filter: SmithCertBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "smith_cert"
-"""
-type SmithCertAggregateFields {
-  avg: SmithCertAvgFields
-  count(columns: [SmithCertSelectColumn!], distinct: Boolean): Int!
-  max: SmithCertMaxFields
-  min: SmithCertMinFields
-  stddev: SmithCertStddevFields
-  stddevPop: SmithCertStddevPopFields
-  stddevSamp: SmithCertStddevSampFields
-  sum: SmithCertSumFields
-  varPop: SmithCertVarPopFields
-  varSamp: SmithCertVarSampFields
-  variance: SmithCertVarianceFields
-}
-
-"""
-order by aggregate values of table "smith_cert"
-"""
+"order by aggregate values of table \"smith_cert\""
 input SmithCertAggregateOrderBy {
   avg: SmithCertAvgOrderBy
   count: OrderBy
@@ -4174,21 +3868,12 @@ input SmithCertAggregateOrderBy {
   variance: SmithCertVarianceOrderBy
 }
 
-"""aggregate avg on columns"""
-type SmithCertAvgFields {
-  createdOn: Float
-}
-
-"""
-order by avg() on columns of table "smith_cert"
-"""
+"order by avg() on columns of table \"smith_cert\""
 input SmithCertAvgOrderBy {
   createdOn: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "smith_cert". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"smith_cert\". All fields are combined with a logical 'AND'."
 input SmithCertBoolExp {
   _and: [SmithCertBoolExp!]
   _not: SmithCertBoolExp
@@ -4201,30 +3886,7 @@ input SmithCertBoolExp {
   receiverId: StringComparisonExp
 }
 
-"""
-A Relay connection object on "smith_cert"
-"""
-type SmithCertConnection {
-  edges: [SmithCertEdge!]!
-  pageInfo: PageInfo!
-}
-
-type SmithCertEdge {
-  cursor: String!
-  node: SmithCert!
-}
-
-"""aggregate max on columns"""
-type SmithCertMaxFields {
-  createdOn: Int
-  id: String
-  issuerId: String
-  receiverId: String
-}
-
-"""
-order by max() on columns of table "smith_cert"
-"""
+"order by max() on columns of table \"smith_cert\""
 input SmithCertMaxOrderBy {
   createdOn: OrderBy
   id: OrderBy
@@ -4232,17 +3894,7 @@ input SmithCertMaxOrderBy {
   receiverId: OrderBy
 }
 
-"""aggregate min on columns"""
-type SmithCertMinFields {
-  createdOn: Int
-  id: String
-  issuerId: String
-  receiverId: String
-}
-
-"""
-order by min() on columns of table "smith_cert"
-"""
+"order by min() on columns of table \"smith_cert\""
 input SmithCertMinOrderBy {
   createdOn: OrderBy
   id: OrderBy
@@ -4250,7 +3902,7 @@ input SmithCertMinOrderBy {
   receiverId: OrderBy
 }
 
-"""Ordering options when selecting data from "smith_cert"."""
+"Ordering options when selecting data from \"smith_cert\"."
 input SmithCertOrderBy {
   createdOn: OrderBy
   id: OrderBy
@@ -4260,117 +3912,42 @@ input SmithCertOrderBy {
   receiverId: OrderBy
 }
 
-"""
-select columns of table "smith_cert"
-"""
-enum SmithCertSelectColumn {
-  """column name"""
-  createdOn
-
-  """column name"""
-  id
-
-  """column name"""
-  issuerId
-
-  """column name"""
-  receiverId
-}
-
-"""aggregate stddev on columns"""
-type SmithCertStddevFields {
-  createdOn: Float
-}
-
-"""
-order by stddev() on columns of table "smith_cert"
-"""
+"order by stddev() on columns of table \"smith_cert\""
 input SmithCertStddevOrderBy {
   createdOn: OrderBy
 }
 
-"""aggregate stddevPop on columns"""
-type SmithCertStddevPopFields {
-  createdOn: Float
-}
-
-"""
-order by stddevPop() on columns of table "smith_cert"
-"""
+"order by stddevPop() on columns of table \"smith_cert\""
 input SmithCertStddevPopOrderBy {
   createdOn: OrderBy
 }
 
-"""aggregate stddevSamp on columns"""
-type SmithCertStddevSampFields {
-  createdOn: Float
-}
-
-"""
-order by stddevSamp() on columns of table "smith_cert"
-"""
+"order by stddevSamp() on columns of table \"smith_cert\""
 input SmithCertStddevSampOrderBy {
   createdOn: OrderBy
 }
 
-"""aggregate sum on columns"""
-type SmithCertSumFields {
-  createdOn: Int
-}
-
-"""
-order by sum() on columns of table "smith_cert"
-"""
+"order by sum() on columns of table \"smith_cert\""
 input SmithCertSumOrderBy {
   createdOn: OrderBy
 }
 
-"""aggregate variance on columns"""
-type SmithCertVarianceFields {
-  createdOn: Float
-}
-
-"""
-order by variance() on columns of table "smith_cert"
-"""
-input SmithCertVarianceOrderBy {
-  createdOn: OrderBy
-}
-
-"""aggregate varPop on columns"""
-type SmithCertVarPopFields {
-  createdOn: Float
-}
-
-"""
-order by varPop() on columns of table "smith_cert"
-"""
+"order by varPop() on columns of table \"smith_cert\""
 input SmithCertVarPopOrderBy {
   createdOn: OrderBy
 }
 
-"""aggregate varSamp on columns"""
-type SmithCertVarSampFields {
-  createdOn: Float
-}
-
-"""
-order by varSamp() on columns of table "smith_cert"
-"""
+"order by varSamp() on columns of table \"smith_cert\""
 input SmithCertVarSampOrderBy {
   createdOn: OrderBy
 }
 
-enum SmithStatusEnum {
-  EXCLUDED
-  INVITED
-  PENDING
-  SMITH
+"order by variance() on columns of table \"smith_cert\""
+input SmithCertVarianceOrderBy {
+  createdOn: OrderBy
 }
 
-"""
-Boolean expression to compare columns of type "SmithStatusEnum". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"SmithStatusEnum\". All fields are combined with logical 'AND'."
 input SmithStatusEnumComparisonExp {
   _eq: SmithStatusEnum
   _in: [SmithStatusEnum!]
@@ -4379,14 +3956,11 @@ input SmithStatusEnumComparisonExp {
   _nin: [SmithStatusEnum!]
 }
 
-"""
-Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"String\". All fields are combined with logical 'AND'."
 input StringArrayComparisonExp {
-  """is the array contained in the given array value"""
+  "is the array contained in the given array value"
   _containedIn: [String!]
-
-  """does the array contain the given value"""
+  "does the array contain the given value"
   _contains: [String!]
   _eq: [String!]
   _gt: [String!]
@@ -4399,398 +3973,40 @@ input StringArrayComparisonExp {
   _nin: [[String!]!]
 }
 
-"""
-Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"String\". All fields are combined with logical 'AND'."
 input StringComparisonExp {
   _eq: String
   _gt: String
   _gte: String
-
-  """does the column match the given case-insensitive pattern"""
+  "does the column match the given case-insensitive pattern"
   _ilike: String
   _in: [String!]
-
-  """
-  does the column match the given POSIX regular expression, case insensitive
-  """
+  "does the column match the given POSIX regular expression, case insensitive"
   _iregex: String
   _isNull: Boolean
-
-  """does the column match the given pattern"""
+  "does the column match the given pattern"
   _like: String
   _lt: String
   _lte: String
   _neq: String
-
-  """does the column NOT match the given case-insensitive pattern"""
+  "does the column NOT match the given case-insensitive pattern"
   _nilike: String
   _nin: [String!]
-
-  """
-  does the column NOT match the given POSIX regular expression, case insensitive
-  """
+  "does the column NOT match the given POSIX regular expression, case insensitive"
   _niregex: String
-
-  """does the column NOT match the given pattern"""
+  "does the column NOT match the given pattern"
   _nlike: String
-
-  """
-  does the column NOT match the given POSIX regular expression, case sensitive
-  """
+  "does the column NOT match the given POSIX regular expression, case sensitive"
   _nregex: String
-
-  """does the column NOT match the given SQL regular expression"""
+  "does the column NOT match the given SQL regular expression"
   _nsimilar: String
-
-  """
-  does the column match the given POSIX regular expression, case sensitive
-  """
+  "does the column match the given POSIX regular expression, case sensitive"
   _regex: String
-
-  """does the column match the given SQL regular expression"""
+  "does the column match the given SQL regular expression"
   _similar: String
 }
 
-type subscription_root {
-  """
-  fetch data from the table: "account"
-  """
-  accountConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [AccountSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AccountOrderBy!]
-
-    """filter the rows returned"""
-    where: AccountBoolExp
-  ): AccountConnection!
-
-  """
-  fetch data from the table: "block"
-  """
-  blockConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [BlockSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [BlockOrderBy!]
-
-    """filter the rows returned"""
-    where: BlockBoolExp
-  ): BlockConnection!
-
-  """
-  fetch data from the table: "call"
-  """
-  callConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CallSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CallOrderBy!]
-
-    """filter the rows returned"""
-    where: CallBoolExp
-  ): CallConnection!
-
-  """
-  fetch data from the table: "cert"
-  """
-  certConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CertSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertOrderBy!]
-
-    """filter the rows returned"""
-    where: CertBoolExp
-  ): CertConnection!
-
-  """
-  fetch data from the table: "cert_event"
-  """
-  certEventConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [CertEventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CertEventOrderBy!]
-
-    """filter the rows returned"""
-    where: CertEventBoolExp
-  ): CertEventConnection!
-
-  """
-  fetch data from the table: "change_owner_key"
-  """
-  changeOwnerKeyConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ChangeOwnerKeySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ChangeOwnerKeyOrderBy!]
-
-    """filter the rows returned"""
-    where: ChangeOwnerKeyBoolExp
-  ): ChangeOwnerKeyConnection!
-
-  """
-  fetch data from the table: "event"
-  """
-  eventConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [EventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [EventOrderBy!]
-
-    """filter the rows returned"""
-    where: EventBoolExp
-  ): EventConnection!
-
-  """
-  fetch data from the table: "extrinsic"
-  """
-  extrinsicConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ExtrinsicSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ExtrinsicOrderBy!]
-
-    """filter the rows returned"""
-    where: ExtrinsicBoolExp
-  ): ExtrinsicConnection!
-
-  """
-  execute function "get_ud_history" which returns "ud_history"
-  """
-  getUdHistory_connection(
-    after: String
-
-    """
-    input parameters for function "getUdHistory"
-    """
-    args: getUdHistoryArgs!
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [UdHistorySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UdHistoryOrderBy!]
-
-    """filter the rows returned"""
-    where: UdHistoryBoolExp
-  ): UdHistoryConnection!
-
-  """
-  fetch data from the table: "identity"
-  """
-  identityConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [IdentitySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [IdentityOrderBy!]
-
-    """filter the rows returned"""
-    where: IdentityBoolExp
-  ): IdentityConnection!
-
-  """
-  fetch data from the table: "items_counter"
-  """
-  itemsCounterConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [ItemsCounterSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ItemsCounterOrderBy!]
-
-    """filter the rows returned"""
-    where: ItemsCounterBoolExp
-  ): ItemsCounterConnection!
-
-  """
-  fetch data from the table: "membership_event"
-  """
-  membershipEventConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [MembershipEventSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [MembershipEventOrderBy!]
-
-    """filter the rows returned"""
-    where: MembershipEventBoolExp
-  ): MembershipEventConnection!
-  node(
-    """A globally unique id"""
-    id: ID!
-  ): Node
-
-  """
-  fetch data from the table: "smith_cert"
-  """
-  smithCertConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [SmithCertSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [SmithCertOrderBy!]
-
-    """filter the rows returned"""
-    where: SmithCertBoolExp
-  ): SmithCertConnection!
-
-  """
-  fetch data from the table: "transfer"
-  """
-  transferConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [TransferSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [TransferOrderBy!]
-
-    """filter the rows returned"""
-    where: TransferBoolExp
-  ): TransferConnection!
-
-  """
-  fetch data from the table: "ud_history"
-  """
-  udHistoryConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [UdHistorySelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UdHistoryOrderBy!]
-
-    """filter the rows returned"""
-    where: UdHistoryBoolExp
-  ): UdHistoryConnection!
-
-  """
-  fetch data from the table: "ud_reeval"
-  """
-  udReevalConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [UdReevalSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UdReevalOrderBy!]
-
-    """filter the rows returned"""
-    where: UdReevalBoolExp
-  ): UdReevalConnection!
-
-  """
-  fetch data from the table: "universal_dividend"
-  """
-  universalDividendConnection(
-    after: String
-    before: String
-
-    """distinct select on columns"""
-    distinctOn: [UniversalDividendSelectColumn!]
-    first: Int
-    last: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [UniversalDividendOrderBy!]
-
-    """filter the rows returned"""
-    where: UniversalDividendBoolExp
-  ): UniversalDividendConnection!
-}
-
-scalar timestamptz
-
-"""
-Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
-"""
+"Boolean expression to compare columns of type \"timestamptz\". All fields are combined with logical 'AND'."
 input TimestamptzComparisonExp {
   _eq: timestamptz
   _gt: timestamptz
@@ -4803,64 +4019,11 @@ input TimestamptzComparisonExp {
   _nin: [timestamptz!]
 }
 
-"""
-columns and relationships of "transfer"
-"""
-type Transfer implements Node {
-  amount: numeric!
-  blockNumber: Int!
-  comment: String
-
-  """An object relationship"""
-  from: Account
-  fromId: String
-  id: ID!
-  timestamp: timestamptz!
-
-  """An object relationship"""
-  to: Account
-  toId: String
-}
-
-"""
-aggregated selection of "transfer"
-"""
-type TransferAggregate {
-  aggregate: TransferAggregateFields
-  nodes: [Transfer!]!
-}
-
 input TransferAggregateBoolExp {
   count: transferAggregateBoolExpCount
 }
 
-input transferAggregateBoolExpCount {
-  arguments: [TransferSelectColumn!]
-  distinct: Boolean
-  filter: TransferBoolExp
-  predicate: IntComparisonExp!
-}
-
-"""
-aggregate fields of "transfer"
-"""
-type TransferAggregateFields {
-  avg: TransferAvgFields
-  count(columns: [TransferSelectColumn!], distinct: Boolean): Int!
-  max: TransferMaxFields
-  min: TransferMinFields
-  stddev: TransferStddevFields
-  stddevPop: TransferStddevPopFields
-  stddevSamp: TransferStddevSampFields
-  sum: TransferSumFields
-  varPop: TransferVarPopFields
-  varSamp: TransferVarSampFields
-  variance: TransferVarianceFields
-}
-
-"""
-order by aggregate values of table "transfer"
-"""
+"order by aggregate values of table \"transfer\""
 input TransferAggregateOrderBy {
   avg: TransferAvgOrderBy
   count: OrderBy
@@ -4875,23 +4038,13 @@ input TransferAggregateOrderBy {
   variance: TransferVarianceOrderBy
 }
 
-"""aggregate avg on columns"""
-type TransferAvgFields {
-  amount: Float
-  blockNumber: Float
-}
-
-"""
-order by avg() on columns of table "transfer"
-"""
+"order by avg() on columns of table \"transfer\""
 input TransferAvgOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "transfer". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"transfer\". All fields are combined with a logical 'AND'."
 input TransferBoolExp {
   _and: [TransferBoolExp!]
   _not: TransferBoolExp
@@ -4907,33 +4060,7 @@ input TransferBoolExp {
   toId: StringComparisonExp
 }
 
-"""
-A Relay connection object on "transfer"
-"""
-type TransferConnection {
-  edges: [TransferEdge!]!
-  pageInfo: PageInfo!
-}
-
-type TransferEdge {
-  cursor: String!
-  node: Transfer!
-}
-
-"""aggregate max on columns"""
-type TransferMaxFields {
-  amount: numeric
-  blockNumber: Int
-  comment: String
-  fromId: String
-  id: String
-  timestamp: timestamptz
-  toId: String
-}
-
-"""
-order by max() on columns of table "transfer"
-"""
+"order by max() on columns of table \"transfer\""
 input TransferMaxOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
@@ -4944,20 +4071,7 @@ input TransferMaxOrderBy {
   toId: OrderBy
 }
 
-"""aggregate min on columns"""
-type TransferMinFields {
-  amount: numeric
-  blockNumber: Int
-  comment: String
-  fromId: String
-  id: String
-  timestamp: timestamptz
-  toId: String
-}
-
-"""
-order by min() on columns of table "transfer"
-"""
+"order by min() on columns of table \"transfer\""
 input TransferMinOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
@@ -4968,7 +4082,7 @@ input TransferMinOrderBy {
   toId: OrderBy
 }
 
-"""Ordering options when selecting data from "transfer"."""
+"Ordering options when selecting data from \"transfer\"."
 input TransferOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
@@ -4981,147 +4095,49 @@ input TransferOrderBy {
   toId: OrderBy
 }
 
-"""
-select columns of table "transfer"
-"""
-enum TransferSelectColumn {
-  """column name"""
-  amount
-
-  """column name"""
-  blockNumber
-
-  """column name"""
-  comment
-
-  """column name"""
-  fromId
-
-  """column name"""
-  id
-
-  """column name"""
-  timestamp
-
-  """column name"""
-  toId
-}
-
-"""aggregate stddev on columns"""
-type TransferStddevFields {
-  amount: Float
-  blockNumber: Float
-}
-
-"""
-order by stddev() on columns of table "transfer"
-"""
+"order by stddev() on columns of table \"transfer\""
 input TransferStddevOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""aggregate stddevPop on columns"""
-type TransferStddevPopFields {
-  amount: Float
-  blockNumber: Float
-}
-
-"""
-order by stddevPop() on columns of table "transfer"
-"""
+"order by stddevPop() on columns of table \"transfer\""
 input TransferStddevPopOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""aggregate stddevSamp on columns"""
-type TransferStddevSampFields {
-  amount: Float
-  blockNumber: Float
-}
-
-"""
-order by stddevSamp() on columns of table "transfer"
-"""
+"order by stddevSamp() on columns of table \"transfer\""
 input TransferStddevSampOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""aggregate sum on columns"""
-type TransferSumFields {
-  amount: numeric
-  blockNumber: Int
-}
-
-"""
-order by sum() on columns of table "transfer"
-"""
+"order by sum() on columns of table \"transfer\""
 input TransferSumOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""aggregate variance on columns"""
-type TransferVarianceFields {
-  amount: Float
-  blockNumber: Float
-}
-
-"""
-order by variance() on columns of table "transfer"
-"""
-input TransferVarianceOrderBy {
-  amount: OrderBy
-  blockNumber: OrderBy
-}
-
-"""aggregate varPop on columns"""
-type TransferVarPopFields {
-  amount: Float
-  blockNumber: Float
-}
-
-"""
-order by varPop() on columns of table "transfer"
-"""
+"order by varPop() on columns of table \"transfer\""
 input TransferVarPopOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""aggregate varSamp on columns"""
-type TransferVarSampFields {
-  amount: Float
-  blockNumber: Float
-}
-
-"""
-order by varSamp() on columns of table "transfer"
-"""
+"order by varSamp() on columns of table \"transfer\""
 input TransferVarSampOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-columns and relationships of "ud_history"
-"""
-type UdHistory implements Node {
-  amount: Int!
-  blockNumber: Int!
-  id: ID!
-
-  """An object relationship"""
-  identity: Identity
-  identityId: String
-  timestamp: timestamptz!
+"order by variance() on columns of table \"transfer\""
+input TransferVarianceOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
 }
 
-"""
-order by aggregate values of table "ud_history"
-"""
+"order by aggregate values of table \"ud_history\""
 input UdHistoryAggregateOrderBy {
   avg: UdHistoryAvgOrderBy
   count: OrderBy
@@ -5136,17 +4152,13 @@ input UdHistoryAggregateOrderBy {
   variance: UdHistoryVarianceOrderBy
 }
 
-"""
-order by avg() on columns of table "ud_history"
-"""
+"order by avg() on columns of table \"ud_history\""
 input UdHistoryAvgOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "ud_history". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"ud_history\". All fields are combined with a logical 'AND'."
 input UdHistoryBoolExp {
   _and: [UdHistoryBoolExp!]
   _not: UdHistoryBoolExp
@@ -5159,22 +4171,7 @@ input UdHistoryBoolExp {
   timestamp: TimestamptzComparisonExp
 }
 
-"""
-A Relay connection object on "ud_history"
-"""
-type UdHistoryConnection {
-  edges: [UdHistoryEdge!]!
-  pageInfo: PageInfo!
-}
-
-type UdHistoryEdge {
-  cursor: String!
-  node: UdHistory!
-}
-
-"""
-order by max() on columns of table "ud_history"
-"""
+"order by max() on columns of table \"ud_history\""
 input UdHistoryMaxOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
@@ -5183,9 +4180,7 @@ input UdHistoryMaxOrderBy {
   timestamp: OrderBy
 }
 
-"""
-order by min() on columns of table "ud_history"
-"""
+"order by min() on columns of table \"ud_history\""
 input UdHistoryMinOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
@@ -5194,7 +4189,7 @@ input UdHistoryMinOrderBy {
   timestamp: OrderBy
 }
 
-"""Ordering options when selecting data from "ud_history"."""
+"Ordering options when selecting data from \"ud_history\"."
 input UdHistoryOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
@@ -5204,101 +4199,49 @@ input UdHistoryOrderBy {
   timestamp: OrderBy
 }
 
-"""
-select columns of table "ud_history"
-"""
-enum UdHistorySelectColumn {
-  """column name"""
-  amount
-
-  """column name"""
-  blockNumber
-
-  """column name"""
-  id
-
-  """column name"""
-  identityId
-
-  """column name"""
-  timestamp
-}
-
-"""
-order by stddev() on columns of table "ud_history"
-"""
+"order by stddev() on columns of table \"ud_history\""
 input UdHistoryStddevOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-order by stddevPop() on columns of table "ud_history"
-"""
+"order by stddevPop() on columns of table \"ud_history\""
 input UdHistoryStddevPopOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-order by stddevSamp() on columns of table "ud_history"
-"""
+"order by stddevSamp() on columns of table \"ud_history\""
 input UdHistoryStddevSampOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-order by sum() on columns of table "ud_history"
-"""
+"order by sum() on columns of table \"ud_history\""
 input UdHistorySumOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-order by variance() on columns of table "ud_history"
-"""
-input UdHistoryVarianceOrderBy {
-  amount: OrderBy
-  blockNumber: OrderBy
-}
-
-"""
-order by varPop() on columns of table "ud_history"
-"""
+"order by varPop() on columns of table \"ud_history\""
 input UdHistoryVarPopOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-order by varSamp() on columns of table "ud_history"
-"""
+"order by varSamp() on columns of table \"ud_history\""
 input UdHistoryVarSampOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
 }
 
-"""
-columns and relationships of "ud_reeval"
-"""
-type UdReeval implements Node {
-  blockNumber: Int!
-
-  """An object relationship"""
-  event: Event
-  eventId: String
-  id: ID!
-  membersCount: Int!
-  monetaryMass: numeric!
-  newUdAmount: Int!
-  timestamp: timestamptz!
+"order by variance() on columns of table \"ud_history\""
+input UdHistoryVarianceOrderBy {
+  amount: OrderBy
+  blockNumber: OrderBy
 }
 
-"""
-Boolean expression to filter rows from the table "ud_reeval". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"ud_reeval\". All fields are combined with a logical 'AND'."
 input UdReevalBoolExp {
   _and: [UdReevalBoolExp!]
   _not: UdReevalBoolExp
@@ -5313,20 +4256,7 @@ input UdReevalBoolExp {
   timestamp: TimestamptzComparisonExp
 }
 
-"""
-A Relay connection object on "ud_reeval"
-"""
-type UdReevalConnection {
-  edges: [UdReevalEdge!]!
-  pageInfo: PageInfo!
-}
-
-type UdReevalEdge {
-  cursor: String!
-  node: UdReeval!
-}
-
-"""Ordering options when selecting data from "ud_reeval"."""
+"Ordering options when selecting data from \"ud_reeval\"."
 input UdReevalOrderBy {
   blockNumber: OrderBy
   event: EventOrderBy
@@ -5338,51 +4268,7 @@ input UdReevalOrderBy {
   timestamp: OrderBy
 }
 
-"""
-select columns of table "ud_reeval"
-"""
-enum UdReevalSelectColumn {
-  """column name"""
-  blockNumber
-
-  """column name"""
-  eventId
-
-  """column name"""
-  id
-
-  """column name"""
-  membersCount
-
-  """column name"""
-  monetaryMass
-
-  """column name"""
-  newUdAmount
-
-  """column name"""
-  timestamp
-}
-
-"""
-columns and relationships of "universal_dividend"
-"""
-type UniversalDividend implements Node {
-  amount: Int!
-  blockNumber: Int!
-
-  """An object relationship"""
-  event: Event
-  eventId: String
-  id: ID!
-  membersCount: Int!
-  monetaryMass: numeric!
-  timestamp: timestamptz!
-}
-
-"""
-Boolean expression to filter rows from the table "universal_dividend". All fields are combined with a logical 'AND'.
-"""
+"Boolean expression to filter rows from the table \"universal_dividend\". All fields are combined with a logical 'AND'."
 input UniversalDividendBoolExp {
   _and: [UniversalDividendBoolExp!]
   _not: UniversalDividendBoolExp
@@ -5397,20 +4283,7 @@ input UniversalDividendBoolExp {
   timestamp: TimestamptzComparisonExp
 }
 
-"""
-A Relay connection object on "universal_dividend"
-"""
-type UniversalDividendConnection {
-  edges: [UniversalDividendEdge!]!
-  pageInfo: PageInfo!
-}
-
-type UniversalDividendEdge {
-  cursor: String!
-  node: UniversalDividend!
-}
-
-"""Ordering options when selecting data from "universal_dividend"."""
+"Ordering options when selecting data from \"universal_dividend\"."
 input UniversalDividendOrderBy {
   amount: OrderBy
   blockNumber: OrderBy
@@ -5422,29 +4295,118 @@ input UniversalDividendOrderBy {
   timestamp: OrderBy
 }
 
-"""
-select columns of table "universal_dividend"
-"""
-enum UniversalDividendSelectColumn {
-  """column name"""
-  amount
-
-  """column name"""
-  blockNumber
-
-  """column name"""
-  eventId
-
-  """column name"""
-  id
-
-  """column name"""
-  membersCount
-
-  """column name"""
-  monetaryMass
-
-  """column name"""
-  timestamp
+input accountAggregateBoolExpCount {
+  arguments: [AccountSelectColumn!]
+  distinct: Boolean
+  filter: AccountBoolExp
+  predicate: IntComparisonExp!
 }
 
+input callAggregateBoolExpBool_and {
+  arguments: CallSelectColumnCallAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: CallBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input callAggregateBoolExpBool_or {
+  arguments: CallSelectColumnCallAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: CallBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input callAggregateBoolExpCount {
+  arguments: [CallSelectColumn!]
+  distinct: Boolean
+  filter: CallBoolExp
+  predicate: IntComparisonExp!
+}
+
+input certAggregateBoolExpBool_and {
+  arguments: CertSelectColumnCertAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: CertBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input certAggregateBoolExpBool_or {
+  arguments: CertSelectColumnCertAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: CertBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input certAggregateBoolExpCount {
+  arguments: [CertSelectColumn!]
+  distinct: Boolean
+  filter: CertBoolExp
+  predicate: IntComparisonExp!
+}
+
+input certEventAggregateBoolExpCount {
+  arguments: [CertEventSelectColumn!]
+  distinct: Boolean
+  filter: CertEventBoolExp
+  predicate: IntComparisonExp!
+}
+
+input changeOwnerKeyAggregateBoolExpCount {
+  arguments: [ChangeOwnerKeySelectColumn!]
+  distinct: Boolean
+  filter: ChangeOwnerKeyBoolExp
+  predicate: IntComparisonExp!
+}
+
+input eventAggregateBoolExpCount {
+  arguments: [EventSelectColumn!]
+  distinct: Boolean
+  filter: EventBoolExp
+  predicate: IntComparisonExp!
+}
+
+input extrinsicAggregateBoolExpBool_and {
+  arguments: ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: ExtrinsicBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input extrinsicAggregateBoolExpBool_or {
+  arguments: ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: ExtrinsicBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input extrinsicAggregateBoolExpCount {
+  arguments: [ExtrinsicSelectColumn!]
+  distinct: Boolean
+  filter: ExtrinsicBoolExp
+  predicate: IntComparisonExp!
+}
+
+input getUdHistoryArgs {
+  identity_row: identity_scalar
+}
+
+input membershipEventAggregateBoolExpCount {
+  arguments: [MembershipEventSelectColumn!]
+  distinct: Boolean
+  filter: MembershipEventBoolExp
+  predicate: IntComparisonExp!
+}
+
+input smithCertAggregateBoolExpCount {
+  arguments: [SmithCertSelectColumn!]
+  distinct: Boolean
+  filter: SmithCertBoolExp
+  predicate: IntComparisonExp!
+}
+
+input transferAggregateBoolExpCount {
+  arguments: [TransferSelectColumn!]
+  distinct: Boolean
+  filter: TransferBoolExp
+  predicate: IntComparisonExp!
+}

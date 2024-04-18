@@ -39,11 +39,11 @@ export type AnyError = string | AppError;
 export declare type AppEvent = MouseEvent | TouchEvent | PointerEvent | CustomEvent;
 
 export interface ListItems<T, F> {
-  first: number;
   filter: F;
 
   items: T[];
   count: number;
   canFetchMore: boolean;
   fetchMoreFn: FetchMoreFn<LoadResult<T>>;
+  fetchSize: number;
 }

@@ -135,8 +135,8 @@ export class AccountNamePipe extends AccountAbstractPipe<string, void> implement
   pure: false,
 })
 export class IsMemberAccountPipe extends AccountAbstractPipe<boolean, void> implements PipeTransform {
-  constructor(_ref: ChangeDetectorRef) {
-    super(_ref);
+  constructor(cd: ChangeDetectorRef) {
+    super(cd);
   }
 
   protected _transform(account: Partial<Account>): boolean {

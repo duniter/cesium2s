@@ -13,16 +13,7 @@ import {
 import { DocumentNode } from 'graphql/index';
 import { StorageService } from '@app/shared/services/storage/storage.service';
 import { Account } from '@app/account/account.model';
-import {
-  CertFragment,
-  CertsConnectionByIssuerQuery,
-  CertsConnectionByReceiverQuery,
-  IndexerGraphqlService,
-  OrderBy,
-  TransferFragment,
-  BlockOrderBy,
-  BlockEdge,
-} from './indexer-types.generated';
+import { BlockEdge, BlockOrderBy, CertConnection, IndexerGraphqlService, OrderBy, TransferFragment } from './indexer-types.generated';
 import { firstValueFrom, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Transfer, TransferConverter, TransferSearchFilter } from '@app/transfer/transfer.model';
@@ -40,8 +31,6 @@ import {
   CertificationSearchFilterUtils,
 } from '@app/certification/history/cert-history.model';
 import { AccountConverter } from '@app/account/account.converter';
-
-export const PAGE_SIZE: number = 30; // TODO(poka): Move to GraphqlServiceState?
 
 export interface IndexerState extends GraphqlServiceState {
   currency: Currency;
@@ -70,7 +59,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
     options = {
       after: null,
-      first: PAGE_SIZE,
+      first: this.fetchSize,
       ...options,
     };
 
@@ -85,37 +74,47 @@ export class IndexerService extends GraphqlService<IndexerState> {
             orderBy: { identity: { index: OrderBy.Asc } },
           },
           {
-            fetchPolicy: options.fetchPolicy,
+            fetchPolicy: options.fetchPolicy || 'cache-first',
           }
         )
-        .pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
+        .pipe(map(({ data }) => AccountConverter.connectionToAccounts(data.accountConnection)));
     } else if (isNotNilOrBlank(filter.searchText)) {
       data$ = this.indexerGraphqlService
-        .wotSearchByText({
-          searchText: `%${filter.searchText}%`,
-          after: options.after,
-          first: options.first,
-          orderBy: { identity: { index: OrderBy.Asc } },
-        })
-        .pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
+        .wotSearchByText(
+          {
+            searchText: `%${filter.searchText}%`,
+            after: options.after,
+            first: options.first + 1,
+            orderBy: { identity: { index: OrderBy.Asc } },
+          },
+          {
+            fetchPolicy: options.fetchPolicy || 'cache-first',
+          }
+        )
+        .pipe(map(({ data }) => AccountConverter.connectionToAccounts(data.accountConnection)));
     } else {
       data$ = this.indexerGraphqlService
-        .wotSearchLastWatch({
-          after: options.after,
-          first: options.first,
-          orderBy: { identity: { index: OrderBy.Asc } },
-          pending: toBoolean(filter.pending, false),
-        })
-        .valueChanges.pipe(map(({ data }) => AccountConverter.toAccounts(data?.accountConnection.edges.map((edge) => edge.node))));
+        .wotSearchLastWatch(
+          {
+            after: options.after,
+            first: options.first + 1, // Add 1 item, to check if can fetch more
+            orderBy: { identity: { index: OrderBy.Asc } },
+            pending: toBoolean(filter.pending, false),
+          },
+          {
+            fetchPolicy: options.fetchPolicy || 'cache-first',
+          }
+        )
+        .valueChanges.pipe(map(({ data }) => AccountConverter.connectionToAccounts(data.accountConnection)));
     }
 
     return data$.pipe(
-      map((items) => {
-        const result: LoadResult<Account> = { data: items };
-        if (items.length > options.first) {
-          items = items.slice(0, options.first);
+      map((accounts) => {
+        const result: LoadResult<Account> = { data: accounts };
+        if (accounts.length > options.first) {
+          accounts = accounts.slice(0, options.first);
           const nextCursor = options.after + options.first;
-          result.data = items;
+          result.data = accounts;
           result.fetchMore = (first) => {
             console.debug(`${this._logPrefix}Fetching more accounts - offset: ${nextCursor}`);
             return firstValueFrom(this.wotSearch(filter, { ...options, after: nextCursor, first: toNumber(first, options.first) }));
@@ -132,14 +131,14 @@ export class IndexerService extends GraphqlService<IndexerState> {
   ): Observable<LoadResult<Transfer>> {
     console.info(`${this._logPrefix}Searching transfers...`, filter && JSON.stringify(filter));
     options = {
-      first: PAGE_SIZE,
       after: null,
+      first: this.defaultFetchSize,
       ...options,
     };
 
     if (filter?.address) {
       return this.indexerGraphqlService
-        .transfersConnectionByAddress(
+        .transferConnectionByAddress(
           {
             address: filter.address,
             first: options.first,
@@ -171,8 +170,8 @@ export class IndexerService extends GraphqlService<IndexerState> {
   ): Observable<LoadResult<Certification>> {
     console.info(`${this._logPrefix}Searching certifications...`, filter && JSON.stringify(filter));
     options = {
-      first: PAGE_SIZE,
       after: null,
+      first: this.defaultFetchSize,
       ...options,
     };
     if (CertificationSearchFilterUtils.isEmpty(filter)) throw new Error('Filter is empty!');
@@ -184,41 +183,31 @@ export class IndexerService extends GraphqlService<IndexerState> {
       orderBy: { createdOn: OrderBy.DescNullsLast },
     };
     const fetchOptions = { fetchPolicy: options?.fetchPolicy };
-    const toEntities = (
-      certsConnection:
-        | CertsConnectionByIssuerQuery['identityConnection']['edges'][0]['node']
-        | CertsConnectionByReceiverQuery['identityConnection']['edges'][0]['node']
-    ) => {
-      let certsConnectionData: any;
-      let totalCount: number;
+    const toEntities = (connection: CertConnection, total: number) => {
+      if (!connection || !total) return { data: [], total };
 
-      if (CertificationSearchFilterUtils.isIssuerConnection(certsConnection)) {
-        certsConnectionData = certsConnection.certIssued_connection;
-        totalCount = certsConnection.certIssuedAggregate.aggregate.count;
-      } else if (CertificationSearchFilterUtils.isReceiverConnection(certsConnection)) {
-        certsConnectionData = certsConnection.certReceived_connection;
-        totalCount = certsConnection.certReceivedAggregate.aggregate.count;
-      } else {
-        throw new Error('Unrecognized connection type');
-      }
-
-      const inputs = certsConnectionData.edges?.map((edge) => edge.node as CertFragment);
-      const data = CertificationConverter.toCertifications(inputs, isNotNilOrBlank(filter.receiver), true);
-      const result: LoadResult<Certification> = { data, total: totalCount };
-      if (certsConnectionData.pageInfo.hasNextPage) {
-        const after = certsConnectionData.pageInfo.endCursor;
+      const data = CertificationConverter.connectionToCertifications(connection as CertConnection, isNotNilOrBlank(filter.receiver), true);
+      const result: LoadResult<Certification> = { data, total };
+      if (connection.pageInfo.hasNextPage) {
+        const after = connection.pageInfo.endCursor;
         result.fetchMore = (first) => firstValueFrom(this.certsSearch(filter, { ...options, after, first: toNumber(first, options.first) }));
       }
       return result;
     };
     if (isNotNilOrBlank(filter.issuer)) {
-      return this.indexerGraphqlService
-        .certsConnectionByIssuer(variables, fetchOptions)
-        .pipe(map(({ data }) => toEntities(data.identityConnection.edges[0].node)));
+      return this.indexerGraphqlService.certsConnectionByIssuer(variables, fetchOptions).pipe(
+        map(({ data }) => {
+          const res = data.identityConnection.edges[0]?.node;
+          return toEntities(res?.connection as CertConnection, res?.aggregate.aggregate.count || 0);
+        })
+      );
     } else {
-      return this.indexerGraphqlService
-        .certsConnectionByReceiver(variables, fetchOptions)
-        .pipe(map(({ data }) => toEntities(data.identityConnection.edges[0].node)));
+      return this.indexerGraphqlService.certsConnectionByReceiver(variables, fetchOptions).pipe(
+        map(({ data }) => {
+          const res = data.identityConnection.edges[0]?.node;
+          return toEntities(res?.connection as CertConnection, res?.aggregate.aggregate.count || 0);
+        })
+      );
     }
   }
 
@@ -226,8 +215,8 @@ export class IndexerService extends GraphqlService<IndexerState> {
     console.info(`${this._logPrefix}Searching block...`, filter);
 
     options = {
-      first: PAGE_SIZE,
       after: null,
+      first: this.defaultFetchSize,
       orderBy: { height: OrderBy.Desc },
       ...options,
     };
@@ -240,9 +229,9 @@ export class IndexerService extends GraphqlService<IndexerState> {
       return this.indexerGraphqlService
         .blocks({
           ...options,
-          where: { height: { _eq: filter.height } },
-          first: 1,
           after: null,
+          first: 1,
+          where: { height: { _eq: filter.height } },
         })
         .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlocks(blockConnection.edges as BlockEdge[], true)));
     }
@@ -281,6 +270,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
       client,
       currency,
       offline: false,
+      fetchSize: this.defaultFetchSize,
     };
   }
 
