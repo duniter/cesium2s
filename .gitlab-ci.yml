@@ -38,7 +38,7 @@ variables:
   ARTIFACT_ZIP_FILES: ${OUTPUT_DIR}/${CI_PROJECT_NAME}-*.zip
   ENV_FILE: variables.env
   IONIC_CLI_VERSION: 7.2.0
-  ANGULAR_CLI_VERSION: 17.0.3
+  ANGULAR_CLI_VERSION: 17.3.5
 
 # ---------------------------------------------------------------
 # Jobs templates

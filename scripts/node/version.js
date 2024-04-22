@@ -46,7 +46,7 @@ function standardizeVersionForAndroid(version) {
   v.num = !v.num ? '99' : v.num;
   return Object.values(v)
     .filter(i => !isNaN(i))
-    .map(i => (parseInt(i) < 10) ? '0' + i : i)
+    .map((i, index) => (index !== 0 && parseInt(i) < 10) ? ('0' + i) : i)
     .join('');
 }
 

@@ -216,7 +216,7 @@ export class TransferHistoryPage extends AppPage<TransferHistoryPageState> imple
   }
 
   async showAccount(event: UIEvent, account: Account) {
-    if (!account.address) return; // skip
+    if (!account.address || event.defaultPrevented) return; // skip
     event.preventDefault();
     event.stopPropagation();
 

@@ -13,7 +13,15 @@ import {
 import { DocumentNode } from 'graphql/index';
 import { StorageService } from '@app/shared/services/storage/storage.service';
 import { Account } from '@app/account/account.model';
-import { BlockEdge, BlockOrderBy, CertConnection, IndexerGraphqlService, OrderBy, TransferFragment } from './indexer-types.generated';
+import {
+  BlockEdge,
+  BlockOrderBy,
+  CertConnection,
+  IndexerGraphqlService,
+  LightAccountConnectionFragment,
+  OrderBy,
+  TransferFragment,
+} from './indexer-types.generated';
 import { firstValueFrom, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Transfer, TransferConverter, TransferSearchFilter } from '@app/transfer/transfer.model';
@@ -63,7 +71,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
       ...options,
     };
 
-    let data$: Observable<Account[]>;
+    let data$: Observable<LightAccountConnectionFragment>;
     if (isNotNilOrBlank(filter.address)) {
       data$ = this.indexerGraphqlService
         .wotSearchByAddress(
@@ -77,27 +85,27 @@ export class IndexerService extends GraphqlService<IndexerState> {
             fetchPolicy: options.fetchPolicy || 'cache-first',
           }
         )
-        .pipe(map(({ data }) => AccountConverter.connectionToAccounts(data.accountConnection)));
+        .pipe(map(({ data }) => data.accountConnection as LightAccountConnectionFragment));
     } else if (isNotNilOrBlank(filter.searchText)) {
       data$ = this.indexerGraphqlService
         .wotSearchByText(
           {
             searchText: `%${filter.searchText}%`,
             after: options.after,
-            first: options.first + 1,
+            first: options.first,
             orderBy: { identity: { index: OrderBy.Asc } },
           },
           {
             fetchPolicy: options.fetchPolicy || 'cache-first',
           }
         )
-        .pipe(map(({ data }) => AccountConverter.connectionToAccounts(data.accountConnection)));
+        .pipe(map(({ data }) => data.accountConnection as LightAccountConnectionFragment));
     } else {
       data$ = this.indexerGraphqlService
         .wotSearchLastWatch(
           {
             after: options.after,
-            first: options.first + 1, // Add 1 item, to check if can fetch more
+            first: options.first,
             orderBy: { identity: { index: OrderBy.Asc } },
             pending: toBoolean(filter.pending, false),
           },
@@ -105,19 +113,18 @@ export class IndexerService extends GraphqlService<IndexerState> {
             fetchPolicy: options.fetchPolicy || 'cache-first',
           }
         )
-        .valueChanges.pipe(map(({ data }) => AccountConverter.connectionToAccounts(data.accountConnection)));
+        .valueChanges.pipe(map(({ data }) => data.accountConnection as LightAccountConnectionFragment));
     }
 
     return data$.pipe(
-      map((accounts) => {
-        const result: LoadResult<Account> = { data: accounts };
-        if (accounts.length > options.first) {
-          accounts = accounts.slice(0, options.first);
-          const nextCursor = options.after + options.first;
-          result.data = accounts;
+      map((connection: LightAccountConnectionFragment) => {
+        const data = AccountConverter.connectionToAccounts(connection);
+        const result: LoadResult<Account> = { data };
+        if (connection.pageInfo.hasNextPage) {
+          const endCursor = connection.pageInfo.endCursor;
           result.fetchMore = (first) => {
-            console.debug(`${this._logPrefix}Fetching more accounts - offset: ${nextCursor}`);
-            return firstValueFrom(this.wotSearch(filter, { ...options, after: nextCursor, first: toNumber(first, options.first) }));
+            console.debug(`${this._logPrefix}Fetching more accounts - offset: ${endCursor}`);
+            return firstValueFrom(this.wotSearch(filter, { ...options, after: endCursor, first: toNumber(first, options.first) }));
           };
         }
         return result;
@@ -180,7 +187,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
       address: filter.issuer || filter.receiver,
       first: options.first,
       after: options.after,
-      orderBy: { createdOn: OrderBy.DescNullsLast },
+      orderBy: [{ createdOn: OrderBy.AscNullsFirst }, { expireOn: OrderBy.DescNullsLast }],
     };
     const fetchOptions = { fetchPolicy: options?.fetchPolicy };
     const toEntities = (connection: CertConnection, total: number) => {

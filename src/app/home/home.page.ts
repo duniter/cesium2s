@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { Currency } from '@app/currency/currency.model';
 import { RxState } from '@rx-angular/state';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+import { AlertController } from '@ionic/angular';
 
 export interface HomePageState extends AppPageState, Settings {
   defaultAccount: Account;
@@ -40,6 +41,7 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
   constructor(
     protected networkService: NetworkService,
     protected accountService: AccountsService,
+    protected alertController: AlertController,
     protected authController: AuthController,
     protected transferController: TransferController,
     protected router: Router,
@@ -90,10 +92,31 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
     }
   }
 
-  logout(event?: Event) {
+  async logout(event?: Event) {
     event?.preventDefault();
-    this.accountService.forgetAll();
-    this.defaultAccount = null;
+    const alert = await this.alertController.create({
+      header: this.translate.instant('CONFIRM.POPUP_TITLE'),
+      //subHeader: 'A Sub Header Is Optional',
+      message: this.translate.instant('CONFIRM.LOGOUT'),
+      buttons: [
+        {
+          text: this.translate.instant('COMMON.BTN_CANCEL'),
+          role: 'cancel',
+        },
+        {
+          text: this.translate.instant('COMMON.BTN_LOGOUT'),
+          role: 'confirm',
+        },
+      ],
+    });
+
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+
+    if (role === 'confirm') {
+      this.accountService.forgetAll();
+      this.defaultAccount = null;
+    }
   }
 
   transfer() {

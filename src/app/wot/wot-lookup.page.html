@@ -70,26 +70,28 @@
       ></ion-searchbar>
     }
 
-    <ion-list-header *ngIf="!mobile && showFilterButtons">
+    <ion-list-header *ngIf="!mobile">
       <ion-grid>
         <ion-col>&nbsp;</ion-col>
         <ion-col class="ion-float-end" size="auto">
-          <ion-button
-            fill="clear"
-            [color]="filter?.last && !filter.pending ? 'secondary' : 'dark'"
-            (click)="applyFilter({ last: true, pending: false, searchText: '' })"
-          >
-            <ion-icon name="people" slot="start"></ion-icon>
-            <ion-label translate>WOT.LOOKUP.NEWCOMERS</ion-label>
-          </ion-button>
-          <ion-button
-            fill="clear"
-            [color]="filter?.last && filter.pending ? 'secondary' : 'dark'"
-            (click)="applyFilter({ last: true, pending: true, searchText: '' })"
-          >
-            <ion-icon name="time-outline" slot="start"></ion-icon>
-            <ion-label translate>WOT.LOOKUP.PENDING</ion-label>
-          </ion-button>
+          @if (showFilterButtons) {
+            <ion-button
+              fill="clear"
+              [color]="filter?.last && !filter.pending ? 'secondary' : 'dark'"
+              (click)="applyFilter({ last: true, pending: false, searchText: '' })"
+            >
+              <ion-icon name="people" slot="start"></ion-icon>
+              <ion-label translate>WOT.LOOKUP.NEWCOMERS</ion-label>
+            </ion-button>
+            <ion-button
+              fill="clear"
+              [color]="filter?.last && filter.pending ? 'secondary' : 'dark'"
+              (click)="applyFilter({ last: true, pending: true, searchText: '' })"
+            >
+              <ion-icon name="time-outline" slot="start"></ion-icon>
+              <ion-label translate>WOT.LOOKUP.PENDING</ion-label>
+            </ion-button>
+          }
 
           <ion-button fill="solid" color="light" (click)="refresh.emit($event)">
             <ion-label translate>COMMON.BTN_SEARCH</ion-label>
@@ -98,15 +100,13 @@
       </ion-grid>
     </ion-list-header>
 
-    <ion-list [class.cdk-visually-hidden]="loading$ | push">
-      <!-- loading spinner -->
-      <ng-container *rxIf="loading$; else items">
+    <ion-list>
+      @if (loading$ | async) {
+        <!-- loading spinner -->
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-      </ng-container>
-
-      <ng-template #items>
+      } @else {
         <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
-          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)">
+          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)" class="ion-activatable ion-focusable" tappable>
             <ion-avatar slot="start">
               <app-account-image [account]="item"></app-account-image>
             </ion-avatar>
@@ -114,7 +114,11 @@
               <h2>
                 <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
                   <small><ion-icon name="person"></ion-icon></small>
-                  {{ item.meta?.uid }}
+                  @if (filter?.last) {
+                    {{ item.meta?.uid }}
+                  } @else {
+                    <span [innerHTML]="item.meta?.uid | highlight: { search: searchText }"></span>
+                  }
                 </ion-text>
               </h2>
               <p>
@@ -143,7 +147,7 @@
         <ion-item *rxIf="(count$ | push) === 0" lines="none">
           <ion-text color="danger" class="text-italic" translate>COMMON.SEARCH_NO_RESULT</ion-text>
         </ion-item>
-      </ng-template>
+      }
     </ion-list>
 
     <!-- infinite scroll -->

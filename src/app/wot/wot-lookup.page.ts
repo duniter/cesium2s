@@ -15,6 +15,7 @@ import { InfiniteScrollCustomEvent, IonPopover, ModalController } from '@ionic/a
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
 import { IndexerService } from '@app/network/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
+import { environment } from '@environments/environment';
 
 export interface WotLookupState extends AppPageState {
   searchText: string;
@@ -124,6 +125,11 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     this.autoLoad = toBoolean(this.autoLoad, this.showFilterButtons);
     this.fetchSize = toNumber(this.fetchSize, this.indexerService.fetchSize);
 
+    if (!this.autoLoad) {
+      this.loading = false;
+      this.canFetchMore = false;
+    }
+
     if (this.isModal) {
       this.registerSubscription(this.itemClick.subscribe((item) => this.modalCtrl.dismiss(item)));
       this.registerSubscription(this.closeClick.subscribe(() => this.modalCtrl.dismiss()));
@@ -136,7 +142,9 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     const filter = (!WotSearchFilterUtils.isEmpty(this.filter) && this.filter) ||
       (isNotNilOrBlank(this.searchText) && { text: this.searchText }) || { last: true };
 
-    return <WotLookupState>{ filter };
+    const fetchSize = toNumber(this.fetchSize, this.indexerService.fetchSize || environment.graphql?.fetchSize || 10);
+
+    return <WotLookupState>{ filter, fetchSize };
   }
 
   search(searchFilter?: WotSearchFilter, options?: { first: number; after: string }): Observable<LoadResult<Account>> {

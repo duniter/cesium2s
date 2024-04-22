@@ -5,7 +5,9 @@ ion-toolbar {
     color: var(--ion-text-color, #000);
   }
 }
-
+ion-list.list-md {
+  padding-top: 0;
+}
 ion-item {
   h2,
   h3,

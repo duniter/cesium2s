@@ -107,8 +107,8 @@ export class AccountPropertyPipe<T = never, O extends AccountPropertyPipeOptions
   pure: false,
 })
 export class AccountBalancePipe extends AccountAbstractPipe<number, void> implements PipeTransform {
-  constructor(_ref: ChangeDetectorRef) {
-    super(_ref, { withBalance: true });
+  constructor(cd: ChangeDetectorRef) {
+    super(cd, { withBalance: true });
   }
 
   protected _transform(account: Partial<Account>): number {
@@ -122,7 +122,7 @@ export class AccountBalancePipe extends AccountAbstractPipe<number, void> implem
 })
 export class AccountNamePipe extends AccountAbstractPipe<string, void> implements PipeTransform {
   constructor(cd: ChangeDetectorRef) {
-    super(cd);
+    super(cd, { withBalance: false });
   }
 
   protected _transform(account: Partial<Account>): string {
@@ -136,7 +136,7 @@ export class AccountNamePipe extends AccountAbstractPipe<string, void> implement
 })
 export class IsMemberAccountPipe extends AccountAbstractPipe<boolean, void> implements PipeTransform {
   constructor(cd: ChangeDetectorRef) {
-    super(cd);
+    super(cd, { withBalance: false, withMembership: true });
   }
 
   protected _transform(account: Partial<Account>): boolean {

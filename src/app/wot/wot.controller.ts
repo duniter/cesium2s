@@ -14,6 +14,7 @@ export class WotController {
       componentProps: <WotLookupInputs>{
         ...options,
         isModal: true,
+        loading: false,
       },
     });
     await modal.present();

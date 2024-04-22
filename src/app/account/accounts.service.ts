@@ -674,7 +674,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
       }
 
       // Load Cert
-      if (opts.withCert !== false) {
+      if (opts.withCert === true) {
         // const certs = await this.api.query.cert.certsByReceiver(account.address);
         // console.debug(`${this._logPrefix} Loaded certs:`, certs);
       }
