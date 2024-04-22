@@ -35,5 +35,8 @@ export const environment = <Environment>{
     //'wss://1000i100.fr/ws',
   ],
 
-  defaultIndexers: ['https://gdev-squid.axiom-team.fr/v1beta1/relay', 'https://gdev-squid.axiom-team.fr/graphql'],
+  defaultIndexers: [
+    'https://gdev-squid.axiom-team.fr/v1beta1/relay',
+    //'https://gdev-squid.axiom-team.fr/graphql'
+  ],
 };
