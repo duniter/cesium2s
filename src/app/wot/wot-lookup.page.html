@@ -103,9 +103,7 @@
     <ion-list>
       @if (loading$ | async) {
         <!-- loading spinner -->
-        <ng-container *rxIf="loading$; else items">
-          <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
-        </ng-container>
+        <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
       } @else {
         <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
           <ion-item [detail]="!itemClick.observed" (click)="click($event, item)" class="ion-activatable ion-focusable" tappable>
