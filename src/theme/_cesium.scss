@@ -107,3 +107,13 @@ ion-list {
 .searchbar-input.sc-ion-searchbar-md:placeholder-shown {
   text-overflow: ellipsis;
 }
+
+/* -- icons --*/
+
+ion-icon.icon-secondary {
+    position: absolute;
+    opacity: 1;
+    font-size: 16px;
+    left: 8px;
+    top: -2px;
+  }
