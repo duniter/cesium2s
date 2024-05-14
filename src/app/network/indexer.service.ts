@@ -2,7 +2,7 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { Peer, Peers } from '@app/shared/services/network/peer.model';
 import { Promise } from '@rx-angular/cdk/zone-less/browser';
 import { SettingsService } from '@app/settings/settings.service';
-import { arrayRandomPick, firstArrayValue, isNotNilOrBlank, toBoolean, toNumber } from '@app/shared/functions';
+import { arrayRandomPick, firstArrayValue, isNil, isNotNil, isNotNilOrBlank, toBoolean, toNumber } from '@app/shared/functions';
 import { TypePolicies } from '@apollo/client/core';
 import {
   APP_GRAPHQL_FRAGMENTS,
@@ -22,8 +22,8 @@ import {
   OrderBy,
   TransferFragment,
 } from './indexer-types.generated';
-import { firstValueFrom, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { firstValueFrom, mergeMap, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { Transfer, TransferConverter, TransferSearchFilter } from '@app/transfer/transfer.model';
 import { WotSearchFilter } from '@app/wot/wot.model';
 import { Block, BlockConverter, BlockSearchFilter } from '@app/block/block.model';
@@ -42,12 +42,16 @@ import { AccountConverter } from '@app/account/account.converter';
 
 export interface IndexerState extends GraphqlServiceState {
   currency: Currency;
+  minBlockHeight: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class IndexerService extends GraphqlService<IndexerState> {
   @RxStateSelect() currency$: Observable<Currency>;
   @RxStateProperty() currency: Currency;
+
+  @RxStateSelect() minBlockHeight$: Observable<number>;
+  @RxStateProperty() minBlockHeight: number;
 
   constructor(
     storage: StorageService,
@@ -60,6 +64,24 @@ export class IndexerService extends GraphqlService<IndexerState> {
       name: 'indexer-service',
       startByReadyFunction: false, // Need an explicit call to start()
     });
+
+    this.connect(
+      'minBlockHeight',
+      this.currency$.pipe(
+        filter(isNotNil),
+        mergeMap(async (currency) => {
+          let result = currency?.minBlockHeight;
+          if (isNil(result)) {
+            await this.ready();
+            const firstIndexedBlock = (
+              await firstValueFrom(this.blockSearch({ where: { height: { _lt: 0 } } }, { after: null, first: 1, orderBy: { height: OrderBy.Asc } }))
+            )?.[0];
+            result = firstIndexedBlock?.height;
+          }
+          return result;
+        })
+      )
+    );
   }
 
   wotSearch(filter: WotSearchFilter, options: { after?: string; first?: number; fetchPolicy?: FetchPolicy }): Observable<LoadResult<Account>> {
@@ -187,7 +209,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
       address: filter.issuer || filter.receiver,
       first: options.first,
       after: options.after,
-      orderBy: [{ createdOn: OrderBy.AscNullsFirst }, { expireOn: OrderBy.DescNullsLast }],
+      orderBy: [{ expireOn: OrderBy.DescNullsFirst }, { updatedOn: OrderBy.DescNullsLast }],
     };
     const fetchOptions = { fetchPolicy: options?.fetchPolicy };
     const toEntities = (connection: CertConnection, total: number) => {
@@ -228,11 +250,11 @@ export class IndexerService extends GraphqlService<IndexerState> {
       ...options,
     };
 
-    if (isNotNilOrBlank(filter.id)) {
+    if (isNotNilOrBlank(filter?.id)) {
       return this.blockById(filter.id).pipe(map((block) => [block]));
     }
 
-    if (isNotNilOrBlank(filter.height)) {
+    if (isNotNilOrBlank(filter?.height)) {
       return this.indexerGraphqlService
         .blocks({
           ...options,
@@ -243,7 +265,12 @@ export class IndexerService extends GraphqlService<IndexerState> {
         .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlocks(blockConnection.edges as BlockEdge[], true)));
     }
 
-    throw new Error('Invalid block filter');
+    return this.indexerGraphqlService
+      .blocks({
+        ...options,
+        where: filter?.where,
+      })
+      .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlocks(blockConnection.edges as BlockEdge[], true)));
   }
 
   blockById(id: string): Observable<Block> {
@@ -278,6 +305,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
       currency,
       offline: false,
       fetchSize: this.defaultFetchSize,
+      minBlockHeight: currency?.minBlockHeight,
     };
   }
 

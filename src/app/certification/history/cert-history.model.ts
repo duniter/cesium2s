@@ -9,6 +9,7 @@ export interface Certification {
   account: Account;
 
   createdOn: number;
+  updatedOn: number;
   expireOn: number;
   creationBlockNumbers: number[];
   renewalBlockNumbers: number[];
@@ -36,6 +37,7 @@ export class CertificationConverter {
       id: input.id,
       account: IdentityConverter.toAccount(address),
       createdOn: input.createdOn,
+      updatedOn: input.updatedOn,
       expireOn: input.expireOn,
     };
   }

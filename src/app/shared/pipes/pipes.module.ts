@@ -44,11 +44,11 @@ import {
   IsUserAccountPipePipe,
 } from '@app/shared/pipes/account.pipes';
 import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
+import { BlockNumberPipe } from '@app/shared/pipes/block-number.pipe';
 
 @NgModule({
   declarations: [
     PropertyGetPipe,
-    BlockTimePipe,
     DateFormatPipe,
     DateDiffDurationPipe,
     DurationPipe,
@@ -82,6 +82,9 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
     FormGetArrayPipe,
     FormGetGroupPipe,
     FormGetValuePipe,
+    // Block
+    BlockTimePipe,
+    BlockNumberPipe,
     // Currency pipes
     AmountFormatPipe,
     AddressFormatPipe,
@@ -98,7 +101,6 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
   imports: [CommonModule, IonicModule, TranslateModule],
   exports: [
     PropertyGetPipe,
-    BlockTimePipe,
     DateFormatPipe,
     DateFromNowPipe,
     DateDiffDurationPipe,
@@ -132,6 +134,10 @@ import { PubkeyFormatPipe } from '@app/shared/pipes/pubkey.pipes';
     FormGetArrayPipe,
     FormGetGroupPipe,
     FormGetValuePipe,
+
+    // Block
+    BlockTimePipe,
+    BlockNumberPipe,
     // Currency pipes
     AmountFormatPipe,
     AddressFormatPipe,

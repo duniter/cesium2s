@@ -210,6 +210,16 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
     return toast.present();
   }
 
+  protected async updateToast(opts: ToastOptions & { id: string; messageParams?: Object }) {
+    const message = isNotNilOrBlank(opts?.message) ? this.translate.instant(opts.message as string, opts.messageParams) : undefined;
+    const toast = await this.toastController.create({
+      duration: 2000,
+      ...opts,
+      message,
+    });
+    return toast.present();
+  }
+
   protected registerSubscription(sub: Subscription) {
     if (!this._subscription) this._subscription = new Subscription();
     this._subscription.add(sub);

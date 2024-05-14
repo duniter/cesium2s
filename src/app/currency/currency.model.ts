@@ -14,4 +14,5 @@ export interface Currency {
     tx: number;
   };
   decimals: number;
+  minBlockHeight?: number;
 }

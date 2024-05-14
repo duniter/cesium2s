@@ -143,14 +143,15 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     this.resetError();
 
     try {
+      if (this.showToastOnCertify) this.showToast({ id: 'cert', message: 'INFO.CERTIFICATION_PENDING', swipeGesture: 'vertical' });
       const certHash = await this.accountsService.cert(issuer, this.account);
 
-      if (this.showToastOnCertify) {
-        await this.showToast({ message: 'INFO.CERTIFICATION_DONE' });
-      }
+      if (this.showToastOnCertify)
+        await this.updateToast({ id: 'cert', message: 'INFO.CERTIFICATION_DONE', swipeGesture: 'vertical', color: 'secondary' });
 
       return certHash;
     } catch (err) {
+      console.error('TODO ', err);
       this.setError(err);
       this.markAsLoaded();
     }
