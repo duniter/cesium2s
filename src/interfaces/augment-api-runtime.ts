@@ -66,10 +66,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Generates a proof of key ownership for the given authority in the current epoch.
        **/
-      generateKeyOwnershipProof: AugmentedCall<
-        ApiType,
-        (slot: Slot | AnyNumber | Uint8Array, authorityId: AuthorityId | string | Uint8Array) => Observable<Option<OpaqueKeyOwnershipProof>>
-      >;
+      generateKeyOwnershipProof: AugmentedCall<ApiType, (slot: Slot | AnyNumber | Uint8Array, authorityId: AuthorityId | string | Uint8Array) => Observable<Option<OpaqueKeyOwnershipProof>>>;
       /**
        * Returns information regarding the next epoch (which was already previously announced).
        **/
@@ -77,17 +74,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Submits an unsigned extrinsic to report an equivocation.
        **/
-      submitReportEquivocationUnsignedExtrinsic: AugmentedCall<
-        ApiType,
-        (
-          equivocationProof:
-            | BabeEquivocationProof
-            | { offender?: any; slotNumber?: any; firstHeader?: any; secondHeader?: any }
-            | string
-            | Uint8Array,
-          keyOwnerProof: OpaqueKeyOwnershipProof | string | Uint8Array
-        ) => Observable<Option<Null>>
-      >;
+      submitReportEquivocationUnsignedExtrinsic: AugmentedCall<ApiType, (equivocationProof: BabeEquivocationProof | { offender?: any; slotNumber?: any; firstHeader?: any; secondHeader?: any } | string | Uint8Array, keyOwnerProof: OpaqueKeyOwnershipProof | string | Uint8Array) => Observable<Option<Null>>>;
       /**
        * Generic call
        **/
@@ -102,13 +89,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Check that the inherents are valid.
        **/
-      checkInherents: AugmentedCall<
-        ApiType,
-        (
-          block: Block | { header?: any; extrinsics?: any } | string | Uint8Array,
-          data: InherentData | { data?: any } | string | Uint8Array
-        ) => Observable<CheckInherentsResult>
-      >;
+      checkInherents: AugmentedCall<ApiType, (block: Block | { header?: any; extrinsics?: any } | string | Uint8Array, data: InherentData | { data?: any } | string | Uint8Array) => Observable<CheckInherentsResult>>;
       /**
        * Finish the current block.
        **/
@@ -131,12 +112,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Initialize a block with the given header.
        **/
-      initializeBlock: AugmentedCall<
-        ApiType,
-        (
-          header: Header | { parentHash?: any; number?: any; stateRoot?: any; extrinsicsRoot?: any; digest?: any } | string | Uint8Array
-        ) => Observable<Null>
-      >;
+      initializeBlock: AugmentedCall<ApiType, (header: Header | { parentHash?: any; number?: any; stateRoot?: any; extrinsicsRoot?: any; digest?: any } | string | Uint8Array) => Observable<Null>>;
       /**
        * Returns the version of the runtime.
        **/
@@ -155,10 +131,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Generates a proof of key ownership for the given authority in the given set.
        **/
-      generateKeyOwnershipProof: AugmentedCall<
-        ApiType,
-        (setId: SetId | AnyNumber | Uint8Array, authorityId: AuthorityId | string | Uint8Array) => Observable<Option<OpaqueKeyOwnershipProof>>
-      >;
+      generateKeyOwnershipProof: AugmentedCall<ApiType, (setId: SetId | AnyNumber | Uint8Array, authorityId: AuthorityId | string | Uint8Array) => Observable<Option<OpaqueKeyOwnershipProof>>>;
       /**
        * Get the current GRANDPA authorities and weights. This should not change except for when changes are scheduled and the corresponding delay has passed.
        **/
@@ -166,13 +139,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Submits an unsigned extrinsic to report an equivocation.
        **/
-      submitReportEquivocationUnsignedExtrinsic: AugmentedCall<
-        ApiType,
-        (
-          equivocationProof: GrandpaEquivocationProof | { setId?: any; equivocation?: any } | string | Uint8Array,
-          keyOwnerProof: OpaqueKeyOwnershipProof | string | Uint8Array
-        ) => Observable<Option<Null>>
-      >;
+      submitReportEquivocationUnsignedExtrinsic: AugmentedCall<ApiType, (equivocationProof: GrandpaEquivocationProof | { setId?: any; equivocation?: any } | string | Uint8Array, keyOwnerProof: OpaqueKeyOwnershipProof | string | Uint8Array) => Observable<Option<Null>>>;
       /**
        * Generic call
        **/
@@ -202,12 +169,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Starts the off-chain task for given block header.
        **/
-      offchainWorker: AugmentedCall<
-        ApiType,
-        (
-          header: Header | { parentHash?: any; number?: any; stateRoot?: any; extrinsicsRoot?: any; digest?: any } | string | Uint8Array
-        ) => Observable<Null>
-      >;
+      offchainWorker: AugmentedCall<ApiType, (header: Header | { parentHash?: any; number?: any; stateRoot?: any; extrinsicsRoot?: any; digest?: any } | string | Uint8Array) => Observable<Null>>;
       /**
        * Generic call
        **/
@@ -233,14 +195,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Validate the transaction.
        **/
-      validateTransaction: AugmentedCall<
-        ApiType,
-        (
-          source: TransactionSource | 'InBlock' | 'Local' | 'External' | number | Uint8Array,
-          tx: Extrinsic | IExtrinsic | string | Uint8Array,
-          blockHash: BlockHash | string | Uint8Array
-        ) => Observable<TransactionValidity>
-      >;
+      validateTransaction: AugmentedCall<ApiType, (source: TransactionSource | 'InBlock' | 'Local' | 'External' | number | Uint8Array, tx: Extrinsic | IExtrinsic | string | Uint8Array, blockHash: BlockHash | string | Uint8Array) => Observable<TransactionValidity>>;
       /**
        * Generic call
        **/
@@ -251,17 +206,11 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * The transaction fee details
        **/
-      queryFeeDetails: AugmentedCall<
-        ApiType,
-        (uxt: Extrinsic | IExtrinsic | string | Uint8Array, len: u32 | AnyNumber | Uint8Array) => Observable<FeeDetails>
-      >;
+      queryFeeDetails: AugmentedCall<ApiType, (uxt: Extrinsic | IExtrinsic | string | Uint8Array, len: u32 | AnyNumber | Uint8Array) => Observable<FeeDetails>>;
       /**
        * The transaction info
        **/
-      queryInfo: AugmentedCall<
-        ApiType,
-        (uxt: Extrinsic | IExtrinsic | string | Uint8Array, len: u32 | AnyNumber | Uint8Array) => Observable<RuntimeDispatchInfo>
-      >;
+      queryInfo: AugmentedCall<ApiType, (uxt: Extrinsic | IExtrinsic | string | Uint8Array, len: u32 | AnyNumber | Uint8Array) => Observable<RuntimeDispatchInfo>>;
       /**
        * Query the output of the current LengthToFee given some input
        **/

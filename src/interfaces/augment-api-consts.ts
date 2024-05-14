@@ -6,7 +6,7 @@
 import '@polkadot/api-base/types/consts';
 
 import type { ApiTypes, AugmentedConst } from '@polkadot/api-base/types';
-import type { Option, bool, u16, u32, u64, u8 } from '@polkadot/types-codec';
+import type { Option, u16, u32, u64, u8 } from '@polkadot/types-codec';
 import type { Codec } from '@polkadot/types-codec/types';
 import type { AccountId32, Perbill, Permill } from '@polkadot/types/interfaces/runtime';
 
@@ -14,23 +14,15 @@ export type __AugmentedConst<ApiType extends ApiTypes> = AugmentedConst<ApiType>
 
 declare module '@polkadot/api-base/types/consts' {
   interface AugmentedConsts<ApiType extends ApiTypes> {
-    account: {
-      maxNewAccountsPerBlock: u32 & AugmentedConst<ApiType>;
-      newAccountPrice: u64 & AugmentedConst<ApiType>;
-      /**
-       * Generic const
-       **/
-      [key: string]: Codec;
-    };
     atomicSwap: {
       /**
        * Limit of proof size.
-       *
+       * 
        * Atomic swap is only atomic if once the proof is revealed, both parties can submit the
        * proofs on-chain. If A is the one that generates the proof, then it requires that either:
        * - A's blockchain has the same proof length limit as B's blockchain.
        * - Or A's blockchain has shorter proof length limit as B's blockchain.
-       *
+       * 
        * If B sees A is on a blockchain with larger proof length limit, then it should kindly
        * refuse to accept the atomic swap request if A generates the proof, and asks that B
        * generates the proof instead.
@@ -71,6 +63,10 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       maxAuthorities: u32 & AugmentedConst<ApiType>;
       /**
+       * The maximum number of nominators for each validator.
+       **/
+      maxNominators: u32 & AugmentedConst<ApiType>;
+      /**
        * Generic const
        **/
       [key: string]: Codec;
@@ -78,12 +74,12 @@ declare module '@polkadot/api-base/types/consts' {
     balances: {
       /**
        * The minimum amount required to keep an account open. MUST BE GREATER THAN ZERO!
-       *
+       * 
        * If you *really* need it to be zero, you can enable the feature `insecure_zero_ed` for
        * this pallet. However, you do so at your own risk: this will open up a major DoS vector.
        * In case you have multiple sources of provider references, you may also get unexpected
        * behaviour if you set this to zero.
-       *
+       * 
        * Bottom line: Do yourself a favour and make it at least one!
        **/
       existentialDeposit: u64 & AugmentedConst<ApiType>;
@@ -109,22 +105,21 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       [key: string]: Codec;
     };
-    cert: {
+    certification: {
       /**
-       * Minimum duration between two certifications issued by the same issuer
+       * Minimum duration between two certifications issued by the same issuer.
        **/
       certPeriod: u32 & AugmentedConst<ApiType>;
       /**
-       * Maximum number of active certifications by issuer
+       * Maximum number of active certifications by issuer.
        **/
       maxByIssuer: u32 & AugmentedConst<ApiType>;
       /**
-       * Minimum number of certifications that must be received to be able to issue
-       * certifications.
+       * Minimum number of certifications received to be allowed to issue a certification.
        **/
       minReceivedCertToBeAbleToIssueCert: u32 & AugmentedConst<ApiType>;
       /**
-       * Duration of validity of a certification
+       * Duration of validity of a certification.
        **/
       validityPeriod: u32 & AugmentedConst<ApiType>;
       /**
@@ -137,6 +132,11 @@ declare module '@polkadot/api-base/types/consts' {
        * Amount reserved during evaluation
        **/
       evaluationPrice: u64 & AugmentedConst<ApiType>;
+      /**
+       * Maximum distance used to define referee's accessibility
+       * Unused by runtime but needed by client distance oracle
+       **/
+      maxRefereeDistance: u32 & AugmentedConst<ApiType>;
       /**
        * Minimum ratio of accessible referees
        **/
@@ -152,8 +152,12 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       maxAuthorities: u32 & AugmentedConst<ApiType>;
       /**
+       * The maximum number of nominators for each validator.
+       **/
+      maxNominators: u32 & AugmentedConst<ApiType>;
+      /**
        * The maximum number of entries to keep in the set id to session index mapping.
-       *
+       * 
        * Since the `SetIdSession` map is only used for validating equivocations this
        * value should relate to the bonding duration of whatever staking system is
        * being used (if any). If equivocation handling is not enabled then this value
@@ -167,7 +171,11 @@ declare module '@polkadot/api-base/types/consts' {
     };
     identity: {
       /**
-       * Minimum duration between two owner key changes
+       * Period before which an identity who lost membership is automatically revoked.
+       **/
+      autorevocationPeriod: u32 & AugmentedConst<ApiType>;
+      /**
+       * Minimum duration between two owner key changes.
        **/
       changeOwnerKeyPeriod: u32 & AugmentedConst<ApiType>;
       /**
@@ -175,9 +183,17 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       confirmPeriod: u32 & AugmentedConst<ApiType>;
       /**
-       * Minimum duration between the creation of 2 identities by the same creator
+       * Period after which a revoked identity is removed and the keys are freed.
+       **/
+      deletionPeriod: u32 & AugmentedConst<ApiType>;
+      /**
+       * Minimum duration between the creation of 2 identities by the same creator.
        **/
       idtyCreationPeriod: u32 & AugmentedConst<ApiType>;
+      /**
+       * Period before which the identity has to be validated (become member).
+       **/
+      validationPeriod: u32 & AugmentedConst<ApiType>;
       /**
        * Generic const
        **/
@@ -186,7 +202,7 @@ declare module '@polkadot/api-base/types/consts' {
     imOnline: {
       /**
        * A configuration for base priority of unsigned transactions.
-       *
+       * 
        * This is exposed so that it can be tuned for particular runtime, when
        * multiple pallets send unsigned transactions.
        **/
@@ -198,13 +214,13 @@ declare module '@polkadot/api-base/types/consts' {
     };
     membership: {
       /**
-       * Maximum life span of a non-renewable membership (in number of blocks)
+       * Maximum life span of a single membership (in number of blocks)
        **/
       membershipPeriod: u32 & AugmentedConst<ApiType>;
       /**
-       * Maximum period (in number of blocks), where an identity can remain pending subscription.
+       * Minimum delay to wait before renewing membership
        **/
-      pendingMembershipPeriod: u32 & AugmentedConst<ApiType>;
+      membershipRenewalPeriod: u32 & AugmentedConst<ApiType>;
       /**
        * Generic const
        **/
@@ -214,7 +230,7 @@ declare module '@polkadot/api-base/types/consts' {
       /**
        * The base amount of currency needed to reserve for creating a multisig execution or to
        * store a dispatch call for later.
-       *
+       * 
        * This is held for an additional storage item whose value size is
        * `4 + sizeof((BlockNumber, Balance, AccountId))` bytes and whose key size is
        * `32 + sizeof(AccountId)` bytes.
@@ -222,7 +238,7 @@ declare module '@polkadot/api-base/types/consts' {
       depositBase: u64 & AugmentedConst<ApiType>;
       /**
        * The amount of currency needed per unit threshold when creating a multisig execution.
-       *
+       * 
        * This is held for adding 32 bytes more into a pre-existing storage value.
        **/
       depositFactor: u64 & AugmentedConst<ApiType>;
@@ -252,14 +268,14 @@ declare module '@polkadot/api-base/types/consts' {
     proxy: {
       /**
        * The base amount of currency needed to reserve for creating an announcement.
-       *
+       * 
        * This is held when a new storage item holding a `Balance` is created (typically 16
        * bytes).
        **/
       announcementDepositBase: u64 & AugmentedConst<ApiType>;
       /**
        * The amount of currency needed per announcement made.
-       *
+       * 
        * This is held for adding an `AccountId`, `Hash` and `BlockNumber` (typically 68 bytes)
        * into a pre-existing storage value.
        **/
@@ -274,14 +290,14 @@ declare module '@polkadot/api-base/types/consts' {
       maxProxies: u32 & AugmentedConst<ApiType>;
       /**
        * The base amount of currency needed to reserve for creating a proxy.
-       *
+       * 
        * This is held for an additional storage item whose value size is
        * `sizeof(Balance)` bytes and whose key size is `sizeof(AccountId)` bytes.
        **/
       proxyDepositBase: u64 & AugmentedConst<ApiType>;
       /**
        * The amount of currency needed per proxy added.
-       *
+       * 
        * This is held for adding 32 bytes plus an instance of `ProxyType` more into a
        * pre-existing storage value. Thus, when configuring `ProxyDepositFactor` one should take
        * into account `32 + proxy_type.encode().len()` bytes of data.
@@ -309,7 +325,7 @@ declare module '@polkadot/api-base/types/consts' {
       maximumWeight: SpWeightsWeightV2Weight & AugmentedConst<ApiType>;
       /**
        * The maximum number of scheduled calls in the queue for a single block.
-       *
+       * 
        * NOTE:
        * + Dependent pallets' benchmarks might require a higher limit for the setting. Set a
        * higher limit under `runtime-benchmarks` feature.
@@ -320,48 +336,19 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       [key: string]: Codec;
     };
-    smithCert: {
-      /**
-       * Minimum duration between two certifications issued by the same issuer
-       **/
-      certPeriod: u32 & AugmentedConst<ApiType>;
+    smithMembers: {
       /**
        * Maximum number of active certifications by issuer
        **/
       maxByIssuer: u32 & AugmentedConst<ApiType>;
       /**
-       * Minimum number of certifications that must be received to be able to issue
-       * certifications.
+       * Minimum number of certifications to become a Smith
        **/
-      minReceivedCertToBeAbleToIssueCert: u32 & AugmentedConst<ApiType>;
-      /**
-       * Duration of validity of a certification
-       **/
-      validityPeriod: u32 & AugmentedConst<ApiType>;
-      /**
-       * Generic const
-       **/
-      [key: string]: Codec;
-    };
-    smithMembership: {
-      /**
-       * Maximum life span of a non-renewable membership (in number of blocks)
-       **/
-      membershipPeriod: u32 & AugmentedConst<ApiType>;
-      /**
-       * Maximum period (in number of blocks), where an identity can remain pending subscription.
-       **/
-      pendingMembershipPeriod: u32 & AugmentedConst<ApiType>;
-      /**
-       * Generic const
-       **/
-      [key: string]: Codec;
-    };
-    smithSubWot: {
-      firstIssuableOn: u32 & AugmentedConst<ApiType>;
-      isSubWot: bool & AugmentedConst<ApiType>;
-      minCertForCreateIdtyRight: u32 & AugmentedConst<ApiType>;
       minCertForMembership: u32 & AugmentedConst<ApiType>;
+      /**
+       * Maximum duration of inactivity before a smith is removed
+       **/
+      smithInactivityMaxDuration: u32 & AugmentedConst<ApiType>;
       /**
        * Generic const
        **/
@@ -386,7 +373,7 @@ declare module '@polkadot/api-base/types/consts' {
       dbWeight: SpWeightsRuntimeDbWeight & AugmentedConst<ApiType>;
       /**
        * The designated SS58 prefix of this chain.
-       *
+       * 
        * This replaces the "ss58Format" property declared in the chain spec. Reason is
        * that the runtime should know about the prefix in order to make use of it as
        * an identifier of the chain.
@@ -413,10 +400,12 @@ declare module '@polkadot/api-base/types/consts' {
     };
     timestamp: {
       /**
-       * The minimum period between blocks. Beware that this is different to the *expected*
-       * period that the block production apparatus provides. Your chosen consensus system will
-       * generally work with this to determine a sensible block time. e.g. For Aura, it will be
-       * double this period on default settings.
+       * The minimum period between blocks.
+       * 
+       * Be aware that this is different to the *expected* period that the block production
+       * apparatus provides. Your chosen consensus system will generally work with this to
+       * determine a sensible block time. For example, in the Aura pallet it will be double this
+       * period on default settings.
        **/
       minimumPeriod: u64 & AugmentedConst<ApiType>;
       /**
@@ -426,23 +415,23 @@ declare module '@polkadot/api-base/types/consts' {
     };
     transactionPayment: {
       /**
-       * A fee mulitplier for `Operational` extrinsics to compute "virtual tip" to boost their
+       * A fee multiplier for `Operational` extrinsics to compute "virtual tip" to boost their
        * `priority`
-       *
-       * This value is multipled by the `final_fee` to obtain a "virtual tip" that is later
+       * 
+       * This value is multiplied by the `final_fee` to obtain a "virtual tip" that is later
        * added to a tip component in regular `priority` calculations.
        * It means that a `Normal` transaction can front-run a similarly-sized `Operational`
        * extrinsic (with no tip), by including a tip value greater than the virtual tip.
-       *
+       * 
        * ```rust,ignore
        * // For `Normal`
        * let priority = priority_calc(tip);
-       *
+       * 
        * // For `Operational`
        * let virtual_tip = (inclusion_fee + tip) * OperationalFeeMultiplier;
        * let priority = priority_calc(tip + virtual_tip);
        * ```
-       *
+       * 
        * Note that since we use `final_fee` the multiplier applies also to the regular `tip`
        * sent with the transaction. So, not only does the transaction get a priority bump based
        * on the `inclusion_fee`, but we also amplify the impact of tips applied to `Operational`
@@ -461,7 +450,7 @@ declare module '@polkadot/api-base/types/consts' {
       burn: Permill & AugmentedConst<ApiType>;
       /**
        * The maximum number of approvals that can wait in the spending queue.
-       *
+       * 
        * NOTE: This parameter is also used within the Bounties Pallet extension if enabled.
        **/
       maxApprovals: u32 & AugmentedConst<ApiType>;
@@ -469,6 +458,10 @@ declare module '@polkadot/api-base/types/consts' {
        * The treasury's pallet id, used for deriving its sovereign account ID.
        **/
       palletId: FrameSupportPalletId & AugmentedConst<ApiType>;
+      /**
+       * The period during which an approved treasury spend has to be claimed.
+       **/
+      payoutPeriod: u32 & AugmentedConst<ApiType>;
       /**
        * Fraction of a proposal's value that should be bonded in order to place the proposal.
        * An accepted proposal gets these back. A rejected proposal does not.
@@ -531,7 +524,6 @@ declare module '@polkadot/api-base/types/consts' {
     };
     wot: {
       firstIssuableOn: u32 & AugmentedConst<ApiType>;
-      isSubWot: bool & AugmentedConst<ApiType>;
       minCertForCreateIdtyRight: u32 & AugmentedConst<ApiType>;
       minCertForMembership: u32 & AugmentedConst<ApiType>;
       /**
