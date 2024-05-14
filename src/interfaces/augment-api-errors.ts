@@ -127,6 +127,10 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       DeadAccount: AugmentedError<ApiType>;
       /**
+       * The delta cannot be zero.
+       **/
+      DeltaZero: AugmentedError<ApiType>;
+      /**
        * Value too low to create account due to existential deposit.
        **/
       ExistentialDeposit: AugmentedError<ApiType>;
@@ -143,6 +147,10 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       InsufficientBalance: AugmentedError<ApiType>;
       /**
+       * The issuance cannot be modified since it is already deactivated.
+       **/
+      IssuanceDeactivated: AugmentedError<ApiType>;
+      /**
        * Account liquidity restrictions prevent withdrawal.
        **/
       LiquidityRestrictions: AugmentedError<ApiType>;
@@ -151,7 +159,7 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       TooManyFreezes: AugmentedError<ApiType>;
       /**
-       * Number of holds exceed `MaxHolds`.
+       * Number of holds exceed `VariantCountOf<T::RuntimeHoldReason>`.
        **/
       TooManyHolds: AugmentedError<ApiType>;
       /**
@@ -720,6 +728,10 @@ declare module '@polkadot/api-base/types/errors' {
        * and the new runtime.
        **/
       InvalidSpecName: AugmentedError<ApiType>;
+      /**
+       * A multi-block migration is ongoing and prevents the current code from being replaced.
+       **/
+      MultiBlockMigrationsOngoing: AugmentedError<ApiType>;
       /**
        * Suicide called when the account has non-default composite data.
        **/

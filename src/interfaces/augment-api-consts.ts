@@ -88,10 +88,6 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       maxFreezes: u32 & AugmentedConst<ApiType>;
       /**
-       * The maximum number of holds that can exist on an account at any time.
-       **/
-      maxHolds: u32 & AugmentedConst<ApiType>;
-      /**
        * The maximum number of locks that should exist on an account.
        * Not strictly enforced, but used for weight estimation.
        **/
@@ -128,6 +124,12 @@ declare module '@polkadot/api-base/types/consts' {
       [key: string]: Codec;
     };
     distance: {
+      /**
+       * Evaluation period number of blocks.
+       * As the evaluation is done using 3 pools,
+       * the evaluation will take 3 * EvaluationPeriod.
+       **/
+      evaluationPeriod: u32 & AugmentedConst<ApiType>;
       /**
        * Amount reserved during evaluation
        **/
@@ -380,7 +382,7 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       ss58Prefix: u16 & AugmentedConst<ApiType>;
       /**
-       * Get the chain's current version.
+       * Get the chain's in-code version.
        **/
       version: SpVersionRuntimeVersion & AugmentedConst<ApiType>;
       /**

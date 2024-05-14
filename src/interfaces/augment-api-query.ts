@@ -280,6 +280,10 @@ declare module '@polkadot/api-base/types/storage' {
     };
     distance: {
       /**
+       * Current evaluation pool.
+       **/
+      currentPoolIndex: AugmentedQuery<ApiType, () => Observable<u32>, []> & QueryableStorageEntry<ApiType, []>;
+      /**
        * Did evaluation get updated in this block?
        **/
       didUpdate: AugmentedQuery<ApiType, () => Observable<bool>, []> & QueryableStorageEntry<ApiType, []>;
@@ -616,6 +620,15 @@ declare module '@polkadot/api-base/types/storage' {
       lookup: AugmentedQuery<ApiType, (arg: U8aFixed | string | Uint8Array) => Observable<Option<ITuple<[u32, u32]>>>, [U8aFixed]> &
         QueryableStorageEntry<ApiType, [U8aFixed]>;
       /**
+       * Retry configurations for items to be executed, indexed by task address.
+       **/
+      retries: AugmentedQuery<
+        ApiType,
+        (arg: ITuple<[u32, u32]> | [u32 | AnyNumber | Uint8Array, u32 | AnyNumber | Uint8Array]) => Observable<Option<PalletSchedulerRetryConfig>>,
+        [ITuple<[u32, u32]>]
+      > &
+        QueryableStorageEntry<ApiType, [ITuple<[u32, u32]>]>;
+      /**
        * Generic query
        **/
       [key: string]: QueryableStorageEntry<ApiType>;
@@ -766,6 +779,10 @@ declare module '@polkadot/api-base/types/storage' {
        * Extrinsics data for the current block (maps an extrinsic's index to its data).
        **/
       extrinsicData: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Bytes>, [u32]> & QueryableStorageEntry<ApiType, [u32]>;
+      /**
+       * Whether all inherents have been applied.
+       **/
+      inherentsApplied: AugmentedQuery<ApiType, () => Observable<bool>, []> & QueryableStorageEntry<ApiType, []>;
       /**
        * Stores the `spec_version` and `spec_name` of when the last runtime upgrade happened.
        **/

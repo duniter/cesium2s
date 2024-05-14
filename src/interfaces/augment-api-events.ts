@@ -6,9 +6,9 @@
 import '@polkadot/api-base/types/events';
 
 import type { ApiTypes, AugmentedEvent } from '@polkadot/api-base/types';
-import type { Bytes, Null, Option, Result, U8aFixed, Vec, bool, u16, u32, u64 } from '@polkadot/types-codec';
+import type { Bytes, Null, Option, Result, U8aFixed, Vec, bool, u16, u32, u64, u8 } from '@polkadot/types-codec';
 import type { ITuple } from '@polkadot/types-codec/types';
-import type { AccountId32, H256 } from '@polkadot/types/interfaces/runtime';
+import type { AccountId32, H256, Perbill } from '@polkadot/types/interfaces/runtime';
 
 export type __AugmentedEvent<ApiType extends ApiTypes> = AugmentedEvent<ApiType>;
 
@@ -160,6 +160,10 @@ declare module '@polkadot/api-base/types/events' {
        **/
       Thawed: AugmentedEvent<ApiType, [who: AccountId32, amount: u64], { who: AccountId32; amount: u64 }>;
       /**
+       * The `TotalIssuance` was forcefully changed.
+       **/
+      TotalIssuanceForced: AugmentedEvent<ApiType, [old: u64, new_: u64], { old: u64; new_: u64 }>;
+      /**
        * Transfer succeeded.
        **/
       Transfer: AugmentedEvent<ApiType, [from: AccountId32, to: AccountId32, amount: u64], { from: AccountId32; to: AccountId32; amount: u64 }>;
@@ -206,11 +210,11 @@ declare module '@polkadot/api-base/types/events' {
       /**
        * Distance rule was found invalid.
        **/
-      EvaluatedInvalid: AugmentedEvent<ApiType, [idtyIndex: u32], { idtyIndex: u32 }>;
+      EvaluatedInvalid: AugmentedEvent<ApiType, [idtyIndex: u32, distance: Perbill], { idtyIndex: u32; distance: Perbill }>;
       /**
        * Distance rule was found valid.
        **/
-      EvaluatedValid: AugmentedEvent<ApiType, [idtyIndex: u32], { idtyIndex: u32 }>;
+      EvaluatedValid: AugmentedEvent<ApiType, [idtyIndex: u32, distance: Perbill], { idtyIndex: u32; distance: Perbill }>;
       /**
        * A distance evaluation was requested.
        **/
@@ -552,6 +556,23 @@ declare module '@polkadot/api-base/types/events' {
         { task: ITuple<[u32, u32]>; id: Option<U8aFixed> }
       >;
       /**
+       * Cancel a retry configuration for some task.
+       **/
+      RetryCancelled: AugmentedEvent<ApiType, [task: ITuple<[u32, u32]>, id: Option<U8aFixed>], { task: ITuple<[u32, u32]>; id: Option<U8aFixed> }>;
+      /**
+       * The given task was unable to be retried since the agenda is full at that block or there
+       * was not enough weight to reschedule it.
+       **/
+      RetryFailed: AugmentedEvent<ApiType, [task: ITuple<[u32, u32]>, id: Option<U8aFixed>], { task: ITuple<[u32, u32]>; id: Option<U8aFixed> }>;
+      /**
+       * Set a retry configuration for some task.
+       **/
+      RetrySet: AugmentedEvent<
+        ApiType,
+        [task: ITuple<[u32, u32]>, id: Option<U8aFixed>, period: u32, retries: u8],
+        { task: ITuple<[u32, u32]>; id: Option<U8aFixed>; period: u32; retries: u8 }
+      >;
+      /**
        * Scheduled some task.
        **/
       Scheduled: AugmentedEvent<ApiType, [when: u32, index: u32], { when: u32; index: u32 }>;
@@ -579,15 +600,15 @@ declare module '@polkadot/api-base/types/events' {
       /**
        * An identity is being inivited to become a smith.
        **/
-      InvitationSent: AugmentedEvent<ApiType, [receiver: u32, issuer: u32], { receiver: u32; issuer: u32 }>;
+      InvitationSent: AugmentedEvent<ApiType, [issuer: u32, receiver: u32], { issuer: u32; receiver: u32 }>;
       /**
        * Certification received
        **/
-      SmithCertAdded: AugmentedEvent<ApiType, [receiver: u32, issuer: u32], { receiver: u32; issuer: u32 }>;
+      SmithCertAdded: AugmentedEvent<ApiType, [issuer: u32, receiver: u32], { issuer: u32; receiver: u32 }>;
       /**
        * Certification lost
        **/
-      SmithCertRemoved: AugmentedEvent<ApiType, [receiver: u32, issuer: u32], { receiver: u32; issuer: u32 }>;
+      SmithCertRemoved: AugmentedEvent<ApiType, [issuer: u32, receiver: u32], { issuer: u32; receiver: u32 }>;
       /**
        * A smith gathered enough certifications to become an authority (can call `go_online()`).
        **/

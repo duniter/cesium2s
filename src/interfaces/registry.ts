@@ -55,6 +55,7 @@ import type {
   PalletBabeCall,
   PalletBabeError,
   PalletBalancesAccountData,
+  PalletBalancesAdjustmentDirection,
   PalletBalancesBalanceLock,
   PalletBalancesCall,
   PalletBalancesError,
@@ -134,6 +135,7 @@ import type {
   PalletSchedulerCall,
   PalletSchedulerError,
   PalletSchedulerEvent,
+  PalletSchedulerRetryConfig,
   PalletSchedulerScheduled,
   PalletSessionCall,
   PalletSessionError,
@@ -256,6 +258,7 @@ declare module '@polkadot/types/types/registry' {
     PalletBabeCall: PalletBabeCall;
     PalletBabeError: PalletBabeError;
     PalletBalancesAccountData: PalletBalancesAccountData;
+    PalletBalancesAdjustmentDirection: PalletBalancesAdjustmentDirection;
     PalletBalancesBalanceLock: PalletBalancesBalanceLock;
     PalletBalancesCall: PalletBalancesCall;
     PalletBalancesError: PalletBalancesError;
@@ -335,6 +338,7 @@ declare module '@polkadot/types/types/registry' {
     PalletSchedulerCall: PalletSchedulerCall;
     PalletSchedulerError: PalletSchedulerError;
     PalletSchedulerEvent: PalletSchedulerEvent;
+    PalletSchedulerRetryConfig: PalletSchedulerRetryConfig;
     PalletSchedulerScheduled: PalletSchedulerScheduled;
     PalletSessionCall: PalletSessionCall;
     PalletSessionError: PalletSessionError;
