@@ -11,6 +11,7 @@ import { RxState } from '@rx-angular/state';
 import { RxStateProperty, RxStateRegister, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { FormGroup } from '@angular/forms';
 import { ContextService } from '@app/shared/services/storage/context.service';
+import { AppError } from '@app/shared/types';
 
 export interface AppPageState {
   error: string;
@@ -29,6 +30,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   private _subscription = new Subscription();
   private _form: FormGroup;
   private _cd = inject(ChangeDetectorRef, { optional: true });
+  private _toastById = new Map<string, HTMLIonToastElement>();
 
   protected translate = inject(TranslateService);
   protected settings = inject(SettingsService);
@@ -162,12 +164,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
   }
 
   protected setError(err: string | { message: string }, opts = { emitEvent: true }) {
-    let message = (typeof err === 'object' ? err.message : err) || 'ERROR.UNKNOWN_ERROR';
-    if (!message) {
-      console.error(err);
-      message = 'ERROR.UNKNOWN_ERROR';
-    }
-    this.error = message;
+    this.error = (typeof err === 'object' ? err.message : err) || 'ERROR.UNKNOWN_ERROR';
     if (opts.emitEvent !== false) this.markForCheck();
   }
 
@@ -200,24 +197,39 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
     this._cd?.markForCheck();
   }
 
-  protected async showToast(opts: ToastOptions & { messageParams?: Object }) {
+  protected async showToast(opts: ToastOptions & { messageParams?: Object; type?: 'error' | 'info' }) {
     const message = isNotNilOrBlank(opts?.message) ? this.translate.instant(opts.message as string, opts.messageParams) : undefined;
+    const color = opts?.type === 'error' ? 'danger' : opts?.type === 'info' ? 'secondary' : undefined;
+    if (opts?.id && this._toastById[opts.id]) {
+      this._toastById[opts.id].dismiss();
+    }
     const toast = await this.toastController.create({
       duration: 2000,
+      color,
       ...opts,
       message,
     });
-    return toast.present();
+    if (opts?.id) this._toastById[opts.id] = toast;
+    await toast.present();
+
+    if (opts?.id) {
+      toast.onDidDismiss().then(() => {
+        // Forget the toast
+        if (this._toastById[opts.id] === toast) {
+          this._toastById[opts.id] = null;
+        }
+      });
+    }
   }
 
-  protected async updateToast(opts: ToastOptions & { id: string; messageParams?: Object }) {
-    const message = isNotNilOrBlank(opts?.message) ? this.translate.instant(opts.message as string, opts.messageParams) : undefined;
-    const toast = await this.toastController.create({
-      duration: 2000,
+  protected async showErrorToast(err: AppError, opts: ToastOptions) {
+    await this.showToast({
+      message: err?.message,
+      type: 'error',
+      icon: 'alert',
+      swipeGesture: 'vertical',
       ...opts,
-      message,
     });
-    return toast.present();
   }
 
   protected registerSubscription(sub: Subscription) {

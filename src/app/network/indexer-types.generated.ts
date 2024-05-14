@@ -815,6 +815,9 @@ export type Cert = Node & {
   certHistoryAggregate: CertEventAggregate;
   /** An array relationship connection */
   certHistory_connection: CertEventConnection;
+  /** An object relationship */
+  createdIn?: Maybe<Event>;
+  createdInId?: Maybe<Scalars['String']['output']>;
   createdOn: Scalars['Int']['output'];
   expireOn: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
@@ -825,6 +828,10 @@ export type Cert = Node & {
   /** An object relationship */
   receiver?: Maybe<Identity>;
   receiverId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  updatedIn?: Maybe<Event>;
+  updatedInId?: Maybe<Scalars['String']['output']>;
+  updatedOn: Scalars['Int']['output'];
 };
 
 
@@ -915,12 +922,14 @@ export type CertAvgFields = {
   __typename?: 'CertAvgFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "cert" */
 export type CertAvgOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "cert". All fields are combined with a logical 'AND'. */
@@ -930,6 +939,8 @@ export type CertBoolExp = {
   _or?: InputMaybe<Array<CertBoolExp>>;
   certHistory?: InputMaybe<CertEventBoolExp>;
   certHistoryAggregate?: InputMaybe<CertEventAggregateBoolExp>;
+  createdIn?: InputMaybe<EventBoolExp>;
+  createdInId?: InputMaybe<StringComparisonExp>;
   createdOn?: InputMaybe<IntComparisonExp>;
   expireOn?: InputMaybe<IntComparisonExp>;
   id?: InputMaybe<StringComparisonExp>;
@@ -938,6 +949,9 @@ export type CertBoolExp = {
   issuerId?: InputMaybe<StringComparisonExp>;
   receiver?: InputMaybe<IdentityBoolExp>;
   receiverId?: InputMaybe<StringComparisonExp>;
+  updatedIn?: InputMaybe<EventBoolExp>;
+  updatedInId?: InputMaybe<StringComparisonExp>;
+  updatedOn?: InputMaybe<IntComparisonExp>;
 };
 
 /** A Relay connection object on "cert" */
@@ -1193,44 +1207,58 @@ export type CertEventVarianceOrderBy = {
 /** aggregate max on columns */
 export type CertMaxFields = {
   __typename?: 'CertMaxFields';
+  createdInId?: Maybe<Scalars['String']['output']>;
   createdOn?: Maybe<Scalars['Int']['output']>;
   expireOn?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   issuerId?: Maybe<Scalars['String']['output']>;
   receiverId?: Maybe<Scalars['String']['output']>;
+  updatedInId?: Maybe<Scalars['String']['output']>;
+  updatedOn?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "cert" */
 export type CertMaxOrderBy = {
+  createdInId?: InputMaybe<OrderBy>;
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
   id?: InputMaybe<OrderBy>;
   issuerId?: InputMaybe<OrderBy>;
   receiverId?: InputMaybe<OrderBy>;
+  updatedInId?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
 export type CertMinFields = {
   __typename?: 'CertMinFields';
+  createdInId?: Maybe<Scalars['String']['output']>;
   createdOn?: Maybe<Scalars['Int']['output']>;
   expireOn?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   issuerId?: Maybe<Scalars['String']['output']>;
   receiverId?: Maybe<Scalars['String']['output']>;
+  updatedInId?: Maybe<Scalars['String']['output']>;
+  updatedOn?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "cert" */
 export type CertMinOrderBy = {
+  createdInId?: InputMaybe<OrderBy>;
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
   id?: InputMaybe<OrderBy>;
   issuerId?: InputMaybe<OrderBy>;
   receiverId?: InputMaybe<OrderBy>;
+  updatedInId?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** Ordering options when selecting data from "cert". */
 export type CertOrderBy = {
   certHistoryAggregate?: InputMaybe<CertEventAggregateOrderBy>;
+  createdIn?: InputMaybe<EventOrderBy>;
+  createdInId?: InputMaybe<OrderBy>;
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
   id?: InputMaybe<OrderBy>;
@@ -1239,10 +1267,15 @@ export type CertOrderBy = {
   issuerId?: InputMaybe<OrderBy>;
   receiver?: InputMaybe<IdentityOrderBy>;
   receiverId?: InputMaybe<OrderBy>;
+  updatedIn?: InputMaybe<EventOrderBy>;
+  updatedInId?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** select columns of table "cert" */
 export enum CertSelectColumn {
+  /** column name */
+  CreatedInId = 'createdInId',
   /** column name */
   CreatedOn = 'createdOn',
   /** column name */
@@ -1254,7 +1287,11 @@ export enum CertSelectColumn {
   /** column name */
   IssuerId = 'issuerId',
   /** column name */
-  ReceiverId = 'receiverId'
+  ReceiverId = 'receiverId',
+  /** column name */
+  UpdatedInId = 'updatedInId',
+  /** column name */
+  UpdatedOn = 'updatedOn'
 }
 
 /** select "certAggregateBoolExpBool_andArgumentsColumns" columns of table "cert" */
@@ -1274,12 +1311,14 @@ export type CertStddevFields = {
   __typename?: 'CertStddevFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "cert" */
 export type CertStddevOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevPop on columns */
@@ -1287,12 +1326,14 @@ export type CertStddevPopFields = {
   __typename?: 'CertStddevPopFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevPop() on columns of table "cert" */
 export type CertStddevPopOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevSamp on columns */
@@ -1300,12 +1341,14 @@ export type CertStddevSampFields = {
   __typename?: 'CertStddevSampFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevSamp() on columns of table "cert" */
 export type CertStddevSampOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate sum on columns */
@@ -1313,12 +1356,14 @@ export type CertSumFields = {
   __typename?: 'CertSumFields';
   createdOn?: Maybe<Scalars['Int']['output']>;
   expireOn?: Maybe<Scalars['Int']['output']>;
+  updatedOn?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "cert" */
 export type CertSumOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varPop on columns */
@@ -1326,12 +1371,14 @@ export type CertVarPopFields = {
   __typename?: 'CertVarPopFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varPop() on columns of table "cert" */
 export type CertVarPopOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varSamp on columns */
@@ -1339,12 +1386,14 @@ export type CertVarSampFields = {
   __typename?: 'CertVarSampFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varSamp() on columns of table "cert" */
 export type CertVarSampOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
@@ -1352,12 +1401,14 @@ export type CertVarianceFields = {
   __typename?: 'CertVarianceFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "cert" */
 export type CertVarianceOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** columns and relationships of "change_owner_key" */
@@ -4663,15 +4714,15 @@ export type BlocksQueryVariables = Exact<{
 
 export type BlocksQuery = { __typename?: 'query_root', blockConnection: { __typename?: 'BlockConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'BlockEdge', node: { __typename: 'Block', id: string, height: number, hash: any, timestamp: any, callsCount: number, eventsCount: number, extrinsicsCount: number } }> } };
 
-export type LightCertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number };
+export type LightCertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number };
 
-export type CertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null };
+export type CertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null };
 
-export type CertConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
+export type CertConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
 
-export type CertReceivedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
+export type CertReceivedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
 
-export type CertIssuedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
+export type CertIssuedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
 
 export type CertsConnectionByIssuerQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4681,7 +4732,7 @@ export type CertsConnectionByIssuerQueryVariables = Exact<{
 }>;
 
 
-export type CertsConnectionByIssuerQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
+export type CertsConnectionByIssuerQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
 
 export type CertsConnectionByReceiverQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4691,7 +4742,7 @@ export type CertsConnectionByReceiverQueryVariables = Exact<{
 }>;
 
 
-export type CertsConnectionByReceiverQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
+export type CertsConnectionByReceiverQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
 
 export type TransferFragment = { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } | null };
 
@@ -4802,6 +4853,7 @@ export const LightCertFragmentDoc = gql`
   id
   expireOn
   createdOn
+  updatedOn
 }
     `;
 export const CertFragmentDoc = gql`
@@ -4932,7 +4984,7 @@ export const CertsConnectionByIssuerDocument = gql`
   identityConnection(where: {accountId: {_eq: $address}}) {
     edges {
       node {
-        aggregate: certIssuedAggregate {
+        aggregate: certIssuedAggregate(where: {isActive: {_eq: true}}) {
           aggregate {
             count
           }
@@ -4941,6 +4993,7 @@ export const CertsConnectionByIssuerDocument = gql`
           first: $first
           after: $after
           orderBy: $orderBy
+          where: {isActive: {_eq: true}}
         ) {
           ...CertIssuedConnection
         }
@@ -4965,7 +5018,7 @@ export const CertsConnectionByReceiverDocument = gql`
   identityConnection(where: {accountId: {_eq: $address}}) {
     edges {
       node {
-        aggregate: certReceivedAggregate {
+        aggregate: certReceivedAggregate(where: {isActive: {_eq: true}}) {
           aggregate {
             count
           }
@@ -4974,6 +5027,7 @@ export const CertsConnectionByReceiverDocument = gql`
           first: $first
           after: $after
           orderBy: $orderBy
+          where: {isActive: {_eq: true}}
         ) {
           ...CertReceivedConnection
         }
