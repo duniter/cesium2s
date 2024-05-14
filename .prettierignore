@@ -6,3 +6,5 @@ resources
 scripts
 www
 src/schema.graphql
+src/**/*.generated.ts
+src/interfaces
