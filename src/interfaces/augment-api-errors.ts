@@ -51,51 +51,47 @@ declare module '@polkadot/api-base/types/errors' {
     };
     authorityMembers: {
       /**
-       * Already incoming
+       * Member already incoming.
        **/
       AlreadyIncoming: AugmentedError<ApiType>;
       /**
-       * Already online
+       * Member already online.
        **/
       AlreadyOnline: AugmentedError<ApiType>;
       /**
-       * Already outgoing
+       * Member already outgoing.
        **/
       AlreadyOutgoing: AugmentedError<ApiType>;
       /**
-       * Member is blacklisted
+       * Member is blacklisted.
        **/
-      MemberIdBlackListed: AugmentedError<ApiType>;
+      MemberBlacklisted: AugmentedError<ApiType>;
       /**
-       * Not found owner key
+       * Owner key is invalid as a member.
        **/
       MemberIdNotFound: AugmentedError<ApiType>;
       /**
-       * Member is not blacklisted
+       * Member is not blacklisted.
        **/
-      MemberNotBlackListed: AugmentedError<ApiType>;
+      MemberNotBlacklisted: AugmentedError<ApiType>;
       /**
-       * Member not found
+       * Member not found.
        **/
       MemberNotFound: AugmentedError<ApiType>;
       /**
-       * Not member
+       * Not member.
        **/
       NotMember: AugmentedError<ApiType>;
       /**
-       * Neither online nor scheduled
+       * Neither online nor scheduled.
        **/
       NotOnlineNorIncoming: AugmentedError<ApiType>;
       /**
-       * Not owner
-       **/
-      NotOwner: AugmentedError<ApiType>;
-      /**
-       * Session keys not provided
+       * Session keys not provided.
        **/
       SessionKeysNotProvided: AugmentedError<ApiType>;
       /**
-       * Too man aAuthorities
+       * Too many authorities.
        **/
       TooManyAuthorities: AugmentedError<ApiType>;
       /**
@@ -171,42 +167,89 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       [key: string]: AugmentedError<ApiType>;
     };
-    cert: {
+    certification: {
       /**
-       * An identity cannot certify itself
+       * Identity cannot certify itself.
        **/
       CannotCertifySelf: AugmentedError<ApiType>;
       /**
-       * This identity has already issued the maximum number of certifications
+       * Can not add an already-existing cert
+       **/
+      CertAlreadyExists: AugmentedError<ApiType>;
+      /**
+       * Can not renew a non-existing cert
+       **/
+      CertDoesNotExist: AugmentedError<ApiType>;
+      /**
+       * Identity has already issued the maximum number of certifications.
        **/
       IssuedTooManyCert: AugmentedError<ApiType>;
       /**
-       * Issuer not found
-       **/
-      IssuerNotFound: AugmentedError<ApiType>;
-      /**
-       * Not enough certifications received
+       * Insufficient certifications received.
        **/
       NotEnoughCertReceived: AugmentedError<ApiType>;
       /**
-       * This identity has already issued a certification too recently
+       * Identity has issued a certification too recently.
        **/
       NotRespectCertPeriod: AugmentedError<ApiType>;
+      /**
+       * Issuer of a certification must have an identity
+       **/
+      OriginMustHaveAnIdentity: AugmentedError<ApiType>;
       /**
        * Generic error
        **/
       [key: string]: AugmentedError<ApiType>;
     };
     distance: {
+      /**
+       * Distance is already under evaluation.
+       **/
       AlreadyInEvaluation: AugmentedError<ApiType>;
-      CannotReserve: AugmentedError<ApiType>;
-      ManyEvaluationsByAuthor: AugmentedError<ApiType>;
-      ManyEvaluationsInBlock: AugmentedError<ApiType>;
+      /**
+       * Caller has no identity.
+       **/
+      CallerHasNoIdentity: AugmentedError<ApiType>;
+      /**
+       * Caller identity not found.
+       **/
+      CallerIdentityNotFound: AugmentedError<ApiType>;
+      /**
+       * Caller not member.
+       **/
+      CallerNotMember: AugmentedError<ApiType>;
+      CallerStatusInvalid: AugmentedError<ApiType>;
+      /**
+       * No author for this block.
+       **/
       NoAuthor: AugmentedError<ApiType>;
-      NoIdentity: AugmentedError<ApiType>;
-      NonEligibleForEvaluation: AugmentedError<ApiType>;
+      /**
+       * Evaluation queue is full.
+       **/
       QueueFull: AugmentedError<ApiType>;
+      /**
+       * Target identity not found.
+       **/
+      TargetIdentityNotFound: AugmentedError<ApiType>;
+      /**
+       * Targeted distance evaluation request is only possible for an unvalidated identity.
+       **/
+      TargetMustBeUnvalidated: AugmentedError<ApiType>;
+      /**
+       * Too many evaluations requested by author.
+       **/
+      TooManyEvaluationsByAuthor: AugmentedError<ApiType>;
+      /**
+       * Too many evaluations for this block.
+       **/
+      TooManyEvaluationsInBlock: AugmentedError<ApiType>;
+      /**
+       * Too many evaluators in the current evaluation pool.
+       **/
       TooManyEvaluators: AugmentedError<ApiType>;
+      /**
+       * Evaluation result has a wrong length.
+       **/
       WrongResultLength: AugmentedError<ApiType>;
       /**
        * Generic error
@@ -251,89 +294,73 @@ declare module '@polkadot/api-base/types/errors' {
     };
     identity: {
       /**
-       * Identity already confirmed
+       * Cannot link to an inexisting account.
+       **/
+      AccountNotExist: AugmentedError<ApiType>;
+      /**
+       * Already revoked.
+       **/
+      AlreadyRevoked: AugmentedError<ApiType>;
+      /**
+       * Can not revoke identity that never was member.
+       **/
+      CanNotRevokeUnconfirmed: AugmentedError<ApiType>;
+      /**
+       * Can not revoke identity that never was member.
+       **/
+      CanNotRevokeUnvalidated: AugmentedError<ApiType>;
+      /**
+       * Identity already confirmed.
        **/
       IdtyAlreadyConfirmed: AugmentedError<ApiType>;
       /**
-       * Identity already created
+       * Identity already created.
        **/
       IdtyAlreadyCreated: AugmentedError<ApiType>;
       /**
-       * Identity already validated
-       **/
-      IdtyAlreadyValidated: AugmentedError<ApiType>;
-      /**
-       * You are not allowed to create a new identity now
-       **/
-      IdtyCreationNotAllowed: AugmentedError<ApiType>;
-      /**
-       * Identity index not found
+       * Identity index not found.
        **/
       IdtyIndexNotFound: AugmentedError<ApiType>;
       /**
-       * Identity name already exists
+       * Identity name already exists.
        **/
       IdtyNameAlreadyExist: AugmentedError<ApiType>;
       /**
-       * Invalid identity name
+       * Invalid identity name.
        **/
       IdtyNameInvalid: AugmentedError<ApiType>;
       /**
-       * Identity not confirmed by its owner
-       **/
-      IdtyNotConfirmedByOwner: AugmentedError<ApiType>;
-      /**
-       * Identity not found
+       * Identity not found.
        **/
       IdtyNotFound: AugmentedError<ApiType>;
       /**
-       * Identity not member
-       **/
-      IdtyNotMember: AugmentedError<ApiType>;
-      /**
-       * Identity not validated
-       **/
-      IdtyNotValidated: AugmentedError<ApiType>;
-      /**
-       * Identity not yet renewable
-       **/
-      IdtyNotYetRenewable: AugmentedError<ApiType>;
-      /**
-       * Revocation key is invalid
+       * Invalid revocation key.
        **/
       InvalidRevocationKey: AugmentedError<ApiType>;
       /**
-       * payload signature is invalid
+       * Invalid payload signature.
        **/
       InvalidSignature: AugmentedError<ApiType>;
       /**
-       * Identity creation period is not respected
+       * Issuer is not member and can not perform this action.
+       **/
+      IssuerNotMember: AugmentedError<ApiType>;
+      /**
+       * Identity creation period is not respected.
        **/
       NotRespectIdtyCreationPeriod: AugmentedError<ApiType>;
       /**
-       * Not the same identity name
-       **/
-      NotSameIdtyName: AugmentedError<ApiType>;
-      /**
-       * Owner key already recently changed
+       * Owner key already changed recently.
        **/
       OwnerKeyAlreadyRecentlyChanged: AugmentedError<ApiType>;
       /**
-       * Owner key already used
+       * Owner key already used.
        **/
       OwnerKeyAlreadyUsed: AugmentedError<ApiType>;
       /**
-       * Prohibited to revert to an old key
+       * Reverting to an old key is prohibited.
        **/
       ProhibitedToRevertToAnOldKey: AugmentedError<ApiType>;
-      /**
-       * Right already added
-       **/
-      RightAlreadyAdded: AugmentedError<ApiType>;
-      /**
-       * Right does not exist
-       **/
-      RightNotExist: AugmentedError<ApiType>;
       /**
        * Generic error
        **/
@@ -355,29 +382,13 @@ declare module '@polkadot/api-base/types/errors' {
     };
     membership: {
       /**
-       * Identity id not found
+       * Already member, can not add membership.
        **/
-      IdtyIdNotFound: AugmentedError<ApiType>;
+      AlreadyMember: AugmentedError<ApiType>;
       /**
-       * Membership already acquired
-       **/
-      MembershipAlreadyAcquired: AugmentedError<ApiType>;
-      /**
-       * Membership already requested
-       **/
-      MembershipAlreadyRequested: AugmentedError<ApiType>;
-      /**
-       * Membership not found
+       * Membership not found, can not renew.
        **/
       MembershipNotFound: AugmentedError<ApiType>;
-      /**
-       * Membership request not found
-       **/
-      MembershipRequestNotFound: AugmentedError<ApiType>;
-      /**
-       * Origin not allowed to use this identity
-       **/
-      OriginNotAllowedToUseIdty: AugmentedError<ApiType>;
       /**
        * Generic error
        **/
@@ -447,31 +458,31 @@ declare module '@polkadot/api-base/types/errors' {
     };
     oneshotAccount: {
       /**
-       * Block height is in the future
+       * Block height is in the future.
        **/
       BlockHeightInFuture: AugmentedError<ApiType>;
       /**
-       * Block height is too old
+       * Block height is too old.
        **/
       BlockHeightTooOld: AugmentedError<ApiType>;
       /**
-       * Destination account does not exist
+       * Destination account does not exist.
        **/
       DestAccountNotExist: AugmentedError<ApiType>;
       /**
-       * Destination account has balance less than existential deposit
+       * Destination account has a balance less than the existential deposit.
        **/
       ExistentialDeposit: AugmentedError<ApiType>;
       /**
-       * Source account has insufficient balance
+       * Source account has insufficient balance.
        **/
       InsufficientBalance: AugmentedError<ApiType>;
       /**
-       * Destination oneshot account already exists
+       * Destination oneshot account already exists.
        **/
       OneshotAccountAlreadyCreated: AugmentedError<ApiType>;
       /**
-       * Source oneshot account does not exist
+       * Source oneshot account does not exist.
        **/
       OneshotAccountNotExist: AugmentedError<ApiType>;
       /**
@@ -505,15 +516,23 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       TooBig: AugmentedError<ApiType>;
       /**
+       * Too few hashes were requested to be upgraded (i.e. zero).
+       **/
+      TooFew: AugmentedError<ApiType>;
+      /**
+       * More than `MAX_HASH_UPGRADE_BULK_COUNT` hashes were requested to be upgraded at once.
+       **/
+      TooMany: AugmentedError<ApiType>;
+      /**
        * Generic error
        **/
       [key: string]: AugmentedError<ApiType>;
     };
     provideRandomness: {
       /**
-       * The queue is full, pleasy retry later
+       * Request randomness queue is full.
        **/
-      FullQueue: AugmentedError<ApiType>;
+      QueueFull: AugmentedError<ApiType>;
       /**
        * Generic error
        **/
@@ -609,111 +628,67 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       [key: string]: AugmentedError<ApiType>;
     };
-    smithCert: {
+    smithMembers: {
       /**
-       * An identity cannot certify itself
+       * Receiver must not already have this certification
        **/
-      CannotCertifySelf: AugmentedError<ApiType>;
+      CertificationAlreadyExists: AugmentedError<ApiType>;
       /**
-       * This identity has already issued the maximum number of certifications
+       * Only online smiths can certify
        **/
-      IssuedTooManyCert: AugmentedError<ApiType>;
+      CertificationIsAOnlineSmithPrivilege: AugmentedError<ApiType>;
       /**
-       * Issuer not found
+       * Issuer must be a smith
        **/
-      IssuerNotFound: AugmentedError<ApiType>;
+      CertificationIsASmithPrivilege: AugmentedError<ApiType>;
       /**
-       * Not enough certifications received
+       * Certification cannot be made on someone who has not accepted an invitation
        **/
-      NotEnoughCertReceived: AugmentedError<ApiType>;
+      CertificationMustBeAgreed: AugmentedError<ApiType>;
       /**
-       * This identity has already issued a certification too recently
+       * Smith cannot certify itself
        **/
-      NotRespectCertPeriod: AugmentedError<ApiType>;
+      CertificationOfSelfIsForbidden: AugmentedError<ApiType>;
       /**
-       * Generic error
+       * Certification cannot be made on excluded
        **/
-      [key: string]: AugmentedError<ApiType>;
-    };
-    smithMembership: {
+      CertificationOnExcludedIsForbidden: AugmentedError<ApiType>;
       /**
-       * Identity id not found
+       * Receiver must be invited by another smith
        **/
-      IdtyIdNotFound: AugmentedError<ApiType>;
+      CertificationReceiverMustHaveBeenInvited: AugmentedError<ApiType>;
       /**
-       * Membership already acquired
+       * A smith has a limited stock of certifications
        **/
-      MembershipAlreadyAcquired: AugmentedError<ApiType>;
+      CertificationStockFullyConsumed: AugmentedError<ApiType>;
       /**
-       * Membership already requested
+       * Invitation must not have been accepted yet
        **/
-      MembershipAlreadyRequested: AugmentedError<ApiType>;
+      InvitationAlreadyAccepted: AugmentedError<ApiType>;
       /**
-       * Membership not found
+       * Invitation is reseverd to online smiths
        **/
-      MembershipNotFound: AugmentedError<ApiType>;
+      InvitationIsAOnlineSmithPrivilege: AugmentedError<ApiType>;
       /**
-       * Membership request not found
+       * Invitation is reseverd to smiths
        **/
-      MembershipRequestNotFound: AugmentedError<ApiType>;
+      InvitationIsASmithPrivilege: AugmentedError<ApiType>;
       /**
-       * Origin not allowed to use this identity
+       * Invitation of an already known smith is forbidden except if it has been excluded
        **/
-      OriginNotAllowedToUseIdty: AugmentedError<ApiType>;
+      InvitationOfExistingNonExcluded: AugmentedError<ApiType>;
       /**
-       * Generic error
+       * Invitation of a non-member (of the WoT) is forbidden
        **/
-      [key: string]: AugmentedError<ApiType>;
-    };
-    smithSubWot: {
+      InvitationOfNonMember: AugmentedError<ApiType>;
       /**
-       * Can not issue cert to identity without membership or pending membership
+       * Issuer must be known as a potential smith
        **/
-      CertToUndefined: AugmentedError<ApiType>;
+      OriginHasNeverBeenInvited: AugmentedError<ApiType>;
       /**
-       * Distance has not been evaluated positively
+       * Issuer of anything (invitation, acceptance, certification) must have an identity ID
        **/
-      DistanceNotOK: AugmentedError<ApiType>;
-      /**
-       * Identity creation period not respected
-       **/
-      IdtyCreationPeriodNotRespected: AugmentedError<ApiType>;
-      /**
-       * Identity not allowed to renew membership
-       **/
-      IdtyNotAllowedToRenewMembership: AugmentedError<ApiType>;
-      /**
-       * Identity not allowed to request membership
-       **/
-      IdtyNotAllowedToRequestMembership: AugmentedError<ApiType>;
-      /**
-       * Issuer or receiver not found
-       **/
-      IdtyNotFound: AugmentedError<ApiType>;
-      /**
-       * Issuer can not emit cert because it is not validated
-       **/
-      IssuerCanNotEmitCert: AugmentedError<ApiType>;
-      /**
-       * Max number of emitted certs reached
-       **/
-      MaxEmittedCertsReached: AugmentedError<ApiType>;
-      /**
-       * Not allowed to change identity address
-       **/
-      NotAllowedToChangeIdtyAddress: AugmentedError<ApiType>;
-      /**
-       * Not allowed to remove identity
-       **/
-      NotAllowedToRemoveIdty: AugmentedError<ApiType>;
-      /**
-       * Not enough certifications received to claim membership
-       **/
-      NotEnoughCertsToClaimMembership: AugmentedError<ApiType>;
-      /**
-       * Not enough received certifications to create identity
-       **/
-      NotEnoughReceivedCertsToCreateIdty: AugmentedError<ApiType>;
+      OriginMustHaveAnIdentity: AugmentedError<ApiType>;
       /**
        * Generic error
        **/
@@ -721,7 +696,7 @@ declare module '@polkadot/api-base/types/errors' {
     };
     sudo: {
       /**
-       * Sender must be the Sudo account
+       * Sender must be the Sudo account.
        **/
       RequireSudo: AugmentedError<ApiType>;
       /**
@@ -754,10 +729,18 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       NonZeroRefCount: AugmentedError<ApiType>;
       /**
+       * No upgrade authorized.
+       **/
+      NothingAuthorized: AugmentedError<ApiType>;
+      /**
        * The specification version is not allowed to decrease between the current runtime
        * and the new runtime.
        **/
       SpecVersionNeedsToIncrease: AugmentedError<ApiType>;
+      /**
+       * The submitted code is not authorized.
+       **/
+      Unauthorized: AugmentedError<ApiType>;
       /**
        * Generic error
        **/
@@ -780,6 +763,10 @@ declare module '@polkadot/api-base/types/errors' {
        * Account is not a member
        **/
       NotMember: AugmentedError<ApiType>;
+      /**
+       * Prime account is not a member
+       **/
+      PrimeAccountNotMember: AugmentedError<ApiType>;
       /**
        * Proposal must exist
        **/
@@ -811,6 +798,22 @@ declare module '@polkadot/api-base/types/errors' {
     };
     treasury: {
       /**
+       * The payment has already been attempted.
+       **/
+      AlreadyAttempted: AugmentedError<ApiType>;
+      /**
+       * The spend is not yet eligible for payout.
+       **/
+      EarlyPayout: AugmentedError<ApiType>;
+      /**
+       * The balance of the asset kind is not convertible to the balance of the native asset.
+       **/
+      FailedToConvertBalance: AugmentedError<ApiType>;
+      /**
+       * The payment has neither failed nor succeeded yet.
+       **/
+      Inconclusive: AugmentedError<ApiType>;
+      /**
        * The spend origin is valid but the amount it is allowed to spend is lower than the
        * amount to be spent.
        **/
@@ -820,13 +823,25 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       InsufficientProposersBalance: AugmentedError<ApiType>;
       /**
-       * No proposal or bounty at that index.
+       * No proposal, bounty or spend at that index.
        **/
       InvalidIndex: AugmentedError<ApiType>;
+      /**
+       * The payout was not yet attempted/claimed.
+       **/
+      NotAttempted: AugmentedError<ApiType>;
+      /**
+       * There was some issue with the mechanism of payment.
+       **/
+      PayoutError: AugmentedError<ApiType>;
       /**
        * Proposal has not been approved.
        **/
       ProposalNotApproved: AugmentedError<ApiType>;
+      /**
+       * The spend has expired and cannot be claimed.
+       **/
+      SpendExpired: AugmentedError<ApiType>;
       /**
        * Too many approvals in the queue.
        **/
@@ -858,53 +873,37 @@ declare module '@polkadot/api-base/types/errors' {
     };
     wot: {
       /**
-       * Can not issue cert to identity without membership or pending membership
-       **/
-      CertToUndefined: AugmentedError<ApiType>;
-      /**
-       * Distance has not been evaluated positively
-       **/
-      DistanceNotOK: AugmentedError<ApiType>;
-      /**
-       * Identity creation period not respected
+       * Identity creation period not respected.
        **/
       IdtyCreationPeriodNotRespected: AugmentedError<ApiType>;
       /**
-       * Identity not allowed to renew membership
-       **/
-      IdtyNotAllowedToRenewMembership: AugmentedError<ApiType>;
-      /**
-       * Identity not allowed to request membership
-       **/
-      IdtyNotAllowedToRequestMembership: AugmentedError<ApiType>;
-      /**
-       * Issuer or receiver not found
+       * Issuer or receiver not found.
        **/
       IdtyNotFound: AugmentedError<ApiType>;
       /**
-       * Issuer can not emit cert because it is not validated
+       * Issuer cannot emit a certification because it is not member.
        **/
-      IssuerCanNotEmitCert: AugmentedError<ApiType>;
+      IssuerNotMember: AugmentedError<ApiType>;
       /**
-       * Max number of emitted certs reached
+       * Maximum number of emitted certifications reached.
        **/
       MaxEmittedCertsReached: AugmentedError<ApiType>;
       /**
-       * Not allowed to change identity address
+       * Membership can only be renewed after an antispam delay.
        **/
-      NotAllowedToChangeIdtyAddress: AugmentedError<ApiType>;
+      MembershipRenewalPeriodNotRespected: AugmentedError<ApiType>;
       /**
-       * Not allowed to remove identity
+       * Insufficient certifications received.
        **/
-      NotAllowedToRemoveIdty: AugmentedError<ApiType>;
+      NotEnoughCerts: AugmentedError<ApiType>;
       /**
-       * Not enough certifications received to claim membership
-       **/
-      NotEnoughCertsToClaimMembership: AugmentedError<ApiType>;
-      /**
-       * Not enough received certifications to create identity
+       * Insufficient received certifications to create identity.
        **/
       NotEnoughReceivedCertsToCreateIdty: AugmentedError<ApiType>;
+      /**
+       * Target status is incompatible with this operation.
+       **/
+      TargetStatusInvalid: AugmentedError<ApiType>;
       /**
        * Generic error
        **/

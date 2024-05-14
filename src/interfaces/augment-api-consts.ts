@@ -6,7 +6,7 @@
 import '@polkadot/api-base/types/consts';
 
 import type { ApiTypes, AugmentedConst } from '@polkadot/api-base/types';
-import type { Option, bool, u16, u32, u64, u8 } from '@polkadot/types-codec';
+import type { Option, u16, u32, u64, u8 } from '@polkadot/types-codec';
 import type { Codec } from '@polkadot/types-codec/types';
 import type { AccountId32, Perbill, Permill } from '@polkadot/types/interfaces/runtime';
 
@@ -14,14 +14,6 @@ export type __AugmentedConst<ApiType extends ApiTypes> = AugmentedConst<ApiType>
 
 declare module '@polkadot/api-base/types/consts' {
   interface AugmentedConsts<ApiType extends ApiTypes> {
-    account: {
-      maxNewAccountsPerBlock: u32 & AugmentedConst<ApiType>;
-      newAccountPrice: u64 & AugmentedConst<ApiType>;
-      /**
-       * Generic const
-       **/
-      [key: string]: Codec;
-    };
     atomicSwap: {
       /**
        * Limit of proof size.
@@ -71,6 +63,10 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       maxAuthorities: u32 & AugmentedConst<ApiType>;
       /**
+       * The maximum number of nominators for each validator.
+       **/
+      maxNominators: u32 & AugmentedConst<ApiType>;
+      /**
        * Generic const
        **/
       [key: string]: Codec;
@@ -109,22 +105,21 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       [key: string]: Codec;
     };
-    cert: {
+    certification: {
       /**
-       * Minimum duration between two certifications issued by the same issuer
+       * Minimum duration between two certifications issued by the same issuer.
        **/
       certPeriod: u32 & AugmentedConst<ApiType>;
       /**
-       * Maximum number of active certifications by issuer
+       * Maximum number of active certifications by issuer.
        **/
       maxByIssuer: u32 & AugmentedConst<ApiType>;
       /**
-       * Minimum number of certifications that must be received to be able to issue
-       * certifications.
+       * Minimum number of certifications received to be allowed to issue a certification.
        **/
       minReceivedCertToBeAbleToIssueCert: u32 & AugmentedConst<ApiType>;
       /**
-       * Duration of validity of a certification
+       * Duration of validity of a certification.
        **/
       validityPeriod: u32 & AugmentedConst<ApiType>;
       /**
@@ -137,6 +132,11 @@ declare module '@polkadot/api-base/types/consts' {
        * Amount reserved during evaluation
        **/
       evaluationPrice: u64 & AugmentedConst<ApiType>;
+      /**
+       * Maximum distance used to define referee's accessibility
+       * Unused by runtime but needed by client distance oracle
+       **/
+      maxRefereeDistance: u32 & AugmentedConst<ApiType>;
       /**
        * Minimum ratio of accessible referees
        **/
@@ -151,6 +151,10 @@ declare module '@polkadot/api-base/types/consts' {
        * Max Authorities in use
        **/
       maxAuthorities: u32 & AugmentedConst<ApiType>;
+      /**
+       * The maximum number of nominators for each validator.
+       **/
+      maxNominators: u32 & AugmentedConst<ApiType>;
       /**
        * The maximum number of entries to keep in the set id to session index mapping.
        *
@@ -167,7 +171,11 @@ declare module '@polkadot/api-base/types/consts' {
     };
     identity: {
       /**
-       * Minimum duration between two owner key changes
+       * Period before which an identity who lost membership is automatically revoked.
+       **/
+      autorevocationPeriod: u32 & AugmentedConst<ApiType>;
+      /**
+       * Minimum duration between two owner key changes.
        **/
       changeOwnerKeyPeriod: u32 & AugmentedConst<ApiType>;
       /**
@@ -175,9 +183,17 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       confirmPeriod: u32 & AugmentedConst<ApiType>;
       /**
-       * Minimum duration between the creation of 2 identities by the same creator
+       * Period after which a revoked identity is removed and the keys are freed.
+       **/
+      deletionPeriod: u32 & AugmentedConst<ApiType>;
+      /**
+       * Minimum duration between the creation of 2 identities by the same creator.
        **/
       idtyCreationPeriod: u32 & AugmentedConst<ApiType>;
+      /**
+       * Period before which the identity has to be validated (become member).
+       **/
+      validationPeriod: u32 & AugmentedConst<ApiType>;
       /**
        * Generic const
        **/
@@ -198,13 +214,13 @@ declare module '@polkadot/api-base/types/consts' {
     };
     membership: {
       /**
-       * Maximum life span of a non-renewable membership (in number of blocks)
+       * Maximum life span of a single membership (in number of blocks)
        **/
       membershipPeriod: u32 & AugmentedConst<ApiType>;
       /**
-       * Maximum period (in number of blocks), where an identity can remain pending subscription.
+       * Minimum delay to wait before renewing membership
        **/
-      pendingMembershipPeriod: u32 & AugmentedConst<ApiType>;
+      membershipRenewalPeriod: u32 & AugmentedConst<ApiType>;
       /**
        * Generic const
        **/
@@ -320,48 +336,19 @@ declare module '@polkadot/api-base/types/consts' {
        **/
       [key: string]: Codec;
     };
-    smithCert: {
-      /**
-       * Minimum duration between two certifications issued by the same issuer
-       **/
-      certPeriod: u32 & AugmentedConst<ApiType>;
+    smithMembers: {
       /**
        * Maximum number of active certifications by issuer
        **/
       maxByIssuer: u32 & AugmentedConst<ApiType>;
       /**
-       * Minimum number of certifications that must be received to be able to issue
-       * certifications.
+       * Minimum number of certifications to become a Smith
        **/
-      minReceivedCertToBeAbleToIssueCert: u32 & AugmentedConst<ApiType>;
-      /**
-       * Duration of validity of a certification
-       **/
-      validityPeriod: u32 & AugmentedConst<ApiType>;
-      /**
-       * Generic const
-       **/
-      [key: string]: Codec;
-    };
-    smithMembership: {
-      /**
-       * Maximum life span of a non-renewable membership (in number of blocks)
-       **/
-      membershipPeriod: u32 & AugmentedConst<ApiType>;
-      /**
-       * Maximum period (in number of blocks), where an identity can remain pending subscription.
-       **/
-      pendingMembershipPeriod: u32 & AugmentedConst<ApiType>;
-      /**
-       * Generic const
-       **/
-      [key: string]: Codec;
-    };
-    smithSubWot: {
-      firstIssuableOn: u32 & AugmentedConst<ApiType>;
-      isSubWot: bool & AugmentedConst<ApiType>;
-      minCertForCreateIdtyRight: u32 & AugmentedConst<ApiType>;
       minCertForMembership: u32 & AugmentedConst<ApiType>;
+      /**
+       * Maximum duration of inactivity before a smith is removed
+       **/
+      smithInactivityMaxDuration: u32 & AugmentedConst<ApiType>;
       /**
        * Generic const
        **/
@@ -413,10 +400,12 @@ declare module '@polkadot/api-base/types/consts' {
     };
     timestamp: {
       /**
-       * The minimum period between blocks. Beware that this is different to the *expected*
-       * period that the block production apparatus provides. Your chosen consensus system will
-       * generally work with this to determine a sensible block time. e.g. For Aura, it will be
-       * double this period on default settings.
+       * The minimum period between blocks.
+       *
+       * Be aware that this is different to the *expected* period that the block production
+       * apparatus provides. Your chosen consensus system will generally work with this to
+       * determine a sensible block time. For example, in the Aura pallet it will be double this
+       * period on default settings.
        **/
       minimumPeriod: u64 & AugmentedConst<ApiType>;
       /**
@@ -426,10 +415,10 @@ declare module '@polkadot/api-base/types/consts' {
     };
     transactionPayment: {
       /**
-       * A fee mulitplier for `Operational` extrinsics to compute "virtual tip" to boost their
+       * A fee multiplier for `Operational` extrinsics to compute "virtual tip" to boost their
        * `priority`
        *
-       * This value is multipled by the `final_fee` to obtain a "virtual tip" that is later
+       * This value is multiplied by the `final_fee` to obtain a "virtual tip" that is later
        * added to a tip component in regular `priority` calculations.
        * It means that a `Normal` transaction can front-run a similarly-sized `Operational`
        * extrinsic (with no tip), by including a tip value greater than the virtual tip.
@@ -469,6 +458,10 @@ declare module '@polkadot/api-base/types/consts' {
        * The treasury's pallet id, used for deriving its sovereign account ID.
        **/
       palletId: FrameSupportPalletId & AugmentedConst<ApiType>;
+      /**
+       * The period during which an approved treasury spend has to be claimed.
+       **/
+      payoutPeriod: u32 & AugmentedConst<ApiType>;
       /**
        * Fraction of a proposal's value that should be bonded in order to place the proposal.
        * An accepted proposal gets these back. A rejected proposal does not.
@@ -531,7 +524,6 @@ declare module '@polkadot/api-base/types/consts' {
     };
     wot: {
       firstIssuableOn: u32 & AugmentedConst<ApiType>;
-      isSubWot: bool & AugmentedConst<ApiType>;
       minCertForCreateIdtyRight: u32 & AugmentedConst<ApiType>;
       minCertForMembership: u32 & AugmentedConst<ApiType>;
       /**

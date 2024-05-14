@@ -6,7 +6,7 @@
 import '@polkadot/api-base/types/events';
 
 import type { ApiTypes, AugmentedEvent } from '@polkadot/api-base/types';
-import type { Bytes, Null, Option, Result, Text, U8aFixed, Vec, bool, u16, u32, u64 } from '@polkadot/types-codec';
+import type { Bytes, Null, Option, Result, U8aFixed, Vec, bool, u16, u32, u64 } from '@polkadot/types-codec';
 import type { ITuple } from '@polkadot/types-codec/types';
 import type { AccountId32, H256 } from '@polkadot/types/interfaces/runtime';
 
@@ -20,20 +20,9 @@ declare module '@polkadot/api-base/types/events' {
        **/
       AccountLinked: AugmentedEvent<ApiType, [who: AccountId32, identity: u32], { who: AccountId32; identity: u32 }>;
       /**
-       * account unlinked from identity
+       * The account was unlinked from its identity.
        **/
       AccountUnlinked: AugmentedEvent<ApiType, [AccountId32]>;
-      /**
-       * Force the destruction of an account because its free balance is insufficient to pay
-       * the account creation price.
-       * [who, balance]
-       **/
-      ForceDestroy: AugmentedEvent<ApiType, [who: AccountId32, balance: u64], { who: AccountId32; balance: u64 }>;
-      /**
-       * Random id assigned
-       * [account_id, random_id]
-       **/
-      RandomIdAssigned: AugmentedEvent<ApiType, [who: AccountId32, randomId: H256], { who: AccountId32; randomId: H256 }>;
       /**
        * Generic event
        **/
@@ -67,36 +56,33 @@ declare module '@polkadot/api-base/types/events' {
     };
     authorityMembers: {
       /**
-       * List of members who will enter the set of authorities at the next session.
-       * [Vec<member_id>]
+       * List of members scheduled to join the set of authorities in the next session.
        **/
-      IncomingAuthorities: AugmentedEvent<ApiType, [Vec<u32>]>;
+      IncomingAuthorities: AugmentedEvent<ApiType, [members: Vec<u32>], { members: Vec<u32> }>;
+      /**
+       * A member has been blacklisted.
+       **/
+      MemberAddedToBlacklist: AugmentedEvent<ApiType, [member: u32], { member: u32 }>;
       /**
        * A member will leave the set of authorities in 2 sessions.
-       * [member_id]
        **/
-      MemberGoOffline: AugmentedEvent<ApiType, [u32]>;
+      MemberGoOffline: AugmentedEvent<ApiType, [member: u32], { member: u32 }>;
       /**
-       * A member will enter the set of authorities in 2 sessions.
-       * [member_id]
+       * A member will join the set of authorities in 2 sessions.
        **/
-      MemberGoOnline: AugmentedEvent<ApiType, [u32]>;
+      MemberGoOnline: AugmentedEvent<ApiType, [member: u32], { member: u32 }>;
       /**
-       * A member has lost the right to be part of the authorities,
-       * this member will be removed from the authority set in 2 sessions.
-       * [member_id]
+       * A member, who no longer has authority rights, will be removed from the authority set in 2 sessions.
        **/
-      MemberRemoved: AugmentedEvent<ApiType, [u32]>;
+      MemberRemoved: AugmentedEvent<ApiType, [member: u32], { member: u32 }>;
       /**
        * A member has been removed from the blacklist.
-       * [member_id]
        **/
-      MemberRemovedFromBlackList: AugmentedEvent<ApiType, [u32]>;
+      MemberRemovedFromBlacklist: AugmentedEvent<ApiType, [member: u32], { member: u32 }>;
       /**
-       * List of members who will leave the set of authorities at the next session.
-       * [Vec<member_id>]
+       * List of members leaving the set of authorities in the next session.
        **/
-      OutgoingAuthorities: AugmentedEvent<ApiType, [Vec<u32>]>;
+      OutgoingAuthorities: AugmentedEvent<ApiType, [members: Vec<u32>], { members: Vec<u32> }>;
       /**
        * Generic event
        **/
@@ -198,30 +184,37 @@ declare module '@polkadot/api-base/types/events' {
        **/
       [key: string]: AugmentedEvent<ApiType>;
     };
-    cert: {
+    certification: {
       /**
-       * New certification
-       * [issuer, issuer_issued_count, receiver, receiver_received_count]
+       * A new certification was added.
        **/
-      NewCert: AugmentedEvent<
-        ApiType,
-        [issuer: u32, issuerIssuedCount: u32, receiver: u32, receiverReceivedCount: u32],
-        { issuer: u32; issuerIssuedCount: u32; receiver: u32; receiverReceivedCount: u32 }
-      >;
+      CertAdded: AugmentedEvent<ApiType, [issuer: u32, receiver: u32], { issuer: u32; receiver: u32 }>;
       /**
-       * Removed certification
-       * [issuer, issuer_issued_count, receiver, receiver_received_count, expiration]
+       * A certification was removed.
        **/
-      RemovedCert: AugmentedEvent<
-        ApiType,
-        [issuer: u32, issuerIssuedCount: u32, receiver: u32, receiverReceivedCount: u32, expiration: bool],
-        { issuer: u32; issuerIssuedCount: u32; receiver: u32; receiverReceivedCount: u32; expiration: bool }
-      >;
+      CertRemoved: AugmentedEvent<ApiType, [issuer: u32, receiver: u32, expiration: bool], { issuer: u32; receiver: u32; expiration: bool }>;
       /**
-       * Renewed certification
-       * [issuer, receiver]
+       * A certification was renewed.
        **/
-      RenewedCert: AugmentedEvent<ApiType, [issuer: u32, receiver: u32], { issuer: u32; receiver: u32 }>;
+      CertRenewed: AugmentedEvent<ApiType, [issuer: u32, receiver: u32], { issuer: u32; receiver: u32 }>;
+      /**
+       * Generic event
+       **/
+      [key: string]: AugmentedEvent<ApiType>;
+    };
+    distance: {
+      /**
+       * Distance rule was found invalid.
+       **/
+      EvaluatedInvalid: AugmentedEvent<ApiType, [idtyIndex: u32], { idtyIndex: u32 }>;
+      /**
+       * Distance rule was found valid.
+       **/
+      EvaluatedValid: AugmentedEvent<ApiType, [idtyIndex: u32], { idtyIndex: u32 }>;
+      /**
+       * A distance evaluation was requested.
+       **/
+      EvaluationRequested: AugmentedEvent<ApiType, [idtyIndex: u32, who: AccountId32], { idtyIndex: u32; who: AccountId32 }>;
       /**
        * Generic event
        **/
@@ -252,31 +245,35 @@ declare module '@polkadot/api-base/types/events' {
     identity: {
       IdtyChangedOwnerKey: AugmentedEvent<ApiType, [idtyIndex: u32, newOwnerKey: AccountId32], { idtyIndex: u32; newOwnerKey: AccountId32 }>;
       /**
-       * An identity has been confirmed by its owner
-       * [idty_index, owner_key, name]
+       * An identity has been confirmed by its owner.
        **/
       IdtyConfirmed: AugmentedEvent<
         ApiType,
-        [idtyIndex: u32, ownerKey: AccountId32, name: Text],
-        { idtyIndex: u32; ownerKey: AccountId32; name: Text }
+        [idtyIndex: u32, ownerKey: AccountId32, name: Bytes],
+        { idtyIndex: u32; ownerKey: AccountId32; name: Bytes }
       >;
       /**
-       * A new identity has been created
-       * [idty_index, owner_key]
+       * A new identity has been created.
        **/
       IdtyCreated: AugmentedEvent<ApiType, [idtyIndex: u32, ownerKey: AccountId32], { idtyIndex: u32; ownerKey: AccountId32 }>;
       /**
-       * An identity has been removed
-       * [idty_index]
+       * An identity has been removed.
        **/
       IdtyRemoved: AugmentedEvent<
         ApiType,
-        [idtyIndex: u32, reason: PalletIdentityIdtyRemovalReason],
-        { idtyIndex: u32; reason: PalletIdentityIdtyRemovalReason }
+        [idtyIndex: u32, reason: PalletIdentityRemovalReason],
+        { idtyIndex: u32; reason: PalletIdentityRemovalReason }
       >;
       /**
-       * An identity has been validated
-       * [idty_index]
+       * An identity has been revoked.
+       **/
+      IdtyRevoked: AugmentedEvent<
+        ApiType,
+        [idtyIndex: u32, reason: PalletIdentityRevocationReason],
+        { idtyIndex: u32; reason: PalletIdentityRevocationReason }
+      >;
+      /**
+       * An identity has been validated.
        **/
       IdtyValidated: AugmentedEvent<ApiType, [idtyIndex: u32], { idtyIndex: u32 }>;
       /**
@@ -312,35 +309,21 @@ declare module '@polkadot/api-base/types/events' {
     };
     membership: {
       /**
-       * A membership was acquired
-       * [idty_id]
+       * A membership was added.
        **/
-      MembershipAcquired: AugmentedEvent<ApiType, [u32]>;
+      MembershipAdded: AugmentedEvent<ApiType, [member: u32, expireOn: u32], { member: u32; expireOn: u32 }>;
       /**
-       * A membership expired
-       * [idty_id]
+       * A membership was removed.
        **/
-      MembershipExpired: AugmentedEvent<ApiType, [u32]>;
+      MembershipRemoved: AugmentedEvent<
+        ApiType,
+        [member: u32, reason: PalletMembershipMembershipRemovalReason],
+        { member: u32; reason: PalletMembershipMembershipRemovalReason }
+      >;
       /**
-       * A membership was renewed
-       * [idty_id]
+       * A membership was renewed.
        **/
-      MembershipRenewed: AugmentedEvent<ApiType, [u32]>;
-      /**
-       * An membership was requested
-       * [idty_id]
-       **/
-      MembershipRequested: AugmentedEvent<ApiType, [u32]>;
-      /**
-       * A membership was revoked
-       * [idty_id]
-       **/
-      MembershipRevoked: AugmentedEvent<ApiType, [u32]>;
-      /**
-       * A pending membership request has expired
-       * [idty_id]
-       **/
-      PendingMembershipExpired: AugmentedEvent<ApiType, [u32]>;
+      MembershipRenewed: AugmentedEvent<ApiType, [member: u32, expireOn: u32], { member: u32; expireOn: u32 }>;
       /**
        * Generic event
        **/
@@ -398,9 +381,7 @@ declare module '@polkadot/api-base/types/events' {
     };
     offences: {
       /**
-       * There is an offence reported of the given `kind` happened at the `session_index` and
-       * (kind-specific) time slot. This event is not deposited for duplicate slashes.
-       * \[kind, timeslot\].
+       * An offense was reported during the specified time slot. This event is not deposited for duplicate slashes.
        **/
       Offence: AugmentedEvent<ApiType, [kind: U8aFixed, timeslot: Bytes], { kind: U8aFixed; timeslot: Bytes }>;
       /**
@@ -409,16 +390,25 @@ declare module '@polkadot/api-base/types/events' {
       [key: string]: AugmentedEvent<ApiType>;
     };
     oneshotAccount: {
+      /**
+       * A oneshot account was consumed.
+       **/
       OneshotAccountConsumed: AugmentedEvent<
         ApiType,
         [account: AccountId32, dest1: ITuple<[AccountId32, u64]>, dest2: Option<ITuple<[AccountId32, u64]>>],
         { account: AccountId32; dest1: ITuple<[AccountId32, u64]>; dest2: Option<ITuple<[AccountId32, u64]>> }
       >;
+      /**
+       * A oneshot account was created.
+       **/
       OneshotAccountCreated: AugmentedEvent<
         ApiType,
         [account: AccountId32, balance: u64, creator: AccountId32],
         { account: AccountId32; balance: u64; creator: AccountId32 }
       >;
+      /**
+       * A withdrawal was executed on a oneshot account.
+       **/
       Withdraw: AugmentedEvent<ApiType, [account: AccountId32, balance: u64], { account: AccountId32; balance: u64 }>;
       /**
        * Generic event
@@ -445,11 +435,11 @@ declare module '@polkadot/api-base/types/events' {
     };
     provideRandomness: {
       /**
-       * Filled randomness
+       * A request for randomness was fulfilled.
        **/
       FilledRandomness: AugmentedEvent<ApiType, [requestId: u64, randomness: H256], { requestId: u64; randomness: H256 }>;
       /**
-       * Requested randomness
+       * A request for randomness was made.
        **/
       RequestedRandomness: AugmentedEvent<
         ApiType,
@@ -506,23 +496,25 @@ declare module '@polkadot/api-base/types/events' {
     };
     quota: {
       /**
-       * No more currency available for refund
+       * No more currency available for refund.
+       * This scenario should never occur if the fees are intended for the refund account.
        **/
       NoMoreCurrencyForRefund: AugmentedEvent<ApiType, []>;
       /**
-       * No quota for identity
+       * No more quota available for refund.
        **/
       NoQuotaForIdty: AugmentedEvent<ApiType, [u32]>;
       /**
-       * Refunded fees to an account
+       * Transaction fees were refunded.
        **/
       Refunded: AugmentedEvent<ApiType, [who: AccountId32, identity: u32, amount: u64], { who: AccountId32; identity: u32; amount: u64 }>;
       /**
-       * Refund failed
+       * The refund has failed.
+       * This scenario should rarely occur, except when the account was destroyed in the interim between the request and the refund.
        **/
       RefundFailed: AugmentedEvent<ApiType, [AccountId32]>;
       /**
-       * Refund queue full
+       * Refund queue was full.
        **/
       RefundQueueFull: AugmentedEvent<ApiType, []>;
       /**
@@ -579,66 +571,31 @@ declare module '@polkadot/api-base/types/events' {
        **/
       [key: string]: AugmentedEvent<ApiType>;
     };
-    smithCert: {
+    smithMembers: {
       /**
-       * New certification
-       * [issuer, issuer_issued_count, receiver, receiver_received_count]
+       * The invitation has been accepted.
        **/
-      NewCert: AugmentedEvent<
-        ApiType,
-        [issuer: u32, issuerIssuedCount: u32, receiver: u32, receiverReceivedCount: u32],
-        { issuer: u32; issuerIssuedCount: u32; receiver: u32; receiverReceivedCount: u32 }
-      >;
+      InvitationAccepted: AugmentedEvent<ApiType, [idtyIndex: u32], { idtyIndex: u32 }>;
       /**
-       * Removed certification
-       * [issuer, issuer_issued_count, receiver, receiver_received_count, expiration]
+       * An identity is being inivited to become a smith.
        **/
-      RemovedCert: AugmentedEvent<
-        ApiType,
-        [issuer: u32, issuerIssuedCount: u32, receiver: u32, receiverReceivedCount: u32, expiration: bool],
-        { issuer: u32; issuerIssuedCount: u32; receiver: u32; receiverReceivedCount: u32; expiration: bool }
-      >;
+      InvitationSent: AugmentedEvent<ApiType, [receiver: u32, issuer: u32], { receiver: u32; issuer: u32 }>;
       /**
-       * Renewed certification
-       * [issuer, receiver]
+       * Certification received
        **/
-      RenewedCert: AugmentedEvent<ApiType, [issuer: u32, receiver: u32], { issuer: u32; receiver: u32 }>;
+      SmithCertAdded: AugmentedEvent<ApiType, [receiver: u32, issuer: u32], { receiver: u32; issuer: u32 }>;
       /**
-       * Generic event
+       * Certification lost
        **/
-      [key: string]: AugmentedEvent<ApiType>;
-    };
-    smithMembership: {
+      SmithCertRemoved: AugmentedEvent<ApiType, [receiver: u32, issuer: u32], { receiver: u32; issuer: u32 }>;
       /**
-       * A membership was acquired
-       * [idty_id]
+       * A smith gathered enough certifications to become an authority (can call `go_online()`).
        **/
-      MembershipAcquired: AugmentedEvent<ApiType, [u32]>;
+      SmithMembershipAdded: AugmentedEvent<ApiType, [idtyIndex: u32], { idtyIndex: u32 }>;
       /**
-       * A membership expired
-       * [idty_id]
+       * A smith has been removed from the smiths set.
        **/
-      MembershipExpired: AugmentedEvent<ApiType, [u32]>;
-      /**
-       * A membership was renewed
-       * [idty_id]
-       **/
-      MembershipRenewed: AugmentedEvent<ApiType, [u32]>;
-      /**
-       * An membership was requested
-       * [idty_id]
-       **/
-      MembershipRequested: AugmentedEvent<ApiType, [u32]>;
-      /**
-       * A membership was revoked
-       * [idty_id]
-       **/
-      MembershipRevoked: AugmentedEvent<ApiType, [u32]>;
-      /**
-       * A pending membership request has expired
-       * [idty_id]
-       **/
-      PendingMembershipExpired: AugmentedEvent<ApiType, [u32]>;
+      SmithMembershipRemoved: AugmentedEvent<ApiType, [idtyIndex: u32], { idtyIndex: u32 }>;
       /**
        * Generic event
        **/
@@ -646,15 +603,19 @@ declare module '@polkadot/api-base/types/events' {
     };
     sudo: {
       /**
-       * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+       * The sudo key has been updated.
        **/
-      KeyChanged: AugmentedEvent<ApiType, [oldSudoer: Option<AccountId32>], { oldSudoer: Option<AccountId32> }>;
+      KeyChanged: AugmentedEvent<ApiType, [old: Option<AccountId32>, new_: AccountId32], { old: Option<AccountId32>; new_: AccountId32 }>;
       /**
-       * A sudo just took place. \[result\]
+       * The key was permanently removed.
+       **/
+      KeyRemoved: AugmentedEvent<ApiType, []>;
+      /**
+       * A sudo call just took place.
        **/
       Sudid: AugmentedEvent<ApiType, [sudoResult: Result<Null, SpRuntimeDispatchError>], { sudoResult: Result<Null, SpRuntimeDispatchError> }>;
       /**
-       * A sudo just took place. \[result\]
+       * A [sudo_as](Pallet::sudo_as) call just took place.
        **/
       SudoAsDone: AugmentedEvent<ApiType, [sudoResult: Result<Null, SpRuntimeDispatchError>], { sudoResult: Result<Null, SpRuntimeDispatchError> }>;
       /**
@@ -691,6 +652,10 @@ declare module '@polkadot/api-base/types/events' {
        * On on-chain remark happened.
        **/
       Remarked: AugmentedEvent<ApiType, [sender: AccountId32, hash_: H256], { sender: AccountId32; hash_: H256 }>;
+      /**
+       * An upgrade was authorized.
+       **/
+      UpgradeAuthorized: AugmentedEvent<ApiType, [codeHash: H256, checkVersion: bool], { codeHash: H256; checkVersion: bool }>;
       /**
        * Generic event
        **/
@@ -761,6 +726,18 @@ declare module '@polkadot/api-base/types/events' {
     };
     treasury: {
       /**
+       * A new asset spend proposal has been approved.
+       **/
+      AssetSpendApproved: AugmentedEvent<
+        ApiType,
+        [index: u32, assetKind: Null, amount: u64, beneficiary: AccountId32, validFrom: u32, expireAt: u32],
+        { index: u32; assetKind: Null; amount: u64; beneficiary: AccountId32; validFrom: u32; expireAt: u32 }
+      >;
+      /**
+       * An approved spend was voided.
+       **/
+      AssetSpendVoided: AugmentedEvent<ApiType, [index: u32], { index: u32 }>;
+      /**
        * Some funds have been allocated.
        **/
       Awarded: AugmentedEvent<
@@ -776,6 +753,14 @@ declare module '@polkadot/api-base/types/events' {
        * Some funds have been deposited.
        **/
       Deposit: AugmentedEvent<ApiType, [value: u64], { value: u64 }>;
+      /**
+       * A payment happened.
+       **/
+      Paid: AugmentedEvent<ApiType, [index: u32, paymentId: Null], { index: u32; paymentId: Null }>;
+      /**
+       * A payment failed and can be retried.
+       **/
+      PaymentFailed: AugmentedEvent<ApiType, [index: u32, paymentId: Null], { index: u32; paymentId: Null }>;
       /**
        * New proposal.
        **/
@@ -800,6 +785,11 @@ declare module '@polkadot/api-base/types/events' {
        * We have ended a spend period and will now allocate funds.
        **/
       Spending: AugmentedEvent<ApiType, [budgetRemaining: u64], { budgetRemaining: u64 }>;
+      /**
+       * A spend was processed and removed from the storage. It might have been successfully
+       * paid or it may have expired.
+       **/
+      SpendProcessed: AugmentedEvent<ApiType, [index: u32], { index: u32 }>;
       /**
        * The inactive funds of the pallet have been updated.
        **/
@@ -829,7 +819,7 @@ declare module '@polkadot/api-base/types/events' {
       /**
        * DUs were automatically transferred as part of a member removal.
        **/
-      UdsAutoPaidAtRemoval: AugmentedEvent<ApiType, [count: u16, total: u64, who: AccountId32], { count: u16; total: u64; who: AccountId32 }>;
+      UdsAutoPaid: AugmentedEvent<ApiType, [count: u16, total: u64, who: AccountId32], { count: u16; total: u64; who: AccountId32 }>;
       /**
        * A member claimed his UDs.
        **/

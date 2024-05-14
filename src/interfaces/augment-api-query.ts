@@ -6,7 +6,7 @@
 import '@polkadot/api-base/types/storage';
 
 import type { ApiTypes, AugmentedQuery, QueryableStorageEntry } from '@polkadot/api-base/types';
-import type { Bytes, Null, Option, Text, U8aFixed, Vec, WrapperOpaque, bool, u128, u16, u32, u64, u8 } from '@polkadot/types-codec';
+import type { Bytes, Null, Option, U8aFixed, Vec, bool, u128, u16, u32, u64, u8 } from '@polkadot/types-codec';
 import type { AnyNumber, ITuple } from '@polkadot/types-codec/types';
 import type { AccountId32, Call, H256 } from '@polkadot/types/interfaces/runtime';
 import type { Observable } from '@polkadot/types/types';
@@ -16,16 +16,6 @@ export type __QueryableStorageEntry<ApiType extends ApiTypes> = QueryableStorage
 
 declare module '@polkadot/api-base/types/storage' {
   interface AugmentedQueries<ApiType extends ApiTypes> {
-    account: {
-      pendingNewAccounts: AugmentedQuery<ApiType, (arg: AccountId32 | string | Uint8Array) => Observable<Option<Null>>, [AccountId32]> &
-        QueryableStorageEntry<ApiType, [AccountId32]>;
-      pendingRandomIdAssignments: AugmentedQuery<ApiType, (arg: u64 | AnyNumber | Uint8Array) => Observable<Option<AccountId32>>, [u64]> &
-        QueryableStorageEntry<ApiType, [u64]>;
-      /**
-       * Generic query
-       **/
-      [key: string]: QueryableStorageEntry<ApiType>;
-    };
     atomicSwap: {
       pendingSwaps: AugmentedQuery<
         ApiType,
@@ -38,17 +28,22 @@ declare module '@polkadot/api-base/types/storage' {
        **/
       [key: string]: QueryableStorageEntry<ApiType>;
     };
+    authorityDiscovery: {
+      /**
+       * Keys of the current authority set.
+       **/
+      keys: AugmentedQuery<ApiType, () => Observable<Vec<SpAuthorityDiscoveryAppPublic>>, []> & QueryableStorageEntry<ApiType, []>;
+      /**
+       * Keys of the next authority set.
+       **/
+      nextKeys: AugmentedQuery<ApiType, () => Observable<Vec<SpAuthorityDiscoveryAppPublic>>, []> & QueryableStorageEntry<ApiType, []>;
+      /**
+       * Generic query
+       **/
+      [key: string]: QueryableStorageEntry<ApiType>;
+    };
     authorityMembers: {
-      /**
-       * maps member id to account id
-       **/
-      accountIdOf: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<AccountId32>>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
-      /**
-       * count the number of authorities
-       **/
-      authoritiesCounter: AugmentedQuery<ApiType, () => Observable<u32>, []> & QueryableStorageEntry<ApiType, []>;
-      blackList: AugmentedQuery<ApiType, () => Observable<Vec<u32>>, []> & QueryableStorageEntry<ApiType, []>;
+      blacklist: AugmentedQuery<ApiType, () => Observable<Vec<u32>>, []> & QueryableStorageEntry<ApiType, []>;
       /**
        * list incoming authorities
        **/
@@ -262,19 +257,19 @@ declare module '@polkadot/api-base/types/storage' {
        **/
       [key: string]: QueryableStorageEntry<ApiType>;
     };
-    cert: {
+    certification: {
       /**
-       * Certifications by receiver
+       * Certifications by receiver.
        **/
       certsByReceiver: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<ITuple<[u32, u32]>>>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
       /**
-       * Certifications removable on
+       * Certifications removable on.
        **/
-      storageCertsRemovableOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<Vec<ITuple<[u32, u32]>>>>, [u32]> &
+      certsRemovableOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<Vec<ITuple<[u32, u32]>>>>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
       /**
-       * Certifications metada by issuer
+       * Certifications metada by issuer.
        **/
       storageIdtyCertMeta: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<PalletCertificationIdtyCertMeta>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
@@ -288,11 +283,6 @@ declare module '@polkadot/api-base/types/storage' {
        * Did evaluation get updated in this block?
        **/
       didUpdate: AugmentedQuery<ApiType, () => Observable<bool>, []> & QueryableStorageEntry<ApiType, []>;
-      /**
-       * Identities by distance status expiration session index
-       **/
-      distanceStatusExpireOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<u32>>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
       /**
        * Block for which the distance rule must be checked
        **/
@@ -310,17 +300,12 @@ declare module '@polkadot/api-base/types/storage' {
        **/
       evaluationPool2: AugmentedQuery<ApiType, () => Observable<PalletDistanceEvaluationPool>, []> & QueryableStorageEntry<ApiType, []>;
       /**
-       * Distance evaluation status by identity
+       * Pending evaluation requesters
        *
-       * * `.0` is the account who requested an evaluation and reserved the price,
+       * account who requested an evaluation and reserved the price,
        * for whom the price will be unreserved or slashed when the evaluation completes.
-       * * `.1` is the status of the evaluation.
        **/
-      identityDistanceStatus: AugmentedQuery<
-        ApiType,
-        (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<ITuple<[AccountId32, PalletDistanceDistanceStatus]>>>,
-        [u32]
-      > &
+      pendingEvaluationRequest: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<AccountId32>>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
       /**
        * Generic query
@@ -328,6 +313,11 @@ declare module '@polkadot/api-base/types/storage' {
       [key: string]: QueryableStorageEntry<ApiType>;
     };
     grandpa: {
+      /**
+       * The current list of authorities.
+       **/
+      authorities: AugmentedQuery<ApiType, () => Observable<Vec<ITuple<[SpConsensusGrandpaAppPublic, u64]>>>, []> &
+        QueryableStorageEntry<ApiType, []>;
       /**
        * The number of changes (both in terms of keys and underlying economic responsibilities)
        * in the "set" of Grandpa validators from genesis.
@@ -368,6 +358,21 @@ declare module '@polkadot/api-base/types/storage' {
        **/
       [key: string]: QueryableStorageEntry<ApiType>;
     };
+    historical: {
+      /**
+       * Mapping from historical session indices to session-data root hash and validator count.
+       **/
+      historicalSessions: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<ITuple<[H256, u32]>>>, [u32]> &
+        QueryableStorageEntry<ApiType, [u32]>;
+      /**
+       * The range of historical sessions we store. [first, last)
+       **/
+      storedRange: AugmentedQuery<ApiType, () => Observable<Option<ITuple<[u32, u32]>>>, []> & QueryableStorageEntry<ApiType, []>;
+      /**
+       * Generic query
+       **/
+      [key: string]: QueryableStorageEntry<ApiType>;
+    };
     identity: {
       /**
        * Counter for the related counted storage map
@@ -381,15 +386,12 @@ declare module '@polkadot/api-base/types/storage' {
       /**
        * maps identity name to identity index (simply a set)
        **/
-      identitiesNames: AugmentedQuery<ApiType, (arg: Text | string) => Observable<Option<u32>>, [Text]> & QueryableStorageEntry<ApiType, [Text]>;
+      identitiesNames: AugmentedQuery<ApiType, (arg: Bytes | string | Uint8Array) => Observable<Option<u32>>, [Bytes]> &
+        QueryableStorageEntry<ApiType, [Bytes]>;
       /**
        * maps block number to the list of identities set to be removed at this bloc
        **/
-      identitiesRemovableOn: AugmentedQuery<
-        ApiType,
-        (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<ITuple<[u32, PalletIdentityIdtyStatus]>>>,
-        [u32]
-      > &
+      identityChangeSchedule: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<u32>>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
       /**
        * maps account id to identity index
@@ -435,15 +437,11 @@ declare module '@polkadot/api-base/types/storage' {
        **/
       keys: AugmentedQuery<ApiType, () => Observable<Vec<PalletImOnlineSr25519AppSr25519Public>>, []> & QueryableStorageEntry<ApiType, []>;
       /**
-       * For each session index, we keep a mapping of `SessionIndex` and `AuthIndex` to
-       * `WrapperOpaque<BoundedOpaqueNetworkState>`.
+       * For each session index, we keep a mapping of `SessionIndex` and `AuthIndex`.
        **/
       receivedHeartbeats: AugmentedQuery<
         ApiType,
-        (
-          arg1: u32 | AnyNumber | Uint8Array,
-          arg2: u32 | AnyNumber | Uint8Array
-        ) => Observable<Option<WrapperOpaque<PalletImOnlineBoundedOpaqueNetworkState>>>,
+        (arg1: u32 | AnyNumber | Uint8Array, arg2: u32 | AnyNumber | Uint8Array) => Observable<Option<bool>>,
         [u32, u32]
       > &
         QueryableStorageEntry<ApiType, [u32, u32]>;
@@ -466,16 +464,6 @@ declare module '@polkadot/api-base/types/storage' {
        * maps block number to the list of identity id set to expire at this block
        **/
       membershipsExpireOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<u32>>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
-      /**
-       * identities with pending membership request
-       **/
-      pendingMembership: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<Null>>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
-      /**
-       * maps block number to the list of memberships set to expire at this block
-       **/
-      pendingMembershipsExpireOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<u32>>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
       /**
        * Generic query
@@ -542,7 +530,12 @@ declare module '@polkadot/api-base/types/storage' {
       /**
        * The request status of a given hash.
        **/
-      statusFor: AugmentedQuery<ApiType, (arg: H256 | string | Uint8Array) => Observable<Option<PalletPreimageRequestStatus>>, [H256]> &
+      requestStatusFor: AugmentedQuery<ApiType, (arg: H256 | string | Uint8Array) => Observable<Option<PalletPreimageRequestStatus>>, [H256]> &
+        QueryableStorageEntry<ApiType, [H256]>;
+      /**
+       * The request status of a given hash.
+       **/
+      statusFor: AugmentedQuery<ApiType, (arg: H256 | string | Uint8Array) => Observable<Option<PalletPreimageOldRequestStatus>>, [H256]> &
         QueryableStorageEntry<ApiType, [H256]>;
       /**
        * Generic query
@@ -676,51 +669,20 @@ declare module '@polkadot/api-base/types/storage' {
        **/
       [key: string]: QueryableStorageEntry<ApiType>;
     };
-    smithCert: {
+    smithMembers: {
       /**
-       * Certifications by receiver
+       * stores the current session index
        **/
-      certsByReceiver: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<ITuple<[u32, u32]>>>, [u32]> &
+      currentSession: AugmentedQuery<ApiType, () => Observable<u32>, []> & QueryableStorageEntry<ApiType, []>;
+      /**
+       * maps session index to possible smith removals
+       **/
+      expiresOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<Vec<u32>>>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
       /**
-       * Certifications removable on
+       * maps identity index to smith status
        **/
-      storageCertsRemovableOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<Vec<ITuple<[u32, u32]>>>>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
-      /**
-       * Certifications metada by issuer
-       **/
-      storageIdtyCertMeta: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<PalletCertificationIdtyCertMeta>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
-      /**
-       * Generic query
-       **/
-      [key: string]: QueryableStorageEntry<ApiType>;
-    };
-    smithMembership: {
-      /**
-       * Counter for the related counted storage map
-       **/
-      counterForMembership: AugmentedQuery<ApiType, () => Observable<u32>, []> & QueryableStorageEntry<ApiType, []>;
-      /**
-       * maps identity id to membership data
-       **/
-      membership: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<SpMembershipMembershipData>>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
-      /**
-       * maps block number to the list of identity id set to expire at this block
-       **/
-      membershipsExpireOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<u32>>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
-      /**
-       * identities with pending membership request
-       **/
-      pendingMembership: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<Null>>, [u32]> &
-        QueryableStorageEntry<ApiType, [u32]>;
-      /**
-       * maps block number to the list of memberships set to expire at this block
-       **/
-      pendingMembershipsExpireOn: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Vec<u32>>, [u32]> &
+      smiths: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<PalletSmithMembersSmithMeta>>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
       /**
        * Generic query
@@ -747,6 +709,11 @@ declare module '@polkadot/api-base/types/storage' {
        * Total length (in bytes) for all extrinsics put together, for the current block.
        **/
       allExtrinsicsLen: AugmentedQuery<ApiType, () => Observable<Option<u32>>, []> & QueryableStorageEntry<ApiType, []>;
+      /**
+       * `Some` if a code upgrade has been authorized.
+       **/
+      authorizedUpgrade: AugmentedQuery<ApiType, () => Observable<Option<FrameSystemCodeUpgradeAuthorization>>, []> &
+        QueryableStorageEntry<ApiType, []>;
       /**
        * Map of block numbers to block hashes.
        **/
@@ -781,7 +748,7 @@ declare module '@polkadot/api-base/types/storage' {
        * allows light-clients to leverage the changes trie storage tracking mechanism and
        * in case of changes fetch the list of events of interest.
        *
-       * The value has the type `(T::BlockNumber, EventIndex)` because if we used only just
+       * The value has the type `(BlockNumberFor<T>, EventIndex)` because if we used only just
        * the `EventIndex` then in case if the topic has the same contents on the next block
        * no notification will be triggered thus the event might be lost.
        **/
@@ -860,11 +827,14 @@ declare module '@polkadot/api-base/types/storage' {
     };
     timestamp: {
       /**
-       * Did the timestamp get updated in this block?
+       * Whether the timestamp has been updated in this block.
+       *
+       * This value is updated to `true` upon successful submission of a timestamp by a node.
+       * It is then checked at the end of each block execution in the `on_finalize` hook.
        **/
       didUpdate: AugmentedQuery<ApiType, () => Observable<bool>, []> & QueryableStorageEntry<ApiType, []>;
       /**
-       * Current time for the current block.
+       * The current time for the current block.
        **/
       now: AugmentedQuery<ApiType, () => Observable<u64>, []> & QueryableStorageEntry<ApiType, []>;
       /**
@@ -897,6 +867,15 @@ declare module '@polkadot/api-base/types/storage' {
        * Proposals that have been made.
        **/
       proposals: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<PalletTreasuryProposal>>, [u32]> &
+        QueryableStorageEntry<ApiType, [u32]>;
+      /**
+       * The count of spends that have been made.
+       **/
+      spendCount: AugmentedQuery<ApiType, () => Observable<u32>, []> & QueryableStorageEntry<ApiType, []>;
+      /**
+       * Spends that have been approved and being processed.
+       **/
+      spends: AugmentedQuery<ApiType, (arg: u32 | AnyNumber | Uint8Array) => Observable<Option<PalletTreasurySpendStatus>>, [u32]> &
         QueryableStorageEntry<ApiType, [u32]>;
       /**
        * Generic query

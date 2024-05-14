@@ -24,6 +24,7 @@ import type {
   FrameSupportTokensMiscBalanceStatus,
   FrameSystemAccountInfo,
   FrameSystemCall,
+  FrameSystemCodeUpgradeAuthorization,
   FrameSystemError,
   FrameSystemEvent,
   FrameSystemEventRecord,
@@ -71,16 +72,15 @@ import type {
   PalletCollectiveRawOrigin,
   PalletCollectiveVotes,
   PalletDistanceCall,
-  PalletDistanceDistanceStatus,
   PalletDistanceError,
   PalletDistanceEvaluationPool,
+  PalletDistanceEvent,
   PalletDistanceMedianMedianAcc,
   PalletDuniterAccountAccountData,
   PalletDuniterAccountCall,
   PalletDuniterAccountEvent,
   PalletDuniterTestParametersParameters,
   PalletDuniterWotError,
-  PalletDuniterWotIdtyRemovalWotReason,
   PalletGrandpaCall,
   PalletGrandpaError,
   PalletGrandpaEvent,
@@ -89,19 +89,19 @@ import type {
   PalletIdentityCall,
   PalletIdentityError,
   PalletIdentityEvent,
-  PalletIdentityIdtyRemovalReason,
   PalletIdentityIdtyStatus,
   PalletIdentityIdtyValue,
-  PalletImOnlineBoundedOpaqueNetworkState,
+  PalletIdentityRemovalReason,
+  PalletIdentityRevocationReason,
   PalletImOnlineCall,
   PalletImOnlineError,
   PalletImOnlineEvent,
   PalletImOnlineHeartbeat,
   PalletImOnlineSr25519AppSr25519Public,
   PalletImOnlineSr25519AppSr25519Signature,
-  PalletMembershipCall,
   PalletMembershipError,
   PalletMembershipEvent,
+  PalletMembershipMembershipRemovalReason,
   PalletMultisigCall,
   PalletMultisigError,
   PalletMultisigEvent,
@@ -116,6 +116,7 @@ import type {
   PalletPreimageCall,
   PalletPreimageError,
   PalletPreimageEvent,
+  PalletPreimageOldRequestStatus,
   PalletPreimageRequestStatus,
   PalletProvideRandomnessCall,
   PalletProvideRandomnessError,
@@ -137,6 +138,11 @@ import type {
   PalletSessionCall,
   PalletSessionError,
   PalletSessionEvent,
+  PalletSmithMembersCall,
+  PalletSmithMembersError,
+  PalletSmithMembersEvent,
+  PalletSmithMembersSmithMeta,
+  PalletSmithMembersSmithStatus,
   PalletSudoCall,
   PalletSudoError,
   PalletSudoEvent,
@@ -147,7 +153,9 @@ import type {
   PalletTreasuryCall,
   PalletTreasuryError,
   PalletTreasuryEvent,
+  PalletTreasuryPaymentState,
   PalletTreasuryProposal,
+  PalletTreasurySpendStatus,
   PalletUniversalDividendCall,
   PalletUniversalDividendError,
   PalletUniversalDividendEvent,
@@ -175,7 +183,6 @@ import type {
   SpCoreEcdsaSignature,
   SpCoreEd25519Public,
   SpCoreEd25519Signature,
-  SpCoreOffchainOpaqueNetworkState,
   SpCoreSr25519Public,
   SpCoreSr25519Signature,
   SpCoreSr25519VrfVrfSignature,
@@ -218,6 +225,7 @@ declare module '@polkadot/types/types/registry' {
     FrameSupportTokensMiscBalanceStatus: FrameSupportTokensMiscBalanceStatus;
     FrameSystemAccountInfo: FrameSystemAccountInfo;
     FrameSystemCall: FrameSystemCall;
+    FrameSystemCodeUpgradeAuthorization: FrameSystemCodeUpgradeAuthorization;
     FrameSystemError: FrameSystemError;
     FrameSystemEvent: FrameSystemEvent;
     FrameSystemEventRecord: FrameSystemEventRecord;
@@ -265,16 +273,15 @@ declare module '@polkadot/types/types/registry' {
     PalletCollectiveRawOrigin: PalletCollectiveRawOrigin;
     PalletCollectiveVotes: PalletCollectiveVotes;
     PalletDistanceCall: PalletDistanceCall;
-    PalletDistanceDistanceStatus: PalletDistanceDistanceStatus;
     PalletDistanceError: PalletDistanceError;
     PalletDistanceEvaluationPool: PalletDistanceEvaluationPool;
+    PalletDistanceEvent: PalletDistanceEvent;
     PalletDistanceMedianMedianAcc: PalletDistanceMedianMedianAcc;
     PalletDuniterAccountAccountData: PalletDuniterAccountAccountData;
     PalletDuniterAccountCall: PalletDuniterAccountCall;
     PalletDuniterAccountEvent: PalletDuniterAccountEvent;
     PalletDuniterTestParametersParameters: PalletDuniterTestParametersParameters;
     PalletDuniterWotError: PalletDuniterWotError;
-    PalletDuniterWotIdtyRemovalWotReason: PalletDuniterWotIdtyRemovalWotReason;
     PalletGrandpaCall: PalletGrandpaCall;
     PalletGrandpaError: PalletGrandpaError;
     PalletGrandpaEvent: PalletGrandpaEvent;
@@ -283,19 +290,19 @@ declare module '@polkadot/types/types/registry' {
     PalletIdentityCall: PalletIdentityCall;
     PalletIdentityError: PalletIdentityError;
     PalletIdentityEvent: PalletIdentityEvent;
-    PalletIdentityIdtyRemovalReason: PalletIdentityIdtyRemovalReason;
     PalletIdentityIdtyStatus: PalletIdentityIdtyStatus;
     PalletIdentityIdtyValue: PalletIdentityIdtyValue;
-    PalletImOnlineBoundedOpaqueNetworkState: PalletImOnlineBoundedOpaqueNetworkState;
+    PalletIdentityRemovalReason: PalletIdentityRemovalReason;
+    PalletIdentityRevocationReason: PalletIdentityRevocationReason;
     PalletImOnlineCall: PalletImOnlineCall;
     PalletImOnlineError: PalletImOnlineError;
     PalletImOnlineEvent: PalletImOnlineEvent;
     PalletImOnlineHeartbeat: PalletImOnlineHeartbeat;
     PalletImOnlineSr25519AppSr25519Public: PalletImOnlineSr25519AppSr25519Public;
     PalletImOnlineSr25519AppSr25519Signature: PalletImOnlineSr25519AppSr25519Signature;
-    PalletMembershipCall: PalletMembershipCall;
     PalletMembershipError: PalletMembershipError;
     PalletMembershipEvent: PalletMembershipEvent;
+    PalletMembershipMembershipRemovalReason: PalletMembershipMembershipRemovalReason;
     PalletMultisigCall: PalletMultisigCall;
     PalletMultisigError: PalletMultisigError;
     PalletMultisigEvent: PalletMultisigEvent;
@@ -310,6 +317,7 @@ declare module '@polkadot/types/types/registry' {
     PalletPreimageCall: PalletPreimageCall;
     PalletPreimageError: PalletPreimageError;
     PalletPreimageEvent: PalletPreimageEvent;
+    PalletPreimageOldRequestStatus: PalletPreimageOldRequestStatus;
     PalletPreimageRequestStatus: PalletPreimageRequestStatus;
     PalletProvideRandomnessCall: PalletProvideRandomnessCall;
     PalletProvideRandomnessError: PalletProvideRandomnessError;
@@ -331,6 +339,11 @@ declare module '@polkadot/types/types/registry' {
     PalletSessionCall: PalletSessionCall;
     PalletSessionError: PalletSessionError;
     PalletSessionEvent: PalletSessionEvent;
+    PalletSmithMembersCall: PalletSmithMembersCall;
+    PalletSmithMembersError: PalletSmithMembersError;
+    PalletSmithMembersEvent: PalletSmithMembersEvent;
+    PalletSmithMembersSmithMeta: PalletSmithMembersSmithMeta;
+    PalletSmithMembersSmithStatus: PalletSmithMembersSmithStatus;
     PalletSudoCall: PalletSudoCall;
     PalletSudoError: PalletSudoError;
     PalletSudoEvent: PalletSudoEvent;
@@ -341,7 +354,9 @@ declare module '@polkadot/types/types/registry' {
     PalletTreasuryCall: PalletTreasuryCall;
     PalletTreasuryError: PalletTreasuryError;
     PalletTreasuryEvent: PalletTreasuryEvent;
+    PalletTreasuryPaymentState: PalletTreasuryPaymentState;
     PalletTreasuryProposal: PalletTreasuryProposal;
+    PalletTreasurySpendStatus: PalletTreasurySpendStatus;
     PalletUniversalDividendCall: PalletUniversalDividendCall;
     PalletUniversalDividendError: PalletUniversalDividendError;
     PalletUniversalDividendEvent: PalletUniversalDividendEvent;
@@ -369,7 +384,6 @@ declare module '@polkadot/types/types/registry' {
     SpCoreEcdsaSignature: SpCoreEcdsaSignature;
     SpCoreEd25519Public: SpCoreEd25519Public;
     SpCoreEd25519Signature: SpCoreEd25519Signature;
-    SpCoreOffchainOpaqueNetworkState: SpCoreOffchainOpaqueNetworkState;
     SpCoreSr25519Public: SpCoreSr25519Public;
     SpCoreSr25519Signature: SpCoreSr25519Signature;
     SpCoreSr25519VrfVrfSignature: SpCoreSr25519VrfVrfSignature;
