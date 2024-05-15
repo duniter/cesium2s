@@ -4,6 +4,7 @@ fragment LightCert on Cert {
   id
   expireOn
   createdOn
+  updatedOn
 }
 fragment Cert on Cert {
   ...LightCert
@@ -58,12 +59,12 @@ query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOr
   identityConnection(where: { accountId: { _eq: $address } }) {
     edges {
       node {
-        aggregate: certIssuedAggregate {
+        aggregate: certIssuedAggregate(where: {isActive: {_eq: true}}) {
           aggregate {
             count
           }
         }
-        connection: certIssued_connection(first: $first, after: $after, orderBy: $orderBy) {
+        connection: certIssued_connection(first: $first, after: $after, orderBy: $orderBy, where: {isActive: {_eq: true}}) {
           ...CertIssuedConnection
         }
       }
@@ -75,12 +76,12 @@ query CertsConnectionByReceiver($address: String!, $first: Int!, $orderBy: [Cert
   identityConnection(where: { accountId: { _eq: $address } }) {
     edges {
       node {
-        aggregate: certReceivedAggregate {
+        aggregate: certReceivedAggregate(where: {isActive: {_eq: true}}) {
           aggregate {
             count
           }
         }
-        connection: certReceived_connection(first: $first, after: $after, orderBy: $orderBy) {
+        connection: certReceived_connection(first: $first, after: $after, orderBy: $orderBy, where: {isActive: {_eq: true}}) {
           ...CertReceivedConnection
         }
       }

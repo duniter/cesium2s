@@ -52,6 +52,11 @@
   </div>
 
   <ion-list>
+    <ion-item *rxIf="error$; let error" lines="none" color="light">
+      <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
+      <ion-label color="danger">{{ error | translate }}</ion-label>
+    </ion-item>
+
     <ng-container *rxIf="account$; let account; suspense: skeletons">
       <!-- pubkey -->
       <ion-item *ngIf="account.address | addressToPubkeyV1; let pubkey" (click)="copyPubkey($event, pubkey)" tappable>

@@ -31,6 +31,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import { IndexerService } from '@app/network/indexer.service';
 import { AppEvent } from '@app/shared/types';
 import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
+import { ExtrinsicError, ExtrinsicUtils } from '@app/shared/substrate/extrinsic.utils';
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -583,6 +584,12 @@ export class AccountsService extends RxStartableService<AccountsState> {
     // Get issuer account
     const issuerAccount = await this.getByAddress(from.address);
 
+    // Check enough credit
+    const fee = currency.fees.cert;
+    if (fee > issuerAccount.data.free) {
+      throw new Error('ERROR.NOT_ENOUGH_CREDIT');
+    }
+
     console.info(`${this._logPrefix}Certifying...\nfrom: ${from.address}\nto ${to.address}`);
 
     // Get pair, and unlock it
@@ -594,24 +601,18 @@ export class AccountsService extends RxStartableService<AccountsState> {
       issuerPair.unlock(this._password);
     }
 
+    await this.ready();
+
     try {
-      await this.ready();
-      const certHash = await this.api.tx.certification.addCert(to.meta?.index).signAndSend(issuerPair, async ({ status, events }) => {
-        if (status.isInBlock) {
-          console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
-          console.info(`${this._logPrefix}Certifying completed at block hash #${status.hash.toHuman()}`);
+      const { status } = await ExtrinsicUtils.submit(this.api.tx.certification.addCert(to.meta?.index), issuerPair);
+      console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
+      console.info(`${this._logPrefix}Certifying completed at block hash #${status.hash.toHuman()}`);
 
-          if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
-        }
-      });
-
-      // Show the hash
-      console.info(`${this._logPrefix}Finalized hash ${certHash}`);
-
-      return certHash.toString();
+      return status.hash.toHuman();
     } catch (err) {
-      console.error(err);
-      throw new Error('ERROR.SEND_CERT_FAILED');
+      const error = new ExtrinsicError(this.api, err, 'ERROR.SEND_CERT_FAILED');
+      console.error(`${this._logPrefix}Cannot certify: ${error?.message || error}`);
+      throw error;
     }
   }
 
