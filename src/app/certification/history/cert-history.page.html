@@ -22,6 +22,7 @@
 
   <ion-header [translucent]="true">
     <ion-item color="secondary" lines="none">
+      <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
       <ion-label *rxIf="side$; let side">
         {{ (side === 'received' ? 'WOT.CERTIFICATIONS.RECEIVED' : 'WOT.GIVEN_CERTIFICATIONS.SENT') | translate }}
       </ion-label>
