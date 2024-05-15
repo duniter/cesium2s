@@ -814,7 +814,8 @@
   },
   "INFO": {
     "POPUP_TITLE": "Information",
-    "CERTIFICATION_DONE": "Certification envoyée",
+    "CERTIFICATION_PENDING": "Certification envoyée. En attente de validation...",
+    "CERTIFICATION_DONE": "Certification validée",
     "NOT_ENOUGH_CREDIT": "Crédit insuffisant",
     "TRANSFER_SENT": "Virement envoyé",
     "COPY_TO_CLIPBOARD_DONE": "Copié dans le presse-papier",

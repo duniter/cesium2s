@@ -523,6 +523,9 @@ type Cert implements Node {
     "filter the rows returned"
     where: CertEventBoolExp
   ): CertEventConnection!
+  "An object relationship"
+  createdIn: Event
+  createdInId: String
   createdOn: Int!
   expireOn: Int!
   id: ID!
@@ -533,6 +536,10 @@ type Cert implements Node {
   "An object relationship"
   receiver: Identity
   receiverId: String
+  "An object relationship"
+  updatedIn: Event
+  updatedInId: String
+  updatedOn: Int!
 }
 
 "aggregated selection of \"cert\""
@@ -560,6 +567,7 @@ type CertAggregateFields {
 type CertAvgFields {
   createdOn: Float
   expireOn: Float
+  updatedOn: Float
 }
 
 "A Relay connection object on \"cert\""
@@ -676,62 +684,75 @@ type CertEventVarianceFields {
 
 "aggregate max on columns"
 type CertMaxFields {
+  createdInId: String
   createdOn: Int
   expireOn: Int
   id: String
   issuerId: String
   receiverId: String
+  updatedInId: String
+  updatedOn: Int
 }
 
 "aggregate min on columns"
 type CertMinFields {
+  createdInId: String
   createdOn: Int
   expireOn: Int
   id: String
   issuerId: String
   receiverId: String
+  updatedInId: String
+  updatedOn: Int
 }
 
 "aggregate stddev on columns"
 type CertStddevFields {
   createdOn: Float
   expireOn: Float
+  updatedOn: Float
 }
 
 "aggregate stddevPop on columns"
 type CertStddevPopFields {
   createdOn: Float
   expireOn: Float
+  updatedOn: Float
 }
 
 "aggregate stddevSamp on columns"
 type CertStddevSampFields {
   createdOn: Float
   expireOn: Float
+  updatedOn: Float
 }
 
 "aggregate sum on columns"
 type CertSumFields {
   createdOn: Int
   expireOn: Int
+  updatedOn: Int
 }
 
 "aggregate varPop on columns"
 type CertVarPopFields {
   createdOn: Float
   expireOn: Float
+  updatedOn: Float
 }
 
 "aggregate varSamp on columns"
 type CertVarSampFields {
   createdOn: Float
   expireOn: Float
+  updatedOn: Float
 }
 
 "aggregate variance on columns"
 type CertVarianceFields {
   createdOn: Float
   expireOn: Float
+  updatedOn: Float
 }
 
 "columns and relationships of \"change_owner_key\""
@@ -2468,6 +2489,8 @@ enum CertEventSelectColumn {
 "select columns of table \"cert\""
 enum CertSelectColumn {
   "column name"
+  createdInId
+  "column name"
   createdOn
   "column name"
   expireOn
@@ -2479,6 +2502,10 @@ enum CertSelectColumn {
   issuerId
   "column name"
   receiverId
+  "column name"
+  updatedInId
+  "column name"
+  updatedOn
 }
 
 "select \"certAggregateBoolExpBool_andArgumentsColumns\" columns of table \"cert\""
@@ -2995,6 +3022,7 @@ input CertAggregateOrderBy {
 input CertAvgOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
+  updatedOn: OrderBy
 }
 
 "Boolean expression to filter rows from the table \"cert\". All fields are combined with a logical 'AND'."
@@ -3004,6 +3032,8 @@ input CertBoolExp {
   _or: [CertBoolExp!]
   certHistory: CertEventBoolExp
   certHistoryAggregate: CertEventAggregateBoolExp
+  createdIn: EventBoolExp
+  createdInId: StringComparisonExp
   createdOn: IntComparisonExp
   expireOn: IntComparisonExp
   id: StringComparisonExp
@@ -3012,6 +3042,9 @@ input CertBoolExp {
   issuerId: StringComparisonExp
   receiver: IdentityBoolExp
   receiverId: StringComparisonExp
+  updatedIn: EventBoolExp
+  updatedInId: StringComparisonExp
+  updatedOn: IntComparisonExp
 }
 
 input CertEventAggregateBoolExp {
@@ -3116,25 +3149,33 @@ input CertEventVarianceOrderBy {
 
 "order by max() on columns of table \"cert\""
 input CertMaxOrderBy {
+  createdInId: OrderBy
   createdOn: OrderBy
   expireOn: OrderBy
   id: OrderBy
   issuerId: OrderBy
   receiverId: OrderBy
+  updatedInId: OrderBy
+  updatedOn: OrderBy
 }
 
 "order by min() on columns of table \"cert\""
 input CertMinOrderBy {
+  createdInId: OrderBy
   createdOn: OrderBy
   expireOn: OrderBy
   id: OrderBy
   issuerId: OrderBy
   receiverId: OrderBy
+  updatedInId: OrderBy
+  updatedOn: OrderBy
 }
 
 "Ordering options when selecting data from \"cert\"."
 input CertOrderBy {
   certHistoryAggregate: CertEventAggregateOrderBy
+  createdIn: EventOrderBy
+  createdInId: OrderBy
   createdOn: OrderBy
   expireOn: OrderBy
   id: OrderBy
@@ -3143,48 +3184,58 @@ input CertOrderBy {
   issuerId: OrderBy
   receiver: IdentityOrderBy
   receiverId: OrderBy
+  updatedIn: EventOrderBy
+  updatedInId: OrderBy
+  updatedOn: OrderBy
 }
 
 "order by stddev() on columns of table \"cert\""
 input CertStddevOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
+  updatedOn: OrderBy
 }
 
 "order by stddevPop() on columns of table \"cert\""
 input CertStddevPopOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
+  updatedOn: OrderBy
 }
 
 "order by stddevSamp() on columns of table \"cert\""
 input CertStddevSampOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
+  updatedOn: OrderBy
 }
 
 "order by sum() on columns of table \"cert\""
 input CertSumOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
+  updatedOn: OrderBy
 }
 
 "order by varPop() on columns of table \"cert\""
 input CertVarPopOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
+  updatedOn: OrderBy
 }
 
 "order by varSamp() on columns of table \"cert\""
 input CertVarSampOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
+  updatedOn: OrderBy
 }
 
 "order by variance() on columns of table \"cert\""
 input CertVarianceOrderBy {
   createdOn: OrderBy
   expireOn: OrderBy
+  updatedOn: OrderBy
 }
 
 input ChangeOwnerKeyAggregateBoolExp {

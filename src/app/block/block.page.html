@@ -5,7 +5,7 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title size="large">
-      {{ 'BLOCKCHAIN.VIEW.TITLE' | translate: { number: height$ | push | numberFormat } }}
+      {{ 'BLOCKCHAIN.VIEW.TITLE' | translate: { number: height$ | push | blockNumber } }}
     </ion-title>
   </ion-toolbar>
   <ion-progress-bar type="indeterminate" *rxIf="loading$"></ion-progress-bar>

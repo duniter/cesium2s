@@ -12,6 +12,8 @@ export interface Currency {
   fees: {
     identity: number;
     tx: number;
+    cert: number;
   };
   decimals: number;
+  minBlockHeight?: number;
 }
