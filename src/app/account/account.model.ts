@@ -1,6 +1,7 @@
 import { HexString } from '@polkadot/util/types';
 import { ListItem } from '@app/shared/popover/list.popover';
 import { formatAddress } from '@app/shared/currencies';
+import { IdentityStatusEnum } from '@app/network/indexer-types.generated';
 
 export interface AddressSquid {
   index: number;
@@ -15,6 +16,8 @@ export interface Account {
   meta?: AccountMeta;
   data?: AccountData;
 }
+
+//export declare type IdentityStatus = 'CREATION';
 
 export interface AccountMeta {
   // Polkadot properties
@@ -34,6 +37,7 @@ export interface AccountMeta {
   avatar?: string;
   email?: string;
   isMember?: boolean;
+  status?: IdentityStatusEnum;
 
   [key: string]: unknown;
 }
