@@ -125,7 +125,7 @@
               <h3 translate>COMMON.UID</h3>
               <p>{{ 'WOT.REGISTERED_SINCE' | translate }}</p>
             </ion-label>
-            <ion-badge color="warning" slot="end">{{ account.meta?.uid }}</ion-badge>
+            <ion-badge [color]="account.meta.isMember ? 'warning' : 'medium'" slot="end">{{ account.meta.uid }}</ion-badge>
           </ion-item>
 
           <!-- Received cert count -->
