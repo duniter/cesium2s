@@ -5,10 +5,16 @@ import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { TranslateService } from '@ngx-translate/core';
 import { u32, u64 } from '@polkadot/types';
 import { RxState } from '@rx-angular/state';
+import { RxStateProperty } from '@app/shared/decorator/state.decorator';
+import { SettingsService } from '@app/settings/settings.service';
+import { CurrencyDisplayUnit } from '@app/settings/settings.model';
+import { map } from 'rxjs/operators';
+import { toBoolean } from '@app/shared/functions';
 
 export interface CurrencyParameters {
-  currencyName: SafeHtml;
+  currencyName: string;
   currencyNetwork: string;
+  currencySymbol: SafeHtml;
   members: number;
   monetaryMass: number;
   unitsPerUd: number;
@@ -17,7 +23,11 @@ export interface CurrencyParameters {
 }
 
 export interface CurrencyPageState extends AppPageState {
-  params: { [key: string]: CurrencyParameters };
+  params: CurrencyParameters;
+  paramsByUnit: Map<CurrencyDisplayUnit, CurrencyParameters>;
+  useRelativeUnit: boolean;
+  displayUnit: CurrencyDisplayUnit;
+  showAllRules: boolean;
 }
 
 @Component({
@@ -27,59 +37,65 @@ export interface CurrencyPageState extends AppPageState {
   providers: [RxState],
 })
 export class CurrencyPage extends AppPage<CurrencyPageState> {
-  params: { [key: string]: CurrencyParameters };
+  @RxStateProperty() protected params: CurrencyParameters;
+  @RxStateProperty() protected useRelativeUnit: boolean;
 
-  @Input() showAllRules: boolean;
-  @Input()
-  get showUnitsInDU(): boolean {
-    return this.units === 'du';
-  }
-  set showUnitsInDU(showInDu: boolean) {
-    this.units = showInDu ? 'du' : 'base';
-  }
-  units: 'du' | 'base' = 'base';
+  @Input() @RxStateProperty() showAllRules: boolean;
+  @Input() @RxStateProperty() displayUnit: CurrencyDisplayUnit;
 
   constructor(
     protected networkService: NetworkService,
     protected translate: TranslateService,
+    protected settings: SettingsService,
     private sanitizer: DomSanitizer
   ) {
     super({ name: 'currency-service' });
+
+    // Watch settings
+    this._state.connect('useRelativeUnit', this.settings.displayUnit$.pipe(map((unit) => unit === 'du')));
+
+    this._state.connect('displayUnit', this._state.select('useRelativeUnit').pipe(map((useRelativeUnit) => (useRelativeUnit ? 'du' : 'base'))));
+
+    this._state.connect(
+      'params',
+      this._state.select(['paramsByUnit', 'displayUnit'], (res) => res).pipe(map(({ paramsByUnit, displayUnit }) => paramsByUnit.get(displayUnit)))
+    );
   }
 
   protected async ngOnLoad(): Promise<Partial<CurrencyPageState>> {
-    this.showAllRules = false;
-    this.showUnitsInDU = false;
-    const networkService = await this.networkService.ready();
-    const api = networkService.api;
-    const currency = networkService.currency;
+    const showAllRules = toBoolean(this.showAllRules, false);
+    const useRelativeUnit = toBoolean(this.useRelativeUnit, false);
+    const network = await this.networkService.ready();
+    const api = network.api;
+    const currency = network.currency;
     const fractionsPerUnit = Math.pow(10, currency.decimals);
     const [monetaryMassFractions, members] = await Promise.all([
       api.query.universalDividend.monetaryMass(),
       api.query.membership.counterForMembership(),
     ]);
     const duValue = (api.consts.universalDividend.unitsPerUd as u64).toNumber() / fractionsPerUnit;
-    this.params = {
-      base: {
-        currencyName: currency.displayName,
-        currencyNetwork: currency.network,
-        monetaryMass: (monetaryMassFractions as u64).toNumber() / fractionsPerUnit,
-        members: (members as u32).toNumber(),
-        unitsPerUd: duValue,
-        udCreationPeriodMs: (api.consts.universalDividend.udCreationPeriod as u64).toNumber(),
-        udReevalPeriodMs: (api.consts.universalDividend.udReevalPeriod as u64).toNumber(),
-      },
-      du: {
-        currencyName: this.sanitizer.bypassSecurityTrustHtml(`${this.translate.instant('UD')}<sub>${currency.displayName}</sub>`),
-        currencyNetwork: currency.network,
-        monetaryMass: (monetaryMassFractions as u64).toNumber() / fractionsPerUnit / duValue,
-        members: (members as u32).toNumber(),
-        unitsPerUd: 1,
-        udCreationPeriodMs: (api.consts.universalDividend.udCreationPeriod as u64).toNumber(),
-        udReevalPeriodMs: (api.consts.universalDividend.udReevalPeriod as u64).toNumber(),
-      },
-    };
+    const paramsByUnit = new Map<CurrencyDisplayUnit, CurrencyParameters>();
+    paramsByUnit.set('base', {
+      currencyName: currency.displayName,
+      currencySymbol: currency.symbol,
+      currencyNetwork: currency.network,
+      monetaryMass: (monetaryMassFractions as u64).toNumber() / fractionsPerUnit,
+      members: (members as u32).toNumber(),
+      unitsPerUd: duValue,
+      udCreationPeriodMs: (api.consts.universalDividend.udCreationPeriod as u64).toNumber(),
+      udReevalPeriodMs: (api.consts.universalDividend.udReevalPeriod as u64).toNumber(),
+    });
+    paramsByUnit.set('du', {
+      currencyName: currency.displayName,
+      currencySymbol: this.sanitizer.bypassSecurityTrustHtml(`${this.translate.instant('COMMON.UD')}<sub>${currency.symbol}</sub>`),
+      currencyNetwork: currency.network,
+      monetaryMass: (monetaryMassFractions as u64).toNumber() / fractionsPerUnit / duValue,
+      members: (members as u32).toNumber(),
+      unitsPerUd: 1,
+      udCreationPeriodMs: (api.consts.universalDividend.udCreationPeriod as u64).toNumber(),
+      udReevalPeriodMs: (api.consts.universalDividend.udReevalPeriod as u64).toNumber(),
+    });
 
-    return { params: this.params };
+    return { paramsByUnit, showAllRules, useRelativeUnit };
   }
 }
