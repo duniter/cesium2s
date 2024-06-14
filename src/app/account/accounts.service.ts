@@ -660,6 +660,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
             ...account.meta,
             uid: indexedAccount.meta?.uid,
             isMember: indexedAccount.meta?.isMember,
+            status: indexedAccount.meta?.status,
+            createdOn: indexedAccount.meta?.createdOn,
           };
           changed = true;
         }

@@ -36,6 +36,7 @@ export interface Environment {
   dev?: {
     // Default peer
     peer?: string;
+    indexer?: string;
 
     // Load polkadot default account (alice, etc.)
     testingAccounts?: boolean;

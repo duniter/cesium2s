@@ -2,22 +2,39 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Moment } from 'moment';
 import { DateUtils } from '@app/shared/dates';
 import { NetworkService } from '@app/network/network.service';
+import { isNil } from '@app/shared/functions';
+import { IndexerService } from '@app/network/indexer.service';
 
 @Pipe({
   name: 'blockTime',
 })
 export class BlockTimePipe implements PipeTransform {
-  constructor(private networkService: NetworkService) {}
+  constructor(
+    private networkService: NetworkService,
+    private indexer: IndexerService
+  ) {}
 
   transform(blockNumber: number): Moment {
-    if (!blockNumber) return null;
+    if (isNil(blockNumber)) return null;
 
-    const blockDate = (this.networkService.currency.startTime as Moment).clone();
-    const blockDuration = 6;
+    const startTime = DateUtils.fromDateISOString(this.networkService.currency.startTime);
 
-    const duration = DateUtils.toDuration(blockNumber * blockDuration, 'seconds');
-    blockDate.add(duration);
-    return blockDate;
+    // block V1
+    if (blockNumber < 0 && this.indexer.minBlockHeight) {
+      // FIXME BLA: find a better way to get V1 block time
+      /*blockNumber = -1 * this.indexer.minBlockHeight + blockNumber;
+      const blockDuration = 5;
+
+      const duration = DateUtils.toDuration(blockNumber * blockDuration, 'minute');
+      return startTime.clone().subtract(duration);*/
+
+      return null;
+    } else {
+      // TODO: get from network service
+      const blockDuration = 6;
+      const duration = DateUtils.toDuration(blockNumber * blockDuration, 'seconds');
+      return startTime.clone().add(duration);
+    }
   }
 }
 

@@ -1,6 +1,5 @@
 import { LightAccountConnectionFragment, LightAccountFragment, LightIdentityFragment } from '@app/network/indexer-types.generated';
 import { Account, parseAddressSquid } from '@app/account/account.model';
-import { isNotNil } from '@app/shared/functions';
 
 export class AccountConverter {
   static connectionToAccounts(accountConnection: LightAccountConnectionFragment, debug?: boolean): Account[] {
@@ -19,13 +18,16 @@ export class AccountConverter {
   static toAccount(input: LightAccountFragment): Account {
     if (!input) return undefined;
     const addressSquid = parseAddressSquid(input.id);
+    const identity = input.identity;
     return <Account>{
       address: addressSquid.address,
       meta: {
-        id: input.identity?.id,
-        index: input.identity?.index,
-        uid: input.identity?.name,
-        isMember: input.identity?.membershipHistory?.some((h) => isNotNil(h.id)) || false,
+        id: identity?.id,
+        index: identity?.index,
+        uid: identity?.name,
+        status: identity?.status,
+        isMember: identity?.isMember || false,
+        createdOn: identity?.createdOn,
       },
     };
   }
@@ -46,7 +48,8 @@ export class IdentityConverter {
         id: input.id,
         index: input.index,
         uid: input.name,
-        isMember: input.membershipHistory?.some((h) => isNotNil(h.id)) || false,
+        status: input?.status,
+        isMember: input.isMember || false,
       },
     };
   }
