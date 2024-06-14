@@ -7,7 +7,9 @@ export declare interface LocaleConfig extends Property {
 
 export const APP_LOCALES = new InjectionToken<LocaleConfig[]>('locales');
 
-export declare interface Settings {
+export type CurrencyDisplayUnit = 'base' | 'du';
+
+export interface Settings {
   peer: string;
   currency?: string;
   preferredPeers?: string[];
@@ -19,4 +21,5 @@ export declare interface Settings {
   properties?: PropertiesMap;
   unAuthDelayMs?: number;
   darkMode: boolean;
+  displayUnit: CurrencyDisplayUnit;
 }

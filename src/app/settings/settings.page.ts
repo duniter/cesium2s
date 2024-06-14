@@ -6,8 +6,10 @@ import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.deco
 import { Observable, skip } from 'rxjs';
 import { IonModal } from '@ionic/angular';
 import { NetworkService } from '@app/network/network.service';
+import { map } from 'rxjs/operators';
 
 export interface SettingsPageState extends Settings, AppPageState {
+  useRelativeUnit: boolean;
   dirty: boolean;
 }
 
@@ -57,6 +59,7 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
 
   @RxStateProperty() darkMode: boolean;
   @RxStateProperty() locale: string;
+  @RxStateProperty() useRelativeUnit: boolean;
   @RxStateProperty() peer: string;
   @RxStateProperty() indexer: string;
   @RxStateProperty() unAuthDelayMs: number;
@@ -71,8 +74,12 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
   ) {
     super({ name: 'settings' });
 
+    // Conversion displayUnit <--> useRelativeUnit
+    this._state.connect('displayUnit', this._state.select('useRelativeUnit').pipe(map((useRelativeUnit) => (useRelativeUnit ? 'du' : 'base'))));
+    this._state.connect('useRelativeUnit', this._state.select('displayUnit').pipe(map((unit) => unit === 'du')));
+
     // Detect changes
-    this._state.hold(this._state.select(['locale', 'peer', 'indexer', 'unAuthDelayMs'], (s) => s).pipe(skip(1)), () => {
+    this._state.hold(this._state.select(['locale', 'peer', 'indexer', 'unAuthDelayMs', 'displayUnit'], (s) => s).pipe(skip(1)), () => {
       if (this.mobile) {
         this.save();
       } else {
