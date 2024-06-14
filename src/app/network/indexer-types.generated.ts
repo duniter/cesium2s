@@ -4687,11 +4687,11 @@ export type TransferAggregateBoolExpCount = {
   predicate: IntComparisonExp;
 };
 
-export type LightIdentityFragment = { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> };
+export type LightIdentityFragment = { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> };
 
-export type LightAccountFragment = { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null };
+export type LightAccountFragment = { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null };
 
-export type LightAccountConnectionFragment = { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }> };
+export type LightAccountConnectionFragment = { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> };
 
 export type LightBlockFragment = { __typename: 'Block', id: string, height: number, hash: any, timestamp: any, callsCount: number, eventsCount: number, extrinsicsCount: number };
 
@@ -4716,13 +4716,13 @@ export type BlocksQuery = { __typename?: 'query_root', blockConnection: { __type
 
 export type LightCertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number };
 
-export type CertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null };
+export type CertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null };
 
-export type CertConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
+export type CertConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
 
-export type CertReceivedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
+export type CertReceivedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
 
-export type CertIssuedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
+export type CertIssuedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
 
 export type CertsConnectionByIssuerQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4732,7 +4732,7 @@ export type CertsConnectionByIssuerQueryVariables = Exact<{
 }>;
 
 
-export type CertsConnectionByIssuerQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
+export type CertsConnectionByIssuerQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
 
 export type CertsConnectionByReceiverQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4742,11 +4742,11 @@ export type CertsConnectionByReceiverQueryVariables = Exact<{
 }>;
 
 
-export type CertsConnectionByReceiverQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
+export type CertsConnectionByReceiverQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
 
-export type TransferFragment = { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } | null };
+export type TransferFragment = { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null };
 
-export type TransferConnectionFragment = { __typename?: 'TransferConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'TransferEdge', node: { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } | null } }> };
+export type TransferConnectionFragment = { __typename?: 'TransferConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'TransferEdge', node: { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null } }> };
 
 export type TransferConnectionByAddressQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4756,7 +4756,7 @@ export type TransferConnectionByAddressQueryVariables = Exact<{
 }>;
 
 
-export type TransferConnectionByAddressQuery = { __typename?: 'query_root', transferConnection: { __typename?: 'TransferConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'TransferEdge', node: { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } | null } }> } };
+export type TransferConnectionByAddressQuery = { __typename?: 'query_root', transferConnection: { __typename?: 'TransferConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'TransferEdge', node: { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null } }> } };
 
 export type WotSearchByTextQueryVariables = Exact<{
   searchText: Scalars['String']['input'];
@@ -4766,7 +4766,7 @@ export type WotSearchByTextQueryVariables = Exact<{
 }>;
 
 
-export type WotSearchByTextQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }> } };
+export type WotSearchByTextQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> } };
 
 export type WotSearchByAddressQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4776,7 +4776,7 @@ export type WotSearchByAddressQueryVariables = Exact<{
 }>;
 
 
-export type WotSearchByAddressQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }> } };
+export type WotSearchByAddressQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> } };
 
 export type WotSearchLastQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -4786,18 +4786,21 @@ export type WotSearchLastQueryVariables = Exact<{
 }>;
 
 
-export type WotSearchLastQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, isMember: boolean, accountId?: string | null, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string }> } | null } }> } };
+export type WotSearchLastQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> } };
 
 export const LightIdentityFragmentDoc = gql`
     fragment LightIdentity on Identity {
   id
   index
   name
-  isMember
   accountId
+  status
+  isMember
+  createdOn
   membershipHistory {
     __typename
     id
+    eventType
   }
 }
     `;

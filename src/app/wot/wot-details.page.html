@@ -27,7 +27,7 @@
         <ion-label class="ion-text-end">
           <p translate>ACCOUNT.BALANCE</p>
           <h2 *rxIf="loaded$; else loadingText">
-            <b>{{ account$ | push | balance | amountFormat }}</b>
+            <b [innerHtml]="account$ | push | balance | amountFormat"></b>
           </h2>
           <ng-template #loadingText>
             <p translate>COMMON.LOADING</p>
