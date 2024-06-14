@@ -29,6 +29,7 @@ export interface AccountMeta {
   id?: string;
   index?: number; // member index
   uid?: string;
+  createdOn?: number;
 
   // Cesium properties
   self?: boolean;
