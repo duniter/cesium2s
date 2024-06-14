@@ -78,7 +78,7 @@
             <ion-item>
               <ion-icon slot="start" name="trending-up"></ion-icon>
               <ion-label color="dark" translate>CURRENCY.VIEW.C_RULE</ion-label>
-              <ion-badge color="light">[TBD] / 6 months</ion-badge>
+              <ion-badge color="light">{{ params.growthRate | numberFormat: { fixedDecimals: 2 } }}% / 6 months</ion-badge>
             </ion-item>
             @if (showAllRules) {
               <ion-item>

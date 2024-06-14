@@ -20,6 +20,7 @@ export interface CurrencyParameters {
   unitsPerUd: number;
   udCreationPeriodMs: number;
   udReevalPeriodMs: number;
+  growthRate: number;
 }
 
 export interface CurrencyPageState extends AppPageState {
@@ -74,6 +75,7 @@ export class CurrencyPage extends AppPage<CurrencyPageState> {
       api.query.membership.counterForMembership(),
     ]);
     const duValue = (api.consts.universalDividend.unitsPerUd as u64).toNumber() / fractionsPerUnit;
+    const growthRate = Math.sqrt((api.consts.universalDividend.squareMoneyGrowthRate as u64).toNumber());
     const paramsByUnit = new Map<CurrencyDisplayUnit, CurrencyParameters>();
     paramsByUnit.set('base', {
       currencyName: currency.displayName,
@@ -84,6 +86,7 @@ export class CurrencyPage extends AppPage<CurrencyPageState> {
       unitsPerUd: duValue,
       udCreationPeriodMs: (api.consts.universalDividend.udCreationPeriod as u64).toNumber(),
       udReevalPeriodMs: (api.consts.universalDividend.udReevalPeriod as u64).toNumber(),
+      growthRate,
     });
     paramsByUnit.set('du', {
       currencyName: currency.displayName,
@@ -94,6 +97,7 @@ export class CurrencyPage extends AppPage<CurrencyPageState> {
       unitsPerUd: 1,
       udCreationPeriodMs: (api.consts.universalDividend.udCreationPeriod as u64).toNumber(),
       udReevalPeriodMs: (api.consts.universalDividend.udReevalPeriod as u64).toNumber(),
+      growthRate,
     });
 
     return { paramsByUnit, showAllRules, useRelativeUnit };
