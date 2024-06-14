@@ -27,6 +27,7 @@ export class AccountConverter {
         uid: identity?.name,
         status: identity?.status,
         isMember: identity?.isMember || false,
+        createdOn: identity?.createdOn,
       },
     };
   }
