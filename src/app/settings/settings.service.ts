@@ -60,13 +60,14 @@ export class SettingsService extends RxStartableService<Settings> {
   }
 
   clone(): Settings {
+    const data = this.get();
     return <Settings>{
       locale: environment.defaultLocale,
-      defaultPeers: environment.defaultPeers || [],
-      peer: environment.defaultPeers?.[0],
-      defaultIndexers: environment.defaultIndexers || [],
-      indexer: environment.defaultIndexers?.[0],
+      peer: environment.dev?.peer || environment.defaultPeers?.[0],
+      indexer: environment.dev?.indexer || environment.defaultIndexers?.[0],
       ...this.get(),
+      preferredPeers: arrayDistinct([...environment.defaultPeers, ...(data?.preferredPeers || [])]),
+      preferredIndexers: arrayDistinct([...environment.defaultIndexers, ...(data?.preferredIndexers || [])]),
     };
   }
 
@@ -74,12 +75,13 @@ export class SettingsService extends RxStartableService<Settings> {
     const data = await this.storage.get(SETTINGS_STORAGE_KEY);
     return <Settings>{
       // Default values
-      preferredPeers: arrayDistinct([...environment.defaultPeers, ...(data?.preferredPeers || [])]),
-      preferredIndexers: arrayDistinct([...environment.defaultIndexers, ...(data?.preferredIndexers || [])]),
       unAuthDelayMs: 15 * 60_000, // 15 min
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
       // Restored data
       ...data,
+      // Merge default and restored data
+      preferredPeers: arrayDistinct([...environment.defaultPeers, ...(data?.preferredPeers || [])]),
+      preferredIndexers: arrayDistinct([...environment.defaultIndexers, ...(data?.preferredIndexers || [])]),
     };
   }
 

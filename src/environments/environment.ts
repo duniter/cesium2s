@@ -35,6 +35,7 @@ export const environment = <Environment>{
     //peer: 'ws://127.0.0.1:9944',
     peer: 'wss://gdev.coinduf.eu/ws',
     //peer: 'wss://gdev.cgeek.fr/ws',
+    indexer: 'https://squid.gdev.coinduf.eu/v1beta1/relay',
 
     auth: <AuthData>{
       v1: {
@@ -61,6 +62,7 @@ export const environment = <Environment>{
 
   defaultIndexers: [
     'https://gdev-squid.axiom-team.fr/v1beta1/relay',
+    'https://squid.gdev.coinduf.eu/v1beta1/relay',
     //'https://gdev-squid.axiom-team.fr/graphql'
   ],
 };

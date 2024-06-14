@@ -123,7 +123,10 @@
             <ion-icon aria-hidden="true" slot="start" name="calendar-clear-outline"></ion-icon>
             <ion-label>
               <h3 translate>COMMON.UID</h3>
-              <p>{{ 'WOT.REGISTERED_SINCE_BLOCK' | translate }}{{ account.meta.createdOn }}</p>
+              <p>
+                {{ 'WOT.REGISTERED_SINCE' | translate }} {{ account.meta.createdOn | blockTime | dateFormat }} -
+                {{ 'WOT.REGISTERED_SINCE_BLOCK' | translate }} {{ account.meta.createdOn | blockNumber }}
+              </p>
             </ion-label>
             <ion-badge [color]="account.meta.isMember ? 'warning' : 'medium'" slot="end">
               {{ account.meta.uid }} ({{ account.meta.status }})
