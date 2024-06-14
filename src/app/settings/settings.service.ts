@@ -1,5 +1,5 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Settings } from './settings.model';
+import { CurrencyDisplayUnit, Settings } from './settings.model';
 import { environment } from '@environments/environment';
 import { Platform } from '@ionic/angular';
 import { Observable, Subject } from 'rxjs';
@@ -23,10 +23,12 @@ export class SettingsService extends RxStartableService<Settings> {
   @RxStateSelect() darkMode$: Observable<boolean>;
   @RxStateSelect() peer$: Observable<string>;
   @RxStateSelect() indexer$: Observable<string>;
+  @RxStateSelect() displayUnit$: Observable<CurrencyDisplayUnit>;
 
   @RxStateProperty() darkMode: boolean;
   @RxStateProperty() peer: string;
   @RxStateProperty() indexer: string;
+  @RxStateProperty() displayUnit: CurrencyDisplayUnit;
 
   constructor(
     protected ionicPlatform: Platform,
@@ -36,6 +38,7 @@ export class SettingsService extends RxStartableService<Settings> {
       name: 'settings-service',
       initialState: {
         mobile: isMobile(window),
+        displayUnit: 'base',
       },
     });
 
