@@ -3,13 +3,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NetworkService } from '@app/network/network.service';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { TranslateService } from '@ngx-translate/core';
-import { u32, u64 } from '@polkadot/types';
 import { RxState } from '@rx-angular/state';
 import { RxStateProperty } from '@app/shared/decorator/state.decorator';
 import { SettingsService } from '@app/settings/settings.service';
 import { CurrencyDisplayUnit } from '@app/settings/settings.model';
 import { map } from 'rxjs/operators';
-import { toBoolean } from '@app/shared/functions';
+import { toBoolean, toNumber } from '@app/shared/functions';
 
 export interface CurrencyParameters {
   currencyName: string;
@@ -17,7 +16,8 @@ export interface CurrencyParameters {
   currencySymbol: SafeHtml;
   members: number;
   monetaryMass: number;
-  unitsPerUd: number;
+  currentUd: number;
+  ud0: number;
   udCreationPeriodMs: number;
   udReevalPeriodMs: number;
   growthRate: number;
@@ -69,34 +69,38 @@ export class CurrencyPage extends AppPage<CurrencyPageState> {
     const network = await this.networkService.ready();
     const api = network.api;
     const currency = network.currency;
-    const fractionsPerUnit = Math.pow(10, currency.decimals);
-    const [monetaryMassFractions, members] = await Promise.all([
+    const powBase = Math.pow(10, currency.decimals);
+    const [monetaryMassFractions, currentUd, members] = await Promise.all([
       api.query.universalDividend.monetaryMass(),
+      api.query.universalDividend.currentUd(),
       api.query.membership.counterForMembership(),
     ]);
-    const duValue = (api.consts.universalDividend.unitsPerUd as u64).toNumber() / fractionsPerUnit;
-    const growthRate = Math.sqrt((api.consts.universalDividend.squareMoneyGrowthRate as u64).toNumber());
+    const ud0 = toNumber(api.consts.universalDividend.unitsPerUd) / powBase;
+    const ud = toNumber(currentUd) / powBase;
+    const growthRate = Math.sqrt(toNumber(api.consts.universalDividend.squareMoneyGrowthRate));
     const paramsByUnit = new Map<CurrencyDisplayUnit, CurrencyParameters>();
     paramsByUnit.set('base', {
       currencyName: currency.displayName,
       currencySymbol: currency.symbol,
       currencyNetwork: currency.network,
-      monetaryMass: (monetaryMassFractions as u64).toNumber() / fractionsPerUnit,
-      members: (members as u32).toNumber(),
-      unitsPerUd: duValue,
-      udCreationPeriodMs: (api.consts.universalDividend.udCreationPeriod as u64).toNumber(),
-      udReevalPeriodMs: (api.consts.universalDividend.udReevalPeriod as u64).toNumber(),
+      monetaryMass: toNumber(monetaryMassFractions) / powBase,
+      members: toNumber(members),
+      currentUd: ud,
+      ud0,
+      udCreationPeriodMs: toNumber(api.consts.universalDividend.udCreationPeriod),
+      udReevalPeriodMs: toNumber(api.consts.universalDividend.udReevalPeriod),
       growthRate,
     });
     paramsByUnit.set('du', {
       currencyName: currency.displayName,
       currencySymbol: this.sanitizer.bypassSecurityTrustHtml(`${this.translate.instant('COMMON.UD')}<sub>${currency.symbol}</sub>`),
       currencyNetwork: currency.network,
-      monetaryMass: (monetaryMassFractions as u64).toNumber() / fractionsPerUnit / duValue,
-      members: (members as u32).toNumber(),
-      unitsPerUd: 1,
-      udCreationPeriodMs: (api.consts.universalDividend.udCreationPeriod as u64).toNumber(),
-      udReevalPeriodMs: (api.consts.universalDividend.udReevalPeriod as u64).toNumber(),
+      monetaryMass: toNumber(monetaryMassFractions) / powBase / ud,
+      members: toNumber(members),
+      currentUd: 1,
+      ud0,
+      udCreationPeriodMs: toNumber(api.consts.universalDividend.udCreationPeriod),
+      udReevalPeriodMs: toNumber(api.consts.universalDividend.udReevalPeriod),
       growthRate,
     });
 

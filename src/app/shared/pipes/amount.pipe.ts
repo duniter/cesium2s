@@ -1,10 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { NumberFormatPipe } from '@app/shared/pipes/number-format.pipe';
 import { NetworkService } from '@app/network/network.service';
-import { isNil } from '@app/shared/functions';
+import { isNilOrNaN } from '@app/shared/functions';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SettingsService } from '@app/settings/settings.service';
-import { u64 } from '@polkadot/types';
 import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
@@ -14,7 +13,7 @@ export class AmountFormatPipe extends NumberFormatPipe implements PipeTransform 
   private currencySymbol = this.networkService.currency?.symbol;
   private powBase = this.networkService.currency?.powBase;
   private decimals = this.networkService.currency?.decimals;
-  private udValue: number;
+  private currentUd: number = this.networkService.currentUd;
   constructor(
     private networkService: NetworkService,
     private settings: SettingsService,
@@ -22,26 +21,25 @@ export class AmountFormatPipe extends NumberFormatPipe implements PipeTransform 
     private sanitizer: DomSanitizer
   ) {
     super();
-    this.udValue = (networkService.api.consts.universalDividend.unitsPerUd as u64).toNumber();
   }
 
-  transform(val: number, opts?: Intl.NumberFormatOptions & { fixedDecimals?: number; html?: boolean }): SafeHtml {
-    if (isNil(val)) return '';
+  transform(amount: number, opts?: Intl.NumberFormatOptions & { fixedDecimals?: number; html?: boolean }): SafeHtml {
+    if (isNilOrNaN(amount)) return '';
     switch (this.settings.displayUnit) {
       case 'du': {
         if (opts?.html === false) {
           return (
-            super.transform(val / this.udValue / this.powBase, { fixedDecimals: this.decimals, ...opts }) +
+            super.transform((amount / this.powBase) | this.currentUd, { fixedDecimals: this.decimals + 1, ...opts }) +
             ` ${this.translate.instant('COMMON.UD')}(${this.currencySymbol})`
           );
         }
         return this.sanitizer.bypassSecurityTrustHtml(
-          super.transform(val / this.udValue / this.powBase, { fixedDecimals: this.decimals, ...opts }) +
+          super.transform(amount / this.powBase / this.currentUd, { fixedDecimals: this.decimals + 1, ...opts }) +
             ` ${this.translate.instant('COMMON.UD')}<sub>${this.currencySymbol}</sub>`
         );
       }
       default:
-        return super.transform(val / this.powBase, { fixedDecimals: this.decimals, ...opts }) + (' ' + this.currencySymbol);
+        return super.transform(amount / this.powBase, { fixedDecimals: this.decimals, ...opts }) + (' ' + this.currencySymbol);
     }
   }
 }

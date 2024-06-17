@@ -2,29 +2,39 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { CurrencyDisplayUnit, Settings } from './settings.model';
 import { environment } from '@environments/environment';
 import { Platform } from '@ionic/angular';
-import { Observable, Subject } from 'rxjs';
+import { debounceTime, Observable, Subject } from 'rxjs';
 import { APP_STORAGE, IStorage } from '@app/shared/services/storage/storage.utils';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 import { arrayDistinct } from '@app/shared/functions';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { isMobile } from '@app/shared/platforms';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 const SETTINGS_STORAGE_KEY = 'settings';
 
+export interface SettingsState extends Settings {
+  localesArgument?: Intl.LocalesArgument;
+  numberFormatOptions?: Intl.NumberFormatOptions;
+}
+
 @Injectable({ providedIn: 'root' })
-export class SettingsService extends RxStartableService<Settings> {
-  changes = new Subject<Settings>();
+export class SettingsService extends RxStartableService<SettingsState> {
+  changes = new Subject<SettingsState>();
 
   get mobile() {
     return this.get('mobile');
   }
 
+  @RxStateSelect() locale$: Observable<string>;
   @RxStateSelect() darkMode$: Observable<boolean>;
   @RxStateSelect() peer$: Observable<string>;
   @RxStateSelect() indexer$: Observable<string>;
   @RxStateSelect() displayUnit$: Observable<CurrencyDisplayUnit>;
 
+  @RxStateProperty() locale: string;
+  @RxStateProperty() localesArgument: Intl.LocalesArgument;
+  @RxStateProperty() numberFormatOptions: Intl.NumberFormatOptions;
   @RxStateProperty() darkMode: boolean;
   @RxStateProperty() peer: string;
   @RxStateProperty() indexer: string;
@@ -43,7 +53,13 @@ export class SettingsService extends RxStartableService<Settings> {
     });
 
     // Emit changes event
-    this.hold(this.$, (value) => this.changes.next(value));
+    this.hold(this.$.pipe(debounceTime(100), distinctUntilChanged()), (value) => this.changes.next(value));
+
+    // Compute number options
+    this.connect('numberFormatOptions', this.locale$.pipe(map((locale) => this.getNumberFormatOptions(locale))));
+
+    // Compute number options
+    //this.connect('localesArgument', this.locale$.pipe(map((locale) => this.getLocalesArgument(locale))));
   }
 
   protected async ngOnStart(): Promise<Settings> {
@@ -99,5 +115,16 @@ export class SettingsService extends RxStartableService<Settings> {
     console.info('[settings-service] Saving settings to the storage...');
     const data = this.clone();
     await this.storage.set('settings', data);
+  }
+
+  private getNumberFormatOptions(locale: string): Intl.NumberFormatOptions {
+    const defaultOptions: Intl.NumberFormatOptions = { useGrouping: true, maximumFractionDigits: 3 };
+    switch (locale) {
+      case 'fr-FR':
+        return <Intl.NumberFormatOptions>{ ...defaultOptions };
+      case 'en-US':
+      case 'en-GB':
+        return defaultOptions;
+    }
   }
 }

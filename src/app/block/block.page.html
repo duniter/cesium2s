@@ -15,7 +15,7 @@
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">
-        {{ 'BLOCKCHAIN.VIEW.TITLE' | translate: { number: height$ | push | numberFormat } }}
+        {{ 'BLOCKCHAIN.VIEW.TITLE' | translate: { number: height$ | push | blockNumber } }}
       </ion-title>
     </ion-toolbar>
   </ion-header>
@@ -37,13 +37,13 @@
         @if (mobile) {
           <ion-label>
             <h2 translate>BLOCKCHAIN.VIEW.HASH</h2>
-            <p class="ion-text-wrap">{{ block.height }}-{{ block.hash }}</p>
+            <p class="ion-text-wrap">{{ block.height | blockNumber: { allowSuffix: false, useGrouping: false } }}-{{ block.hash }}</p>
           </ion-label>
         } @else {
           <ion-label>
             <h2 translate>BLOCKCHAIN.VIEW.HASH</h2>
+            <p class="ion-text-wrap">{{ block.height | blockNumber: { allowSuffix: false, useGrouping: false } }}-{{ block.hash }}</p>
           </ion-label>
-          <ion-note slot="end" class="ion-text-wrap">{{ block.height }}-{{ block.hash }}</ion-note>
         }
       </ion-item>
     </ion-list>

@@ -14,8 +14,8 @@ export class BlockTimePipe implements PipeTransform {
     private indexer: IndexerService
   ) {}
 
-  transform(blockNumber: number): Moment {
-    if (isNil(blockNumber)) return null;
+  transform(blockNumber: number, defaultValue?: Moment): Moment {
+    if (isNil(blockNumber)) return defaultValue;
 
     const startTime = DateUtils.fromDateISOString(this.networkService.currency.startTime);
 
@@ -30,6 +30,8 @@ export class BlockTimePipe implements PipeTransform {
 
       return null;
     } else {
+      // TODO: estimate only for future date
+
       // TODO: get from network service
       const blockDuration = 6;
       const duration = DateUtils.toDuration(blockNumber * blockDuration, 'seconds');

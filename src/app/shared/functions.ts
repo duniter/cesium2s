@@ -1,5 +1,7 @@
 import { KeysEnum, KeyValueType } from '@app/shared/types';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
+import { u32, u64 } from '@polkadot/types-codec';
+import { Codec } from '@polkadot/types-codec/types';
 
 export function isNil<T>(obj: T | null | undefined): boolean {
   return obj === undefined || obj === null;
@@ -77,7 +79,9 @@ export function trimEmptyToNull(str: string | null | undefined): string | null {
 export function toBoolean(obj: boolean | null | undefined | string, defaultValue?: boolean): boolean {
   return obj !== undefined && obj !== null ? (obj !== 'false' ? !!obj : false) : defaultValue;
 }
-export function toNumber(obj: number | null | undefined, defaultValue?: number): number {
+export function toNumber(obj: number | u32 | u64 | Codec | null | undefined, defaultValue?: number): number {
+  if (obj instanceof u32) return obj.toNumber();
+  if (obj instanceof u64) return obj.toNumber();
   return obj !== undefined && obj !== null ? +obj : defaultValue;
 }
 export function toFloat(obj: string | null | undefined, defaultValue?: number): number | null {
