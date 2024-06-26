@@ -43,37 +43,39 @@ export class AuthController implements IAuthController {
 
     // Ask login method
     if (!loginMethod) {
-      // ...using popover
-      if (!this._mobile) {
-        const popover = await this.popoverCtrl.create(<PopoverOptions>{
-          event,
-          backdropDismiss: true,
-          component: ListPopover,
-          cssClass: 'login-method-popover',
-          componentProps: <ListPopoverOptions>{
-            title: 'LOGIN.METHOD_POPOVER_TITLE',
-            items: LoginMethods,
-          },
-        });
-        await popover.present(event);
-        const { data } = await popover.onWillDismiss();
-        loginMethod = data;
-      } else {
-        const actionSheet = await this.actionSheetCtrl.create({
-          ...this.actionSheetOptions,
-          header: this.translate.instant('LOGIN.METHOD_POPOVER_TITLE'),
-          buttons: LoginMethods.map((method) => {
-            return <ActionSheetButton>{
-              id: method.value,
-              data: method.value,
-              text: this.translate.instant(method.label),
-            };
-          }),
-        });
-        await actionSheet.present();
-        const { data } = await actionSheet.onWillDismiss();
-        loginMethod = data;
-      }
+      // TODO take prefered method from config
+      loginMethod = 'v1';
+      // // ...using popover
+      // if (!this._mobile) {
+      //   const popover = await this.popoverCtrl.create(<PopoverOptions>{
+      //     event,
+      //     backdropDismiss: true,
+      //     component: ListPopover,
+      //     cssClass: 'login-method-popover',
+      //     componentProps: <ListPopoverOptions>{
+      //       title: 'LOGIN.METHOD_POPOVER_TITLE',
+      //       items: LoginMethods,
+      //     },
+      //   });
+      //   await popover.present(event);
+      //   const { data } = await popover.onWillDismiss();
+      //   loginMethod = data;
+      // } else {
+      //   const actionSheet = await this.actionSheetCtrl.create({
+      //     ...this.actionSheetOptions,
+      //     header: this.translate.instant('LOGIN.METHOD_POPOVER_TITLE'),
+      //     buttons: LoginMethods.map((method) => {
+      //       return <ActionSheetButton>{
+      //         id: method.value,
+      //         data: method.value,
+      //         text: this.translate.instant(method.label),
+      //       };
+      //     }),
+      //   });
+      //   await actionSheet.present();
+      //   const { data } = await actionSheet.onWillDismiss();
+      //   loginMethod = data;
+      // }
     }
     if (!loginMethod) return undefined; // User cancelled
 
@@ -112,6 +114,23 @@ export class AuthController implements IAuthController {
     }
 
     return data as Account;
+  }
+
+  async changeMethod(event?: MouseEvent) {
+    const popover = await this.popoverCtrl.create(<PopoverOptions>{
+      event,
+      backdropDismiss: true,
+      component: ListPopover,
+      cssClass: 'login-method-popover',
+      componentProps: <ListPopoverOptions>{
+        title: 'LOGIN.METHOD_POPOVER_TITLE',
+        items: LoginMethods,
+      },
+    });
+    await popover.present(event);
+    const { data } = await popover.onWillDismiss();
+    const loginMethod = data;
+    // login(event, { loginMethod });
   }
 
   async unlock(opts?: UnlockOptions): Promise<string> {

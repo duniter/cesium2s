@@ -6,6 +6,8 @@ import { Account, AccountMeta, LoginOptions, SelectAccountOptions, UnlockOptions
 export interface IAuthController {
   login(event?: AppEvent, opts?: LoginOptions): Promise<Account>;
 
+  changeMethod(event?: AppEvent, opts?: LoginOptions): Promise<void>;
+
   createNew(opts?: { redirectToWalletPage?: boolean }): Promise<Account>;
 
   unlock(opts?: UnlockOptions): Promise<string>;

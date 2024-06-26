@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Injector, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController, PopoverOptions } from '@ionic/angular';
 import { RegisterModal } from '../register/register.modal';
 import { slideUpDownAnimation } from '@app/shared/animations';
 import { AppForm } from '@app/shared/form.class';
@@ -11,7 +11,7 @@ import { FormUtils } from '@app/shared/forms';
 import { isNil, isNotNilOrBlank, toBoolean } from '@app/shared/functions';
 import { getKeyringPairFromV1 } from '@app/account/crypto.utils';
 import { base58Encode } from '@polkadot/util-crypto';
-import { Account } from '@app/account/account.model';
+import { Account, LoginMethods } from '@app/account/account.model';
 import { RxState } from '@rx-angular/state';
 import { RxStateProperty, RxStateRegister } from '@app/shared/decorator/state.decorator';
 import { debounceTime, map, mergeMap, Observable } from 'rxjs';
@@ -19,6 +19,7 @@ import { filter } from 'rxjs/operators';
 import { AccountsService } from '@app/account/accounts.service';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 import { AuthData } from '@app/account/auth/auth.model';
+import { ListPopover, ListPopoverOptions } from '@app/shared/popover/list.popover';
 
 export interface AuthFormState {
   account: Account;
@@ -54,6 +55,7 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     formBuilder: FormBuilder,
     private modalCtrl: ModalController,
     private accountService: AccountsService,
+    private popoverCtrl: PopoverController,
     public network: NetworkService
   ) {
     super(
