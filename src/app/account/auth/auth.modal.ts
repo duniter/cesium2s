@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController, PopoverOptions } from '@ionic/angular';
 import { AccountsService } from '@app/account/accounts.service';
 import { AuthForm } from './auth.form';
 import { firstNotNilPromise } from '@app/shared/observables';
 
 import { AuthData } from '@app/account/auth/auth.model';
+import { ListPopover, ListPopoverOptions } from '@app/shared/popover/list.popover';
+import { LoginMethods } from '../account.model';
 
 export interface AuthModalOptions {
   auth?: boolean;
@@ -34,6 +36,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
   @ViewChild('form', { static: true }) private form: AuthForm;
 
   constructor(
+    private popoverCtrl: PopoverController,
     private accountService: AccountsService,
     private viewCtrl: ModalController,
     private cd: ChangeDetectorRef
@@ -82,6 +85,23 @@ export class AuthModal implements OnInit, AuthModalOptions {
 
       return;
     }
+  }
+
+  async changeAuthMethod(event: MouseEvent) {
+    const popover = await this.popoverCtrl.create(<PopoverOptions>{
+      event,
+      backdropDismiss: true,
+      component: ListPopover,
+      cssClass: 'login-method-popover',
+      componentProps: <ListPopoverOptions>{
+        title: 'LOGIN.METHOD_POPOVER_TITLE',
+        items: LoginMethods,
+      },
+    });
+    await popover.present(event);
+    const { data } = await popover.onWillDismiss();
+    const loginMethod = data;
+    this.accountService.login(event, { loginMethod });
   }
 
   protected markForCheck() {
