@@ -20,6 +20,7 @@
 
 <ion-content>
   <app-auth-form #form [canRegister]="!auth" (validate)="doSubmit($event)" (cancel)="cancel()"></app-auth-form>
+  <ion-button (click)="changeAuthMethod($event)">Change method</ion-button>
 </ion-content>
 
 <ion-footer *ngIf="!mobile">
