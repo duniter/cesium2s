@@ -1,8 +1,13 @@
 <ion-content>
   <ion-list>
     <ion-list-header *ngIf="title">{{ title | translate }}</ion-list-header>
-    <ion-item *ngFor="let item of items" [disabled]="item.disabled" (click)="click(item.value)" tappable>
-      {{ item.label | translate }}
-    </ion-item>
+    @for (item of items; track item.value) {
+      <ion-item [disabled]="item.disabled" (click)="click(item.value)" tappable>
+        @if (item.icon) {
+          <ion-icon slot="start" [name]="item.icon"></ion-icon>
+        }
+        {{ item.label | translate }}
+      </ion-item>
+    }
   </ion-list>
 </ion-content>

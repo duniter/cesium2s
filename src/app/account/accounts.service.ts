@@ -45,7 +45,7 @@ export interface WatchAccountDataOptions extends LoadAccountDataOptions {}
 
 export interface AccountsState {
   accounts: Account[];
-  password: string;
+  password?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -80,7 +80,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     this.start();
   }
 
-  protected async ngOnStart(): Promise<any> {
+  protected async ngOnStart(): Promise<AccountsState> {
     // Wait crypto to be loaded by browser
     await cryptoWaitReady();
 
@@ -93,7 +93,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     // Restoring accounts
     const accounts = await this.restoreAccounts(currency);
 
-    return {
+    return <AccountsState>{
       accounts,
     };
   }
@@ -200,7 +200,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     // Set password to AAAAA (or those defined in environment)
     this._password = data?.password || 'AAAAA';
 
-    if (!data?.v1 && !data.v2) return; // Skip if no dev account defined
+    if (!data || (!data.v1 && !data.v2)) return; // Skip if no dev account defined
     data.meta = {
       isTesting: true,
       default: true,
