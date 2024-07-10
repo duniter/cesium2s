@@ -200,7 +200,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     // Set password to AAAAA (or those defined in environment)
     this._password = data?.password || 'AAAAA';
 
-    if (!data?.v1 && !data.v2) return; // Skip if no dev account defined
+    if (!data || (!data.v1 && !data.v2)) return; // Skip if no dev account defined
     data.meta = {
       isTesting: true,
       default: true,

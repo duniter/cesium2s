@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ModalController, PopoverController, PopoverOptions } from '@ionic/angular';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { AccountsService } from '@app/account/accounts.service';
 import { AuthForm } from './auth.form';
 import { firstNotNilPromise } from '@app/shared/observables';
 
-import { AuthData } from '@app/account/auth/auth.model';
-import { ListPopover, ListPopoverOptions } from '@app/shared/popover/list.popover';
-import { LoginMethods } from '../account.model';
+import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
+import { AppEvent } from '@app/shared/types';
+import { LoginMethodType } from '@app/account/account.model';
+import { SettingsService } from '@app/settings/settings.service';
 
 export interface AuthModalOptions {
   auth?: boolean;
@@ -22,29 +23,35 @@ export declare type AuthModalRole = 'CANCEL' | 'VALIDATE';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthModal implements OnInit, AuthModalOptions {
+  protected mobile = this.settingsService.mobile;
+  protected form: AuthForm;
+
   get loading() {
     return this.form?.loading;
   }
 
-  get mobile(): boolean {
-    return this.form.mobile;
+  get invalid() {
+    return this.form?.invalid;
   }
 
   @Input() auth = false; // false for login, true for auth
   @Input() title: string = null;
-
-  @ViewChild('form', { static: true }) private form: AuthForm;
+  @Input() loginMethod: LoginMethodType = 'v1';
 
   constructor(
-    private popoverCtrl: PopoverController,
+    private settingsService: SettingsService,
     private accountService: AccountsService,
     private viewCtrl: ModalController,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    @Inject(APP_AUTH_CONTROLLER) private authController: IAuthController
   ) {}
 
   ngOnInit() {
     this.title = this.title || (this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE');
+  }
 
+  setForm(form: AuthForm) {
+    this.form = form;
     this.form.markAsReady({ emitEvent: false });
     this.form.markAsLoaded();
   }
@@ -87,21 +94,16 @@ export class AuthModal implements OnInit, AuthModalOptions {
     }
   }
 
-  async changeAuthMethod(event: MouseEvent) {
-    const popover = await this.popoverCtrl.create(<PopoverOptions>{
-      event,
-      backdropDismiss: true,
-      component: ListPopover,
-      cssClass: 'login-method-popover',
-      componentProps: <ListPopoverOptions>{
-        title: 'LOGIN.METHOD_POPOVER_TITLE',
-        items: LoginMethods,
-      },
-    });
-    await popover.present(event);
-    const { data } = await popover.onWillDismiss();
-    const loginMethod = data;
-    this.accountService.login(event, { loginMethod });
+  async changeAuthMethod(event: AppEvent) {
+    const loginMethod = await this.authController.selectLoginMethod(event, { auth: this.auth });
+    if (!loginMethod) return; // Cancelled
+
+    this.loginMethod = loginMethod;
+    this.markForCheck();
+  }
+
+  showHelpModal(anchor?: string) {
+    console.info('TODO Opening help modal to anchor: ' + anchor);
   }
 
   protected markForCheck() {

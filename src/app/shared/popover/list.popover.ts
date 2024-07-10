@@ -5,6 +5,7 @@ export interface ListItem {
   value: string;
   label: string;
   disabled?: boolean;
+  icon?: string;
 }
 
 export interface ListPopoverOptions {

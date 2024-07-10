@@ -96,12 +96,16 @@ export interface SelectAccountOptions {
 }
 
 export declare type LoginMethodType = 'v1' | 'v2' | 'keyfile-v1';
-export const LoginMethods: ListItem[] = [
-  { value: 'v1', label: 'LOGIN.METHOD.SCRYPT_DEFAULT' },
-  { value: 'v2', label: 'LOGIN.METHOD.MNEMONIC' },
-  { value: 'pubkey-v1', label: 'LOGIN.METHOD.PUBKEY' },
-  { value: 'address', label: 'LOGIN.METHOD.ADDRESS' },
-  { value: 'keyfile-v1', label: 'LOGIN.METHOD.FILE', disabled: true },
+export interface LoginMethodItem extends ListItem {
+  auth?: boolean;
+}
+
+export const LoginMethods: LoginMethodItem[] = [
+  { value: 'v1', label: 'LOGIN.METHOD.SCRYPT_DEFAULT', auth: true, icon: 'shuffle' },
+  { value: 'v2', label: 'LOGIN.METHOD.MNEMONIC', auth: true, icon: 'infinite' },
+  { value: 'pubkey-v1', label: 'LOGIN.METHOD.PUBKEY', auth: false, icon: 'key' },
+  { value: 'address', label: 'LOGIN.METHOD.ADDRESS', auth: false, icon: 'key' },
+  { value: 'keyfile-v1', label: 'LOGIN.METHOD.FILE', disabled: true, auth: true, icon: 'document-text' },
 ];
 
 export interface LoginOptions {

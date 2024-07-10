@@ -87,7 +87,12 @@ ion-list {
 .text-italic {
   font-style: italic;
 }
-
+.text-bold {
+  font-weight: bold;
+}
+.text-help {
+  color: var(--ion-color-step-700) !important;
+}
 .barcode-scanner-square {
   position: absolute;
   z-index: 99999;
@@ -111,9 +116,9 @@ ion-list {
 /* -- icons --*/
 
 ion-icon.icon-secondary {
-    position: absolute;
-    opacity: 1;
-    font-size: 16px;
-    left: 8px;
-    top: -2px;
-  }
+  position: absolute;
+  opacity: 1;
+  font-size: 16px;
+  left: 8px;
+  top: -2px;
+}
