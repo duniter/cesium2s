@@ -1,31 +1,52 @@
-import { LightAccountConnectionFragment, LightAccountFragment, LightIdentityFragment } from '@app/network/indexer-types.generated';
+import { LightAccountConnectionFragment, LightAccountFragment, LightIdentityFragment } from '@app/network/indexer/indexer-types.generated';
 import { Account, parseAddressSquid } from '@app/account/account.model';
-import { isNotNil } from '@app/shared/functions';
+import { ProfileFragment } from '@app/network/pod/pod-types.generated';
 
 export class AccountConverter {
-  static connectionToAccounts(accountConnection: LightAccountConnectionFragment, debug?: boolean): Account[] {
+  static squidConnectionToAccounts(accountConnection: LightAccountConnectionFragment, debug?: boolean): Account[] {
     const inputs = accountConnection.edges?.map((edge) => edge.node) as LightAccountFragment[];
-    const results = (inputs || []).map(this.toAccount);
+    const results = (inputs || []).map(this.squidToAccount);
     if (debug) console.debug('Results:', results);
     return results;
   }
 
-  static toAccounts(inputs: LightAccountFragment[], debug?: boolean): Account[] {
-    const results = (inputs || []).map(this.toAccount);
+  static squidToAccounts(inputs: LightAccountFragment[], debug?: boolean): Account[] {
+    const results = (inputs || []).map(this.squidToAccount);
     if (debug) console.debug('Results:', results);
     return results;
   }
 
-  static toAccount(input: LightAccountFragment): Account {
+  static squidToAccount(input: LightAccountFragment): Account {
     if (!input) return undefined;
     const addressSquid = parseAddressSquid(input.id);
+    const identity = input.identity;
     return <Account>{
       address: addressSquid.address,
       meta: {
-        id: input.identity?.id,
-        index: input.identity?.index,
-        uid: input.identity?.name,
-        isMember: input.identity?.membershipHistory?.some((h) => isNotNil(h.id)) || false,
+        id: identity?.id,
+        index: identity?.index,
+        uid: identity?.name,
+        status: identity?.status,
+        isMember: identity?.isMember || false,
+        createdOn: identity?.createdOn,
+      },
+    };
+  }
+
+  static profileToAccounts(inputs: ProfileFragment[], opts?: { debug?: boolean; ipfsGateway?: string }): Account[] {
+    const results = (inputs || []).map((input) => this.profileToAccount(input, opts));
+    if (opts?.debug) console.debug('Results:', results);
+    return results;
+  }
+
+  static profileToAccount(input: ProfileFragment, opts?: { ipfsGateway?: string }): Account {
+    if (!input) return undefined;
+    const avatar = input.avatar_cid && opts.ipfsGateway ? opts.ipfsGateway + input.avatar_cid : undefined;
+    return <Account>{
+      address: input.address,
+      meta: {
+        name: input.title,
+        avatar,
       },
     };
   }
@@ -46,7 +67,8 @@ export class IdentityConverter {
         id: input.id,
         index: input.index,
         uid: input.name,
-        isMember: input.membershipHistory?.some((h) => isNotNil(h.id)) || false,
+        status: input?.status,
+        isMember: input.isMember || false,
       },
     };
   }

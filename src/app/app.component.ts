@@ -51,6 +51,8 @@ export class AppComponent {
 
     { title: 'MENU.WOT', url: '/wot', icon: 'people' },
 
+    { title: 'MENU.CURRENCY', url: '/currency', icon: 'globe' },
+
     { title: 'MENU.SETTINGS', url: '/settings', icon: 'settings' },
 
     {

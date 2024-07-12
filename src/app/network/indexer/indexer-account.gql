@@ -2,11 +2,14 @@ fragment LightIdentity on Identity {
   id
   index
   name
-  isMember
   accountId
+  status
+  isMember
+  createdOn
   membershipHistory {
     __typename
     id
+    eventType
   }
 }
 

@@ -1,4 +1,5 @@
 import { getPropertyByPathAsString, isNotNil, isNotNilOrBlank, matchUpperCase, startsWithUpperCase } from '../functions';
+import { Promise } from '@rx-angular/cdk/zone-less/browser';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export declare type ReadyAsyncFunction<T = any> = () => Promise<T>;
@@ -61,6 +62,59 @@ export function suggestFromArray<T = any>(
   return {
     data: values,
     total,
+  };
+}
+
+export function combineLoadResults<T>(
+  results: LoadResult<T>[],
+  options?: {
+    reduce: (value: T[]) => T[];
+    data?: T[];
+    total?: number;
+  }
+): LoadResult<T> {
+  let data = options?.data || [];
+  const offset = data?.length || 0;
+
+  // Compute data
+  data = data.concat(results.map((r) => r?.data || []).flat());
+
+  // Reduce (e.g. remove duplicated)
+  if (typeof options?.reduce === 'function') {
+    data = options.reduce(data);
+  }
+
+  // Truncate data
+  const newData = offset > 0 ? data.slice(offset) : data;
+
+  // Compute total
+  let total = isNotNil(options?.total)
+    ? options.total
+    : results
+        .map((r) => r?.total)
+        .filter(isNotNil)
+        .reduce((max, total) => Math.max(max || 0, total), -1);
+  if (total === -1) total = undefined;
+
+  // Compute fetch more
+  const fetchMoreFns = results.map((r) => r?.fetchMore).filter(isNotNil);
+  const fetchMore = combineFetchMore(fetchMoreFns, { ...options, data, total });
+
+  return { data: newData, total, fetchMore };
+}
+
+export function combineFetchMore<T>(
+  fetchMoreFns: FetchMoreFn<LoadResult<T>>[],
+  options?: {
+    reduce: (value: T[]) => T[];
+    data?: T[];
+    total?: number;
+  }
+): FetchMoreFn<LoadResult<T>> {
+  if (!fetchMoreFns?.length || (options?.data && !options.data.length)) return undefined;
+  return async (first) => {
+    const results = await Promise.all(fetchMoreFns.map((fetchMoreFn) => fetchMoreFn(first)));
+    return combineLoadResults(results, options);
   };
 }
 

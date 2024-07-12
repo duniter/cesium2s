@@ -1,8 +1,65 @@
-schema: src/app/network/indexer-schema.graphql
-extensions:
-  endpoints:
-    Gdev GraphQL Endpoint:
-      url: https://gdev-squid.axiom-team.fr/v1beta1/relay
-      headers:
-        user-agent: JS GraphQL
-      introspect: false
+projects:
+  indexer:
+    schema: src/app/network/indexer/indexer-schema.graphql
+    documents: "src/app/network/indexer/indexer-*!(.generated).{ts,gql}"
+    extensions:
+      endpoints:
+        Gdev Indexer GraphQL Endpoint:
+          url: https://gdev-squid.axiom-team.fr/v1beta1/relay
+          headers:
+            user-agent: JS GraphQL
+          introspect: false
+      codegen:
+        generates:
+          src/app/network/indexer/indexer-types.generated.ts:
+            plugins:
+              - "add"
+              - "typescript"
+              - "typescript-operations"
+              - "typescript-apollo-angular"
+              - "fragment-matcher"
+            config:
+              content: "// Auto-generated via `npx graphql-codegen`, do not edit\n/* eslint-disable */"
+              nameSuffix: "Document"
+              sdkClass: true
+              serviceName: "IndexerGraphqlService"
+              namedClient: 'indexer'
+          src/app/network/indexer/indexer-helpers.generated.ts:
+            plugins:
+              - "add"
+              - "typescript-apollo-client-helpers"
+            config:
+              content: "// Auto-generated via `npx graphql-codegen`, do not edit\n/* eslint-disable */"
+
+  pod:
+    schema: src/app/network/pod/pod-schema.graphql
+    documents: "src/app/network/pod/pod-*!(.generated).{ts,gql}"
+    extensions:
+      endpoints:
+        Gdev Pod GraphQL Endpoint:
+          url: https://datapod.coinduf.eu/v1/graphql
+          headers:
+            user-agent: JS GraphQL
+          introspect: false
+      codegen:
+        generates:
+          src/app/network/pod/pod-types.generated.ts:
+            plugins:
+              - "add"
+              - "typescript"
+              - "typescript-operations"
+              - "typescript-apollo-angular"
+              - "fragment-matcher"
+            config:
+              content: "// Auto-generated via `npx graphql-codegen`, do not edit\n/* eslint-disable */"
+              nameSuffix: "Document"
+              sdkClass: true
+              serviceName: "PodGraphqlService"
+              namedClient: 'pod'
+          src/app/network/pod/pod-helpers.generated.ts:
+            plugins:
+              - "add"
+              - "typescript-apollo-client-helpers"
+            config:
+              content: "// Auto-generated via `npx graphql-codegen`, do not edit\n/* eslint-disable */"
+

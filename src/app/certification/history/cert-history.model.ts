@@ -1,6 +1,6 @@
 import { equals, isNilOrBlank } from '@app/shared/functions';
 import { Account } from '@app/account/account.model';
-import { CertConnection, CertFragment } from '@app/network/indexer-types.generated';
+import { CertConnection, CertFragment } from '@app/network/indexer/indexer-types.generated';
 import { IdentityConverter } from '@app/account/account.converter';
 
 export interface Certification {
@@ -9,6 +9,7 @@ export interface Certification {
   account: Account;
 
   createdOn: number;
+  updatedOn: number;
   expireOn: number;
   creationBlockNumbers: number[];
   renewalBlockNumbers: number[];
@@ -36,6 +37,7 @@ export class CertificationConverter {
       id: input.id,
       account: IdentityConverter.toAccount(address),
       createdOn: input.createdOn,
+      updatedOn: input.updatedOn,
       expireOn: input.expireOn,
     };
   }

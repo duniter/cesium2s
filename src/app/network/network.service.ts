@@ -6,31 +6,36 @@ import { abbreviate, WELL_KNOWN_CURRENCIES } from '@app/shared/currencies';
 import { Currency } from '../currency/currency.model';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import { Observable } from 'rxjs';
+import { mergeMap, Observable, tap } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { arrayRandomPick, isNotNilOrBlank } from '@app/shared/functions';
-import { IndexerService } from './indexer.service';
+import { arrayRandomPick, isNotNil, isNotNilOrBlank, toNumber } from '@app/shared/functions';
+import { IndexerService } from './indexer/indexer.service';
 import { fromDateISOString } from '@app/shared/dates';
 import { ContextService } from '@app/shared/services/storage/context.service';
+import { PodService } from '@app/network/pod/pod.service';
 
 export interface NetworkState {
   peer: Peer;
   currency: Currency;
   currencySymbol: string;
+  currentUd?: number;
   api: ApiPromise;
 }
 
 @Injectable({ providedIn: 'root' })
 export class NetworkService extends RxStartableService<NetworkState> {
   indexer = inject(IndexerService);
+  pod = inject(PodService);
 
   @RxStateProperty() peer: Peer;
   @RxStateProperty() currency: Currency;
   @RxStateProperty() currencySymbol: string;
+  @RxStateProperty() currentUd: number;
   @RxStateProperty() api: ApiPromise;
 
   @RxStateSelect() peer$: Observable<Peer>;
   @RxStateSelect() currency$: Observable<Currency>;
+  @RxStateSelect() currentUd$: Observable<number>;
 
   constructor(
     private settings: SettingsService,
@@ -53,6 +58,17 @@ export class NetworkService extends RxStartableService<NetworkState> {
     );
 
     this.hold(this.currency$, (currency) => (this.context.currency = currency));
+
+    this.connect(
+      'currentUd',
+      this.select('currency').pipe(
+        mergeMap(async (currency) => {
+          const ud = await this.api.query.universalDividend.currentUd();
+          return toNumber(ud) / currency.powBase;
+        }),
+        tap((currentUd) => console.info(`${this._logPrefix}Current UD: ${currentUd}`))
+      )
+    );
   }
 
   protected async ngOnStart(): Promise<NetworkState> {
@@ -131,14 +147,19 @@ export class NetworkService extends RxStartableService<NetworkState> {
     const lastHeader = await api.rpc.chain.getHeader();
     console.info(`${this._logPrefix}Last block: #${lastHeader.number} - hash ${lastHeader.hash}`);
 
+    const ud0 = toNumber(api.consts.universalDividend.unitsPerUd) / currency.powBase;
+
+    // Configure and start indexer and pod
     this.indexer.currency = currency;
-    await this.indexer.start();
+    this.pod.currency = currency;
+    await Promise.all([this.indexer.start(), this.pod.start()]);
 
     return {
+      api,
       peer,
       currency,
       currencySymbol: currency?.symbol,
-      api,
+      currentUd: ud0,
     };
   }
 
@@ -155,18 +176,11 @@ export class NetworkService extends RxStartableService<NetworkState> {
       timeout?: number;
     }
   ): Promise<Peer[]> {
-    const result: Peer[] = [];
-    await Promise.all(
-      peers
-        .map((peer) => Peers.fromUri(peer))
-        .map((peer) =>
-          this.isPeerAlive(peer).then((alive) => {
-            if (!alive) return;
-            result.push(peer);
-          })
-        )
-    );
-    return result;
+    return (
+      await Promise.all(
+        peers.map((peer) => Peers.fromUri(peer)).map((peer) => this.isPeerAlive(peer, opts).then((alive) => (alive ? peer : undefined)))
+      )
+    ).filter(isNotNil);
   }
 
   protected async isPeerAlive(

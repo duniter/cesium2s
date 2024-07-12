@@ -201,6 +201,8 @@
           "options": {
             "lintFilePatterns": [
               "src/**/*.ts",
+              "!src/**/*.generated.ts",
+              "!src/interfaces/**/*.ts",
               "src/**/*.html"
             ]
           }

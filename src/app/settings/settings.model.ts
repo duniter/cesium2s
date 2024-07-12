@@ -7,16 +7,23 @@ export declare interface LocaleConfig extends Property {
 
 export const APP_LOCALES = new InjectionToken<LocaleConfig[]>('locales');
 
-export declare interface Settings {
+export type CurrencyDisplayUnit = 'base' | 'du';
+
+export interface Settings {
   peer: string;
   currency?: string;
   preferredPeers?: string[];
   indexer: string;
   preferredIndexers?: string[];
+  pod: string;
+  preferredPods?: string[];
+  ipfsGateway: string;
+  preferredIpfsGateways?: string[];
   pages?: any;
   locale?: string;
   mobile?: boolean;
   properties?: PropertiesMap;
   unAuthDelayMs?: number;
   darkMode: boolean;
+  displayUnit: CurrencyDisplayUnit;
 }

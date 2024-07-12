@@ -1,0 +1,119 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title translate>CURRENCY.VIEW.TITLE</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large" translate>CURRENCY.VIEW.TITLE</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="0" size-md="2" size-lg="3"></ion-col>
+        <ion-col size="12" size-md="8" size-lg="6">
+          <ion-list *rxIf="loaded$; else listSkeleton" lines="none">
+            <ion-item-divider translate>CURRENCY.VIEW.TITLE</ion-item-divider>
+
+            <ion-item>
+              <ion-icon slot="start" name="bookmark"></ion-icon>
+              <ion-label color="dark" translate>CURRENCY.VIEW.CURRENCY_NAME</ion-label>
+              <ion-badge color="light">
+                {{ params.currencyNetwork }} (
+                <span [innerHtml]="params.currencyName"></span>
+                )
+              </ion-badge>
+            </ion-item>
+
+            <ion-item>
+              <ion-icon slot="start" name="pie-chart"></ion-icon>
+              <ion-label color="dark" translate>CURRENCY.VIEW.SHARE</ion-label>
+              <ion-badge color="secondary">
+                {{ params.monetaryMass / params.members | numberFormat }}
+                <span [innerHtml]="params.currencySymbol"></span>
+              </ion-badge>
+            </ion-item>
+
+            <ion-item>
+              <ion-icon slot="start" name="ellipse"></ion-icon>
+              <ion-label color="dark" translate>CURRENCY.VIEW.MASS</ion-label>
+              <ion-badge color="warning">
+                {{ params.monetaryMass | numberFormat }}
+                <span [innerHtml]="params.currencySymbol"></span>
+              </ion-badge>
+            </ion-item>
+
+            <ion-item>
+              <ion-icon slot="start" name="trending-up"></ion-icon>
+              <ion-label color="dark" translate>CURRENCY.VIEW.C_ACTUAL</ion-label>
+              <ion-badge color="light">[TBD] / day</ion-badge>
+            </ion-item>
+
+            <ion-item>
+              <ion-icon slot="start" name="reload"></ion-icon>
+              <ion-label color="dark" translate>CURRENCY.VIEW.UD</ion-label>
+              <ion-badge color="tertiary">
+                {{ params.currentUd }}
+                <span [innerHtml]="params.currencySymbol"></span>
+                /
+                {{ params.udCreationPeriodMs | duration: 'ms' }}
+              </ion-badge>
+            </ion-item>
+
+            <ion-item>
+              <ion-toggle [(ngModel)]="useRelativeUnit" justify="end">
+                <ion-label color="medium" translate>COMMON.BTN_RELATIVE_UNIT</ion-label>
+              </ion-toggle>
+            </ion-item>
+
+            <ion-item-divider translate>CURRENCY.VIEW.MONEY_RULES_DIVIDER</ion-item-divider>
+
+            <ion-item>
+              <ion-icon slot="start" name="trending-up"></ion-icon>
+              <ion-label color="dark" translate>CURRENCY.VIEW.C_RULE</ion-label>
+              <ion-badge color="light">{{ params.growthRate | numberFormat: { fixedDecimals: 2 } }}% / 6 months</ion-badge>
+            </ion-item>
+            @if (showAllRules) {
+              <ion-item>
+                <ion-icon slot="start" name="reload"></ion-icon>
+                <ion-icon slot="start" class="icon-secondary" name="time"></ion-icon>
+                <ion-label color="dark" translate>CURRENCY.VIEW.DT_REEVAL</ion-label>
+                <ion-badge color="light">{{ params.udReevalPeriodMs | duration: 'ms' }}</ion-badge>
+              </ion-item>
+              <ion-item>
+                <ion-icon slot="start" name="reload"></ion-icon>
+                <ion-icon slot="start" class="icon-secondary" name="calendar"></ion-icon>
+                <ion-label color="dark" translate>CURRENCY.VIEW.UD_REEVAL_TIME0</ion-label>
+                <ion-badge color="light">...</ion-badge>
+              </ion-item>
+              <ion-item>
+                <ion-icon slot="start" name="reload"></ion-icon>
+                <ion-icon slot="start" class="icon-secondary" name="calculator"></ion-icon>
+                <ion-label color="dark" translate>CURRENCY.VIEW.UD_RULE</ion-label>
+                <ion-badge color="light">...</ion-badge>
+              </ion-item>
+            }
+            <ion-item>
+              <ion-toggle [(ngModel)]="showAllRules" justify="end">
+                <ion-label color="medium" translate>CURRENCY.VIEW.DISPLAY_ALL_RULES</ion-label>
+              </ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col size="0" size-md="2" size-lg="3"></ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
+
+<ng-template #listSkeleton>
+  <app-skeleton-list [avatar]="true" size="5"></app-skeleton-list>
+</ng-template>

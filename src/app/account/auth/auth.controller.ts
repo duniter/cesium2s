@@ -2,18 +2,18 @@ import { ActionSheetButton, ActionSheetController, ActionSheetOptions, ModalCont
 import { Injectable } from '@angular/core';
 import { PlatformService } from '@app/shared/services/platform.service';
 import { PopoverOptions } from '@ionic/core';
-import { ListPopover, ListPopoverOptions } from '@app/shared/popover/list.popover';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthModal, AuthModalOptions } from '@app/account/auth/auth.modal';
 import { Router } from '@angular/router';
 import { RegisterModal, RegisterModalOptions } from '@app/account/register/register.modal';
-import { Account, LoginMethods, LoginOptions, SelectAccountOptions, UnlockOptions } from '@app/account/account.model';
+import { Account, LoginMethods, LoginMethodType, LoginOptions, SelectAccountOptions, UnlockOptions } from '@app/account/account.model';
 import { AuthV2Modal } from '@app/account/auth/authv2.modal';
 import { UnlockModal } from '@app/account/unlock/unlock.modal';
 import { AccountListComponent, AccountListComponentInputs } from '@app/account/list/account-list.component';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 import { AppEvent } from '@app/shared/types';
 import { IAuthController } from '@app/account/auth/auth.model';
+import { ListPopover, ListPopoverOptions } from '@app/shared/popover/list.popover';
 
 @Injectable()
 export class AuthController implements IAuthController {
@@ -38,44 +38,43 @@ export class AuthController implements IAuthController {
     private router: Router
   ) {}
 
-  async login(event?: AppEvent, opts?: LoginOptions): Promise<Account> {
-    let loginMethod = opts?.loginMethod;
-
-    // Ask login method
-    if (!loginMethod) {
-      // ...using popover
-      if (!this._mobile) {
-        const popover = await this.popoverCtrl.create(<PopoverOptions>{
-          event,
-          backdropDismiss: true,
-          component: ListPopover,
-          cssClass: 'login-method-popover',
-          componentProps: <ListPopoverOptions>{
-            title: 'LOGIN.METHOD_POPOVER_TITLE',
-            items: LoginMethods,
-          },
-        });
-        await popover.present(event);
-        const { data } = await popover.onWillDismiss();
-        loginMethod = data;
-      } else {
-        const actionSheet = await this.actionSheetCtrl.create({
-          ...this.actionSheetOptions,
-          header: this.translate.instant('LOGIN.METHOD_POPOVER_TITLE'),
-          buttons: LoginMethods.map((method) => {
-            return <ActionSheetButton>{
-              id: method.value,
-              data: method.value,
-              text: this.translate.instant(method.label),
-            };
-          }),
-        });
-        await actionSheet.present();
-        const { data } = await actionSheet.onWillDismiss();
-        loginMethod = data;
-      }
+  async selectLoginMethod(event?: AppEvent, opts?: { auth?: boolean }): Promise<LoginMethodType> {
+    const items = opts?.auth ? LoginMethods.filter((m) => m.auth === true) : LoginMethods;
+    // If desktop, then use popover
+    if (!this._mobile) {
+      const popover = await this.popoverCtrl.create(<PopoverOptions>{
+        event,
+        backdropDismiss: true,
+        component: ListPopover,
+        cssClass: 'login-method-popover',
+        componentProps: <ListPopoverOptions>{
+          title: 'LOGIN.METHOD_POPOVER_TITLE',
+          items,
+        },
+      });
+      await popover.present(event);
+      const { data } = await popover.onWillDismiss();
+      return data;
+    } else {
+      const actionSheet = await this.actionSheetCtrl.create({
+        ...this.actionSheetOptions,
+        header: this.translate.instant('LOGIN.METHOD_POPOVER_TITLE'),
+        buttons: items.map((method) => {
+          return <ActionSheetButton>{
+            id: method.value,
+            data: method.value,
+            text: this.translate.instant(method.label),
+          };
+        }),
+      });
+      await actionSheet.present();
+      const { data } = await actionSheet.onDidDismiss();
+      return data;
     }
-    if (!loginMethod) return undefined; // User cancelled
+  }
+
+  async login(event?: AppEvent, opts?: LoginOptions): Promise<Account> {
+    const loginMethod = opts?.loginMethod || 'v1';
 
     console.info('[auth] Selected login method: ' + loginMethod);
 

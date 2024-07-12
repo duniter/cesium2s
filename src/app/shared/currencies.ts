@@ -85,6 +85,7 @@ export const WELL_KNOWN_CURRENCIES = Object.freeze({
     fees: {
       identity: 300, // = 3 Gdev
       tx: 2, // = 0.02 Gdev
+      cert: 2, // = 0.02 Gdev
     },
     decimals: 2,
   },
@@ -98,6 +99,7 @@ export const WELL_KNOWN_CURRENCIES = Object.freeze({
     fees: {
       identity: 300, // = 3G1 - FIXME
       tx: 1, // = 0.01 G1 - FIXME
+      cert: 1, // = 0.01 G1 - FIXME
     },
     decimals: 2, // FIXME remove for autodetection
   },

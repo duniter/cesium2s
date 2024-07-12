@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 import { Account, parseAddressSquid } from '@app/account/account.model';
 import { Moment } from 'moment/moment';
 import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
-import { TransferFragment } from '@app/network/indexer-types.generated';
+import { TransferFragment } from '@app/network/indexer/indexer-types.generated';
 import { fromDateISOString } from '@app/shared/dates';
 import { AccountConverter } from '@app/account/account.converter';
 
@@ -53,10 +53,10 @@ export class TransferConverter {
     const toAddress = parseAddressSquid(item.to?.id).address;
     // Account is the issuer
     if (fromAddress === accountAddress) {
-      to = AccountConverter.toAccount(item.to);
+      to = AccountConverter.squidToAccount(item.to);
       amount = -1 * item.amount;
     } else if (toAddress === accountAddress) {
-      from = AccountConverter.toAccount(item.from);
+      from = AccountConverter.squidToAccount(item.from);
       amount = item.amount;
     }
     return <Transfer>{

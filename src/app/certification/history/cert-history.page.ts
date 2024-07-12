@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account, AccountUtils } from '@app/account/account.model';
-import { isNil, isNotEmptyArray, isNotNilOrBlank, toNumber } from '@app/shared/functions';
+import { isNil, isNotEmptyArray, isNotNil, isNotNilOrBlank, toNumber } from '@app/shared/functions';
 import { NetworkService } from '@app/network/network.service';
 import { ActionSheetOptions, InfiniteScrollCustomEvent, IonModal, PopoverOptions, RefresherCustomEvent } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { AccountsService } from '@app/account/accounts.service';
 import { firstValueFrom, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 import { Certification, CertificationSearchFilter, CertificationSearchFilterUtils } from './cert-history.model';
 import { ListItems } from '@app/shared/types';
@@ -139,17 +139,15 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
             } else {
               return (await firstValueFrom(this.indexer.wotSearch({ address }, { first: 1 })))?.[0];
             }
-          })
+          }),
+          filter(isNotNil)
         )
     );
 
     // Title
     this._state.connect(
       'title',
-      this.account$.pipe(
-        map(AccountUtils.getDisplayName),
-        switchMap((accountName) => this.translate.get('WOT.CERTIFICATIONS.TITLE', { uid: accountName }))
-      )
+      this.account$.pipe(switchMap((account) => this.translate.get('WOT.CERTIFICATIONS.TITLE', { uid: AccountUtils.getDisplayName(account) })))
     );
 
     // Create filter
@@ -214,7 +212,6 @@ export class CertHistoryPage extends AppPage<CertHistoryPageState> implements On
     await this.accountService.ready();
 
     return <CertHistoryPageState>{
-      account: null,
       address: this.activatedRoute.snapshot.paramMap.get('address'),
       currency: this.networkService.currencySymbol,
     };

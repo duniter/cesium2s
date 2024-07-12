@@ -47,7 +47,7 @@
         <ion-label class="ion-text-end">
           <p translate>ACCOUNT.BALANCE</p>
           <h2>
-            <b *rxIf="account$; let account">{{ account | balance | amountFormat }}</b>
+            <b *rxIf="account$; let account" [innerHtml]="account | balance | amountFormat"></b>
           </h2>
         </ion-label>
       </div>
@@ -108,7 +108,7 @@
         </p>
       </ion-label>
 
-      <ion-badge [color]="item.amount > 0 ? 'secondary' : 'light'" slot="end">{{ item.amount | amountFormat }}</ion-badge>
+      <ion-badge [color]="item.amount > 0 ? 'secondary' : 'light'" slot="end" [innerHtml]="item.amount | amountFormat"></ion-badge>
     </ion-item>
 
     <!-- loading spinner -->

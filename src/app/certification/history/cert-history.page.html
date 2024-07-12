@@ -22,6 +22,7 @@
 
   <ion-header [translucent]="true">
     <ion-item color="secondary" lines="none">
+      <ion-icon aria-hidden="true" slot="start" name="ribbon"></ion-icon>
       <ion-label *rxIf="side$; let side">
         {{ (side === 'received' ? 'WOT.CERTIFICATIONS.RECEIVED' : 'WOT.GIVEN_CERTIFICATIONS.SENT') | translate }}
       </ion-label>
@@ -61,7 +62,10 @@
           <ion-icon name="key"></ion-icon>
           {{ item.account.address | addressToPubkeyV1 | pubkeyFormat: true }} |
           <a [routerLink]="['/block', item.createdOn]" routerDirection="forward" (click)="$event.preventDefault()" class="tx-timestamp">
-            {{ 'COMMON.BLOCK' | translate }} #{{ item.createdOn }}
+            @if (item.updatedOn | blockTime | dateFormat; as blockTime) {
+              {{ blockTime }} |
+            }
+            {{ 'COMMON.BLOCK' | translate }} #{{ item.updatedOn | blockNumber }}
           </a>
         </p>
       </ion-label>

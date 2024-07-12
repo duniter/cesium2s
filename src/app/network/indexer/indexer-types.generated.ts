@@ -1,10 +1,9 @@
 // Auto-generated via `npx graphql-codegen`, do not edit
 /* eslint-disable */
-import * as Apollo from 'apollo-angular';
 import { gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
+import * as Apollo from 'apollo-angular';
 import * as ApolloCore from '@apollo/client/core';
-
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,16 +13,16 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
-  bytea: { input: any; output: any };
-  identity_scalar: { input: any; output: any };
-  jsonb: { input: any; output: any };
-  numeric: { input: any; output: any };
-  timestamptz: { input: any; output: any };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  bytea: { input: any; output: any; }
+  identity_scalar: { input: any; output: any; }
+  jsonb: { input: any; output: any; }
+  numeric: { input: any; output: any; }
+  timestamptz: { input: any; output: any; }
 };
 
 /** columns and relationships of "account" */
@@ -55,6 +54,7 @@ export type Account = Node & {
   wasIdentity_connection: ChangeOwnerKeyConnection;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountTransfersIssuedArgs = {
   distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
@@ -64,6 +64,7 @@ export type AccountTransfersIssuedArgs = {
   where?: InputMaybe<TransferBoolExp>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountTransfersIssuedAggregateArgs = {
   distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
@@ -72,6 +73,7 @@ export type AccountTransfersIssuedAggregateArgs = {
   orderBy?: InputMaybe<Array<TransferOrderBy>>;
   where?: InputMaybe<TransferBoolExp>;
 };
+
 
 /** columns and relationships of "account" */
 export type AccountTransfersIssued_ConnectionArgs = {
@@ -84,6 +86,7 @@ export type AccountTransfersIssued_ConnectionArgs = {
   where?: InputMaybe<TransferBoolExp>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountTransfersReceivedArgs = {
   distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
@@ -93,6 +96,7 @@ export type AccountTransfersReceivedArgs = {
   where?: InputMaybe<TransferBoolExp>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountTransfersReceivedAggregateArgs = {
   distinctOn?: InputMaybe<Array<TransferSelectColumn>>;
@@ -101,6 +105,7 @@ export type AccountTransfersReceivedAggregateArgs = {
   orderBy?: InputMaybe<Array<TransferOrderBy>>;
   where?: InputMaybe<TransferBoolExp>;
 };
+
 
 /** columns and relationships of "account" */
 export type AccountTransfersReceived_ConnectionArgs = {
@@ -113,6 +118,7 @@ export type AccountTransfersReceived_ConnectionArgs = {
   where?: InputMaybe<TransferBoolExp>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountWasIdentityArgs = {
   distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
@@ -122,6 +128,7 @@ export type AccountWasIdentityArgs = {
   where?: InputMaybe<ChangeOwnerKeyBoolExp>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountWasIdentityAggregateArgs = {
   distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
@@ -130,6 +137,7 @@ export type AccountWasIdentityAggregateArgs = {
   orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
   where?: InputMaybe<ChangeOwnerKeyBoolExp>;
 };
+
 
 /** columns and relationships of "account" */
 export type AccountWasIdentity_ConnectionArgs = {
@@ -160,6 +168,7 @@ export type AccountAggregateFields = {
   max?: Maybe<AccountMaxFields>;
   min?: Maybe<AccountMinFields>;
 };
+
 
 /** aggregate fields of "account" */
 export type AccountAggregateFieldsCountArgs = {
@@ -246,7 +255,7 @@ export enum AccountSelectColumn {
   /** column name */
   Id = 'id',
   /** column name */
-  LinkedIdentityId = 'linkedIdentityId',
+  LinkedIdentityId = 'linkedIdentityId'
 }
 
 /** columns and relationships of "block" */
@@ -287,6 +296,7 @@ export type Block = Node & {
   validator?: Maybe<Scalars['bytea']['output']>;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockCallsArgs = {
   distinctOn?: InputMaybe<Array<CallSelectColumn>>;
@@ -296,6 +306,7 @@ export type BlockCallsArgs = {
   where?: InputMaybe<CallBoolExp>;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockCallsAggregateArgs = {
   distinctOn?: InputMaybe<Array<CallSelectColumn>>;
@@ -304,6 +315,7 @@ export type BlockCallsAggregateArgs = {
   orderBy?: InputMaybe<Array<CallOrderBy>>;
   where?: InputMaybe<CallBoolExp>;
 };
+
 
 /** columns and relationships of "block" */
 export type BlockCalls_ConnectionArgs = {
@@ -316,6 +328,7 @@ export type BlockCalls_ConnectionArgs = {
   where?: InputMaybe<CallBoolExp>;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockEventsArgs = {
   distinctOn?: InputMaybe<Array<EventSelectColumn>>;
@@ -325,6 +338,7 @@ export type BlockEventsArgs = {
   where?: InputMaybe<EventBoolExp>;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockEventsAggregateArgs = {
   distinctOn?: InputMaybe<Array<EventSelectColumn>>;
@@ -333,6 +347,7 @@ export type BlockEventsAggregateArgs = {
   orderBy?: InputMaybe<Array<EventOrderBy>>;
   where?: InputMaybe<EventBoolExp>;
 };
+
 
 /** columns and relationships of "block" */
 export type BlockEvents_ConnectionArgs = {
@@ -345,6 +360,7 @@ export type BlockEvents_ConnectionArgs = {
   where?: InputMaybe<EventBoolExp>;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockExtrinsicsArgs = {
   distinctOn?: InputMaybe<Array<ExtrinsicSelectColumn>>;
@@ -354,6 +370,7 @@ export type BlockExtrinsicsArgs = {
   where?: InputMaybe<ExtrinsicBoolExp>;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockExtrinsicsAggregateArgs = {
   distinctOn?: InputMaybe<Array<ExtrinsicSelectColumn>>;
@@ -362,6 +379,7 @@ export type BlockExtrinsicsAggregateArgs = {
   orderBy?: InputMaybe<Array<ExtrinsicOrderBy>>;
   where?: InputMaybe<ExtrinsicBoolExp>;
 };
+
 
 /** columns and relationships of "block" */
 export type BlockExtrinsics_ConnectionArgs = {
@@ -468,7 +486,7 @@ export enum BlockSelectColumn {
   /** column name */
   Timestamp = 'timestamp',
   /** column name */
-  Validator = 'validator',
+  Validator = 'validator'
 }
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -531,15 +549,18 @@ export type Call = Node & {
   success: Scalars['Boolean']['output'];
 };
 
+
 /** columns and relationships of "call" */
 export type CallArgsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /** columns and relationships of "call" */
 export type CallErrorArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "call" */
 export type CallEventsArgs = {
@@ -550,6 +571,7 @@ export type CallEventsArgs = {
   where?: InputMaybe<EventBoolExp>;
 };
 
+
 /** columns and relationships of "call" */
 export type CallEventsAggregateArgs = {
   distinctOn?: InputMaybe<Array<EventSelectColumn>>;
@@ -558,6 +580,7 @@ export type CallEventsAggregateArgs = {
   orderBy?: InputMaybe<Array<EventOrderBy>>;
   where?: InputMaybe<EventBoolExp>;
 };
+
 
 /** columns and relationships of "call" */
 export type CallEvents_ConnectionArgs = {
@@ -570,6 +593,7 @@ export type CallEvents_ConnectionArgs = {
   where?: InputMaybe<EventBoolExp>;
 };
 
+
 /** columns and relationships of "call" */
 export type CallSubcallsArgs = {
   distinctOn?: InputMaybe<Array<CallSelectColumn>>;
@@ -579,6 +603,7 @@ export type CallSubcallsArgs = {
   where?: InputMaybe<CallBoolExp>;
 };
 
+
 /** columns and relationships of "call" */
 export type CallSubcallsAggregateArgs = {
   distinctOn?: InputMaybe<Array<CallSelectColumn>>;
@@ -587,6 +612,7 @@ export type CallSubcallsAggregateArgs = {
   orderBy?: InputMaybe<Array<CallOrderBy>>;
   where?: InputMaybe<CallBoolExp>;
 };
+
 
 /** columns and relationships of "call" */
 export type CallSubcalls_ConnectionArgs = {
@@ -619,6 +645,7 @@ export type CallAggregateFields = {
   max?: Maybe<CallMaxFields>;
   min?: Maybe<CallMinFields>;
 };
+
 
 /** aggregate fields of "call" */
 export type CallAggregateFieldsCountArgs = {
@@ -764,19 +791,19 @@ export enum CallSelectColumn {
   /** column name */
   ParentId = 'parentId',
   /** column name */
-  Success = 'success',
+  Success = 'success'
 }
 
 /** select "callAggregateBoolExpBool_andArgumentsColumns" columns of table "call" */
 export enum CallSelectColumnCallAggregateBoolExpBool_AndArgumentsColumns {
   /** column name */
-  Success = 'success',
+  Success = 'success'
 }
 
 /** select "callAggregateBoolExpBool_orArgumentsColumns" columns of table "call" */
 export enum CallSelectColumnCallAggregateBoolExpBool_OrArgumentsColumns {
   /** column name */
-  Success = 'success',
+  Success = 'success'
 }
 
 /** columns and relationships of "cert" */
@@ -788,6 +815,9 @@ export type Cert = Node & {
   certHistoryAggregate: CertEventAggregate;
   /** An array relationship connection */
   certHistory_connection: CertEventConnection;
+  /** An object relationship */
+  createdIn?: Maybe<Event>;
+  createdInId?: Maybe<Scalars['String']['output']>;
   createdOn: Scalars['Int']['output'];
   expireOn: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
@@ -798,7 +828,12 @@ export type Cert = Node & {
   /** An object relationship */
   receiver?: Maybe<Identity>;
   receiverId?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  updatedIn?: Maybe<Event>;
+  updatedInId?: Maybe<Scalars['String']['output']>;
+  updatedOn: Scalars['Int']['output'];
 };
+
 
 /** columns and relationships of "cert" */
 export type CertCertHistoryArgs = {
@@ -809,6 +844,7 @@ export type CertCertHistoryArgs = {
   where?: InputMaybe<CertEventBoolExp>;
 };
 
+
 /** columns and relationships of "cert" */
 export type CertCertHistoryAggregateArgs = {
   distinctOn?: InputMaybe<Array<CertEventSelectColumn>>;
@@ -817,6 +853,7 @@ export type CertCertHistoryAggregateArgs = {
   orderBy?: InputMaybe<Array<CertEventOrderBy>>;
   where?: InputMaybe<CertEventBoolExp>;
 };
+
 
 /** columns and relationships of "cert" */
 export type CertCertHistory_ConnectionArgs = {
@@ -858,6 +895,7 @@ export type CertAggregateFields = {
   variance?: Maybe<CertVarianceFields>;
 };
 
+
 /** aggregate fields of "cert" */
 export type CertAggregateFieldsCountArgs = {
   columns?: InputMaybe<Array<CertSelectColumn>>;
@@ -884,12 +922,14 @@ export type CertAvgFields = {
   __typename?: 'CertAvgFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "cert" */
 export type CertAvgOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "cert". All fields are combined with a logical 'AND'. */
@@ -899,6 +939,8 @@ export type CertBoolExp = {
   _or?: InputMaybe<Array<CertBoolExp>>;
   certHistory?: InputMaybe<CertEventBoolExp>;
   certHistoryAggregate?: InputMaybe<CertEventAggregateBoolExp>;
+  createdIn?: InputMaybe<EventBoolExp>;
+  createdInId?: InputMaybe<StringComparisonExp>;
   createdOn?: InputMaybe<IntComparisonExp>;
   expireOn?: InputMaybe<IntComparisonExp>;
   id?: InputMaybe<StringComparisonExp>;
@@ -907,6 +949,9 @@ export type CertBoolExp = {
   issuerId?: InputMaybe<StringComparisonExp>;
   receiver?: InputMaybe<IdentityBoolExp>;
   receiverId?: InputMaybe<StringComparisonExp>;
+  updatedIn?: InputMaybe<EventBoolExp>;
+  updatedInId?: InputMaybe<StringComparisonExp>;
+  updatedOn?: InputMaybe<IntComparisonExp>;
 };
 
 /** A Relay connection object on "cert" */
@@ -962,6 +1007,7 @@ export type CertEventAggregateFields = {
   varSamp?: Maybe<CertEventVarSampFields>;
   variance?: Maybe<CertEventVarianceFields>;
 };
+
 
 /** aggregate fields of "cert_event" */
 export type CertEventAggregateFieldsCountArgs = {
@@ -1078,7 +1124,7 @@ export enum CertEventSelectColumn {
   /** column name */
   EventType = 'eventType',
   /** column name */
-  Id = 'id',
+  Id = 'id'
 }
 
 /** aggregate stddev on columns */
@@ -1161,44 +1207,58 @@ export type CertEventVarianceOrderBy = {
 /** aggregate max on columns */
 export type CertMaxFields = {
   __typename?: 'CertMaxFields';
+  createdInId?: Maybe<Scalars['String']['output']>;
   createdOn?: Maybe<Scalars['Int']['output']>;
   expireOn?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   issuerId?: Maybe<Scalars['String']['output']>;
   receiverId?: Maybe<Scalars['String']['output']>;
+  updatedInId?: Maybe<Scalars['String']['output']>;
+  updatedOn?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "cert" */
 export type CertMaxOrderBy = {
+  createdInId?: InputMaybe<OrderBy>;
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
   id?: InputMaybe<OrderBy>;
   issuerId?: InputMaybe<OrderBy>;
   receiverId?: InputMaybe<OrderBy>;
+  updatedInId?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
 export type CertMinFields = {
   __typename?: 'CertMinFields';
+  createdInId?: Maybe<Scalars['String']['output']>;
   createdOn?: Maybe<Scalars['Int']['output']>;
   expireOn?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   issuerId?: Maybe<Scalars['String']['output']>;
   receiverId?: Maybe<Scalars['String']['output']>;
+  updatedInId?: Maybe<Scalars['String']['output']>;
+  updatedOn?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "cert" */
 export type CertMinOrderBy = {
+  createdInId?: InputMaybe<OrderBy>;
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
   id?: InputMaybe<OrderBy>;
   issuerId?: InputMaybe<OrderBy>;
   receiverId?: InputMaybe<OrderBy>;
+  updatedInId?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** Ordering options when selecting data from "cert". */
 export type CertOrderBy = {
   certHistoryAggregate?: InputMaybe<CertEventAggregateOrderBy>;
+  createdIn?: InputMaybe<EventOrderBy>;
+  createdInId?: InputMaybe<OrderBy>;
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
   id?: InputMaybe<OrderBy>;
@@ -1207,10 +1267,15 @@ export type CertOrderBy = {
   issuerId?: InputMaybe<OrderBy>;
   receiver?: InputMaybe<IdentityOrderBy>;
   receiverId?: InputMaybe<OrderBy>;
+  updatedIn?: InputMaybe<EventOrderBy>;
+  updatedInId?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** select columns of table "cert" */
 export enum CertSelectColumn {
+  /** column name */
+  CreatedInId = 'createdInId',
   /** column name */
   CreatedOn = 'createdOn',
   /** column name */
@@ -1223,18 +1288,22 @@ export enum CertSelectColumn {
   IssuerId = 'issuerId',
   /** column name */
   ReceiverId = 'receiverId',
+  /** column name */
+  UpdatedInId = 'updatedInId',
+  /** column name */
+  UpdatedOn = 'updatedOn'
 }
 
 /** select "certAggregateBoolExpBool_andArgumentsColumns" columns of table "cert" */
 export enum CertSelectColumnCertAggregateBoolExpBool_AndArgumentsColumns {
   /** column name */
-  IsActive = 'isActive',
+  IsActive = 'isActive'
 }
 
 /** select "certAggregateBoolExpBool_orArgumentsColumns" columns of table "cert" */
 export enum CertSelectColumnCertAggregateBoolExpBool_OrArgumentsColumns {
   /** column name */
-  IsActive = 'isActive',
+  IsActive = 'isActive'
 }
 
 /** aggregate stddev on columns */
@@ -1242,12 +1311,14 @@ export type CertStddevFields = {
   __typename?: 'CertStddevFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "cert" */
 export type CertStddevOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevPop on columns */
@@ -1255,12 +1326,14 @@ export type CertStddevPopFields = {
   __typename?: 'CertStddevPopFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevPop() on columns of table "cert" */
 export type CertStddevPopOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevSamp on columns */
@@ -1268,12 +1341,14 @@ export type CertStddevSampFields = {
   __typename?: 'CertStddevSampFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevSamp() on columns of table "cert" */
 export type CertStddevSampOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate sum on columns */
@@ -1281,12 +1356,14 @@ export type CertSumFields = {
   __typename?: 'CertSumFields';
   createdOn?: Maybe<Scalars['Int']['output']>;
   expireOn?: Maybe<Scalars['Int']['output']>;
+  updatedOn?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "cert" */
 export type CertSumOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varPop on columns */
@@ -1294,12 +1371,14 @@ export type CertVarPopFields = {
   __typename?: 'CertVarPopFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varPop() on columns of table "cert" */
 export type CertVarPopOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varSamp on columns */
@@ -1307,12 +1386,14 @@ export type CertVarSampFields = {
   __typename?: 'CertVarSampFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varSamp() on columns of table "cert" */
 export type CertVarSampOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
@@ -1320,12 +1401,14 @@ export type CertVarianceFields = {
   __typename?: 'CertVarianceFields';
   createdOn?: Maybe<Scalars['Float']['output']>;
   expireOn?: Maybe<Scalars['Float']['output']>;
+  updatedOn?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "cert" */
 export type CertVarianceOrderBy = {
   createdOn?: InputMaybe<OrderBy>;
   expireOn?: InputMaybe<OrderBy>;
+  updatedOn?: InputMaybe<OrderBy>;
 };
 
 /** columns and relationships of "change_owner_key" */
@@ -1370,6 +1453,7 @@ export type ChangeOwnerKeyAggregateFields = {
   varSamp?: Maybe<ChangeOwnerKeyVarSampFields>;
   variance?: Maybe<ChangeOwnerKeyVarianceFields>;
 };
+
 
 /** aggregate fields of "change_owner_key" */
 export type ChangeOwnerKeyAggregateFieldsCountArgs = {
@@ -1492,7 +1576,7 @@ export enum ChangeOwnerKeySelectColumn {
   /** column name */
   NextId = 'nextId',
   /** column name */
-  PreviousId = 'previousId',
+  PreviousId = 'previousId'
 }
 
 /** aggregate stddev on columns */
@@ -1575,7 +1659,7 @@ export type ChangeOwnerKeyVarianceOrderBy = {
 export enum CounterLevelEnum {
   Global = 'GLOBAL',
   Item = 'ITEM',
-  Pallet = 'PALLET',
+  Pallet = 'PALLET'
 }
 
 /** Boolean expression to compare columns of type "CounterLevelEnum". All fields are combined with logical 'AND'. */
@@ -1608,6 +1692,7 @@ export type Event = Node & {
   phase: Scalars['String']['output'];
 };
 
+
 /** columns and relationships of "event" */
 export type EventArgsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
@@ -1639,6 +1724,7 @@ export type EventAggregateFields = {
   varSamp?: Maybe<EventVarSampFields>;
   variance?: Maybe<EventVarianceFields>;
 };
+
 
 /** aggregate fields of "event" */
 export type EventAggregateFieldsCountArgs = {
@@ -1797,7 +1883,7 @@ export enum EventSelectColumn {
   /** column name */
   Pallet = 'pallet',
   /** column name */
-  Phase = 'phase',
+  Phase = 'phase'
 }
 
 /** aggregate stddev on columns */
@@ -1847,7 +1933,7 @@ export type EventSumOrderBy = {
 export enum EventTypeEnum {
   Creation = 'CREATION',
   Removal = 'REMOVAL',
-  Renewal = 'RENEWAL',
+  Renewal = 'RENEWAL'
 }
 
 /** Boolean expression to compare columns of type "EventTypeEnum". All fields are combined with logical 'AND'. */
@@ -1924,6 +2010,7 @@ export type Extrinsic = Node & {
   version: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "extrinsic" */
 export type ExtrinsicCallsArgs = {
   distinctOn?: InputMaybe<Array<CallSelectColumn>>;
@@ -1933,6 +2020,7 @@ export type ExtrinsicCallsArgs = {
   where?: InputMaybe<CallBoolExp>;
 };
 
+
 /** columns and relationships of "extrinsic" */
 export type ExtrinsicCallsAggregateArgs = {
   distinctOn?: InputMaybe<Array<CallSelectColumn>>;
@@ -1941,6 +2029,7 @@ export type ExtrinsicCallsAggregateArgs = {
   orderBy?: InputMaybe<Array<CallOrderBy>>;
   where?: InputMaybe<CallBoolExp>;
 };
+
 
 /** columns and relationships of "extrinsic" */
 export type ExtrinsicCalls_ConnectionArgs = {
@@ -1953,10 +2042,12 @@ export type ExtrinsicCalls_ConnectionArgs = {
   where?: InputMaybe<CallBoolExp>;
 };
 
+
 /** columns and relationships of "extrinsic" */
 export type ExtrinsicErrorArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "extrinsic" */
 export type ExtrinsicEventsArgs = {
@@ -1967,6 +2058,7 @@ export type ExtrinsicEventsArgs = {
   where?: InputMaybe<EventBoolExp>;
 };
 
+
 /** columns and relationships of "extrinsic" */
 export type ExtrinsicEventsAggregateArgs = {
   distinctOn?: InputMaybe<Array<EventSelectColumn>>;
@@ -1975,6 +2067,7 @@ export type ExtrinsicEventsAggregateArgs = {
   orderBy?: InputMaybe<Array<EventOrderBy>>;
   where?: InputMaybe<EventBoolExp>;
 };
+
 
 /** columns and relationships of "extrinsic" */
 export type ExtrinsicEvents_ConnectionArgs = {
@@ -1986,6 +2079,7 @@ export type ExtrinsicEvents_ConnectionArgs = {
   orderBy?: InputMaybe<Array<EventOrderBy>>;
   where?: InputMaybe<EventBoolExp>;
 };
+
 
 /** columns and relationships of "extrinsic" */
 export type ExtrinsicSignatureArgs = {
@@ -2020,6 +2114,7 @@ export type ExtrinsicAggregateFields = {
   varSamp?: Maybe<ExtrinsicVarSampFields>;
   variance?: Maybe<ExtrinsicVarianceFields>;
 };
+
 
 /** aggregate fields of "extrinsic" */
 export type ExtrinsicAggregateFieldsCountArgs = {
@@ -2184,19 +2279,19 @@ export enum ExtrinsicSelectColumn {
   /** column name */
   Tip = 'tip',
   /** column name */
-  Version = 'version',
+  Version = 'version'
 }
 
 /** select "extrinsicAggregateBoolExpBool_andArgumentsColumns" columns of table "extrinsic" */
 export enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_AndArgumentsColumns {
   /** column name */
-  Success = 'success',
+  Success = 'success'
 }
 
 /** select "extrinsicAggregateBoolExpBool_orArgumentsColumns" columns of table "extrinsic" */
 export enum ExtrinsicSelectColumnExtrinsicAggregateBoolExpBool_OrArgumentsColumns {
   /** column name */
-  Success = 'success',
+  Success = 'success'
 }
 
 /** aggregate stddev on columns */
@@ -2382,6 +2477,7 @@ export type Identity = Node & {
   udHistory?: Maybe<Array<UdHistory>>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityCertIssuedArgs = {
   distinctOn?: InputMaybe<Array<CertSelectColumn>>;
@@ -2391,6 +2487,7 @@ export type IdentityCertIssuedArgs = {
   where?: InputMaybe<CertBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityCertIssuedAggregateArgs = {
   distinctOn?: InputMaybe<Array<CertSelectColumn>>;
@@ -2399,6 +2496,7 @@ export type IdentityCertIssuedAggregateArgs = {
   orderBy?: InputMaybe<Array<CertOrderBy>>;
   where?: InputMaybe<CertBoolExp>;
 };
+
 
 /** columns and relationships of "identity" */
 export type IdentityCertIssued_ConnectionArgs = {
@@ -2411,6 +2509,7 @@ export type IdentityCertIssued_ConnectionArgs = {
   where?: InputMaybe<CertBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityCertReceivedArgs = {
   distinctOn?: InputMaybe<Array<CertSelectColumn>>;
@@ -2420,6 +2519,7 @@ export type IdentityCertReceivedArgs = {
   where?: InputMaybe<CertBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityCertReceivedAggregateArgs = {
   distinctOn?: InputMaybe<Array<CertSelectColumn>>;
@@ -2428,6 +2528,7 @@ export type IdentityCertReceivedAggregateArgs = {
   orderBy?: InputMaybe<Array<CertOrderBy>>;
   where?: InputMaybe<CertBoolExp>;
 };
+
 
 /** columns and relationships of "identity" */
 export type IdentityCertReceived_ConnectionArgs = {
@@ -2440,6 +2541,7 @@ export type IdentityCertReceived_ConnectionArgs = {
   where?: InputMaybe<CertBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityLinkedAccountArgs = {
   distinctOn?: InputMaybe<Array<AccountSelectColumn>>;
@@ -2449,6 +2551,7 @@ export type IdentityLinkedAccountArgs = {
   where?: InputMaybe<AccountBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityLinkedAccountAggregateArgs = {
   distinctOn?: InputMaybe<Array<AccountSelectColumn>>;
@@ -2457,6 +2560,7 @@ export type IdentityLinkedAccountAggregateArgs = {
   orderBy?: InputMaybe<Array<AccountOrderBy>>;
   where?: InputMaybe<AccountBoolExp>;
 };
+
 
 /** columns and relationships of "identity" */
 export type IdentityLinkedAccount_ConnectionArgs = {
@@ -2469,6 +2573,7 @@ export type IdentityLinkedAccount_ConnectionArgs = {
   where?: InputMaybe<AccountBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityMembershipHistoryArgs = {
   distinctOn?: InputMaybe<Array<MembershipEventSelectColumn>>;
@@ -2478,6 +2583,7 @@ export type IdentityMembershipHistoryArgs = {
   where?: InputMaybe<MembershipEventBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityMembershipHistoryAggregateArgs = {
   distinctOn?: InputMaybe<Array<MembershipEventSelectColumn>>;
@@ -2486,6 +2592,7 @@ export type IdentityMembershipHistoryAggregateArgs = {
   orderBy?: InputMaybe<Array<MembershipEventOrderBy>>;
   where?: InputMaybe<MembershipEventBoolExp>;
 };
+
 
 /** columns and relationships of "identity" */
 export type IdentityMembershipHistory_ConnectionArgs = {
@@ -2498,6 +2605,7 @@ export type IdentityMembershipHistory_ConnectionArgs = {
   where?: InputMaybe<MembershipEventBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityOwnerKeyChangeArgs = {
   distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
@@ -2507,6 +2615,7 @@ export type IdentityOwnerKeyChangeArgs = {
   where?: InputMaybe<ChangeOwnerKeyBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentityOwnerKeyChangeAggregateArgs = {
   distinctOn?: InputMaybe<Array<ChangeOwnerKeySelectColumn>>;
@@ -2515,6 +2624,7 @@ export type IdentityOwnerKeyChangeAggregateArgs = {
   orderBy?: InputMaybe<Array<ChangeOwnerKeyOrderBy>>;
   where?: InputMaybe<ChangeOwnerKeyBoolExp>;
 };
+
 
 /** columns and relationships of "identity" */
 export type IdentityOwnerKeyChange_ConnectionArgs = {
@@ -2527,6 +2637,7 @@ export type IdentityOwnerKeyChange_ConnectionArgs = {
   where?: InputMaybe<ChangeOwnerKeyBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentitySmithCertIssuedArgs = {
   distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
@@ -2536,6 +2647,7 @@ export type IdentitySmithCertIssuedArgs = {
   where?: InputMaybe<SmithCertBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentitySmithCertIssuedAggregateArgs = {
   distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
@@ -2544,6 +2656,7 @@ export type IdentitySmithCertIssuedAggregateArgs = {
   orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
   where?: InputMaybe<SmithCertBoolExp>;
 };
+
 
 /** columns and relationships of "identity" */
 export type IdentitySmithCertIssued_ConnectionArgs = {
@@ -2556,6 +2669,7 @@ export type IdentitySmithCertIssued_ConnectionArgs = {
   where?: InputMaybe<SmithCertBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentitySmithCertReceivedArgs = {
   distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
@@ -2565,6 +2679,7 @@ export type IdentitySmithCertReceivedArgs = {
   where?: InputMaybe<SmithCertBoolExp>;
 };
 
+
 /** columns and relationships of "identity" */
 export type IdentitySmithCertReceivedAggregateArgs = {
   distinctOn?: InputMaybe<Array<SmithCertSelectColumn>>;
@@ -2573,6 +2688,7 @@ export type IdentitySmithCertReceivedAggregateArgs = {
   orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
   where?: InputMaybe<SmithCertBoolExp>;
 };
+
 
 /** columns and relationships of "identity" */
 export type IdentitySmithCertReceived_ConnectionArgs = {
@@ -2584,6 +2700,7 @@ export type IdentitySmithCertReceived_ConnectionArgs = {
   orderBy?: InputMaybe<Array<SmithCertOrderBy>>;
   where?: InputMaybe<SmithCertBoolExp>;
 };
+
 
 /** columns and relationships of "identity" */
 export type IdentityUdHistoryArgs = {
@@ -2690,7 +2807,7 @@ export enum IdentitySelectColumn {
   /** column name */
   SmithStatus = 'smithStatus',
   /** column name */
-  Status = 'status',
+  Status = 'status'
 }
 
 export enum IdentityStatusEnum {
@@ -2699,7 +2816,7 @@ export enum IdentityStatusEnum {
   Removed = 'REMOVED',
   Revoked = 'REVOKED',
   Unconfirmed = 'UNCONFIRMED',
-  Unvalidated = 'UNVALIDATED',
+  Unvalidated = 'UNVALIDATED'
 }
 
 /** Boolean expression to compare columns of type "IdentityStatusEnum". All fields are combined with logical 'AND'. */
@@ -2744,7 +2861,7 @@ export type IntComparisonExp = {
 export enum ItemTypeEnum {
   Calls = 'CALLS',
   Events = 'EVENTS',
-  Extrinsics = 'EXTRINSICS',
+  Extrinsics = 'EXTRINSICS'
 }
 
 /** Boolean expression to compare columns of type "ItemTypeEnum". All fields are combined with logical 'AND'. */
@@ -2806,7 +2923,7 @@ export enum ItemsCounterSelectColumn {
   /** column name */
   Total = 'total',
   /** column name */
-  Type = 'type',
+  Type = 'type'
 }
 
 export type JsonbCastExp = {
@@ -2877,6 +2994,7 @@ export type MembershipEventAggregateFields = {
   varSamp?: Maybe<MembershipEventVarSampFields>;
   variance?: Maybe<MembershipEventVarianceFields>;
 };
+
 
 /** aggregate fields of "membership_event" */
 export type MembershipEventAggregateFieldsCountArgs = {
@@ -2993,7 +3111,7 @@ export enum MembershipEventSelectColumn {
   /** column name */
   Id = 'id',
   /** column name */
-  IdentityId = 'identityId',
+  IdentityId = 'identityId'
 }
 
 /** aggregate stddev on columns */
@@ -3105,7 +3223,7 @@ export enum OrderBy {
   /** in descending order, nulls first */
   DescNullsFirst = 'DESC_NULLS_FIRST',
   /** in descending order, nulls last */
-  DescNullsLast = 'DESC_NULLS_LAST',
+  DescNullsLast = 'DESC_NULLS_LAST'
 }
 
 export type PageInfo = {
@@ -3155,6 +3273,7 @@ export type SmithCertAggregateFields = {
   varSamp?: Maybe<SmithCertVarSampFields>;
   variance?: Maybe<SmithCertVarianceFields>;
 };
+
 
 /** aggregate fields of "smith_cert" */
 export type SmithCertAggregateFieldsCountArgs = {
@@ -3267,7 +3386,7 @@ export enum SmithCertSelectColumn {
   /** column name */
   IssuerId = 'issuerId',
   /** column name */
-  ReceiverId = 'receiverId',
+  ReceiverId = 'receiverId'
 }
 
 /** aggregate stddev on columns */
@@ -3351,7 +3470,7 @@ export enum SmithStatusEnum {
   Excluded = 'EXCLUDED',
   Invited = 'INVITED',
   Pending = 'PENDING',
-  Smith = 'SMITH',
+  Smith = 'SMITH'
 }
 
 /** Boolean expression to compare columns of type "SmithStatusEnum". All fields are combined with logical 'AND'. */
@@ -3468,6 +3587,7 @@ export type TransferAggregateFields = {
   varSamp?: Maybe<TransferVarSampFields>;
   variance?: Maybe<TransferVarianceFields>;
 };
+
 
 /** aggregate fields of "transfer" */
 export type TransferAggregateFieldsCountArgs = {
@@ -3606,7 +3726,7 @@ export enum TransferSelectColumn {
   /** column name */
   Timestamp = 'timestamp',
   /** column name */
-  ToId = 'toId',
+  ToId = 'toId'
 }
 
 /** aggregate stddev on columns */
@@ -3798,7 +3918,7 @@ export enum UdHistorySelectColumn {
   /** column name */
   IdentityId = 'identityId',
   /** column name */
-  Timestamp = 'timestamp',
+  Timestamp = 'timestamp'
 }
 
 /** order by stddev() on columns of table "ud_history" */
@@ -3912,7 +4032,7 @@ export enum UdReevalSelectColumn {
   /** column name */
   NewUdAmount = 'newUdAmount',
   /** column name */
-  Timestamp = 'timestamp',
+  Timestamp = 'timestamp'
 }
 
 /** columns and relationships of "universal_dividend" */
@@ -3984,7 +4104,7 @@ export enum UniversalDividendSelectColumn {
   /** column name */
   MonetaryMass = 'monetaryMass',
   /** column name */
-  Timestamp = 'timestamp',
+  Timestamp = 'timestamp'
 }
 
 export type AccountAggregateBoolExpCount = {
@@ -4128,6 +4248,7 @@ export type Query_Root = {
   universalDividendConnection: UniversalDividendConnection;
 };
 
+
 export type Query_RootAccountConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4137,6 +4258,7 @@ export type Query_RootAccountConnectionArgs = {
   orderBy?: InputMaybe<Array<AccountOrderBy>>;
   where?: InputMaybe<AccountBoolExp>;
 };
+
 
 export type Query_RootBlockConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4148,6 +4270,7 @@ export type Query_RootBlockConnectionArgs = {
   where?: InputMaybe<BlockBoolExp>;
 };
 
+
 export type Query_RootCallConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4157,6 +4280,7 @@ export type Query_RootCallConnectionArgs = {
   orderBy?: InputMaybe<Array<CallOrderBy>>;
   where?: InputMaybe<CallBoolExp>;
 };
+
 
 export type Query_RootCertConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4168,6 +4292,7 @@ export type Query_RootCertConnectionArgs = {
   where?: InputMaybe<CertBoolExp>;
 };
 
+
 export type Query_RootCertEventConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4177,6 +4302,7 @@ export type Query_RootCertEventConnectionArgs = {
   orderBy?: InputMaybe<Array<CertEventOrderBy>>;
   where?: InputMaybe<CertEventBoolExp>;
 };
+
 
 export type Query_RootChangeOwnerKeyConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4188,6 +4314,7 @@ export type Query_RootChangeOwnerKeyConnectionArgs = {
   where?: InputMaybe<ChangeOwnerKeyBoolExp>;
 };
 
+
 export type Query_RootEventConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4198,6 +4325,7 @@ export type Query_RootEventConnectionArgs = {
   where?: InputMaybe<EventBoolExp>;
 };
 
+
 export type Query_RootExtrinsicConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4207,6 +4335,7 @@ export type Query_RootExtrinsicConnectionArgs = {
   orderBy?: InputMaybe<Array<ExtrinsicOrderBy>>;
   where?: InputMaybe<ExtrinsicBoolExp>;
 };
+
 
 export type Query_RootGetUdHistory_ConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4219,6 +4348,7 @@ export type Query_RootGetUdHistory_ConnectionArgs = {
   where?: InputMaybe<UdHistoryBoolExp>;
 };
 
+
 export type Query_RootIdentityConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4228,6 +4358,7 @@ export type Query_RootIdentityConnectionArgs = {
   orderBy?: InputMaybe<Array<IdentityOrderBy>>;
   where?: InputMaybe<IdentityBoolExp>;
 };
+
 
 export type Query_RootItemsCounterConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4239,6 +4370,7 @@ export type Query_RootItemsCounterConnectionArgs = {
   where?: InputMaybe<ItemsCounterBoolExp>;
 };
 
+
 export type Query_RootMembershipEventConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4249,9 +4381,11 @@ export type Query_RootMembershipEventConnectionArgs = {
   where?: InputMaybe<MembershipEventBoolExp>;
 };
 
+
 export type Query_RootNodeArgs = {
   id: Scalars['ID']['input'];
 };
+
 
 export type Query_RootSmithCertConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4263,6 +4397,7 @@ export type Query_RootSmithCertConnectionArgs = {
   where?: InputMaybe<SmithCertBoolExp>;
 };
 
+
 export type Query_RootTransferConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4272,6 +4407,7 @@ export type Query_RootTransferConnectionArgs = {
   orderBy?: InputMaybe<Array<TransferOrderBy>>;
   where?: InputMaybe<TransferBoolExp>;
 };
+
 
 export type Query_RootUdHistoryConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4283,6 +4419,7 @@ export type Query_RootUdHistoryConnectionArgs = {
   where?: InputMaybe<UdHistoryBoolExp>;
 };
 
+
 export type Query_RootUdReevalConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4292,6 +4429,7 @@ export type Query_RootUdReevalConnectionArgs = {
   orderBy?: InputMaybe<Array<UdReevalOrderBy>>;
   where?: InputMaybe<UdReevalBoolExp>;
 };
+
 
 export type Query_RootUniversalDividendConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4349,6 +4487,7 @@ export type Subscription_Root = {
   universalDividendConnection: UniversalDividendConnection;
 };
 
+
 export type Subscription_RootAccountConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4358,6 +4497,7 @@ export type Subscription_RootAccountConnectionArgs = {
   orderBy?: InputMaybe<Array<AccountOrderBy>>;
   where?: InputMaybe<AccountBoolExp>;
 };
+
 
 export type Subscription_RootBlockConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4369,6 +4509,7 @@ export type Subscription_RootBlockConnectionArgs = {
   where?: InputMaybe<BlockBoolExp>;
 };
 
+
 export type Subscription_RootCallConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4378,6 +4519,7 @@ export type Subscription_RootCallConnectionArgs = {
   orderBy?: InputMaybe<Array<CallOrderBy>>;
   where?: InputMaybe<CallBoolExp>;
 };
+
 
 export type Subscription_RootCertConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4389,6 +4531,7 @@ export type Subscription_RootCertConnectionArgs = {
   where?: InputMaybe<CertBoolExp>;
 };
 
+
 export type Subscription_RootCertEventConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4398,6 +4541,7 @@ export type Subscription_RootCertEventConnectionArgs = {
   orderBy?: InputMaybe<Array<CertEventOrderBy>>;
   where?: InputMaybe<CertEventBoolExp>;
 };
+
 
 export type Subscription_RootChangeOwnerKeyConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4409,6 +4553,7 @@ export type Subscription_RootChangeOwnerKeyConnectionArgs = {
   where?: InputMaybe<ChangeOwnerKeyBoolExp>;
 };
 
+
 export type Subscription_RootEventConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4419,6 +4564,7 @@ export type Subscription_RootEventConnectionArgs = {
   where?: InputMaybe<EventBoolExp>;
 };
 
+
 export type Subscription_RootExtrinsicConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4428,6 +4574,7 @@ export type Subscription_RootExtrinsicConnectionArgs = {
   orderBy?: InputMaybe<Array<ExtrinsicOrderBy>>;
   where?: InputMaybe<ExtrinsicBoolExp>;
 };
+
 
 export type Subscription_RootGetUdHistory_ConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4440,6 +4587,7 @@ export type Subscription_RootGetUdHistory_ConnectionArgs = {
   where?: InputMaybe<UdHistoryBoolExp>;
 };
 
+
 export type Subscription_RootIdentityConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4449,6 +4597,7 @@ export type Subscription_RootIdentityConnectionArgs = {
   orderBy?: InputMaybe<Array<IdentityOrderBy>>;
   where?: InputMaybe<IdentityBoolExp>;
 };
+
 
 export type Subscription_RootItemsCounterConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4460,6 +4609,7 @@ export type Subscription_RootItemsCounterConnectionArgs = {
   where?: InputMaybe<ItemsCounterBoolExp>;
 };
 
+
 export type Subscription_RootMembershipEventConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4470,9 +4620,11 @@ export type Subscription_RootMembershipEventConnectionArgs = {
   where?: InputMaybe<MembershipEventBoolExp>;
 };
 
+
 export type Subscription_RootNodeArgs = {
   id: Scalars['ID']['input'];
 };
+
 
 export type Subscription_RootSmithCertConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4484,6 +4636,7 @@ export type Subscription_RootSmithCertConnectionArgs = {
   where?: InputMaybe<SmithCertBoolExp>;
 };
 
+
 export type Subscription_RootTransferConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4493,6 +4646,7 @@ export type Subscription_RootTransferConnectionArgs = {
   orderBy?: InputMaybe<Array<TransferOrderBy>>;
   where?: InputMaybe<TransferBoolExp>;
 };
+
 
 export type Subscription_RootUdHistoryConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4504,6 +4658,7 @@ export type Subscription_RootUdHistoryConnectionArgs = {
   where?: InputMaybe<UdHistoryBoolExp>;
 };
 
+
 export type Subscription_RootUdReevalConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -4513,6 +4668,7 @@ export type Subscription_RootUdReevalConnectionArgs = {
   orderBy?: InputMaybe<Array<UdReevalOrderBy>>;
   where?: InputMaybe<UdReevalBoolExp>;
 };
+
 
 export type Subscription_RootUniversalDividendConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -4531,104 +4687,22 @@ export type TransferAggregateBoolExpCount = {
   predicate: IntComparisonExp;
 };
 
-export type LightIdentityFragment = {
-  __typename?: 'Identity';
-  id: string;
-  index: number;
-  name: string;
-  isMember: boolean;
-  accountId?: string | null;
-  membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-};
+export type LightIdentityFragment = { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> };
 
-export type LightAccountFragment = {
-  __typename?: 'Account';
-  id: string;
-  identity?: {
-    __typename?: 'Identity';
-    id: string;
-    index: number;
-    name: string;
-    isMember: boolean;
-    accountId?: string | null;
-    membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-  } | null;
-};
+export type LightAccountFragment = { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null };
 
-export type LightAccountConnectionFragment = {
-  __typename?: 'AccountConnection';
-  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-  edges: Array<{
-    __typename?: 'AccountEdge';
-    node: {
-      __typename?: 'Account';
-      id: string;
-      identity?: {
-        __typename?: 'Identity';
-        id: string;
-        index: number;
-        name: string;
-        isMember: boolean;
-        accountId?: string | null;
-        membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-      } | null;
-    };
-  }>;
-};
+export type LightAccountConnectionFragment = { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> };
 
-export type LightBlockFragment = {
-  __typename: 'Block';
-  id: string;
-  height: number;
-  hash: any;
-  timestamp: any;
-  callsCount: number;
-  eventsCount: number;
-  extrinsicsCount: number;
-};
+export type LightBlockFragment = { __typename: 'Block', id: string, height: number, hash: any, timestamp: any, callsCount: number, eventsCount: number, extrinsicsCount: number };
 
-export type LightBlockConnectionFragment = {
-  __typename?: 'BlockConnection';
-  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-  edges: Array<{
-    __typename?: 'BlockEdge';
-    node: {
-      __typename: 'Block';
-      id: string;
-      height: number;
-      hash: any;
-      timestamp: any;
-      callsCount: number;
-      eventsCount: number;
-      extrinsicsCount: number;
-    };
-  }>;
-};
+export type LightBlockConnectionFragment = { __typename?: 'BlockConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'BlockEdge', node: { __typename: 'Block', id: string, height: number, hash: any, timestamp: any, callsCount: number, eventsCount: number, extrinsicsCount: number } }> };
 
 export type BlockByIdQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
-export type BlockByIdQuery = {
-  __typename?: 'query_root';
-  blockConnection: {
-    __typename?: 'BlockConnection';
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-    edges: Array<{
-      __typename?: 'BlockEdge';
-      node: {
-        __typename: 'Block';
-        id: string;
-        height: number;
-        hash: any;
-        timestamp: any;
-        callsCount: number;
-        eventsCount: number;
-        extrinsicsCount: number;
-      };
-    }>;
-  };
-};
+
+export type BlockByIdQuery = { __typename?: 'query_root', blockConnection: { __typename?: 'BlockConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'BlockEdge', node: { __typename: 'Block', id: string, height: number, hash: any, timestamp: any, callsCount: number, eventsCount: number, extrinsicsCount: number } }> } };
 
 export type BlocksQueryVariables = Exact<{
   where?: InputMaybe<BlockBoolExp>;
@@ -4637,131 +4711,18 @@ export type BlocksQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<BlockOrderBy> | BlockOrderBy>;
 }>;
 
-export type BlocksQuery = {
-  __typename?: 'query_root';
-  blockConnection: {
-    __typename?: 'BlockConnection';
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-    edges: Array<{
-      __typename?: 'BlockEdge';
-      node: {
-        __typename: 'Block';
-        id: string;
-        height: number;
-        hash: any;
-        timestamp: any;
-        callsCount: number;
-        eventsCount: number;
-        extrinsicsCount: number;
-      };
-    }>;
-  };
-};
 
-export type LightCertFragment = { __typename: 'Cert'; id: string; expireOn: number; createdOn: number };
+export type BlocksQuery = { __typename?: 'query_root', blockConnection: { __typename?: 'BlockConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'BlockEdge', node: { __typename: 'Block', id: string, height: number, hash: any, timestamp: any, callsCount: number, eventsCount: number, extrinsicsCount: number } }> } };
 
-export type CertFragment = {
-  __typename: 'Cert';
-  id: string;
-  expireOn: number;
-  createdOn: number;
-  receiver?: {
-    __typename?: 'Identity';
-    id: string;
-    index: number;
-    name: string;
-    isMember: boolean;
-    accountId?: string | null;
-    membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-  } | null;
-  issuer?: {
-    __typename?: 'Identity';
-    id: string;
-    index: number;
-    name: string;
-    isMember: boolean;
-    accountId?: string | null;
-    membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-  } | null;
-};
+export type LightCertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number };
 
-export type CertConnectionFragment = {
-  __typename?: 'CertConnection';
-  edges: Array<{
-    __typename?: 'CertEdge';
-    node: {
-      __typename: 'Cert';
-      id: string;
-      expireOn: number;
-      createdOn: number;
-      receiver?: {
-        __typename?: 'Identity';
-        id: string;
-        index: number;
-        name: string;
-        isMember: boolean;
-        accountId?: string | null;
-        membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-      } | null;
-      issuer?: {
-        __typename?: 'Identity';
-        id: string;
-        index: number;
-        name: string;
-        isMember: boolean;
-        accountId?: string | null;
-        membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-      } | null;
-    };
-  }>;
-  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-};
+export type CertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null };
 
-export type CertReceivedConnectionFragment = {
-  __typename?: 'CertConnection';
-  edges: Array<{
-    __typename?: 'CertEdge';
-    node: {
-      __typename: 'Cert';
-      id: string;
-      expireOn: number;
-      createdOn: number;
-      issuer?: {
-        __typename?: 'Identity';
-        id: string;
-        index: number;
-        name: string;
-        isMember: boolean;
-        accountId?: string | null;
-        membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-      } | null;
-    };
-  }>;
-  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-};
+export type CertConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
 
-export type CertIssuedConnectionFragment = {
-  __typename?: 'CertConnection';
-  edges: Array<{
-    __typename?: 'CertEdge';
-    node: {
-      __typename: 'Cert';
-      id: string;
-      expireOn: number;
-      createdOn: number;
-      receiver?: {
-        __typename?: 'Identity';
-        id: string;
-        index: number;
-        name: string;
-        isMember: boolean;
-        accountId?: string | null;
-        membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-      } | null;
-    };
-  }>;
-  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-};
+export type CertReceivedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
+
+export type CertIssuedConnectionFragment = { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } };
 
 export type CertsConnectionByIssuerQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4770,41 +4731,8 @@ export type CertsConnectionByIssuerQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
-export type CertsConnectionByIssuerQuery = {
-  __typename?: 'query_root';
-  identityConnection: {
-    __typename?: 'IdentityConnection';
-    edges: Array<{
-      __typename?: 'IdentityEdge';
-      node: {
-        __typename?: 'Identity';
-        aggregate: { __typename?: 'CertAggregate'; aggregate?: { __typename?: 'CertAggregateFields'; count: number } | null };
-        connection: {
-          __typename?: 'CertConnection';
-          edges: Array<{
-            __typename?: 'CertEdge';
-            node: {
-              __typename: 'Cert';
-              id: string;
-              expireOn: number;
-              createdOn: number;
-              receiver?: {
-                __typename?: 'Identity';
-                id: string;
-                index: number;
-                name: string;
-                isMember: boolean;
-                accountId?: string | null;
-                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-              } | null;
-            };
-          }>;
-          pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-        };
-      };
-    }>;
-  };
-};
+
+export type CertsConnectionByIssuerQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
 
 export type CertsConnectionByReceiverQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4813,116 +4741,12 @@ export type CertsConnectionByReceiverQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
-export type CertsConnectionByReceiverQuery = {
-  __typename?: 'query_root';
-  identityConnection: {
-    __typename?: 'IdentityConnection';
-    edges: Array<{
-      __typename?: 'IdentityEdge';
-      node: {
-        __typename?: 'Identity';
-        aggregate: { __typename?: 'CertAggregate'; aggregate?: { __typename?: 'CertAggregateFields'; count: number } | null };
-        connection: {
-          __typename?: 'CertConnection';
-          edges: Array<{
-            __typename?: 'CertEdge';
-            node: {
-              __typename: 'Cert';
-              id: string;
-              expireOn: number;
-              createdOn: number;
-              issuer?: {
-                __typename?: 'Identity';
-                id: string;
-                index: number;
-                name: string;
-                isMember: boolean;
-                accountId?: string | null;
-                membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-              } | null;
-            };
-          }>;
-          pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-        };
-      };
-    }>;
-  };
-};
 
-export type TransferFragment = {
-  __typename: 'Transfer';
-  id: string;
-  amount: any;
-  timestamp: any;
-  blockNumber: number;
-  from?: {
-    __typename?: 'Account';
-    id: string;
-    identity?: {
-      __typename?: 'Identity';
-      id: string;
-      index: number;
-      name: string;
-      isMember: boolean;
-      accountId?: string | null;
-      membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-    } | null;
-  } | null;
-  to?: {
-    __typename?: 'Account';
-    id: string;
-    identity?: {
-      __typename?: 'Identity';
-      id: string;
-      index: number;
-      name: string;
-      isMember: boolean;
-      accountId?: string | null;
-      membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-    } | null;
-  } | null;
-};
+export type CertsConnectionByReceiverQuery = { __typename?: 'query_root', identityConnection: { __typename?: 'IdentityConnection', edges: Array<{ __typename?: 'IdentityEdge', node: { __typename?: 'Identity', aggregate: { __typename?: 'CertAggregate', aggregate?: { __typename?: 'CertAggregateFields', count: number } | null }, connection: { __typename?: 'CertConnection', edges: Array<{ __typename?: 'CertEdge', node: { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean } } } }> } };
 
-export type TransferConnectionFragment = {
-  __typename?: 'TransferConnection';
-  pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-  edges: Array<{
-    __typename?: 'TransferEdge';
-    node: {
-      __typename: 'Transfer';
-      id: string;
-      amount: any;
-      timestamp: any;
-      blockNumber: number;
-      from?: {
-        __typename?: 'Account';
-        id: string;
-        identity?: {
-          __typename?: 'Identity';
-          id: string;
-          index: number;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-      } | null;
-      to?: {
-        __typename?: 'Account';
-        id: string;
-        identity?: {
-          __typename?: 'Identity';
-          id: string;
-          index: number;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-      } | null;
-    };
-  }>;
-};
+export type TransferFragment = { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null };
+
+export type TransferConnectionFragment = { __typename?: 'TransferConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'TransferEdge', node: { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null } }> };
 
 export type TransferConnectionByAddressQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -4931,49 +4755,8 @@ export type TransferConnectionByAddressQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
-export type TransferConnectionByAddressQuery = {
-  __typename?: 'query_root';
-  transferConnection: {
-    __typename?: 'TransferConnection';
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-    edges: Array<{
-      __typename?: 'TransferEdge';
-      node: {
-        __typename: 'Transfer';
-        id: string;
-        amount: any;
-        timestamp: any;
-        blockNumber: number;
-        from?: {
-          __typename?: 'Account';
-          id: string;
-          identity?: {
-            __typename?: 'Identity';
-            id: string;
-            index: number;
-            name: string;
-            isMember: boolean;
-            accountId?: string | null;
-            membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-          } | null;
-        } | null;
-        to?: {
-          __typename?: 'Account';
-          id: string;
-          identity?: {
-            __typename?: 'Identity';
-            id: string;
-            index: number;
-            name: string;
-            isMember: boolean;
-            accountId?: string | null;
-            membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-          } | null;
-        } | null;
-      };
-    }>;
-  };
-};
+
+export type TransferConnectionByAddressQuery = { __typename?: 'query_root', transferConnection: { __typename?: 'TransferConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'TransferEdge', node: { __typename: 'Transfer', id: string, amount: any, timestamp: any, blockNumber: number, from?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null, to?: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } | null } }> } };
 
 export type WotSearchByTextQueryVariables = Exact<{
   searchText: Scalars['String']['input'];
@@ -4982,29 +4765,8 @@ export type WotSearchByTextQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<AccountOrderBy> | AccountOrderBy>;
 }>;
 
-export type WotSearchByTextQuery = {
-  __typename?: 'query_root';
-  accountConnection: {
-    __typename?: 'AccountConnection';
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-    edges: Array<{
-      __typename?: 'AccountEdge';
-      node: {
-        __typename?: 'Account';
-        id: string;
-        identity?: {
-          __typename?: 'Identity';
-          id: string;
-          index: number;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-      };
-    }>;
-  };
-};
+
+export type WotSearchByTextQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> } };
 
 export type WotSearchByAddressQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -5013,29 +4775,8 @@ export type WotSearchByAddressQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<AccountOrderBy> | AccountOrderBy>;
 }>;
 
-export type WotSearchByAddressQuery = {
-  __typename?: 'query_root';
-  accountConnection: {
-    __typename?: 'AccountConnection';
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-    edges: Array<{
-      __typename?: 'AccountEdge';
-      node: {
-        __typename?: 'Account';
-        id: string;
-        identity?: {
-          __typename?: 'Identity';
-          id: string;
-          index: number;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-      };
-    }>;
-  };
-};
+
+export type WotSearchByAddressQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> } };
 
 export type WotSearchLastQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -5044,507 +4785,474 @@ export type WotSearchLastQueryVariables = Exact<{
   pending: Scalars['Boolean']['input'];
 }>;
 
-export type WotSearchLastQuery = {
-  __typename?: 'query_root';
-  accountConnection: {
-    __typename?: 'AccountConnection';
-    pageInfo: { __typename?: 'PageInfo'; endCursor: string; hasNextPage: boolean };
-    edges: Array<{
-      __typename?: 'AccountEdge';
-      node: {
-        __typename?: 'Account';
-        id: string;
-        identity?: {
-          __typename?: 'Identity';
-          id: string;
-          index: number;
-          name: string;
-          isMember: boolean;
-          accountId?: string | null;
-          membershipHistory: Array<{ __typename: 'MembershipEvent'; id: string }>;
-        } | null;
-      };
-    }>;
-  };
-};
+
+export type WotSearchLastQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> } };
 
 export const LightIdentityFragmentDoc = gql`
-  fragment LightIdentity on Identity {
+    fragment LightIdentity on Identity {
+  id
+  index
+  name
+  accountId
+  status
+  isMember
+  createdOn
+  membershipHistory {
+    __typename
     id
-    index
-    name
-    isMember
-    accountId
-    membershipHistory {
-      __typename
-      id
-    }
+    eventType
   }
-`;
+}
+    `;
 export const LightAccountFragmentDoc = gql`
-  fragment LightAccount on Account {
-    id
-    identity {
-      ...LightIdentity
-    }
+    fragment LightAccount on Account {
+  id
+  identity {
+    ...LightIdentity
   }
-  ${LightIdentityFragmentDoc}
-`;
+}
+    ${LightIdentityFragmentDoc}`;
 export const LightAccountConnectionFragmentDoc = gql`
-  fragment LightAccountConnection on AccountConnection {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-    edges {
-      node {
-        ...LightAccount
-      }
+    fragment LightAccountConnection on AccountConnection {
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+  edges {
+    node {
+      ...LightAccount
     }
   }
-  ${LightAccountFragmentDoc}
-`;
+}
+    ${LightAccountFragmentDoc}`;
 export const LightBlockFragmentDoc = gql`
-  fragment LightBlock on Block {
-    id
-    height
-    hash
-    timestamp
-    callsCount
-    eventsCount
-    extrinsicsCount
-    __typename
-  }
-`;
+    fragment LightBlock on Block {
+  id
+  height
+  hash
+  timestamp
+  callsCount
+  eventsCount
+  extrinsicsCount
+  __typename
+}
+    `;
 export const LightBlockConnectionFragmentDoc = gql`
-  fragment LightBlockConnection on BlockConnection {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-    edges {
-      node {
-        ...LightBlock
-      }
+    fragment LightBlockConnection on BlockConnection {
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+  edges {
+    node {
+      ...LightBlock
     }
   }
-  ${LightBlockFragmentDoc}
-`;
+}
+    ${LightBlockFragmentDoc}`;
 export const LightCertFragmentDoc = gql`
-  fragment LightCert on Cert {
-    __typename
-    id
-    expireOn
-    createdOn
-  }
-`;
+    fragment LightCert on Cert {
+  __typename
+  id
+  expireOn
+  createdOn
+  updatedOn
+}
+    `;
 export const CertFragmentDoc = gql`
-  fragment Cert on Cert {
-    ...LightCert
-    receiver {
-      ...LightIdentity
-    }
-    issuer {
-      ...LightIdentity
-    }
+    fragment Cert on Cert {
+  ...LightCert
+  receiver {
+    ...LightIdentity
   }
-  ${LightCertFragmentDoc}
-  ${LightIdentityFragmentDoc}
-`;
+  issuer {
+    ...LightIdentity
+  }
+}
+    ${LightCertFragmentDoc}
+${LightIdentityFragmentDoc}`;
 export const CertConnectionFragmentDoc = gql`
-  fragment CertConnection on CertConnection {
-    edges {
-      node {
-        ...Cert
-      }
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
+    fragment CertConnection on CertConnection {
+  edges {
+    node {
+      ...Cert
     }
   }
-  ${CertFragmentDoc}
-`;
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+}
+    ${CertFragmentDoc}`;
 export const CertReceivedConnectionFragmentDoc = gql`
-  fragment CertReceivedConnection on CertConnection {
-    edges {
-      node {
-        ...LightCert
-        issuer {
-          ...LightIdentity
-        }
+    fragment CertReceivedConnection on CertConnection {
+  edges {
+    node {
+      ...LightCert
+      issuer {
+        ...LightIdentity
       }
     }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
   }
-  ${LightCertFragmentDoc}
-  ${LightIdentityFragmentDoc}
-`;
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+}
+    ${LightCertFragmentDoc}
+${LightIdentityFragmentDoc}`;
 export const CertIssuedConnectionFragmentDoc = gql`
-  fragment CertIssuedConnection on CertConnection {
-    edges {
-      node {
-        ...LightCert
-        receiver {
-          ...LightIdentity
-        }
+    fragment CertIssuedConnection on CertConnection {
+  edges {
+    node {
+      ...LightCert
+      receiver {
+        ...LightIdentity
       }
     }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
   }
-  ${LightCertFragmentDoc}
-  ${LightIdentityFragmentDoc}
-`;
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+}
+    ${LightCertFragmentDoc}
+${LightIdentityFragmentDoc}`;
 export const TransferFragmentDoc = gql`
-  fragment Transfer on Transfer {
-    id
-    __typename
-    amount
-    timestamp
-    blockNumber
-    from {
-      ...LightAccount
-    }
-    to {
-      ...LightAccount
+    fragment Transfer on Transfer {
+  id
+  __typename
+  amount
+  timestamp
+  blockNumber
+  from {
+    ...LightAccount
+  }
+  to {
+    ...LightAccount
+  }
+}
+    ${LightAccountFragmentDoc}`;
+export const TransferConnectionFragmentDoc = gql`
+    fragment TransferConnection on TransferConnection {
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+  edges {
+    node {
+      ...Transfer
     }
   }
-  ${LightAccountFragmentDoc}
-`;
-export const TransferConnectionFragmentDoc = gql`
-  fragment TransferConnection on TransferConnection {
-    pageInfo {
-      endCursor
-      hasNextPage
+}
+    ${TransferFragmentDoc}`;
+export const BlockByIdDocument = gql`
+    query BlockById($id: String!) {
+  blockConnection(where: {id: {_eq: $id}}) {
+    ...LightBlockConnection
+  }
+}
+    ${LightBlockConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class BlockByIdGQL extends Apollo.Query<BlockByIdQuery, BlockByIdQueryVariables> {
+    document = BlockByIdDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
     }
+  }
+export const BlocksDocument = gql`
+    query Blocks($where: BlockBoolExp, $first: Int!, $after: String, $orderBy: [BlockOrderBy!]) {
+  blockConnection(first: $first, after: $after, orderBy: $orderBy, where: $where) {
+    ...LightBlockConnection
+  }
+}
+    ${LightBlockConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class BlocksGQL extends Apollo.Query<BlocksQuery, BlocksQueryVariables> {
+    document = BlocksDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CertsConnectionByIssuerDocument = gql`
+    query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
+  identityConnection(where: {accountId: {_eq: $address}}) {
     edges {
       node {
-        ...Transfer
-      }
-    }
-  }
-  ${TransferFragmentDoc}
-`;
-export const BlockByIdDocument = gql`
-  query BlockById($id: String!) {
-    blockConnection(where: { id: { _eq: $id } }) {
-      ...LightBlockConnection
-    }
-  }
-  ${LightBlockConnectionFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class BlockByIdGQL extends Apollo.Query<BlockByIdQuery, BlockByIdQueryVariables> {
-  document = BlockByIdDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
-  }
-}
-export const BlocksDocument = gql`
-  query Blocks($where: BlockBoolExp, $first: Int!, $after: String, $orderBy: [BlockOrderBy!]) {
-    blockConnection(first: $first, after: $after, orderBy: $orderBy, where: $where) {
-      ...LightBlockConnection
-    }
-  }
-  ${LightBlockConnectionFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class BlocksGQL extends Apollo.Query<BlocksQuery, BlocksQueryVariables> {
-  document = BlocksDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
-  }
-}
-export const CertsConnectionByIssuerDocument = gql`
-  query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
-    identityConnection(where: { accountId: { _eq: $address } }) {
-      edges {
-        node {
-          aggregate: certIssuedAggregate {
-            aggregate {
-              count
-            }
+        aggregate: certIssuedAggregate(where: {isActive: {_eq: true}}) {
+          aggregate {
+            count
           }
-          connection: certIssued_connection(first: $first, after: $after, orderBy: $orderBy) {
-            ...CertIssuedConnection
-          }
+        }
+        connection: certIssued_connection(
+          first: $first
+          after: $after
+          orderBy: $orderBy
+          where: {isActive: {_eq: true}}
+        ) {
+          ...CertIssuedConnection
         }
       }
     }
   }
-  ${CertIssuedConnectionFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class CertsConnectionByIssuerGQL extends Apollo.Query<CertsConnectionByIssuerQuery, CertsConnectionByIssuerQueryVariables> {
-  document = CertsConnectionByIssuerDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
-  }
 }
+    ${CertIssuedConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CertsConnectionByIssuerGQL extends Apollo.Query<CertsConnectionByIssuerQuery, CertsConnectionByIssuerQueryVariables> {
+    document = CertsConnectionByIssuerDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const CertsConnectionByReceiverDocument = gql`
-  query CertsConnectionByReceiver($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
-    identityConnection(where: { accountId: { _eq: $address } }) {
-      edges {
-        node {
-          aggregate: certReceivedAggregate {
-            aggregate {
-              count
-            }
+    query CertsConnectionByReceiver($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
+  identityConnection(where: {accountId: {_eq: $address}}) {
+    edges {
+      node {
+        aggregate: certReceivedAggregate(where: {isActive: {_eq: true}}) {
+          aggregate {
+            count
           }
-          connection: certReceived_connection(first: $first, after: $after, orderBy: $orderBy) {
-            ...CertReceivedConnection
-          }
+        }
+        connection: certReceived_connection(
+          first: $first
+          after: $after
+          orderBy: $orderBy
+          where: {isActive: {_eq: true}}
+        ) {
+          ...CertReceivedConnection
         }
       }
     }
   }
-  ${CertReceivedConnectionFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class CertsConnectionByReceiverGQL extends Apollo.Query<CertsConnectionByReceiverQuery, CertsConnectionByReceiverQueryVariables> {
-  document = CertsConnectionByReceiverDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
-  }
 }
+    ${CertReceivedConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CertsConnectionByReceiverGQL extends Apollo.Query<CertsConnectionByReceiverQuery, CertsConnectionByReceiverQueryVariables> {
+    document = CertsConnectionByReceiverDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const TransferConnectionByAddressDocument = gql`
-  query TransferConnectionByAddress($address: String!, $first: Int!, $orderBy: [TransferOrderBy!]!, $after: String) {
-    transferConnection(
-      first: $first
-      after: $after
-      orderBy: $orderBy
-      where: { _or: [{ fromId: { _eq: $address } }, { toId: { _eq: $address } }] }
-    ) {
-      ...TransferConnection
-    }
-  }
-  ${TransferConnectionFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class TransferConnectionByAddressGQL extends Apollo.Query<TransferConnectionByAddressQuery, TransferConnectionByAddressQueryVariables> {
-  document = TransferConnectionByAddressDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
+    query TransferConnectionByAddress($address: String!, $first: Int!, $orderBy: [TransferOrderBy!]!, $after: String) {
+  transferConnection(
+    first: $first
+    after: $after
+    orderBy: $orderBy
+    where: {_or: [{fromId: {_eq: $address}}, {toId: {_eq: $address}}]}
+  ) {
+    ...TransferConnection
   }
 }
+    ${TransferConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class TransferConnectionByAddressGQL extends Apollo.Query<TransferConnectionByAddressQuery, TransferConnectionByAddressQueryVariables> {
+    document = TransferConnectionByAddressDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const WotSearchByTextDocument = gql`
-  query WotSearchByText($searchText: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
-    accountConnection(
-      first: $first
-      after: $after
-      orderBy: $orderBy
-      where: { _or: [{ id: { _ilike: $searchText } }, { identity: { name: { _ilike: $searchText } } }] }
-    ) {
-      ...LightAccountConnection
-    }
-  }
-  ${LightAccountConnectionFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class WotSearchByTextGQL extends Apollo.Query<WotSearchByTextQuery, WotSearchByTextQueryVariables> {
-  document = WotSearchByTextDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
+    query WotSearchByText($searchText: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
+  accountConnection(
+    first: $first
+    after: $after
+    orderBy: $orderBy
+    where: {_or: [{id: {_ilike: $searchText}}, {identity: {name: {_ilike: $searchText}}}]}
+  ) {
+    ...LightAccountConnection
   }
 }
+    ${LightAccountConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class WotSearchByTextGQL extends Apollo.Query<WotSearchByTextQuery, WotSearchByTextQueryVariables> {
+    document = WotSearchByTextDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const WotSearchByAddressDocument = gql`
-  query WotSearchByAddress($address: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
-    accountConnection(first: $first, after: $after, orderBy: $orderBy, where: { id: { _eq: $address } }) {
-      ...LightAccountConnection
-    }
-  }
-  ${LightAccountConnectionFragmentDoc}
-`;
-
-@Injectable({
-  providedIn: 'root',
-})
-export class WotSearchByAddressGQL extends Apollo.Query<WotSearchByAddressQuery, WotSearchByAddressQueryVariables> {
-  document = WotSearchByAddressDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
+    query WotSearchByAddress($address: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
+  accountConnection(
+    first: $first
+    after: $after
+    orderBy: $orderBy
+    where: {id: {_eq: $address}}
+  ) {
+    ...LightAccountConnection
   }
 }
+    ${LightAccountConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class WotSearchByAddressGQL extends Apollo.Query<WotSearchByAddressQuery, WotSearchByAddressQueryVariables> {
+    document = WotSearchByAddressDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const WotSearchLastDocument = gql`
-  query WotSearchLast($first: Int!, $after: String, $orderBy: [AccountOrderBy!], $pending: Boolean!) {
-    accountConnection(
-      first: $first
-      after: $after
-      orderBy: $orderBy
-      where: { _and: [{ identity: { id: { _isNull: false } } }, { identity: { membershipHistory: { eventId: { _isNull: $pending } } } }] }
-    ) {
-      ...LightAccountConnection
+    query WotSearchLast($first: Int!, $after: String, $orderBy: [AccountOrderBy!], $pending: Boolean!) {
+  accountConnection(
+    first: $first
+    after: $after
+    orderBy: $orderBy
+    where: {_and: [{identity: {id: {_isNull: false}}}, {identity: {membershipHistory: {eventId: {_isNull: $pending}}}}]}
+  ) {
+    ...LightAccountConnection
+  }
+}
+    ${LightAccountConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class WotSearchLastGQL extends Apollo.Query<WotSearchLastQuery, WotSearchLastQueryVariables> {
+    document = WotSearchLastDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
     }
   }
-  ${LightAccountConnectionFragmentDoc}
-`;
 
-@Injectable({
-  providedIn: 'root',
-})
-export class WotSearchLastGQL extends Apollo.Query<WotSearchLastQuery, WotSearchLastQueryVariables> {
-  document = WotSearchLastDocument;
-  client = 'indexer';
-  constructor(apollo: Apollo.Apollo) {
-    super(apollo);
-  }
-}
+  type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+  interface WatchQueryOptionsAlone<V> extends Omit<ApolloCore.WatchQueryOptions<V>, 'query' | 'variables'> {}
 
-interface WatchQueryOptionsAlone<V> extends Omit<ApolloCore.WatchQueryOptions<V>, 'query' | 'variables'> {}
+  interface QueryOptionsAlone<V> extends Omit<ApolloCore.QueryOptions<V>, 'query' | 'variables'> {}
 
-interface QueryOptionsAlone<V> extends Omit<ApolloCore.QueryOptions<V>, 'query' | 'variables'> {}
-
-@Injectable({ providedIn: 'root' })
-export class IndexerGraphqlService {
-  constructor(
-    private blockByIdGql: BlockByIdGQL,
-    private blocksGql: BlocksGQL,
-    private certsConnectionByIssuerGql: CertsConnectionByIssuerGQL,
-    private certsConnectionByReceiverGql: CertsConnectionByReceiverGQL,
-    private transferConnectionByAddressGql: TransferConnectionByAddressGQL,
-    private wotSearchByTextGql: WotSearchByTextGQL,
-    private wotSearchByAddressGql: WotSearchByAddressGQL,
-    private wotSearchLastGql: WotSearchLastGQL
-  ) {}
-
-  blockById(variables: BlockByIdQueryVariables, options?: QueryOptionsAlone<BlockByIdQueryVariables>) {
-    return this.blockByIdGql.fetch(variables, options);
-  }
-
-  blockByIdWatch(variables: BlockByIdQueryVariables, options?: WatchQueryOptionsAlone<BlockByIdQueryVariables>) {
-    return this.blockByIdGql.watch(variables, options);
-  }
-
-  blocks(variables: BlocksQueryVariables, options?: QueryOptionsAlone<BlocksQueryVariables>) {
-    return this.blocksGql.fetch(variables, options);
-  }
-
-  blocksWatch(variables: BlocksQueryVariables, options?: WatchQueryOptionsAlone<BlocksQueryVariables>) {
-    return this.blocksGql.watch(variables, options);
-  }
-
-  certsConnectionByIssuer(variables: CertsConnectionByIssuerQueryVariables, options?: QueryOptionsAlone<CertsConnectionByIssuerQueryVariables>) {
-    return this.certsConnectionByIssuerGql.fetch(variables, options);
-  }
-
-  certsConnectionByIssuerWatch(
-    variables: CertsConnectionByIssuerQueryVariables,
-    options?: WatchQueryOptionsAlone<CertsConnectionByIssuerQueryVariables>
-  ) {
-    return this.certsConnectionByIssuerGql.watch(variables, options);
-  }
-
-  certsConnectionByReceiver(
-    variables: CertsConnectionByReceiverQueryVariables,
-    options?: QueryOptionsAlone<CertsConnectionByReceiverQueryVariables>
-  ) {
-    return this.certsConnectionByReceiverGql.fetch(variables, options);
-  }
-
-  certsConnectionByReceiverWatch(
-    variables: CertsConnectionByReceiverQueryVariables,
-    options?: WatchQueryOptionsAlone<CertsConnectionByReceiverQueryVariables>
-  ) {
-    return this.certsConnectionByReceiverGql.watch(variables, options);
-  }
-
-  transferConnectionByAddress(
-    variables: TransferConnectionByAddressQueryVariables,
-    options?: QueryOptionsAlone<TransferConnectionByAddressQueryVariables>
-  ) {
-    return this.transferConnectionByAddressGql.fetch(variables, options);
-  }
-
-  transferConnectionByAddressWatch(
-    variables: TransferConnectionByAddressQueryVariables,
-    options?: WatchQueryOptionsAlone<TransferConnectionByAddressQueryVariables>
-  ) {
-    return this.transferConnectionByAddressGql.watch(variables, options);
+  @Injectable({ providedIn: 'root' })
+  export class IndexerGraphqlService {
+    constructor(
+      private blockByIdGql: BlockByIdGQL,
+      private blocksGql: BlocksGQL,
+      private certsConnectionByIssuerGql: CertsConnectionByIssuerGQL,
+      private certsConnectionByReceiverGql: CertsConnectionByReceiverGQL,
+      private transferConnectionByAddressGql: TransferConnectionByAddressGQL,
+      private wotSearchByTextGql: WotSearchByTextGQL,
+      private wotSearchByAddressGql: WotSearchByAddressGQL,
+      private wotSearchLastGql: WotSearchLastGQL
+    ) {}
+      
+    blockById(variables: BlockByIdQueryVariables, options?: QueryOptionsAlone<BlockByIdQueryVariables>) {
+      return this.blockByIdGql.fetch(variables, options)
+    }
+    
+    blockByIdWatch(variables: BlockByIdQueryVariables, options?: WatchQueryOptionsAlone<BlockByIdQueryVariables>) {
+      return this.blockByIdGql.watch(variables, options)
+    }
+    
+    blocks(variables: BlocksQueryVariables, options?: QueryOptionsAlone<BlocksQueryVariables>) {
+      return this.blocksGql.fetch(variables, options)
+    }
+    
+    blocksWatch(variables: BlocksQueryVariables, options?: WatchQueryOptionsAlone<BlocksQueryVariables>) {
+      return this.blocksGql.watch(variables, options)
+    }
+    
+    certsConnectionByIssuer(variables: CertsConnectionByIssuerQueryVariables, options?: QueryOptionsAlone<CertsConnectionByIssuerQueryVariables>) {
+      return this.certsConnectionByIssuerGql.fetch(variables, options)
+    }
+    
+    certsConnectionByIssuerWatch(variables: CertsConnectionByIssuerQueryVariables, options?: WatchQueryOptionsAlone<CertsConnectionByIssuerQueryVariables>) {
+      return this.certsConnectionByIssuerGql.watch(variables, options)
+    }
+    
+    certsConnectionByReceiver(variables: CertsConnectionByReceiverQueryVariables, options?: QueryOptionsAlone<CertsConnectionByReceiverQueryVariables>) {
+      return this.certsConnectionByReceiverGql.fetch(variables, options)
+    }
+    
+    certsConnectionByReceiverWatch(variables: CertsConnectionByReceiverQueryVariables, options?: WatchQueryOptionsAlone<CertsConnectionByReceiverQueryVariables>) {
+      return this.certsConnectionByReceiverGql.watch(variables, options)
+    }
+    
+    transferConnectionByAddress(variables: TransferConnectionByAddressQueryVariables, options?: QueryOptionsAlone<TransferConnectionByAddressQueryVariables>) {
+      return this.transferConnectionByAddressGql.fetch(variables, options)
+    }
+    
+    transferConnectionByAddressWatch(variables: TransferConnectionByAddressQueryVariables, options?: WatchQueryOptionsAlone<TransferConnectionByAddressQueryVariables>) {
+      return this.transferConnectionByAddressGql.watch(variables, options)
+    }
+    
+    wotSearchByText(variables: WotSearchByTextQueryVariables, options?: QueryOptionsAlone<WotSearchByTextQueryVariables>) {
+      return this.wotSearchByTextGql.fetch(variables, options)
+    }
+    
+    wotSearchByTextWatch(variables: WotSearchByTextQueryVariables, options?: WatchQueryOptionsAlone<WotSearchByTextQueryVariables>) {
+      return this.wotSearchByTextGql.watch(variables, options)
+    }
+    
+    wotSearchByAddress(variables: WotSearchByAddressQueryVariables, options?: QueryOptionsAlone<WotSearchByAddressQueryVariables>) {
+      return this.wotSearchByAddressGql.fetch(variables, options)
+    }
+    
+    wotSearchByAddressWatch(variables: WotSearchByAddressQueryVariables, options?: WatchQueryOptionsAlone<WotSearchByAddressQueryVariables>) {
+      return this.wotSearchByAddressGql.watch(variables, options)
+    }
+    
+    wotSearchLast(variables: WotSearchLastQueryVariables, options?: QueryOptionsAlone<WotSearchLastQueryVariables>) {
+      return this.wotSearchLastGql.fetch(variables, options)
+    }
+    
+    wotSearchLastWatch(variables: WotSearchLastQueryVariables, options?: WatchQueryOptionsAlone<WotSearchLastQueryVariables>) {
+      return this.wotSearchLastGql.watch(variables, options)
+    }
   }
 
-  wotSearchByText(variables: WotSearchByTextQueryVariables, options?: QueryOptionsAlone<WotSearchByTextQueryVariables>) {
-    return this.wotSearchByTextGql.fetch(variables, options);
+      export interface PossibleTypesResultData {
+        possibleTypes: {
+          [key: string]: string[]
+        }
+      }
+      const result: PossibleTypesResultData = {
+  "possibleTypes": {
+    "Node": [
+      "Account",
+      "Block",
+      "Call",
+      "Cert",
+      "CertEvent",
+      "ChangeOwnerKey",
+      "Event",
+      "Extrinsic",
+      "Identity",
+      "ItemsCounter",
+      "MembershipEvent",
+      "SmithCert",
+      "Transfer",
+      "UdHistory",
+      "UdReeval",
+      "UniversalDividend"
+    ]
   }
-
-  wotSearchByTextWatch(variables: WotSearchByTextQueryVariables, options?: WatchQueryOptionsAlone<WotSearchByTextQueryVariables>) {
-    return this.wotSearchByTextGql.watch(variables, options);
-  }
-
-  wotSearchByAddress(variables: WotSearchByAddressQueryVariables, options?: QueryOptionsAlone<WotSearchByAddressQueryVariables>) {
-    return this.wotSearchByAddressGql.fetch(variables, options);
-  }
-
-  wotSearchByAddressWatch(variables: WotSearchByAddressQueryVariables, options?: WatchQueryOptionsAlone<WotSearchByAddressQueryVariables>) {
-    return this.wotSearchByAddressGql.watch(variables, options);
-  }
-
-  wotSearchLast(variables: WotSearchLastQueryVariables, options?: QueryOptionsAlone<WotSearchLastQueryVariables>) {
-    return this.wotSearchLastGql.fetch(variables, options);
-  }
-
-  wotSearchLastWatch(variables: WotSearchLastQueryVariables, options?: WatchQueryOptionsAlone<WotSearchLastQueryVariables>) {
-    return this.wotSearchLastGql.watch(variables, options);
-  }
-}
-
-export interface PossibleTypesResultData {
-  possibleTypes: {
-    [key: string]: string[];
-  };
-}
-const result: PossibleTypesResultData = {
-  possibleTypes: {
-    Node: [
-      'Account',
-      'Block',
-      'Call',
-      'Cert',
-      'CertEvent',
-      'ChangeOwnerKey',
-      'Event',
-      'Extrinsic',
-      'Identity',
-      'ItemsCounter',
-      'MembershipEvent',
-      'SmithCert',
-      'Transfer',
-      'UdHistory',
-      'UdReeval',
-      'UniversalDividend',
-    ],
-  },
 };
-export default result;
+      export default result;
+    

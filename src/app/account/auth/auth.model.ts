@@ -1,9 +1,11 @@
 import { AppEvent } from '@app/shared/types';
 import { InjectionToken } from '@angular/core';
 import { ScryptParams } from '@app/account/crypto.utils';
-import { Account, AccountMeta, LoginOptions, SelectAccountOptions, UnlockOptions } from '@app/account/account.model';
+import { Account, AccountMeta, LoginMethodType, LoginOptions, SelectAccountOptions, UnlockOptions } from '@app/account/account.model';
 
 export interface IAuthController {
+  selectLoginMethod(event?: AppEvent, opts?: { auth?: boolean }): Promise<LoginMethodType>;
+
   login(event?: AppEvent, opts?: LoginOptions): Promise<Account>;
 
   createNew(opts?: { redirectToWalletPage?: boolean }): Promise<Account>;

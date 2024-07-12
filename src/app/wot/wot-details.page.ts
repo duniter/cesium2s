@@ -10,7 +10,7 @@ import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
 import { filter, map } from 'rxjs/operators';
 import { firstArrayValue, isNotNilOrBlank } from '@app/shared/functions';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { address2PubkeyV1, pubkeyV1Checksum } from '@app/shared/currencies';
 
 export interface WotDetailsPageState extends AppPageState {
@@ -143,15 +143,15 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
     this.resetError();
 
     try {
+      if (this.showToastOnCertify) await this.showToast({ id: 'cert', message: 'INFO.CERTIFICATION_PENDING', duration: -1 });
       const certHash = await this.accountsService.cert(issuer, this.account);
 
-      if (this.showToastOnCertify) {
-        await this.showToast({ message: 'INFO.CERTIFICATION_DONE' });
-      }
+      if (this.showToastOnCertify)
+        await this.showToast({ id: 'cert', message: 'INFO.CERTIFICATION_DONE', swipeGesture: 'vertical', color: 'secondary' });
 
       return certHash;
     } catch (err) {
-      this.setError(err);
+      this.showErrorToast(err, { id: 'cert' });
       this.markAsLoaded();
     }
   }

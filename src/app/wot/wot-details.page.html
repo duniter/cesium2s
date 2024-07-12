@@ -27,7 +27,7 @@
         <ion-label class="ion-text-end">
           <p translate>ACCOUNT.BALANCE</p>
           <h2 *rxIf="loaded$; else loadingText">
-            <b>{{ account$ | push | balance | amountFormat }}</b>
+            <b [innerHtml]="account$ | push | balance | amountFormat"></b>
           </h2>
           <ng-template #loadingText>
             <p translate>COMMON.LOADING</p>
@@ -52,6 +52,11 @@
   </div>
 
   <ion-list>
+    <ion-item *rxIf="error$; let error" lines="none" color="light">
+      <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
+      <ion-label color="danger">{{ error | translate }}</ion-label>
+    </ion-item>
+
     <ng-container *rxIf="account$; let account; suspense: skeletons">
       <!-- pubkey -->
       <ion-item *ngIf="account.address | addressToPubkeyV1; let pubkey" (click)="copyPubkey($event, pubkey)" tappable>

@@ -1,2 +1,9 @@
 #container {
 }
+
+ion-list {
+  ion-item.selected {
+    --background: rgba(var(--ion-color-primary-rgb), 0.14);
+    --color: var(--ion-color-primary);
+  }
+}

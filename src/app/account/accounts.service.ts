@@ -28,9 +28,10 @@ import { RxStartableService } from '@app/shared/services/rx-startable-service.cl
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { ED25519_SEED_LENGTH, SCRYPT_PARAMS } from '@app/account/crypto.utils';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { AppEvent } from '@app/shared/types';
 import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
+import { ExtrinsicError, ExtrinsicUtils } from '@app/shared/substrate/extrinsic.utils';
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -44,7 +45,7 @@ export interface WatchAccountDataOptions extends LoadAccountDataOptions {}
 
 export interface AccountsState {
   accounts: Account[];
-  password: string;
+  password?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -79,7 +80,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     this.start();
   }
 
-  protected async ngOnStart(): Promise<any> {
+  protected async ngOnStart(): Promise<AccountsState> {
     // Wait crypto to be loaded by browser
     await cryptoWaitReady();
 
@@ -92,7 +93,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     // Restoring accounts
     const accounts = await this.restoreAccounts(currency);
 
-    return {
+    return <AccountsState>{
       accounts,
     };
   }
@@ -199,7 +200,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     // Set password to AAAAA (or those defined in environment)
     this._password = data?.password || 'AAAAA';
 
-    if (!data?.v1 && !data.v2) return; // Skip if no dev account defined
+    if (!data || (!data.v1 && !data.v2)) return; // Skip if no dev account defined
     data.meta = {
       isTesting: true,
       default: true,
@@ -583,6 +584,12 @@ export class AccountsService extends RxStartableService<AccountsState> {
     // Get issuer account
     const issuerAccount = await this.getByAddress(from.address);
 
+    // Check enough credit
+    const fee = currency.fees.cert;
+    if (fee > issuerAccount.data.free) {
+      throw new Error('ERROR.NOT_ENOUGH_CREDIT');
+    }
+
     console.info(`${this._logPrefix}Certifying...\nfrom: ${from.address}\nto ${to.address}`);
 
     // Get pair, and unlock it
@@ -594,24 +601,18 @@ export class AccountsService extends RxStartableService<AccountsState> {
       issuerPair.unlock(this._password);
     }
 
+    await this.ready();
+
     try {
-      await this.ready();
-      const certHash = await this.api.tx.certification.addCert(to.meta?.index).signAndSend(issuerPair, async ({ status, events }) => {
-        if (status.isInBlock) {
-          console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
-          console.info(`${this._logPrefix}Certifying completed at block hash #${status.hash.toHuman()}`);
+      const { status } = await ExtrinsicUtils.submit(this.api.tx.certification.addCert(to.meta?.index), issuerPair);
+      console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
+      console.info(`${this._logPrefix}Certifying completed at block hash #${status.hash.toHuman()}`);
 
-          if (this._debug) console.debug(`${this._logPrefix}Block events:`, JSON.stringify(events));
-        }
-      });
-
-      // Show the hash
-      console.info(`${this._logPrefix}Finalized hash ${certHash}`);
-
-      return certHash.toString();
+      return status.hash.toHuman();
     } catch (err) {
-      console.error(err);
-      throw new Error('ERROR.SEND_CERT_FAILED');
+      const error = new ExtrinsicError(this.api, err, 'ERROR.SEND_CERT_FAILED');
+      console.error(`${this._logPrefix}Cannot certify: ${error?.message || error}`);
+      throw error;
     }
   }
 
@@ -659,6 +660,8 @@ export class AccountsService extends RxStartableService<AccountsState> {
             ...account.meta,
             uid: indexedAccount.meta?.uid,
             isMember: indexedAccount.meta?.isMember,
+            status: indexedAccount.meta?.status,
+            createdOn: indexedAccount.meta?.createdOn,
           };
           changed = true;
         }

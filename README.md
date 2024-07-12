@@ -7,6 +7,19 @@ Cesium², running on Duniter v2s (Substrate).
 
 Cesium² use Angular, Ionic and Capacitor.
 
+## Roadmap
+
+Priority 1
+- [ ] First membership / certification / deposit / distance
+- [ ] Network scan ?
+
+Priority 2
+- [x] Login process should use a unique modal, and a method selector - issue #26
+- [ ] Directory (aka wot) search using Data Pod (see [duniter-panel](https://duniter--vue-coinduf-eu.ipns.pagu.re/))
+- [ ] Submit profile to Data pod (see ddd-ui)
+- [ ] TX comments
+
+
 ## Build
 
 ### In a post-it

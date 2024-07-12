@@ -17,10 +17,6 @@ export class DurationPipe implements PipeTransform {
     // try with moment
     const duration = toDuration(value, unit);
 
-    const days = duration.days();
-    const hour = duration.hours().toString().padStart(2, '0');
-    const minute = duration.minutes().toString().padStart(2, '0');
-
-    return (days > 0 ? days.toString() + (this.dayUnit + ' ') : '') + hour + ':' + minute;
+    return duration.humanize();
   }
 }

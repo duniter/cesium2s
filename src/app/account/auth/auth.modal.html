@@ -18,31 +18,77 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <app-auth-form #form [canRegister]="!auth" (validate)="doSubmit($event)" (cancel)="cancel()"></app-auth-form>
+<ion-content class="ion-padding-top">
+  <!-- login method -->
+  @if (!mobile) {
+    <div class="ion-text-end">
+      <ion-button slot="end" fill="clear" color="medium" (click)="changeAuthMethod($event)">
+        <ion-icon slot="start" name="build"></ion-icon>
+        <ion-text class="text-help" translate>LOGIN.BTN_METHODS</ion-text>
+      </ion-button>
+      <ion-button slot="end" fill="clear" (click)="showHelpModal('login-method')">
+        <ion-icon slot="icon-only" name="help-circle-outline"></ion-icon>
+      </ion-button>
+    </div>
+  }
+
+  @switch (loginMethod) {
+    @case ('v1') {
+      <ion-item lines="none"><ion-text class="text-help" [innerHTML]="'LOGIN.SCRYPT_FORM_HELP' | translate"></ion-text></ion-item>
+      <app-auth-form #formV1 [canRegister]="!auth" (validate)="doSubmit($event)" (cancel)="cancel()" (ngInit)="setForm(formV1)"></app-auth-form>
+    }
+    @case ('v2') {
+      <app-authv2-form #formV2 [canRegister]="!auth" (validate)="doSubmit($event)" (cancel)="cancel()" (ngInit)="setForm(formV2)"></app-authv2-form>
+    }
+    @case ('pubkey-v1') {
+      <ion-item lines="none"><ion-text class="text-help" [innerHTML]="'LOGIN.PUBKEY_FORM_HELP' | translate"></ion-text></ion-item>
+      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+    }
+    @case ('address') {
+      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+    }
+    @case ('keyfile-v1') {
+      <ion-item lines="none"><ion-text class="text-help" [innerHTML]="'LOGIN.FILE_FORM_HELP' | translate"></ion-text></ion-item>
+      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+    }
+    @default {
+      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+    }
+  }
+
+  @if (mobile) {
+    <div class="ion-text-center">
+      <ion-button color="light" size="medium" (click)="changeAuthMethod($event)">
+        <ion-icon slot="start" name="build"></ion-icon>
+        <ion-text translate>LOGIN.BTN_METHODS_DOTS</ion-text>
+      </ion-button>
+    </div>
+  }
 </ion-content>
 
-<ion-footer *ngIf="!mobile">
-  <ion-toolbar>
-    <ion-row class="ion-no-padding" nowrap>
-      <ion-col></ion-col>
+@if (!mobile) {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-row class="ion-no-padding" nowrap>
+        <ion-col></ion-col>
 
-      <!-- buttons -->
-      <ion-col size="auto">
-        <ion-button fill="clear" color="dark" (click)="cancel()">
-          <ion-label translate>COMMON.BTN_CANCEL</ion-label>
-        </ion-button>
+        <!-- buttons -->
+        <ion-col size="auto">
+          <ion-button fill="clear" color="dark" (click)="cancel()">
+            <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+          </ion-button>
 
-        <ion-button
-          [fill]="form.invalid ? 'clear' : 'solid'"
-          [disabled]="loading || form.invalid"
-          (click)="doSubmit()"
-          (keyup.enter)="doSubmit()"
-          [color]="auth ? 'danger' : 'tertiary'"
-        >
-          <ion-label translate>{{ auth ? 'AUTH.BTN_AUTH' : 'COMMON.BTN_LOGIN' }}</ion-label>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-toolbar>
-</ion-footer>
+          <ion-button
+            [fill]="invalid ? 'clear' : 'solid'"
+            [disabled]="loading || invalid"
+            (click)="doSubmit()"
+            (keyup.enter)="doSubmit()"
+            [color]="auth ? 'danger' : 'tertiary'"
+          >
+            <ion-label translate>{{ auth ? 'AUTH.BTN_AUTH' : 'COMMON.BTN_LOGIN' }}</ion-label>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-toolbar>
+  </ion-footer>
+}
