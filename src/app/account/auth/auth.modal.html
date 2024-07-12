@@ -40,6 +40,20 @@
     @case ('v2') {
       <app-authv2-form #formV2 [canRegister]="!auth" (validate)="doSubmit($event)" (cancel)="cancel()" (ngInit)="setForm(formV2)"></app-authv2-form>
     }
+    @case ('pubkey-v1') {
+      <ion-item lines="none"><ion-text class="text-help" [innerHTML]="'LOGIN.PUBKEY_FORM_HELP' | translate"></ion-text></ion-item>
+      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+    }
+    @case ('address') {
+      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+    }
+    @case ('keyfile-v1') {
+      <ion-item lines="none"><ion-text class="text-help" [innerHTML]="'LOGIN.FILE_FORM_HELP' | translate"></ion-text></ion-item>
+      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+    }
+    @default {
+      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+    }
   }
 
   @if (mobile) {

@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AccountsService } from '@app/account/accounts.service';
-import { AuthForm } from './auth.form';
 import { firstNotNilPromise } from '@app/shared/observables';
 
 import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
 import { AppEvent } from '@app/shared/types';
 import { LoginMethodType } from '@app/account/account.model';
 import { SettingsService } from '@app/settings/settings.service';
+import { AppForm } from '@app/shared/form.class';
 
 export interface AuthModalOptions {
   auth?: boolean;
@@ -24,7 +24,7 @@ export declare type AuthModalRole = 'CANCEL' | 'VALIDATE';
 })
 export class AuthModal implements OnInit, AuthModalOptions {
   protected mobile = this.settingsService.mobile;
-  protected form: AuthForm;
+  protected form: AppForm<AuthData>;
 
   get loading() {
     return this.form?.loading;
@@ -50,7 +50,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
     this.title = this.title || (this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE');
   }
 
-  setForm(form: AuthForm) {
+  setForm(form: AppForm<AuthData>) {
     this.form = form;
     this.form.markAsReady({ emitEvent: false });
     this.form.markAsLoaded();

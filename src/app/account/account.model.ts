@@ -128,7 +128,7 @@ export interface SelectAccountOptions {
   isMember?: boolean;
 }
 
-export declare type LoginMethodType = 'v1' | 'v2' | 'keyfile-v1';
+export declare type LoginMethodType = 'v1' | 'v2' | 'pubkey-v1' | 'address' | 'keyfile-v1';
 export interface LoginMethodItem extends ListItem {
   auth?: boolean;
 }
