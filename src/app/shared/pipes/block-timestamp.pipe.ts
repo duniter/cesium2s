@@ -3,7 +3,7 @@ import { Moment } from 'moment';
 import { DateUtils } from '@app/shared/dates';
 import { NetworkService } from '@app/network/network.service';
 import { isNil } from '@app/shared/functions';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 
 @Pipe({
   name: 'blockTime',

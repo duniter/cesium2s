@@ -1,6 +1,6 @@
 import { Moment } from 'moment/moment';
 import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
-import { BlockBoolExp, BlockEdge } from '@app/network/indexer-types.generated';
+import { BlockBoolExp, BlockEdge } from '@app/network/indexer/indexer-types.generated';
 import { fromDateISOString } from '@app/shared/dates';
 
 export interface Block {

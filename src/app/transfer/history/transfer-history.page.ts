@@ -18,7 +18,7 @@ import {
   TransferSearchFilter,
   TransferSearchFilterUtils,
 } from '@app/transfer/transfer.model';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 
 export interface TransferHistoryPageState extends AppPageState {

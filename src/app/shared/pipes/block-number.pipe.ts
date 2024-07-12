@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { isNil } from '@app/shared/functions';
 import { SettingsService } from '@app/settings/settings.service';
 

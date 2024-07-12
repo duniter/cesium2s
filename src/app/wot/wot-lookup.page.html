@@ -112,18 +112,37 @@
             </ion-avatar>
             <ion-label>
               <h2>
-                <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
-                  <small><ion-icon name="person"></ion-icon></small>
+                <ion-text [color]="item.meta?.isMember && !item.meta.name ? 'primary' : 'dark'">
+                  @if (!item.meta?.name) {
+                    <ion-icon name="person"></ion-icon>
+                  }
                   @if (filter?.last) {
-                    {{ item.meta?.uid }}
+                    <span>{{ item | accountName: { listenChanges: false } }}</span>
                   } @else {
-                    <span [innerHTML]="item.meta?.uid | highlight: { search: searchText }"></span>
+                    <span [innerHTML]="item | accountName: { listenChanges: false } | highlight: { search: searchText }"></span>
                   }
                 </ion-text>
               </h2>
               <p>
-                <ion-icon name="key"></ion-icon>
-                {{ item.address | addressFormat }}
+                @if (item.meta.name && item.meta.uid) {
+                  <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
+                    <ion-icon name="person"></ion-icon>
+                    @if (filter?.last) {
+                      <span>{{ item.meta.uid }}</span>
+                    } @else {
+                      <span [innerHTML]="item.meta.uid | highlight: { search: searchText }"></span>
+                    }
+                  </ion-text>
+                }
+                <!-- address -->
+                <ion-text>
+                  <ion-icon name="key"></ion-icon>
+                  <span>{{ item.address | addressFormat }}</span>
+                </ion-text>
+                <!-- not member -->
+                @if (!item.meta?.isMember) {
+                  <ion-text color="danger" translate>WOT.NOT_MEMBER_PARENTHESIS</ion-text>
+                }
               </p>
             </ion-label>
             <ion-button

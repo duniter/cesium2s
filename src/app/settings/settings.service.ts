@@ -81,9 +81,13 @@ export class SettingsService extends RxStartableService<SettingsState> {
       locale: environment.defaultLocale,
       peer: environment.dev?.peer || environment.defaultPeers?.[0],
       indexer: environment.dev?.indexer || environment.defaultIndexers?.[0],
+      pod: environment.dev?.pod || environment.defaultPods?.[0],
+      ipfsGateway: environment.dev?.ipfsGateway || environment.defaultIfpsGateways?.[0],
       ...this.get(),
       preferredPeers: arrayDistinct([...environment.defaultPeers, ...(data?.preferredPeers || [])]),
       preferredIndexers: arrayDistinct([...environment.defaultIndexers, ...(data?.preferredIndexers || [])]),
+      preferredPods: arrayDistinct([...environment.defaultPods, ...(data?.preferredPods || [])]),
+      preferredIpfsGateways: arrayDistinct([...environment.defaultIfpsGateways, ...(data?.preferredIpfsGateways || [])]),
     };
   }
 
@@ -98,6 +102,8 @@ export class SettingsService extends RxStartableService<SettingsState> {
       // Merge default and restored data
       preferredPeers: arrayDistinct([...environment.defaultPeers, ...(data?.preferredPeers || [])]),
       preferredIndexers: arrayDistinct([...environment.defaultIndexers, ...(data?.preferredIndexers || [])]),
+      preferredPods: arrayDistinct([...environment.defaultPods, ...(data?.preferredPods || [])]),
+      preferredIpfsGateways: arrayDistinct([...environment.defaultIfpsGateways, ...(data?.preferredIpfsGateways || [])]),
     };
   }
 

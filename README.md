@@ -14,7 +14,7 @@ Priority 1
 - [ ] Network scan ?
 
 Priority 2
-- [ ] Login process (use a unique modal + a login method popover)
+- [x] Login process should use a unique modal, and a method selector - issue #26
 - [ ] Directory (aka wot) search using Data Pod (see [duniter-panel](https://duniter--vue-coinduf-eu.ipns.pagu.re/))
 - [ ] Submit profile to Data pod (see ddd-ui)
 - [ ] TX comments

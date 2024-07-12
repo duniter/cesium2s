@@ -11,7 +11,7 @@ import { AccountsService } from '@app/account/accounts.service';
 import { firstValueFrom, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 import { Certification, CertificationSearchFilter, CertificationSearchFilterUtils } from './cert-history.model';
 import { ListItems } from '@app/shared/types';

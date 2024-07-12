@@ -1,7 +1,9 @@
 import { HexString } from '@polkadot/util/types';
 import { ListItem } from '@app/shared/popover/list.popover';
 import { formatAddress } from '@app/shared/currencies';
-import { IdentityStatusEnum } from '@app/network/indexer-types.generated';
+import { IdentityStatusEnum } from '@app/network/indexer/indexer-types.generated';
+import { isEmptyArray } from '@app/shared/functions';
+import { combineLoadResults, LoadResult } from '@app/shared/services/service.model';
 
 export interface AddressSquid {
   index: number;
@@ -73,11 +75,42 @@ export class AccountUtils {
   }
 
   static getDisplayName(account: Partial<Account>) {
-    return account?.meta?.name || account?.meta?.uid || formatAddress(account?.address) || '';
+    if (!account) return '';
+    return account.meta?.name || account.meta?.uid || formatAddress(account.address) || '';
   }
 
   static isEquals(a1: Account, a2: Account) {
     return a1 === a2 || (a1 && a1.address && a1.address === a2?.address);
+  }
+
+  static mergeAll(accounts: Account[]): Account[] {
+    if (isEmptyArray(accounts)) return accounts; // Nothing to merge
+
+    const mapByAddress = {};
+    return accounts.reduce((res, item) => {
+      const existingItem = mapByAddress[item.address];
+      if (existingItem) {
+        AccountUtils.merge(existingItem, item);
+        return res;
+      }
+      mapByAddress[item.address] = item;
+      return res.concat(item);
+    }, []);
+  }
+
+  static merge(target: Account, source: Account): Account {
+    if (target.address !== source.address) throw new Error('Both account should have same address!');
+    if (source.meta) {
+      target.meta = { ...source.meta, ...target.meta };
+    }
+    if (source.data) {
+      target.data = { ...source.data, ...target.data };
+    }
+    return target;
+  }
+
+  static combineAccountLoadResults(results: LoadResult<Account>[]): LoadResult<Account> {
+    return combineLoadResults(results, { reduce: AccountUtils.mergeAll });
   }
 }
 

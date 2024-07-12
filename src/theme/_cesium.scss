@@ -57,6 +57,8 @@ ion-list {
       --border-radius: 5px !important;
       --border-width: 1px !important;
       --border-color: var(--ion-color-step-150) !important;
+      overflow: hidden;
+      border: var(--border-width, 1px) solid var(--border-color, grey);
     }
 
     a {

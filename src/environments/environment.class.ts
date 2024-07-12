@@ -15,6 +15,8 @@ export interface Environment {
 
   defaultPeers: string[];
   defaultIndexers: string[];
+  defaultPods: string[];
+  defaultIfpsGateways: string[];
 
   // GraphQL
   graphql: {
@@ -37,6 +39,8 @@ export interface Environment {
     // Default peer
     peer?: string;
     indexer?: string;
+    pod?: string;
+    ipfsGateway?: string;
 
     // Load polkadot default account (alice, etc.)
     testingAccounts?: boolean;

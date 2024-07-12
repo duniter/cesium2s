@@ -52,6 +52,7 @@ import { environment } from '@environments/environment';
 import { RxStartableService, RxStartableServiceOptions } from '@app/shared/services/rx-startable-service.class';
 import { Peer, Peers } from '../peer.model';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
+import { Promise } from '@rx-angular/cdk/zone-less/browser';
 // Workaround for issue https://github.com/ng-packagr/ng-packagr/issues/2215
 const QueueLink = unwrapESModule(queueLinkImported);
 const SerializingLink = unwrapESModule(serializingLinkImported);
@@ -928,5 +929,31 @@ export abstract class GraphqlService<
       return error as AppError;
     }
     return undefined;
+  }
+
+  protected async filterAlivePeers(
+    peers: string[],
+    opts?: {
+      timeout?: number;
+    }
+  ): Promise<Peer[]> {
+    return (
+      await Promise.all(
+        peers.map((peer) => Peers.fromUri(peer)).map((peer) => this.isPeerAlive(peer, opts).then((alive) => (alive ? peer : undefined)))
+      )
+    ).filter(isNotNil);
+  }
+
+  protected async isPeerAlive(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    peer: Peer,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    opts?: {
+      timeout?: number;
+    }
+  ): Promise<boolean> {
+    // TODO
+    console.log(`${this._logPrefix}TODO: implement ${this.constructor.name}.isPeerAlive()`, peer);
+    return Promise.resolve(true);
   }
 }
