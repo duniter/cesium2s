@@ -190,11 +190,11 @@
         *rxFor="let peer of peers$"
         tappable
         (click)="setStateValue(peer, property) && modal.dismiss()"
-        [color]="peer === this[property] ? 'secondary100' : undefined"
+        [class.selected]="peer === this[property]"
       >
         <ion-label>{{ peer }}</ion-label>
         @if (property && peer === this[property]) {
-          <ion-badge color="tertiary" translate>CURRENCY.VIEW.CURRENT</ion-badge>
+          <ion-icon slot="end" name="checkmark"></ion-icon>
         }
       </ion-item>
     </ion-list>
