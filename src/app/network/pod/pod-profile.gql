@@ -1,0 +1,52 @@
+fragment LightProfile on profiles {
+  id: data_cid
+  __typename
+  address: pubkey
+  title
+  avatar_cid: avatar
+  time
+}
+
+fragment Profile on profiles {
+  ...LightProfile
+  description
+  city
+  geoloc
+  socials
+  index_request_cid
+}
+
+query ProfileSearchByText(
+  $searchText: String!,
+  $limit: Int!,
+  $offset: Int!,
+  $orderBy: [profiles_order_by!],
+  $withTotal: Boolean!
+) {
+  profiles(
+    offset: $offset,
+    limit: $limit,
+    where: { title: { _ilike: $searchText } },
+    order_by: $orderBy
+  ) {
+    ...LightProfile
+  }
+
+  profiles_aggregate(where: { title: { _ilike: $searchText } }) @include (if: $withTotal) {
+    aggregate {
+      count
+    }
+  }
+}
+
+query ProfileByAddress($address: String!) {
+  profiles_by_pk(pubkey: $address) {
+    ...Profile
+  }
+}
+
+query ProfileSearchByAddresses($addresses: [String!]!) {
+  profiles(where: {pubkey: { _in: $addresses}}) {
+    ...LightProfile
+  }
+}

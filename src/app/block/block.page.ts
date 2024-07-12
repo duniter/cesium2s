@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { Promise } from '@rx-angular/cdk/zone-less/browser';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { Block } from '@app/block/block.model';
 import { firstValueFrom, Observable } from 'rxjs';
 import { isNotNil, isNotNilOrBlank } from '@app/shared/functions';

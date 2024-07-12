@@ -60,6 +60,7 @@
         </ion-button>
       </ion-item>
 
+      <!-- indexer -->
       <ion-item>
         <ion-icon slot="start" name="cloud-done"></ion-icon>
         <ion-label>
@@ -70,6 +71,36 @@
         </ion-label>
 
         <ion-button slot="end" (click)="selectIndexerModal.present()" [title]="'SETTINGS.POPUP_PEER.BTN_SHOW_LIST' | translate">
+          <ion-label>...</ion-label>
+        </ion-button>
+      </ion-item>
+
+      <!-- pod -->
+      <ion-item>
+        <ion-icon slot="start" name="cloud-done"></ion-icon>
+        <ion-label>
+          <h2 color="dark" translate>SETTINGS.POD</h2>
+          <p>
+            {{ pod }}
+          </p>
+        </ion-label>
+
+        <ion-button slot="end" (click)="selectPodModal.present()" [title]="'SETTINGS.POPUP_PEER.BTN_SHOW_LIST' | translate">
+          <ion-label>...</ion-label>
+        </ion-button>
+      </ion-item>
+
+      <!-- ipfs -->
+      <ion-item>
+        <ion-icon slot="start" name="cloud-done"></ion-icon>
+        <ion-label>
+          <h2 color="dark" translate>SETTINGS.IPFS</h2>
+          <p>
+            {{ ipfsGateway }}
+          </p>
+        </ion-label>
+
+        <ion-button slot="end" (click)="selectIpfsGatewayModal.present()" [title]="'SETTINGS.POPUP_PEER.BTN_SHOW_LIST' | translate">
           <ion-label>...</ion-label>
         </ion-button>
       </ion-item>
@@ -112,47 +143,76 @@
 <!-- Select peers modal -->
 <ion-modal #selectPeerModal [backdropDismiss]="true">
   <ng-template>
-    <ion-header>
-      <ion-toolbar color="secondary">
-        <ion-buttons slot="start">
-          <ion-button (click)="selectPeerModal.dismiss()" *ngIf="mobile">
-            <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-
-        <ion-title translate>SETTINGS.POPUP_PEER.BTN_SHOW_LIST</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <ion-list>
-        <ion-item *rxFor="let peer of preferredPeers$" tappable (click)="selectPeer(peer)">
-          <ion-label>{{ peer }}</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-content>
+    <ng-container *ngTemplateOutlet="peerList; context: { $implicit: preferredPeers$, modal: selectPeerModal, property: 'peer' }"></ng-container>
   </ng-template>
 </ion-modal>
 
 <!-- select indexer modal -->
 <ion-modal #selectIndexerModal [backdropDismiss]="true">
   <ng-template>
-    <ion-header>
-      <ion-toolbar color="secondary">
-        <ion-buttons slot="start">
-          <ion-button (click)="selectIndexerModal.dismiss()" *ngIf="mobile">
-            <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-
-        <ion-title translate>SETTINGS.POPUP_PEER.BTN_SHOW_LIST</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <ion-list>
-        <ion-item *rxFor="let peer of preferredIndexers$" tappable (click)="selectIndexer(peer)">
-          <ion-label>{{ peer }}</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-content>
+    <ng-container
+      *ngTemplateOutlet="peerList; context: { $implicit: preferredIndexers$, modal: selectIndexerModal, property: 'indexer' }"
+    ></ng-container>
   </ng-template>
 </ion-modal>
+
+<!-- select pod modal -->
+<ion-modal #selectPodModal [backdropDismiss]="true">
+  <ng-template>
+    <ng-container *ngTemplateOutlet="peerList; context: { $implicit: preferredPods$, modal: selectPodModal, property: 'pod' }"></ng-container>
+  </ng-template>
+</ion-modal>
+
+<!-- select IPFS modal -->
+<ion-modal #selectIpfsGatewayModal [backdropDismiss]="true">
+  <ng-template>
+    <ng-container
+      *ngTemplateOutlet="peerList; context: { $implicit: preferredIpfsGateways$, modal: selectIpfsGatewayModal, property: 'ipfsGateway' }"
+    ></ng-container>
+  </ng-template>
+</ion-modal>
+
+<ng-template #peerList let-peers$ let-property="property" let-modal="modal">
+  <ion-header>
+    <ion-toolbar color="secondary">
+      <ion-buttons slot="start">
+        <ion-button (click)="modal.dismiss()" *ngIf="mobile">
+          <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+
+      <ion-title translate>SETTINGS.POPUP_PEER.BTN_SHOW_LIST</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item
+        *rxFor="let peer of peers$"
+        tappable
+        (click)="setStateValue(peer, property) && modal.dismiss()"
+        [color]="peer === this[property] ? 'secondary100' : undefined"
+      >
+        <ion-label>{{ peer }}</ion-label>
+        @if (property && peer === this[property]) {
+          <ion-badge color="tertiary" translate>CURRENCY.VIEW.CURRENT</ion-badge>
+        }
+      </ion-item>
+    </ion-list>
+  </ion-content>
+  @if (!mobile) {
+    <ion-footer>
+      <ion-toolbar>
+        <ion-row class="ion-no-padding">
+          <ion-col></ion-col>
+
+          <!-- buttons -->
+          <ion-col size="auto">
+            <ion-button fill="clear" color="dark" (click)="modal.dismiss()">
+              <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-toolbar>
+    </ion-footer>
+  }
+</ng-template>

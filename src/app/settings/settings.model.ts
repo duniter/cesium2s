@@ -15,6 +15,10 @@ export interface Settings {
   preferredPeers?: string[];
   indexer: string;
   preferredIndexers?: string[];
+  pod: string;
+  preferredPods?: string[];
+  ipfsGateway: string;
+  preferredIpfsGateways?: string[];
   pages?: any;
   locale?: string;
   mobile?: boolean;

@@ -50,6 +50,7 @@ export const environment = <Environment>{
   },
 
   defaultPeers: [
+    /* Local endpoint */
     //'ws://127.0.0.1:9944',
     /* GDev endpoints */
     'wss://gdev.coinduf.eu/ws',
@@ -61,8 +62,25 @@ export const environment = <Environment>{
   ],
 
   defaultIndexers: [
+    /* Local endpoint */
+    //'http://localhost:8080/v1/graphql',
+    /* GDev endpoints */
     'https://gdev-squid.axiom-team.fr/v1beta1/relay',
     'https://squid.gdev.coinduf.eu/v1beta1/relay',
     //'https://gdev-squid.axiom-team.fr/graphql'
+  ],
+
+  defaultPods: [
+    /* Local endpoint */
+    // 'http://localhost:8081/v1/graphql'
+    /* GDev endpoints */
+    'https://datapod.coinduf.eu/v1/graphql',
+  ],
+
+  defaultIfpsGateways: [
+    /* Local endpoint */
+    // 'http://localhost:8080'
+    /* GDev endpoints */
+    'https://pagu.re',
   ],
 };

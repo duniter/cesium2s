@@ -23,7 +23,8 @@ import { AccountsService } from '@app/account/accounts.service';
 import { AppAccountModule } from '@app/account/account.module';
 import { AppTransferModule } from '@app/transfer/send/transfer.module';
 import { APP_GRAPHQL_TYPE_POLICIES } from '@app/shared/services/network/graphql/graphql.service';
-import { INDEXER_GRAPHQL_TYPE_POLICIES } from '@app/network/indexer.config';
+import { INDEXER_GRAPHQL_TYPE_POLICIES } from '@app/network/indexer/indexer.config';
+import { POD_GRAPHQL_TYPE_POLICIES } from '@app/network/pod/pod.config';
 
 export function createTranslateLoader(http: HttpClient) {
   if (environment.production) {
@@ -69,6 +70,7 @@ export function createTranslateLoader(http: HttpClient) {
       provide: APP_GRAPHQL_TYPE_POLICIES,
       useValue: {
         ...INDEXER_GRAPHQL_TYPE_POLICIES,
+        ...POD_GRAPHQL_TYPE_POLICIES,
       },
     },
     { provide: APP_STORAGE, useExisting: StorageService },

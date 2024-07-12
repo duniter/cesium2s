@@ -1,5 +1,5 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Peer, Peers } from '@app/shared/services/network/peer.model';
+import { Peers } from '@app/shared/services/network/peer.model';
 import { Promise } from '@rx-angular/cdk/zone-less/browser';
 import { SettingsService } from '@app/settings/settings.service';
 import { arrayRandomPick, firstArrayValue, isNil, isNotNil, isNotNilOrBlank, toBoolean, toNumber } from '@app/shared/functions';
@@ -56,7 +56,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
   constructor(
     storage: StorageService,
     private settings: SettingsService,
-    private indexerGraphqlService: IndexerGraphqlService,
+    private graphqlService: IndexerGraphqlService,
     @Optional() @Inject(APP_GRAPHQL_TYPE_POLICIES) typePolicies: TypePolicies,
     @Optional() @Inject(APP_GRAPHQL_FRAGMENTS) fragments: DocumentNode[]
   ) {
@@ -95,7 +95,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
     let data$: Observable<LightAccountConnectionFragment>;
     if (isNotNilOrBlank(filter.address)) {
-      data$ = this.indexerGraphqlService
+      data$ = this.graphqlService
         .wotSearchByAddress(
           {
             address: filter.address,
@@ -109,7 +109,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
         )
         .pipe(map(({ data }) => data.accountConnection as LightAccountConnectionFragment));
     } else if (isNotNilOrBlank(filter.searchText)) {
-      data$ = this.indexerGraphqlService
+      data$ = this.graphqlService
         .wotSearchByText(
           {
             searchText: `%${filter.searchText}%`,
@@ -123,8 +123,8 @@ export class IndexerService extends GraphqlService<IndexerState> {
         )
         .pipe(map(({ data }) => data.accountConnection as LightAccountConnectionFragment));
     } else {
-      data$ = this.indexerGraphqlService
-        .wotSearchLastWatch(
+      data$ = this.graphqlService
+        .wotSearchLast(
           {
             after: options.after,
             first: options.first,
@@ -135,12 +135,12 @@ export class IndexerService extends GraphqlService<IndexerState> {
             fetchPolicy: options.fetchPolicy || 'cache-first',
           }
         )
-        .valueChanges.pipe(map(({ data }) => data.accountConnection as LightAccountConnectionFragment));
+        .pipe(map(({ data }) => data.accountConnection as LightAccountConnectionFragment));
     }
 
     return data$.pipe(
       map((connection: LightAccountConnectionFragment) => {
-        const data = AccountConverter.connectionToAccounts(connection);
+        const data = AccountConverter.squidConnectionToAccounts(connection);
         const result: LoadResult<Account> = { data };
         if (connection.pageInfo.hasNextPage) {
           const endCursor = connection.pageInfo.endCursor;
@@ -166,7 +166,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
     };
 
     if (filter?.address) {
-      return this.indexerGraphqlService
+      return this.graphqlService
         .transferConnectionByAddress(
           {
             address: filter.address,
@@ -224,14 +224,14 @@ export class IndexerService extends GraphqlService<IndexerState> {
       return result;
     };
     if (isNotNilOrBlank(filter.issuer)) {
-      return this.indexerGraphqlService.certsConnectionByIssuer(variables, fetchOptions).pipe(
+      return this.graphqlService.certsConnectionByIssuer(variables, fetchOptions).pipe(
         map(({ data }) => {
           const res = data.identityConnection.edges[0]?.node;
           return toEntities(res?.connection as CertConnection, res?.aggregate.aggregate.count || 0);
         })
       );
     } else {
-      return this.indexerGraphqlService.certsConnectionByReceiver(variables, fetchOptions).pipe(
+      return this.graphqlService.certsConnectionByReceiver(variables, fetchOptions).pipe(
         map(({ data }) => {
           const res = data.identityConnection.edges[0]?.node;
           return toEntities(res?.connection as CertConnection, res?.aggregate.aggregate.count || 0);
@@ -255,7 +255,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
     }
 
     if (isNotNilOrBlank(filter?.height)) {
-      return this.indexerGraphqlService
+      return this.graphqlService
         .blocks({
           ...options,
           after: null,
@@ -265,7 +265,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
         .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlocks(blockConnection.edges as BlockEdge[], true)));
     }
 
-    return this.indexerGraphqlService
+    return this.graphqlService
       .blocks({
         ...options,
         where: filter?.where,
@@ -275,7 +275,7 @@ export class IndexerService extends GraphqlService<IndexerState> {
 
   blockById(id: string): Observable<Block> {
     console.info(`${this._logPrefix}Loading block #${id}`);
-    return this.indexerGraphqlService
+    return this.graphqlService
       .blockById({ id })
       .pipe(map(({ data: { blockConnection } }) => BlockConverter.toBlock(blockConnection.edges[0] as BlockEdge)));
   }
@@ -307,41 +307,5 @@ export class IndexerService extends GraphqlService<IndexerState> {
       fetchSize: this.defaultFetchSize,
       minBlockHeight: currency?.minBlockHeight,
     };
-  }
-
-  protected async ngOnStop(): Promise<void> {
-    super.ngOnStop();
-  }
-
-  protected async filterAlivePeers(
-    peers: string[],
-    opts?: {
-      timeout?: number;
-    }
-  ): Promise<Peer[]> {
-    const result: Peer[] = [];
-    await Promise.all(
-      peers
-        .map((peer) => Peers.fromUri(peer))
-        .map((peer) =>
-          this.isPeerAlive(peer, opts).then((alive) => {
-            if (!alive) return;
-            result.push(peer);
-          })
-        )
-    );
-    return result;
-  }
-
-  protected async isPeerAlive(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    peer: Peer,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    opts?: {
-      timeout?: number;
-    }
-  ): Promise<boolean> {
-    // TODO
-    return Promise.resolve(true);
   }
 }

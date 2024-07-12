@@ -28,7 +28,7 @@ import { RxStartableService } from '@app/shared/services/rx-startable-service.cl
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { ED25519_SEED_LENGTH, SCRYPT_PARAMS } from '@app/account/crypto.utils';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { AppEvent } from '@app/shared/types';
 import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
 import { ExtrinsicError, ExtrinsicUtils } from '@app/shared/substrate/extrinsic.utils';

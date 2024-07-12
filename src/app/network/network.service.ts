@@ -8,10 +8,11 @@ import { RxStartableService } from '@app/shared/services/rx-startable-service.cl
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { mergeMap, Observable, tap } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { arrayRandomPick, isNotNilOrBlank, toNumber } from '@app/shared/functions';
-import { IndexerService } from './indexer.service';
+import { arrayRandomPick, isNotNil, isNotNilOrBlank, toNumber } from '@app/shared/functions';
+import { IndexerService } from './indexer/indexer.service';
 import { fromDateISOString } from '@app/shared/dates';
 import { ContextService } from '@app/shared/services/storage/context.service';
+import { PodService } from '@app/network/pod/pod.service';
 
 export interface NetworkState {
   peer: Peer;
@@ -24,6 +25,7 @@ export interface NetworkState {
 @Injectable({ providedIn: 'root' })
 export class NetworkService extends RxStartableService<NetworkState> {
   indexer = inject(IndexerService);
+  pod = inject(PodService);
 
   @RxStateProperty() peer: Peer;
   @RxStateProperty() currency: Currency;
@@ -147,8 +149,10 @@ export class NetworkService extends RxStartableService<NetworkState> {
 
     const ud0 = toNumber(api.consts.universalDividend.unitsPerUd) / currency.powBase;
 
+    // Configure and start indexer and pod
     this.indexer.currency = currency;
-    await this.indexer.start();
+    this.pod.currency = currency;
+    await Promise.all([this.indexer.start(), this.pod.start()]);
 
     return {
       api,
@@ -172,18 +176,11 @@ export class NetworkService extends RxStartableService<NetworkState> {
       timeout?: number;
     }
   ): Promise<Peer[]> {
-    const result: Peer[] = [];
-    await Promise.all(
-      peers
-        .map((peer) => Peers.fromUri(peer))
-        .map((peer) =>
-          this.isPeerAlive(peer).then((alive) => {
-            if (!alive) return;
-            result.push(peer);
-          })
-        )
-    );
-    return result;
+    return (
+      await Promise.all(
+        peers.map((peer) => Peers.fromUri(peer)).map((peer) => this.isPeerAlive(peer, opts).then((alive) => (alive ? peer : undefined)))
+      )
+    ).filter(isNotNil);
   }
 
   protected async isPeerAlive(
