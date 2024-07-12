@@ -13,9 +13,10 @@ import { RxState } from '@rx-angular/state';
 import { InfiniteScrollCustomEvent, IonPopover, ModalController } from '@ionic/angular';
 
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { FetchMoreFn, LoadResult } from '@app/shared/services/service.model';
 import { environment } from '@environments/environment';
+import { WotService } from '@app/wot/wot.service';
 
 export interface WotLookupState extends AppPageState {
   searchText: string;
@@ -70,6 +71,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
 
   constructor(
     private indexerService: IndexerService,
+    private wotService: WotService,
     private modalCtrl: ModalController,
     @Inject(APP_TRANSFER_CONTROLLER) private transferController: ITransferController
   ) {
@@ -149,7 +151,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
 
   search(searchFilter?: WotSearchFilter, options?: { first: number; after: string }): Observable<LoadResult<Account>> {
     try {
-      return this.indexerService.wotSearch(searchFilter, options).pipe(
+      return this.wotService.wotSearch(searchFilter, options).pipe(
         filter(() => WotSearchFilterUtils.isEquals(this.filter, searchFilter)),
         tap(() => this.markAsLoaded())
       );
@@ -202,7 +204,9 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     await this.waitIdle();
 
     if (this.canFetchMore) {
-      console.debug(this._logPrefix + 'Fetching more items, from offset: ' + this.count, event);
+      // DEBUG
+      //console.debug(this._logPrefix + 'Fetching more items, from offset: ' + this.count, event);
+
       const { data, fetchMore } = await this.fetchMoreFn();
 
       if (data?.length) {

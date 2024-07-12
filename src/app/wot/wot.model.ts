@@ -14,6 +14,7 @@ export interface WotLookupOptions {
 
 export interface WotSearchFilter {
   address?: string;
+  addresses?: string[];
   searchText?: string;
   last?: boolean;
   pending?: boolean;

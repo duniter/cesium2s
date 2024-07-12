@@ -1,6 +1,6 @@
 import { equals, isNilOrBlank } from '@app/shared/functions';
 import { Account } from '@app/account/account.model';
-import { CertConnection, CertFragment } from '@app/network/indexer-types.generated';
+import { CertConnection, CertFragment } from '@app/network/indexer/indexer-types.generated';
 import { IdentityConverter } from '@app/account/account.converter';
 
 export interface Certification {

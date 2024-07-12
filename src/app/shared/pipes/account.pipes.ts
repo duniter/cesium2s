@@ -4,12 +4,15 @@ import { equals, getPropertyByPath } from '@app/shared/functions';
 import { Subscription } from 'rxjs';
 import { AccountsService, LoadAccountDataOptions } from '@app/account/accounts.service';
 
+export interface AccountAbstractPipeOptions {
+  listenChanges?: boolean;
+}
 // @dynamic
 /**
  * A common pipe, that will subscribe to all account changes, to refresh its value
  */
 @Injectable()
-export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
+export abstract class AccountAbstractPipe<T, O extends Object = AccountAbstractPipeOptions> implements PipeTransform {
   private value: T = null;
   private _lastAccount: Partial<Account> | null = null;
   private _lastOptions: O = null;
@@ -22,11 +25,11 @@ export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
     private _watchOptions?: LoadAccountDataOptions
   ) {}
 
-  transform(account: Partial<Account>, opts: O): T {
+  transform(account: Partial<Account>, opts?: O): T {
     // Not a user account (e.g. any wot identity)
     if (!account?.address) {
       this._dispose();
-      return this._transform(account);
+      return this._transform(account, opts);
     }
 
     // if we ask another time for the same account and opts, return the last value
@@ -46,8 +49,8 @@ export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
     // if there is a subscription to onLangChange, clean it
     this._dispose();
 
-    // subscribe to onTranslationChange event, in case the translations change
-    if (!this._changesSubscription) {
+    // subscribe to account changes
+    if (!this._changesSubscription && opts?.['listenChanges'] !== false) {
       this._changesSubscription = this._accountsService.watchByAddress(account.address, this._watchOptions).subscribe((updatedAccount) => {
         this.value = this._transform(updatedAccount, opts);
         this._cd.markForCheck();
@@ -76,7 +79,7 @@ export abstract class AccountAbstractPipe<T, O> implements PipeTransform {
   }
 }
 
-export declare type AccountPropertyPipeOptions<T> = string | { key?: string; defaultValue?: T };
+export declare type AccountPropertyPipeOptions<T> = string | (AccountAbstractPipeOptions & { key?: string; defaultValue?: T });
 
 @Pipe({
   name: 'accountProperty',
@@ -106,7 +109,7 @@ export class AccountPropertyPipe<T = never, O extends AccountPropertyPipeOptions
   name: 'balance',
   pure: false,
 })
-export class AccountBalancePipe extends AccountAbstractPipe<number, void> implements PipeTransform {
+export class AccountBalancePipe extends AccountAbstractPipe<number> implements PipeTransform {
   constructor(cd: ChangeDetectorRef) {
     super(cd, { withBalance: true });
   }
@@ -120,7 +123,7 @@ export class AccountBalancePipe extends AccountAbstractPipe<number, void> implem
   name: 'accountName',
   pure: false,
 })
-export class AccountNamePipe extends AccountAbstractPipe<string, void> implements PipeTransform {
+export class AccountNamePipe extends AccountAbstractPipe<string> implements PipeTransform {
   constructor(cd: ChangeDetectorRef) {
     super(cd, { withBalance: false });
   }
@@ -134,13 +137,13 @@ export class AccountNamePipe extends AccountAbstractPipe<string, void> implement
   name: 'isMemberAccount',
   pure: false,
 })
-export class IsMemberAccountPipe extends AccountAbstractPipe<boolean, void> implements PipeTransform {
+export class IsMemberAccountPipe extends AccountAbstractPipe<boolean> implements PipeTransform {
   constructor(cd: ChangeDetectorRef) {
     super(cd, { withBalance: false, withMembership: true });
   }
 
   protected _transform(account: Partial<Account>): boolean {
-    return (account && account.meta && account.meta.isMember === true) || false;
+    return (account?.meta && account.meta.isMember === true) || false;
   }
 }
 

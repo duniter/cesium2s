@@ -55,6 +55,10 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
   @RxStateSelect() peer$: Observable<string>;
   @RxStateSelect() preferredIndexers$: Observable<string[]>;
   @RxStateSelect() indexer$: Observable<string>;
+  @RxStateSelect() preferredPods$: Observable<string[]>;
+  @RxStateSelect() pod$: Observable<string>;
+  @RxStateSelect() preferredIpfsGateways$: Observable<string[]>;
+  @RxStateSelect() ipfsGateway$: Observable<string>;
   @RxStateSelect() dirty$: Observable<boolean>;
 
   @RxStateProperty() darkMode: boolean;
@@ -62,11 +66,15 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
   @RxStateProperty() useRelativeUnit: boolean;
   @RxStateProperty() peer: string;
   @RxStateProperty() indexer: string;
+  @RxStateProperty() pod: string;
+  @RxStateProperty() ipfsGateway: string;
   @RxStateProperty() unAuthDelayMs: number;
   @RxStateProperty() dirty: boolean;
 
   @ViewChild('selectPeerModal') selectPeerModal: IonModal;
   @ViewChild('selectIndexerModal') selectIndexerModal: IonModal;
+  @ViewChild('selectPodModal') selectPodModal: IonModal;
+  @ViewChild('selectIpfsGatewayModal') selectIpfsGatewayModal: IonModal;
 
   constructor(
     protected networkService: NetworkService,
@@ -79,13 +87,16 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
     this._state.connect('useRelativeUnit', this._state.select('displayUnit').pipe(map((unit) => unit === 'du')));
 
     // Detect changes
-    this._state.hold(this._state.select(['locale', 'peer', 'indexer', 'unAuthDelayMs', 'displayUnit'], (s) => s).pipe(skip(1)), () => {
-      if (this.mobile) {
-        this.save();
-      } else {
-        this.markAsDirty();
+    this._state.hold(
+      this._state.select(['locale', 'peer', 'indexer', 'pod', 'ipfsGateway', 'unAuthDelayMs', 'displayUnit'], (s) => s).pipe(skip(1)),
+      () => {
+        if (this.mobile) {
+          this.save();
+        } else {
+          this.markAsDirty();
+        }
       }
-    });
+    );
   }
 
   protected async ngOnLoad() {
@@ -106,14 +117,9 @@ export class SettingsPage extends AppPage<SettingsPageState> implements OnInit {
     this.dirty = false;
   }
 
-  selectPeer(peer: string) {
-    this.peer = peer;
-    this.selectPeerModal.dismiss();
-  }
-
-  selectIndexer(peer: string) {
-    this.indexer = peer;
-    this.selectIndexerModal.dismiss();
+  setStateValue(value: string, property: keyof Settings) {
+    this._state.set(property, () => value);
+    return true;
   }
 
   markAsDirty() {

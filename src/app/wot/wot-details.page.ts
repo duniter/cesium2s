@@ -10,7 +10,7 @@ import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController } from '@app/transfer/transfer.model';
 import { filter, map } from 'rxjs/operators';
 import { firstArrayValue, isNotNilOrBlank } from '@app/shared/functions';
-import { IndexerService } from '@app/network/indexer.service';
+import { IndexerService } from '@app/network/indexer/indexer.service';
 import { address2PubkeyV1, pubkeyV1Checksum } from '@app/shared/currencies';
 
 export interface WotDetailsPageState extends AppPageState {

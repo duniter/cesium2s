@@ -1,3 +1,25 @@
-ion-list.list-md {
-  padding-top: 0;
+ion-list {
+  &.list-md {
+    padding-top: 0;
+  }
+
+  --text-padding: 4px;
+  p {
+    --text-padding: 2px;
+  }
+
+  ion-item {
+    ion-text {
+      ion-icon {
+        width: 0.9em;
+        height: 0.9em;
+        vertical-align: baseline;
+      }
+      padding-inline-end: calc(var(--text-padding) * 2);
+    }
+
+    ion-text:has(ion-icon) span {
+      margin-inline-start: var(--text-padding);
+    }
+  }
 }
