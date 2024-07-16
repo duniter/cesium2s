@@ -25,6 +25,7 @@ import { AppTransferModule } from '@app/transfer/send/transfer.module';
 import { APP_GRAPHQL_TYPE_POLICIES } from '@app/shared/services/network/graphql/graphql.service';
 import { INDEXER_GRAPHQL_TYPE_POLICIES } from '@app/network/indexer/indexer.config';
 import { POD_GRAPHQL_TYPE_POLICIES } from '@app/network/pod/pod.config';
+import { AppWotModule } from './wot/wot.module';
 
 export function createTranslateLoader(http: HttpClient) {
   if (environment.production) {
@@ -59,6 +60,7 @@ export function createTranslateLoader(http: HttpClient) {
     AppSharedModule,
     AppAccountModule.forRoot(),
     AppTransferModule.forRoot(),
+    AppWotModule.forRoot(),
   ],
   providers: [
     PlatformService,

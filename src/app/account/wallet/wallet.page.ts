@@ -215,6 +215,9 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
   }
 
   async confirm(): Promise<void> {
+    // TODO ask user to login as the identity to let him confirm
+    // this.accountService.login(event, {})
+
     this.wotController.confirm();
   }
 }
