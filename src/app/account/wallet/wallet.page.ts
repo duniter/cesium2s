@@ -13,10 +13,13 @@ import { AccountsService } from '@app/account/accounts.service';
 import { map, merge, Observable } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { APP_TRANSFER_CONTROLLER, ITransferController, TransferFormOptions } from '@app/transfer/transfer.model';
+import { APP_WOT_CONTROLLER } from '@app/wot/wot.model';
+import { WotController } from '@app/wot/wot.controller';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppSharedModule } from '@app/shared/shared.module';
 import { AppAccountModule } from '@app/account/account.module';
 import { AppAuthModule } from '@app/account/auth/auth.module';
+import { IdentityStatusEnum } from '@app/network/indexer/indexer-types.generated';
 
 export interface WalletState extends AppPageState {
   accounts: Account[];
@@ -80,7 +83,8 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     protected route: ActivatedRoute,
     protected networkService: NetworkService,
     protected accountService: AccountsService,
-    @Inject(APP_TRANSFER_CONTROLLER) protected transferController: ITransferController
+    @Inject(APP_TRANSFER_CONTROLLER) protected transferController: ITransferController,
+    @Inject(APP_WOT_CONTROLLER) protected wotController: WotController
   ) {
     super({
       name: 'wallet-page',
@@ -204,5 +208,13 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
 
   transfer(opts?: TransferFormOptions) {
     return this.transferController.transfer({ account: this.account, ...opts });
+  }
+
+  isUnconfirmed() {
+    return this.account.meta.status == IdentityStatusEnum.Unconfirmed;
+  }
+
+  async confirm(): Promise<void> {
+    this.wotController.confirm();
   }
 }

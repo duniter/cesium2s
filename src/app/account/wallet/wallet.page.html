@@ -71,6 +71,13 @@
         <ion-icon slot="start" name="paper-plane"></ion-icon>
         <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
       </ion-button>
+
+      @if (isUnconfirmed) {
+        <ion-button (click)="confirm()" [disabled]="loading">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          <ion-label translate>COMMON.BTN_CONFIRM_IDTY</ion-label>
+        </ion-button>
+      }
     </div>
 
     <ion-list>

@@ -45,6 +45,7 @@
     "BTN_DOWNLOAD": "Download",
     "BTN_DOWNLOAD_ACCOUNT_STATEMENT": "Download account statement",
     "BTN_MODIFY": "Modify",
+    "BTN_CONFIRM_IDTY": "Confirm",
     "CHOOSE_FILE": "Drag your file<br/>or click to select",
     "DAYS": "days",
     "NO_ACCOUNT_QUESTION": "Not a member yet? Register now!",
