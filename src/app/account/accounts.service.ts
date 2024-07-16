@@ -32,6 +32,17 @@ import { IndexerService } from '@app/network/indexer/indexer.service';
 import { AppEvent } from '@app/shared/types';
 import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
 import { ExtrinsicError, ExtrinsicUtils } from '@app/shared/substrate/extrinsic.utils';
+import { IdentityStatusEnum } from '@app/network/indexer/indexer-types.generated';
+
+// kind of certify action
+enum CertType {
+  // first certification is actually an identity creation
+  IdentityCreation,
+  // normal cert creation
+  CertCreation,
+  // cert renewal
+  CertRenewal,
+}
 
 export interface LoadAccountDataOptions {
   reload?: boolean;
@@ -570,7 +581,35 @@ export class AccountsService extends RxStartableService<AccountsState> {
    */
   async cert(from: Partial<Account>, to: Partial<Account>): Promise<string> {
     if (!from || !to) throw new Error("Missing argument 'from' or 'to' !");
-    if (isNil(to.meta?.index)) throw new Error("Missing argument 'to.meta.index' !");
+    // certification type is unknown
+    let certType = null;
+
+    if (isNil(to.meta.status)) {
+      console.log('target has no identity, creating...');
+      certType = CertType.IdentityCreation;
+    } else {
+      // check if target has identity index (identity already created)
+      if (isNil(to.meta?.index)) throw new Error("Missing argument 'to.meta.index' !");
+      switch (to.meta.status) {
+        case IdentityStatusEnum.Revoked:
+          console.log('can not certify revoked identity');
+          break;
+        case IdentityStatusEnum.Unconfirmed:
+          console.log('can not certify unconfirmed identity');
+          break;
+        case IdentityStatusEnum.Unvalidated:
+          // TODO special case for last certification: request distance evaluation
+          break;
+        case IdentityStatusEnum.Notmember:
+          // TODO prevent certifying if lost membership for membership non renewal
+          break;
+        default:
+          // ok to certify
+          // TODO check if certification already exists (renewal)
+          certType = CertType.CertCreation;
+          break;
+      }
+    }
 
     // Check currency
     const currency = this.network.currency;
@@ -582,7 +621,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
     }
 
     // Get issuer account
-    const issuerAccount = await this.getByAddress(from.address);
+    const issuerAccount = await this.getByAddress(from.address, { withMembership: true });
 
     // Check enough credit
     const fee = currency.fees.cert;
@@ -604,7 +643,19 @@ export class AccountsService extends RxStartableService<AccountsState> {
     await this.ready();
 
     try {
-      const { status } = await ExtrinsicUtils.submit(this.api.tx.certification.addCert(to.meta?.index), issuerPair);
+      let tx = null;
+      switch (certType) {
+        case CertType.IdentityCreation:
+          tx = this.api.tx.identity.createIdentity(to.address);
+          break;
+        case CertType.CertCreation:
+          tx = this.api.tx.certification.addCert(to.meta?.index);
+          break;
+        case CertType.CertRenewal:
+          tx = this.api.tx.certification.renewCert(to.meta?.index);
+          break;
+      }
+      const status = (await ExtrinsicUtils.submit(tx, issuerPair)).status;
       console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
       console.info(`${this._logPrefix}Certifying completed at block hash #${status.hash.toHuman()}`);
 
@@ -659,6 +710,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
           account.meta = {
             ...account.meta,
             uid: indexedAccount.meta?.uid,
+            index: indexedAccount.meta?.index,
             isMember: indexedAccount.meta?.isMember,
             status: indexedAccount.meta?.status,
             createdOn: indexedAccount.meta?.createdOn,
