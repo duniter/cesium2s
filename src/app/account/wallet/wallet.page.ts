@@ -111,18 +111,22 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
 
           let account: Account;
           if (s.address === 'default') {
-            account = await this.accountService.getDefault();
+            account = await this.accountService.getDefault({ withMembership: true });
+            console.debug('loaded account by default ' + JSON.stringify(account));
             return account;
           }
 
           // Load by address
           const exists = await this.accountService.isAvailable(s.address);
           if (exists) {
-            return this.accountService.getByAddress(s.address);
+            account = await this.accountService.getByAddress(s.address, { withMembership: true });
+            console.debug('loaded account by address ' + JSON.stringify(account));
+            return account;
           }
 
           // Try by name
-          account = await this.accountService.getByName(s.address);
+          account = await this.accountService.getByName(s.address, { withMembership: true });
+          console.debug('loaded account by name ' + JSON.stringify(account));
           return account;
         })
       )
