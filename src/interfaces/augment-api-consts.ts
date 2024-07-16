@@ -9,6 +9,7 @@ import type { ApiTypes, AugmentedConst } from '@polkadot/api-base/types';
 import type { Option, u16, u32, u64, u8 } from '@polkadot/types-codec';
 import type { Codec } from '@polkadot/types-codec/types';
 import type { AccountId32, Perbill, Permill } from '@polkadot/types/interfaces/runtime';
+import { SpWeightsWeightV2Weight, FrameSystemLimitsBlockLength, FrameSystemLimitsBlockWeights, SpWeightsRuntimeDbWeight, SpVersionRuntimeVersion, FrameSupportPalletId } from '@polkadot/types/lookup';
 
 export type __AugmentedConst<ApiType extends ApiTypes> = AugmentedConst<ApiType>;
 
