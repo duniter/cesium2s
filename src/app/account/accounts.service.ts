@@ -700,6 +700,37 @@ export class AccountsService extends RxStartableService<AccountsState> {
     }
   }
 
+  /// WIP should wot action be part of account.service or wot.service?
+  async confirm(account: Partial<Account>, uid: string): Promise<void> {
+    // TODO some checks:
+    // - status Unconfirmed
+    // - uid availability
+
+    // THIS IS DUPLICATED CODE
+    const issuerPair = keyring.getPair(account.address);
+    if (issuerPair.isLocked) {
+      console.debug(`[account-service] Unlocking address ${account.address} ...`);
+      const isAuth = await this.auth();
+      if (!isAuth) throw new Error('ERROR.AUTH_REQUIRED');
+      issuerPair.unlock(this._password);
+    }
+
+    // build tx
+    const tx = this.api.tx.identity.confirmIdentity(uid);
+
+    // try run tx (also code duplication)
+    try {
+      const { status } = await ExtrinsicUtils.submit(tx, issuerPair);
+      console.info(`${this._logPrefix}Extrinsic status`, status.toHuman());
+    } catch (err) {
+      const error = new ExtrinsicError(this.api, err, 'ERROR.SEND_CERT_FAILED');
+      console.error(`${this._logPrefix}Cannot confirm: ${error?.message || error}`);
+      throw error;
+    }
+
+    // TODO process status
+  }
+
   /**
    * Load account data (balance, tx history, etc.).
    * This load can be skipped, when data already loaded (See options)
