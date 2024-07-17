@@ -31,3 +31,9 @@ query Blocks($where: BlockBoolExp, $first: Int!, $after: String, $orderBy: [Bloc
     ...LightBlockConnection
   }
 }
+
+query LastBlock {
+  blockConnection(first: 1, orderBy: { height: DESC }) {
+    ...LightBlockConnection
+  }
+}
