@@ -580,35 +580,6 @@ export class AccountsService extends RxStartableService<AccountsState> {
    */
   async cert(from: Partial<Account>, to: Partial<Account>, opts = { allowCreation: true, confirmBeforeCreation: true }): Promise<string> {
     if (!from || !to) throw new Error("Missing argument 'from' or 'to' !");
-    // certification type is unknown
-    let certType = null;
-
-    if (isNil(to.meta.status)) {
-      console.log('target has no identity, creating...');
-      certType = CertType.IdentityCreation;
-    } else {
-      // check if target has identity index (identity already created)
-      if (isNil(to.meta)) throw new Error("Missing 'to.meta' argument");
-      switch (to.meta.status) {
-        case IdentityStatusEnum.Revoked:
-          console.log('can not certify revoked identity');
-          break;
-        case IdentityStatusEnum.Unconfirmed:
-          console.log('can not certify unconfirmed identity');
-          break;
-        case IdentityStatusEnum.Unvalidated:
-          // TODO special case for last certification: request distance evaluation
-          break;
-        case IdentityStatusEnum.Notmember:
-          // TODO prevent certifying if lost membership for membership non renewal
-          break;
-        default:
-          // ok to certify
-          // TODO check if certification already exists (renewal)
-          certType = CertType.CertCreation;
-          break;
-      }
-    }
 
     // Check currency
     const currency = this.network.currency;
