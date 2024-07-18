@@ -10,17 +10,13 @@ zoneConfig.global.disable.requestAnimationFrame();
 zoneConfig.global.disable.geolocation();
 zoneConfig.global.disable.canvas();
 zoneConfig.global.disable.XHR();
+zoneConfig.global.disable.ZoneAwarePromise();
 
 zoneConfig.events.disable.UNPATCHED_EVENTS([
-  'mousemove',
-  'mouseover',
-  // TODO: check if can disabled this events:
-  'scroll',
+  //'mousemove',
+  //'mouseover',
+  //'scroll',
 ]);
 
-// FIXME disable zone in .then() functions
-//zoneConfig.global.disable.ZoneAwarePromise();
-
-// FIXME: need to patch progression toolbar, to call markForCheck()
-// Otherwise, the trip editor still show the loading bar
+// FIXME: cannot disable timers for now (execution error at startup)
 //zoneConfig.global.disable.timers();
