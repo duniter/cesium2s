@@ -12,6 +12,8 @@ import { RxStateProperty, RxStateRegister, RxStateSelect } from '@app/shared/dec
 import { FormGroup } from '@angular/forms';
 import { ContextService } from '@app/shared/services/storage/context.service';
 import { AppError } from '@app/shared/types';
+import { logPrefix } from '@app/shared/logs';
+import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 
 export interface AppPageState {
   error: string;
@@ -98,12 +100,12 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
     if (form) this.setForm(form);
 
     // Init state
-    if (this._options?.initialState && this._state) {
+    if (this._state && this._options?.initialState) {
       this._state.set(this._options.initialState);
     }
 
-    // DEV
-    this._logPrefix = `[${this._options.name}] `;
+    // Log
+    this._logPrefix = logPrefix(this.constructor, this._options);
   }
 
   ngOnInit() {
@@ -163,9 +165,14 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
     return Promise.resolve(initialState);
   }
 
-  protected setError(err: string | { message: string }, opts = { emitEvent: true }) {
-    this.error = (typeof err === 'object' ? err.message : err) || 'ERROR.UNKNOWN_ERROR';
+  protected setError(err: string | { message: string }, opts = { emitEvent: true, hideDelay: 4000 }) {
+    const error = (typeof err === 'object' ? err.message : err) || 'ERROR.UNKNOWN_ERROR';
+    this.error = error;
     if (opts.emitEvent !== false) this.markForCheck();
+
+    setTimeout(() => {
+      if (this.error === error) this.resetError();
+    }, opts.hideDelay);
   }
 
   protected resetError(opts = { emitEvent: true }) {
@@ -228,6 +235,7 @@ export abstract class AppPage<S extends AppPageState = AppPageState, O extends A
       type: 'error',
       icon: 'alert',
       swipeGesture: 'vertical',
+      duration: 5000, // 5s (longer)
       ...opts,
     });
   }

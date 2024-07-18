@@ -2,6 +2,7 @@ import { KeysEnum, KeyValueType } from '@app/shared/types';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 import { u32, u64 } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';
+import { INTEGER_REGEXP, NUMBER_RANGE_REGEXP, NUMBER_REGEXP, PUBKEY_REGEXP, UID_REGEXP } from '@app/shared/constants';
 
 export function isNil<T>(obj: T | null | undefined): boolean {
   return obj === undefined || obj === null;
@@ -206,18 +207,20 @@ export function sort<T>(array: T[], attribute: string, opts?: Intl.CollatorOptio
     .slice() // copy
     .sort((a, b) => compareFn(a[attribute], b[attribute]));
 }
-const INTEGER_REGEXP = /^[-]?\d+$/;
 export function isInt(value: string): boolean {
   return isNotNil(value) && INTEGER_REGEXP.test(value);
 }
-const NUMBER_REGEXP = /^[-]?\d+(\.\d+)?$/;
 export function isNumber(value: string): boolean {
   return isNotNil(value) && NUMBER_REGEXP.test(value);
 }
-
-const NUMBER_RANGE_REGEXP = /^(\d+-\d+)|([><=]*\d+)$/;
 export function isNumberRange(value: string): boolean {
   return isNotNil(value) && NUMBER_RANGE_REGEXP.test(value);
+}
+export function isValidUid(value: string): boolean {
+  return isNotNil(value) && UID_REGEXP.test(value);
+}
+export function isValidPubkey(value: string): boolean {
+  return isNotNil(value) && PUBKEY_REGEXP.test(value);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

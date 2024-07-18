@@ -26,6 +26,8 @@ import { APP_GRAPHQL_TYPE_POLICIES } from '@app/shared/services/network/graphql/
 import { INDEXER_GRAPHQL_TYPE_POLICIES } from '@app/network/indexer/indexer.config';
 import { POD_GRAPHQL_TYPE_POLICIES } from '@app/network/pod/pod.config';
 import { AppWotModule } from './wot/wot.module';
+import { APP_FORM_ERROR_I18N_KEYS } from '@app/shared/form/form-error-translator.service';
+import { IdentityConfirmValidators } from '@app/account/confirm/identity-confirm.validator';
 
 export function createTranslateLoader(http: HttpClient) {
   if (environment.production) {
@@ -106,6 +108,14 @@ export function createTranslateLoader(http: HttpClient) {
           grayscale: 0.46,
         },
         backColor: '#0000',
+      },
+    },
+
+    // Custom error i18nk keys
+    {
+      provide: APP_FORM_ERROR_I18N_KEYS,
+      useValue: {
+        ...IdentityConfirmValidators.I18N_ERROR_KEYS,
       },
     },
   ],

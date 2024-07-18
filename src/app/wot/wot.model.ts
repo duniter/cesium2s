@@ -20,6 +20,7 @@ export interface WotSearchFilter {
   searchText?: string;
   last?: boolean;
   pending?: boolean;
+  uid?: string;
 }
 
 export class WotSearchFilterUtils {

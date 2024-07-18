@@ -1,6 +1,7 @@
 import { Subscription } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Directive, OnDestroy } from '@angular/core';
+import { logPrefix } from '@app/shared/logs';
 
 export interface BaseServiceOptions {
   name?: string;
@@ -10,12 +11,12 @@ export interface BaseServiceOptions {
 export abstract class BaseService<O extends BaseServiceOptions = BaseServiceOptions> implements OnDestroy {
   private _subscription: Subscription = null;
 
-  protected readonly _debug: boolean;
-  protected readonly _logPrefix: string = null;
+  protected readonly _debug = !environment.production;
+  protected readonly _logPrefix: string;
 
   protected constructor(protected options?: O) {
-    this._debug = !environment.production;
-    this._logPrefix = `[${options?.name || 'base-service'}] `;
+    // Log
+    this._logPrefix = logPrefix(this.constructor, options);
   }
 
   ngOnDestroy() {

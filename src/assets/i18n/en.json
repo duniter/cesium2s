@@ -45,7 +45,6 @@
     "BTN_DOWNLOAD": "Download",
     "BTN_DOWNLOAD_ACCOUNT_STATEMENT": "Download account statement",
     "BTN_MODIFY": "Modify",
-    "BTN_CONFIRM_IDTY": "Confirm",
     "CHOOSE_FILE": "Drag your file<br/>or click to select",
     "DAYS": "days",
     "NO_ACCOUNT_QUESTION": "Not a member yet? Register now!",
@@ -357,6 +356,7 @@
     "NO_CERTIFICATION": "No validated certification",
     "NO_GIVEN_CERTIFICATION": "No given certification",
     "NOT_MEMBER_PARENTHESIS": "(non-member)",
+    "IDENTITY_UNCONFIRMED": "Identity <b>not confirmed</b> (non membre)",
     "IDENTITY_REVOKED_PARENTHESIS": "(identity revoked)",
     "MEMBER_PENDING_REVOCATION_PARENTHESIS": "(being revoked)",
     "EXPIRE_IN": "Expires",
@@ -418,6 +418,14 @@
       "SENT": "Sent certifications",
       "SENT_BY": "Certifications sent by {{uid}}",
       "ERROR": "Sent certifications with error"
+    },
+    "STATUS_ENUM": {
+      "MEMBER": "Member",
+      "NOTMEMBER": "Not member",
+      "REMOVED": "Not member",
+      "REVOKED": "Revoked identity",
+      "UNCONFIRMED": "Unconfirmed identity",
+      "UNVALIDATED": "Waiting validation"
     }
   },
   "LOGIN": {
@@ -432,6 +440,7 @@
     "PASSWORD": "Password",
     "PASSWORD_HELP": "Password",
     "PUBKEY_HELP": "Public key or pseudonym",
+    "MNEMONIC": "Mnemonic phrase",
     "NO_ACCOUNT_QUESTION": "Don't have an account yet?",
     "HAVE_ACCOUNT_QUESTION": "Already have an account ?",
     "CREATE_ACCOUNT": "Create an account",
@@ -454,7 +463,9 @@
       "SCRYPT_ADVANCED": "Advanced salt",
       "FILE": "Keychain file",
       "PUBKEY": "Public key or pseudonym",
-      "SCAN": "Scan a QR code"
+      "ADDRESS": "SS58 Address",
+      "SCAN": "Scan a QR code",
+      "MNEMONIC": "Mnemonic phrase"
     },
     "SCRYPT": {
       "SIMPLE": "Light salt",
@@ -506,6 +517,7 @@
     "CERTIFICATION_COUNT": "Received certifications",
     "CERTIFICATION_COUNT_SHORT": "Certifications",
     "SIG_STOCK": "Stock of certifications to give",
+    "BTN_CONFIRM_MEMBERSHIP": "Confirm membership",
     "BTN_RECEIVE_MONEY": "Receive",
     "BTN_SELECT_ALTERNATIVES_IDENTITIES": "Switch to another identity...",
     "BTN_FIX_MEMBERSHIP": "Resubmit membership request...",
@@ -570,6 +582,7 @@
     "WALLET_LIST": {
       "TITLE": "My wallets",
       "BTN_NEW": "Add a wallet",
+      "BTN_NEW_DOTS": "Add a wallet...",
       "BTN_DOWNLOAD": "Download the list",
       "BTN_IMPORT_FILE_DOTS": "Import from a file...",
       "NO_WALLET": "No secondary wallet",
@@ -673,11 +686,15 @@
     "AMOUNT_HELP": "Amount",
     "COMMENT": "Comment",
     "COMMENT_HELP": "Comment (optional)",
+    "FEE": "+{{fee}} {{currency}} fees",
     "BTN_SEND": "Send",
     "BTN_ADD_COMMENT": "Add a comment",
     "REST": "Rest of account",
     "REST_TO": "to",
     "WARN_COMMENT_IS_PUBLIC": "Please note that <b>comments are public</b> (not encrypted).",
+    "BTN_SCAN_HELP": "Scan a QR Code",
+    "BTN_QR_CODE": "QR Code",
+    "QR_CODE_HELP": "Ask the recipient to flash this code. They can then deposit the payment later, whenever they want.",
     "MODAL": {
       "TITLE": "Transfer"
     }
@@ -732,6 +749,7 @@
     "NEED_LOGIN_FIRST": "Please sign in first.",
     "AMOUNT_REQUIRED": "Amount is required.",
     "AMOUNT_NEGATIVE": "Negative amount not allowed.",
+    "FEE_NEGATIVE": "Negative fee not allowed..",
     "NOT_ENOUGH_CREDIT": "Not enough credit.",
     "INVALID_NODE_SUMMARY": "Unreachable peer or invalid address",
     "INVALID_USER_ID": "Field 'pseudonym' must not contains spaces or special characters.",
@@ -793,6 +811,7 @@
   },
   "INFO": {
     "POPUP_TITLE": "Information",
+    "CERTIFICATION_PENDING": "Certification sent. Waiting for validation...",
     "CERTIFICATION_DONE": "Identity successfully signed",
     "NOT_ENOUGH_CREDIT": "Not enough credit",
     "TRANSFER_SENT": "Transfer request successfully sent",
@@ -929,99 +948,6 @@
       "END_LOGIN": "This guided visit has <b>ended</b>.<br/><br/>Welcome to the <b>free economy</b>!",
       "END_NOT_LOGIN": "This guided visit has <b>ended</b>.<br/><br/>If you wish to join the currency {{currency|capitalize}}, simply click <b>{{'LOGIN.CREATE_FREE_ACCOUNT'|translate}}</b> below.",
       "END_READONLY": "This guided visit has <b>ended</b>.<br/><br/>{{'MODE.READONLY.INSTALL_HELP'|translate}}."
-    }
-  },
-  "API": {
-    "COMMON": {
-      "LINK_DOC": "API documentation",
-      "LINK_DOC_HELP": "API documentation for developers",
-      "LINK_STANDARD_APP": "Standard version",
-      "LINK_STANDARD_APP_HELP": "Open standard version of {{'COMMON.APP_NAME'|translate}}",
-      "CONNECTION_ERROR": "Peer <b>{{server}}</b> unreachable or invalid address.<br/><br/>Check your Internet connection, or contact the web site administrator."
-    },
-    "HOME": {
-      "TITLE": "{{'COMMON.APP_NAME'|translate}} API Documentation",
-      "MESSAGE": "Welcome to the {{'COMMON.APP_NAME'|translate}} <b>API documentation </b>.<br/>Connect your web site to <a href=\"http://duniter.org\" target=\"_system\">Duniter</a> very easily!",
-      "MESSAGE_SHORT": "Connect your websites to <a href=\"http://duniter.org\" target=\"_system\">Duniter</a> very easily!",
-      "DOC_HEADER": "Available services:"
-    },
-    "TRANSFER": {
-      "TITLE": "{{'COMMON.APP_NAME'|translate}} - Online payment",
-      "TITLE_SHORT": "Online payment",
-      "SUMMARY": "Order summary:",
-      "AMOUNT": "Amount:",
-      "AMOUNTS_HELP": "Please select the amount:",
-      "NAME": "Name:",
-      "PUBKEY": "Public key of the recipient:",
-      "COMMENT": "Order reference:",
-      "NODE": "Peer address:",
-      "DEMO": {
-        "SALT": "demo",
-        "PASSWORD": "demo",
-        "PUBKEY": "3G28bL6deXQBYpPBpLFuECo46d3kfYMJwst7uhdVBnD1",
-        "HELP": "<b>Demonstration mode</b>: No payment will actually be sent during this simulation.<br/>Please use credentials: <b>{{'API.TRANSFER.DEMO.SALT'|translate}} / {{'API.TRANSFER.DEMO.PASSWORD'|translate}}</b>",
-        "BAD_CREDENTIALS": "Invalid credentials.<br/>In demonstration mode, credentials should be: {{'API.TRANSFER.DEMO.SALT'|translate}} / {{'API.TRANSFER.DEMO.PASSWORD'|translate}}"
-      },
-      "INFO": {
-        "SUCCESS_REDIRECTING_WITH_NAME": "Payment sent.<br/>Redirect to <b>{{name}}</b>...",
-        "SUCCESS_REDIRECTING": "Payment sent.<br/>Redirect to the seller's website...",
-        "CANCEL_REDIRECTING_WITH_NAME": "Payment cancelled.<br/>Redirect to <b>{{name}}</b>...",
-        "CANCEL_REDIRECTING": "Payment cancelled.<br/>Redirect to the seller's website..."
-      },
-      "ERROR": {
-        "TRANSFER_FAILED": "Payment failed"
-      }
-    },
-    "DOC": {
-      "DESCRIPTION_DIVIDER": "Description",
-      "URL_DIVIDER": "Calling address",
-      "PARAMETERS_DIVIDER": "Parameters",
-      "AVAILABLE_PARAMETERS": "Here is the list of al available parameters:",
-      "DEMO_DIVIDER": "Try it !",
-      "DEMO_HELP": "To test this service, click on this button. The result content will be display below.",
-      "DEMO_RESULT": "Result returned by call:",
-      "DEMO_RESULT_PEER": "Peer address used:",
-      "DEMO_SUCCEED": "<i class=\"icon ion-checkmark\"></i> Success!",
-      "DEMO_CANCELLED": "<i class=\"icon ion-close\"></i> Canceled by user",
-      "INTEGRATE_DIVIDER": "Website integration",
-      "INTEGRATE_CODE": "Code:",
-      "INTEGRATE_RESULT": "Result preview:",
-      "INTEGRATE_PARAMETERS": "Parameters",
-      "TRANSFER": {
-        "TITLE": "Payments",
-        "DESCRIPTION": "From a site (eg online marketplace) you can delegate payment in free currency to Cesium API. To do this, simply open a page at the following address:",
-        "PARAM_PUBKEY": "Recipient's public key",
-        "PARAM_PUBKEY_HELP": "Recipient's public key (required)",
-        "PARAM_AMOUNT": "Amount",
-        "PARAM_AMOUNT_HELP": "Transaction amount (required)",
-        "PARAM_COMMENT": "Reference (or comment)",
-        "PARAM_COMMENT_HELP": "Reference or comment. You will allow for example to identify the payment in the BlockChain.",
-        "PARAM_NAME": "Name (of recipient or website)",
-        "PARAM_NAME_HELP": "The name of your website. This can be a readable name (eg \"My online site\"), or a web address (eg \"www.MySite.com\").",
-        "PARAM_REDIRECT_URL": "URL redirection",
-        "PARAM_REDIRECT_URL_HELP": "URL redirection after sending payment, after the payment has been sent. Can contain the following strings, which will be replaced by the values of the transaction: \"{tx}\", \"{hash}\", \"{comment}\", \"{amount}\" and \"{pubkey}\".",
-        "PARAM_CANCEL_URL": "URL if cancelled",
-        "PARAM_CANCEL_URL_HELP": "URL in case of cancellation.  Can contain the following strings, which will be replaced: \"{comment}\", \"{amount}\" and \"{pubkey}\".",
-        "PARAM_PREFERRED_NODE": "Preferred Duniter peer",
-        "PARAM_PREFERRED_NODE_HELP": "Peer address (URL) to use preferably (\"g1.domain.com:443\" or \"https://g1.domain.com\")",
-        "EXAMPLES_HELP": "Examples of integration:",
-        "EXAMPLE_BUTTON": "HTML Button",
-        "EXAMPLE_BUTTON_DEFAULT_TEXT": "Pay in {{currency}}",
-        "EXAMPLE_BUTTON_DEFAULT_STYLE": "Custom style",
-        "EXAMPLE_BUTTON_TEXT_HELP": "Button text",
-        "EXAMPLE_BUTTON_BG_COLOR": "Background color",
-        "EXAMPLE_BUTTON_BG_COLOR_HELP": "eg: #fbc14c, yellow, lightgrey, rgb(180,180,180)",
-        "EXAMPLE_BUTTON_FONT_COLOR": "Font color",
-        "EXAMPLE_BUTTON_FONT_COLOR_HELP": "eg: black, orange, rgb(180,180,180)",
-        "EXAMPLE_BUTTON_TEXT_ICON": "Icon",
-        "EXAMPLE_BUTTON_TEXT_WIDTH": "Width",
-        "EXAMPLE_BUTTON_TEXT_WIDTH_HELP": "eg: 200px, 50%",
-        "EXAMPLE_BUTTON_ICON_NONE": "No icon",
-        "EXAMPLE_BUTTON_ICON_DUNITER": "Duniter logo",
-        "EXAMPLE_BUTTON_ICON_CESIUM": "Cesium logo",
-        "EXAMPLE_BUTTON_ICON_G1_COLOR": "Ğ1 logo",
-        "EXAMPLE_BUTTON_ICON_G1_BLACK": "Ğ1 logo (outline)"
-      }
     }
   }
 }

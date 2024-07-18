@@ -20,6 +20,14 @@
   visibility: hidden;
 }
 
+ion-buttons[slot='end'].vertical-alignment {
+  flex-direction: column;
+  ion-note {
+    width: 100%;
+    text-align: end;
+  }
+}
+
 /* -- error message -- */
 .item.error,
 ion-item.error {
