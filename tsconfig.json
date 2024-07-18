@@ -16,6 +16,7 @@
     "module": "es2020",
     "lib": ["es2020","dom"],
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -29,13 +30,12 @@
       "rxjs/*": ["node_modules/rxjs/*"],
 
       // Local types
-      "@duniter/interfaces": ["src/interfaces/types-lookup.ts"],
+      "@polkadot/types/lookup": ["src/interfaces/types-lookup.ts"],
 
       // here we replace the @polkadot/api augmentation with our own, generated from chain
       "@polkadot/api/augment": ["src/interfaces/augment-api.ts"],
       // replace the augmented types with our own, as generated from definitions
       "@polkadot/types/augment": ["src/interfaces/augment-types.ts"],
-      "@polkadot/types": ["./node_modules/@polkadot/types"],
 
       // Node JS lib
       "stream": ["node_modules/stream-browserify"],

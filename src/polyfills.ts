@@ -60,7 +60,9 @@ if ((window as any).__Zone_disable_ZoneAwarePromise === true) {
  * APPLICATION IMPORTS
  */
 // Polkadot API augment
-import '@polkadot/api-augment';
+// import '@polkadot/api-augment';
+import '@polkadot/api/augment';
+import '@polkadot/types/lookup';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).global = window;
 
