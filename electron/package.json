@@ -1,6 +1,6 @@
 {
   "name": "cesium2s",
-  "version": "2.0.0-alpha40",
+  "version": "2.0.0-alpha41",
   "description": "Cesium², running on Duniter v2s (Substrate).",
   "author": {
     "name": "Benoit Lavenier",
