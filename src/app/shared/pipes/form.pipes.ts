@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, OnDestroy, Pipe, PipeTransform } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormControlStatus, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { equals, isNotNil } from '../functions';
 import { FormErrorTranslator, FormErrorTranslatorOptions } from '@app/shared/form/form-error-translator.service';
@@ -11,7 +11,7 @@ import { FormErrorTranslator, FormErrorTranslatorOptions } from '@app/shared/for
 export class FormErrorPipe implements PipeTransform, OnDestroy {
   private _value = '';
 
-  private _lastForm: UntypedFormGroup | null = null;
+  private _lastForm: AbstractControl | null = null;
   private _lastOptions: FormErrorTranslatorOptions | null = null;
   private _onFormStatusChanges: Subscription | undefined;
 
@@ -20,7 +20,7 @@ export class FormErrorPipe implements PipeTransform, OnDestroy {
     private _ref: ChangeDetectorRef
   ) {}
 
-  transform(form: UntypedFormGroup, opts?: FormErrorTranslatorOptions): string {
+  transform(form: AbstractControl, opts?: FormErrorTranslatorOptions): string {
     if (!form) {
       this._dispose();
       return '';
@@ -57,7 +57,7 @@ export class FormErrorPipe implements PipeTransform, OnDestroy {
     this._dispose();
   }
 
-  private _updateValue(form: UntypedFormGroup, opts?: FormErrorTranslatorOptions, status?: any) {
+  private _updateValue(form: AbstractControl, opts?: FormErrorTranslatorOptions, status?: FormControlStatus) {
     // Form is invalid: compute error
     if (status ? status === 'INVALID' : form.invalid) {
       const newValue = this.service.translateFormErrors(form, opts);

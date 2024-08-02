@@ -23,7 +23,7 @@
 </ion-header>
 
 <ion-content class="ion-padding-top">
-  <app-identity-confirm-form #form (validate)="doSubmit($event)" (cancel)="cancel()"></app-identity-confirm-form>
+  <app-identity-confirm-form #form (validate)="doSubmit()" (cancel)="cancel()"></app-identity-confirm-form>
 </ion-content>
 
 @if (!mobile) {
