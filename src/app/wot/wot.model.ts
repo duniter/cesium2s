@@ -1,5 +1,7 @@
 import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
+import { InjectionToken } from '@angular/core';
+import { WotController } from './wot.controller';
 
 export interface WotLookupOptions {
   debounceTime?: number;
@@ -18,6 +20,7 @@ export interface WotSearchFilter {
   searchText?: string;
   last?: boolean;
   pending?: boolean;
+  uid?: string;
 }
 
 export class WotSearchFilterUtils {
@@ -29,3 +32,5 @@ export class WotSearchFilterUtils {
     return !filter || (isNilOrBlank(filter.searchText) && isNil(filter.last) && isNilOrBlank(filter.address));
   }
 }
+
+export const APP_WOT_CONTROLLER = new InjectionToken<WotController>('WotController');

@@ -25,3 +25,10 @@ query WotSearchLast($first: Int!, $after: String, $orderBy: [AccountOrderBy!], $
     ...LightAccountConnection
   }
 }
+
+# search identities by exact name
+query WotSearchByUid($name: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
+  accountConnection(first: $first, after: $after, orderBy: $orderBy, where: { identity: {name: { _eq: $name } }}) {
+    ...LightAccountConnection
+  }
+}

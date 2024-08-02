@@ -2,6 +2,7 @@ import { Subscription } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Directive, OnDestroy } from '@angular/core';
 import { RxState } from '@rx-angular/state';
+import { logPrefix } from '@app/shared/logs';
 
 export interface RxBaseServiceOptions<T extends object> {
   name?: string;
@@ -15,8 +16,8 @@ export abstract class RxBaseService<T extends object = Object, O extends RxBaseS
 {
   private _subscription: Subscription = null;
 
-  protected readonly _debug: boolean;
-  protected readonly _logPrefix: string = null;
+  protected readonly _debug = !environment.production;
+  protected readonly _logPrefix: string;
 
   get data(): T {
     return this.get();
@@ -25,12 +26,13 @@ export abstract class RxBaseService<T extends object = Object, O extends RxBaseS
   protected constructor(protected options?: O) {
     super();
 
+    // Init state
     if (options?.initialState) {
       this.set(options.initialState);
     }
 
-    this._debug = !environment.production;
-    this._logPrefix = `[${options?.name || 'base-service'}] `;
+    // Log
+    this._logPrefix = logPrefix(this.constructor, options);
   }
 
   ngOnDestroy() {

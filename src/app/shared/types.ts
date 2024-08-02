@@ -47,3 +47,6 @@ export interface ListItems<T, F> {
   fetchMoreFn: FetchMoreFn<LoadResult<T>>;
   fetchSize: number;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export declare type Constructor<T = any> = new (...args: any[]) => T;

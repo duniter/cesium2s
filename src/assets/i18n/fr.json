@@ -38,6 +38,7 @@
     "BTN_START": "Commencer",
     "BTN_CONTINUE": "Continuer",
     "BTN_CREATE": "Créer",
+    "BTN_CONFIRM": "Confirmer",
     "BTN_UNDERSTOOD": "J'ai compris",
     "BTN_OPTIONS": "Options",
     "BTN_HELP_TOUR": "Visite guidée",
@@ -363,6 +364,7 @@
     "NO_CERTIFICATION": "Aucune certification validée",
     "NO_GIVEN_CERTIFICATION": "Aucune certification émise",
     "NOT_MEMBER_PARENTHESIS": "(non membre)",
+    "IDENTITY_UNCONFIRMED": "Demande d'adhésion <b>non confirmée</b>",
     "IDENTITY_REVOKED_PARENTHESIS": "(identité révoquée)",
     "MEMBER_PENDING_REVOCATION_PARENTHESIS": "(en cours de révocation)",
     "EXPIRE_IN": "Expiration",
@@ -424,6 +426,14 @@
       "SENT": "Certifications émises",
       "SENT_BY": "Certifications émises par {{uid}}",
       "ERROR": "Certifications émises en erreur"
+    },
+    "STATUS_ENUM": {
+      "MEMBER": "Membre",
+      "NOTMEMBER": "Non membre",
+      "REMOVED": "Non membre",
+      "REVOKED": "Identité révoquée",
+      "UNCONFIRMED": "Non confirmé",
+      "UNVALIDATED": "En attente de validation"
     }
   },
   "LOGIN": {
@@ -518,6 +528,7 @@
     "CERTIFICATION_COUNT": "Certifications reçues",
     "CERTIFICATION_COUNT_SHORT": "Certifications",
     "SIG_STOCK": "Certifications envoyées",
+    "BTN_CONFIRM_MEMBERSHIP": "Confirmer mon adhésion",
     "BTN_RECEIVE_MONEY": "Encaisser",
     "BTN_SELECT_ALTERNATIVES_IDENTITIES": "Basculer vers une autre identité...",
     "BTN_FIX_MEMBERSHIP": "Renvoyer la demande d'adhésion...",
@@ -573,9 +584,9 @@
       "INPUT_WORD": "Mot n°{{number}}",
       "YOUR_SECRET_CODE": "Votre code secret"
     },
-    "POPUP_REGISTER": {
-      "TITLE": "Choisissez un pseudonyme",
-      "HELP": "Un pseudonyme est obligatoire pour devenir membre."
+    "CONFIRM_IDENTITY": {
+      "TITLE": "Confirmer mon adhésion",
+      "PSEUDO_HELP": "Choisissez un pseudonyme.<br/>Il sert aux autres membres, pour vous identifier plus facilement.<div class='hidden-xs'><br/>Il <b>ne pourra pas être modifié</b>, sans refaire un compte.</div><br/><br/>Il ne doit contenir <b>ni espace, ni de caractère accentué</b>.<div class='hidden-xs'><br/>Exemple : <span class='gray'>SophieDupond, MarcelChemin, etc.</span>"
     },
     "SELECT_IDENTITY_MODAL": {
       "TITLE": "Sélection de l'identité",
@@ -692,7 +703,6 @@
     "COMMENT": "Commentaire",
     "COMMENT_HELP": "Commentaire",
     "FEE": "+{{fee}} {{currency}} frais",
-    "BTN_SEND": "Envoyer",
     "BTN_ADD_COMMENT": "Ajouter un commentaire",
     "REST": "Reste du compte",
     "REST_TO": "à",
@@ -722,8 +732,23 @@
     "FIELD_MAX": "Valeur maximale : {{max}}",
     "FIELD_ACCENT": "Caractères accentués et virgules non autorisés",
     "FIELD_NOT_NUMBER": "Valeur numérique attendue",
+    "FIELD_MAXIMUM_DECIMALS": "Trop de décimales (max : {{maxDecimals}})",
+    "FIELD_NOT_VALID_DECIMAL": "Valeur décimale attendue",
     "FIELD_NOT_INT": "Valeur entière attendue",
     "FIELD_NOT_EMAIL": "Adresse email non valide",
+    "FIELD_NOT_VALID_DATE": "Date invalide",
+    "FIELD_NOT_VALID_DATE_AFTER": "Doit être postérieure à {{minDate}}",
+    "FIELD_NOT_VALID_DATE_BEFORE": "Doit être antérieure à {{maxDate}}",
+    "FIELD_NOT_VALID_DATE_RANGE": "Dates incohérentes",
+    "FIELD_NOT_VALID_DATE_MAX_DURATION": "Durée trop longue",
+    "FIELD_NOT_VALID_DATE_MIN_DURATION": "Durée trop courte",
+    "FIELD_NOT_VALID_HOUR_MINUTE": "Heure/minute invalide",
+    "FIELD_NOT_VALID_DATE_TIME": "Date/heure invalide",
+    "FIELD_NOT_VALID_LATITUDE": "Latitude invalide",
+    "FIELD_NOT_VALID_LONGITUDE": "Longitude invalide",
+    "FIELD_NOT_VALID_PATTERN": "Format incorrect",
+    "FIELD_NOT_VALID_PUBKEY": "Clé publique invalide",
+    "FIELD_NOT_VALID_ADDRESS": "Addresse SS58 invalide",
     "PASSWORD_NOT_CONFIRMED": "Ne correspond pas au mot de passe",
     "SALT_NOT_CONFIRMED": "Ne correspond pas à l'identifiant secret",
     "SEND_IDENTITY_FAILED": "Échec de l'inscription",
@@ -757,7 +782,7 @@
     "FEE_NEGATIVE": "Frais négatif non autorisé.",
     "NOT_ENOUGH_CREDIT": "Crédit insuffisant.",
     "INVALID_NODE_SUMMARY": "Nœud injoignable ou adresse invalide.",
-    "INVALID_USER_ID": "Le pseudonyme ne doit contenir ni espace ni caractère spécial ou accentué.",
+    "INVALID_USER_ID": "Ne doit contenir ni espace ni caractère spécial ou accentué.",
     "INVALID_COMMENT": "Le champ 'référence' ne doit pas contenir de caractères accentués.",
     "INVALID_PUBKEY": "La clé publique n'a pas le format attendu.",
     "INVALID_PUBKEY_CHECKSUM": "Somme de contrôle invalide.",
@@ -818,6 +843,8 @@
     "POPUP_TITLE": "Information",
     "CERTIFICATION_PENDING": "Certification envoyée. En attente de validation...",
     "CERTIFICATION_DONE": "Certification validée",
+    "CONFIRM_IDENTITY_PENDING": "Confirmation d'adhésion envoyée. En attente de validation...",
+    "CONFIRM_IDENTITY_DONE": "Confirmation d'adhésion validée",
     "NOT_ENOUGH_CREDIT": "Crédit insuffisant",
     "TRANSFER_SENT": "Virement envoyé",
     "COPY_TO_CLIPBOARD_DONE": "Copié dans le presse-papier",
@@ -955,99 +982,6 @@
       "END_LOGIN": "Cette visite guidée est <b>terminée</b> !<br/><br/>Bonne continuation à vous, dans le nouveau monde de l'<b>économie libre</b> !",
       "END_NOT_LOGIN": "Cette visite guidée est <b>terminée</b> !<br/><br/>Si vous souhaitez rejoindre la monnaie {{currency|capitalize}}, il vous suffira de cliquer sur <b>{{'LOGIN.CREATE_FREE_ACCOUNT'|translate}}</b> ci-dessous.",
       "END_READONLY": "Cette visite guidée est <b>terminée</b>.<br/><br/>{{'MODE.READONLY.INSTALL_HELP'|translate}}."
-    }
-  },
-  "API": {
-    "COMMON": {
-      "LINK_DOC": "Documentation API",
-      "LINK_DOC_HELP": "Documentation pour les développeurs",
-      "LINK_STANDARD_APP": "Version classique",
-      "LINK_STANDARD_APP_HELP": "Ouvrir la version classique de {{'COMMON.APP_NAME'|translate}}",
-      "CONNECTION_ERROR": "Nœud <b>{{server}}</b> injoignable ou adresse invalide.<br/><br/>Vérifiez votre connexion Internet, ou contactez l'administrateur du site."
-    },
-    "HOME": {
-      "TITLE": "Documentation API {{'COMMON.APP_NAME'|translate}}",
-      "MESSAGE": "Bienvenue dans la <b>documentation de l'API</b> {{'COMMON.APP_NAME'|translate}}.<br/>Connectez vos sites web à <a href=\"http://duniter.org\" target=\"_system\">Duniter</a> très simplement !",
-      "MESSAGE_SHORT": "Connectez vos sites à <a href=\"http://duniter.org\" target=\"_system\">Duniter</a> très simplement !",
-      "DOC_HEADER": "Services disponibles :"
-    },
-    "TRANSFER": {
-      "TITLE": "{{'COMMON.APP_NAME'|translate}} - Paiement en ligne",
-      "TITLE_SHORT": "Paiement en ligne",
-      "SUMMARY": "Récapitulatif du paiement :",
-      "AMOUNT": "Montant :",
-      "AMOUNTS_HELP": "Veuillez choisir le montant :",
-      "NAME": "Nom :",
-      "PUBKEY": "Clé publique du destinataire :",
-      "COMMENT": "Référence de l'opération :",
-      "NODE": "Adresse du nœud :",
-      "DEMO": {
-        "SALT": "demo",
-        "PASSWORD": "demo",
-        "PUBKEY": "3G28bL6deXQBYpPBpLFuECo46d3kfYMJwst7uhdVBnD1",
-        "HELP": "<b>Mode démonstration</b> : Aucun paiement ne sera réellement envoyé pendant cette simulation.<br/>Veuillez utiliser les identifiants : <b>{{'API.TRANSFER.DEMO.SALT'|translate}} / {{'API.TRANSFER.DEMO.PASSWORD'|translate}}</b>",
-        "BAD_CREDENTIALS": "Vérifiez votre saisie.<br/>En mode démonstration, les identifiants sont : {{'API.TRANSFER.DEMO.SALT'|translate}} / {{'API.TRANSFER.DEMO.PASSWORD'|translate}}"
-      },
-      "INFO": {
-        "SUCCESS_REDIRECTING_WITH_NAME": "Paiement envoyé.<br/>Redirection vers <b>{{name}}</b>...",
-        "SUCCESS_REDIRECTING": "Paiement envoyé.<br/>Redirection vers le site du vendeur...",
-        "CANCEL_REDIRECTING_WITH_NAME": "Paiement annulé.<br/>Redirection vers <b>{{name}}</b>...",
-        "CANCEL_REDIRECTING": "Paiement annulé.<br/>Redirection vers le site du vendeur..."
-      },
-      "ERROR": {
-        "TRANSFER_FAILED": "Échec du paiement"
-      }
-    },
-    "DOC": {
-      "DESCRIPTION_DIVIDER": "Description",
-      "URL_DIVIDER": "Adresse d'appel",
-      "PARAMETERS_DIVIDER": "Paramètres",
-      "AVAILABLE_PARAMETERS": "Voici la liste des paramètres possibles :",
-      "DEMO_DIVIDER": "Tester",
-      "DEMO_HELP": "Pour tester ce service, cliquez sur le bouton ci-contre. Le résultat s'affichera en dessous.",
-      "DEMO_RESULT": "Résultat retourné par l'appel :",
-      "DEMO_RESULT_PEER": "Adresse du nœud utilisé :",
-      "DEMO_SUCCEED": "<i class=\"icon ion-checkmark\"></i> Succès !",
-      "DEMO_CANCELLED": "<i class=\"icon ion-close\"></i> Annulé par l'utilisateur",
-      "INTEGRATE_DIVIDER": "Intégrer",
-      "INTEGRATE_CODE": "Code :",
-      "INTEGRATE_RESULT": "Prévisualisation du résultat :",
-      "INTEGRATE_PARAMETERS": "Paramètres",
-      "TRANSFER": {
-        "TITLE": "Paiements",
-        "DESCRIPTION": "Depuis un site (ex: vente en ligne) vous pouvez déléguer le paiement en monnaie libre à Cesium API. Pour cela, il vous suffit de déclencher l'ouverture d'une page sur l'adresse suivante :",
-        "PARAM_PUBKEY": "Clé publique du destinataire",
-        "PARAM_PUBKEY_HELP": "Clé publique du destinataire (obligatoire)",
-        "PARAM_AMOUNT": "Montant",
-        "PARAM_AMOUNT_HELP": "Montant de la transaction (obligatoire). Valeurs multiples autorisées, en utilisant un séparateur (point-virgule, barre verticale ou espace).",
-        "PARAM_COMMENT": "Référence (ou commentaire)",
-        "PARAM_COMMENT_HELP": "Référence ou commentaire. Vous permettra par exemple d'identifier le paiement dans la BlockChain.",
-        "PARAM_NAME": "Nom (du destinataire ou du site web)",
-        "PARAM_NAME_HELP": "Le nom du destinataire, ou du site web appelant. Cela peut être un nom lisible (\"Mon site en ligne\"), ou encore une pseudo-adresse web (\"MonSite.com\").",
-        "PARAM_REDIRECT_URL": "Adresse web de redirection",
-        "PARAM_REDIRECT_URL_HELP": "Adresse web (URL) de redirection, appelé quand le paiement a été envoyé. Peut contenir les chaînes suivantes, qui seront remplacées par les valeurs de la transaction : \"{tx}\", \"{hash}\", \"{comment}\", \"{amount}\", \"{pubkey}\" et \"{node}\".",
-        "PARAM_CANCEL_URL": "Adresse web d'annulation",
-        "PARAM_CANCEL_URL_HELP": "Adresse web (URL) en cas d'annulation du paiement, par l'utilisateur. Peut contenir les chaînes suivantes, qui seront remplacées dynamiquement : \"{comment}\", \"{amount}\" et \"{pubkey}\".",
-        "PARAM_PREFERRED_NODE": "Adresse du nœud préféré",
-        "PARAM_PREFERRED_NODE_HELP": "Adresse (URL) du nœud Duniter à utiliser de préférence (\"g1.domaine.com:443\" ou \"https://g1.domaine.com\").",
-        "EXAMPLES_HELP": "Voici des exemples d'intégration :",
-        "EXAMPLE_BUTTON": "Bouton HTML",
-        "EXAMPLE_BUTTON_DEFAULT_TEXT": "Payer en {{currency|currencySymbol}}",
-        "EXAMPLE_BUTTON_DEFAULT_STYLE": "Style personnalisé",
-        "EXAMPLE_BUTTON_TEXT_HELP": "Texte du bouton",
-        "EXAMPLE_BUTTON_BG_COLOR": "Couleur du fond",
-        "EXAMPLE_BUTTON_BG_COLOR_HELP": "Exemple : #fbc14c, black, lightgrey, rgb(180,180,180)",
-        "EXAMPLE_BUTTON_FONT_COLOR": "Couleur du texte",
-        "EXAMPLE_BUTTON_FONT_COLOR_HELP": "Exemple : black, orange, rgb(180,180,180)",
-        "EXAMPLE_BUTTON_TEXT_ICON": "Icône",
-        "EXAMPLE_BUTTON_TEXT_WIDTH": "Largeur",
-        "EXAMPLE_BUTTON_TEXT_WIDTH_HELP": "Exemple : 200px, 50%",
-        "EXAMPLE_BUTTON_ICON_NONE": "Aucune",
-        "EXAMPLE_BUTTON_ICON_DUNITER": "Logo Duniter",
-        "EXAMPLE_BUTTON_ICON_CESIUM": "Logo Cesium",
-        "EXAMPLE_BUTTON_ICON_G1_COLOR": "Logo Ğ1",
-        "EXAMPLE_BUTTON_ICON_G1_BLACK": "Logo Ğ1 (noir)"
-      }
     }
   }
 }

@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      @if (mobile) {
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+        </ion-button>
+      }
+    </ion-buttons>
+
+    <ion-title translate>ACCOUNT.CONFIRM_IDENTITY.TITLE</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-spinner *ngIf="pending"></ion-spinner>
+
+      @if (mobile) {
+        <ion-button [disabled]="!valid" (click)="doSubmit()">
+          <ion-icon slot="icon-only" name="send"></ion-icon>
+        </ion-button>
+      }
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-top">
+  <app-identity-confirm-form #form (validate)="doSubmit()" (cancel)="cancel()"></app-identity-confirm-form>
+</ion-content>
+
+@if (!mobile) {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-row class="ion-no-padding" nowrap>
+        <ion-col></ion-col>
+
+        <!-- buttons -->
+        <ion-col size="auto">
+          <ion-button fill="clear" color="dark" (click)="cancel()">
+            <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+          </ion-button>
+
+          <ion-button [fill]="invalid ? 'clear' : 'solid'" [disabled]="invalid" (click)="doSubmit()" (keyup.enter)="doSubmit()">
+            <ion-label translate>ACCOUNT.BTN_CONFIRM_MEMBERSHIP</ion-label>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-toolbar>
+  </ion-footer>
+}
