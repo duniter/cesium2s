@@ -1,7 +1,7 @@
 projects:
   indexer:
     schema: src/app/network/indexer/indexer-schema.graphql
-    documents: "src/app/network/indexer/indexer-*!(.generated).{ts,gql}"
+    documents: "src/app/network/indexer/*!(.generated).{ts,gql}"
     extensions:
       endpoints:
         Gdev Indexer GraphQL Endpoint:
@@ -26,14 +26,13 @@ projects:
               namedClient: 'indexer'
           src/app/network/indexer/indexer-helpers.generated.ts:
             plugins:
-              - "add"
               - "typescript-apollo-client-helpers"
             config:
               content: "// Auto-generated via `npx graphql-codegen`, do not edit\n/* eslint-disable */"
 
   pod:
     schema: src/app/network/pod/pod-schema.graphql
-    documents: "src/app/network/pod/pod-*!(.generated).{ts,gql}"
+    documents: "src/app/network/pod/*!(.generated).{ts,gql}"
     extensions:
       endpoints:
         Gdev Pod GraphQL Endpoint:

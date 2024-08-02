@@ -48,6 +48,7 @@
         [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
         [okText]="'COMMON.BTN_OK' | translate"
         [cancelText]="'COMMON.BTN_CANCEL' | translate"
+        aria-label="{{ 'ACCOUNT.WALLET_LIST.TITLE' | translate }}"
       >
         <ion-select-option *rxFor="let account of accounts$" [value]="account">
           {{ account | accountName }}
@@ -67,14 +68,25 @@
 
   <div id="container">
     <div class="ion-text-center ion-padding-top" *ngIf="!mobile">
-      <ion-button *rxIf="account$; let account" (click)="transfer()" [disabled]="loading">
-        <ion-icon slot="start" name="paper-plane"></ion-icon>
-        <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
-      </ion-button>
+      @if (account$ | push; as account) {
+        <!-- Send TX -->
+        <ion-button (click)="transfer()" [disabled]="loading">
+          <ion-icon slot="start" name="paper-plane"></ion-icon>
+          <ion-label translate>COMMON.BTN_SEND_MONEY</ion-label>
+        </ion-button>
+
+        <!-- Confirm identity -->
+        @if (account.meta?.status === IdentityStatusEnum.Unconfirmed) {
+          <ion-button (click)="confirmIdentity()" [disabled]="loading" color="tertiary">
+            <!--            <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>-->
+            <ion-label translate>ACCOUNT.BTN_CONFIRM_MEMBERSHIP</ion-label>
+          </ion-button>
+        }
+      }
     </div>
 
     <ion-list>
-      <ion-item *rxIf="error$; let error" lines="none" color="light">
+      <ion-item *rxIf="error$; let error" lines="none" color="light" @fadeInOutAnimation>
         <ion-icon slot="start" name="alert-circle" color="danger"></ion-icon>
         <ion-label color="danger">{{ error | translate }}</ion-label>
       </ion-item>
@@ -121,16 +133,37 @@
         @if (account.meta?.index) {
           <ion-item>
             <ion-icon aria-hidden="true" slot="start" name="calendar-clear-outline"></ion-icon>
-            <ion-label>
-              <h3 translate>COMMON.UID</h3>
-              <p>
-                {{ 'WOT.REGISTERED_SINCE' | translate }} {{ account.meta.createdOn | blockTime | dateFormat }} -
-                {{ 'WOT.REGISTERED_SINCE_BLOCK' | translate }} {{ account.meta.createdOn | blockNumber }}
-              </p>
-            </ion-label>
-            <ion-badge [color]="account.meta.isMember ? 'warning' : 'medium'" slot="end">
-              {{ account.meta.uid }} ({{ account.meta.status }})
-            </ion-badge>
+
+            <!-- special case for unconfirmed (UID is not known yet)-->
+            @if (account.meta.status === IdentityStatusEnum.Unconfirmed) {
+              <ion-label color="danger" [innerHTML]="'WOT.IDENTITY_UNCONFIRMED' | translate"></ion-label>
+
+              @if (mobile) {
+                <ion-button slot="end" (click)="confirmIdentity()" [disabled]="loading" color="tertiary">
+                  <ion-label translate>COMMON.BTN_CONFIRM</ion-label>
+                </ion-button>
+              } @else {
+                <ion-button slot="end" (click)="confirmIdentity()" [disabled]="loading" fill="clear" color="tertiary">
+                  <ion-label translate>COMMON.BTN_CONFIRM</ion-label>
+                </ion-button>
+              }
+            } @else {
+              <ion-label>
+                <h3 translate>COMMON.UID</h3>
+                <p>
+                  {{ 'WOT.REGISTERED_SINCE' | translate }} {{ account.meta.createdOn | blockTime | dateFormat }} -
+                  {{ 'WOT.REGISTERED_SINCE_BLOCK' | translate }}{{ account.meta.createdOn | blockNumber }}
+                </p>
+              </ion-label>
+              <ion-buttons slot="end" class="vertical-alignment">
+                <ion-badge [color]="account.meta.isMember ? 'warning' : 'medium'">
+                  {{ account.meta?.uid }}
+                </ion-badge>
+                @if (!account.meta.isMember) {
+                  <ion-note color="danger">({{ 'WOT.STATUS_ENUM.' + account.meta.status | translate }})</ion-note>
+                }
+              </ion-buttons>
+            }
           </ion-item>
 
           <!-- Received cert count -->

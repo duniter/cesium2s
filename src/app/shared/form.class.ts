@@ -1,4 +1,15 @@
-import { ChangeDetectorRef, Directive, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  booleanAttribute,
+  ChangeDetectorRef,
+  Directive,
+  EventEmitter,
+  inject,
+  Input,
+  numberAttribute,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
@@ -6,6 +17,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { FormUtils } from '@app/shared/forms';
 import { WaitForOptions, waitForTrue } from '@app/shared/observables';
 import { SettingsService } from '@app/settings/settings.service';
+import { environment } from '@environments/environment';
+import { logPrefix } from '@app/shared/logs';
+import { FormErrorTranslator, FormErrorTranslatorOptions, IFormPathTranslator } from '@app/shared/form/form-error-translator.service';
+import { changeCaseToUnderscore } from '@app/shared/functions';
 
 export declare interface OnReady {
   ngOnReady();
@@ -42,21 +57,27 @@ export interface IAppForm {
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
-export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
-  error: string = null;
+export abstract class AppForm<T> implements IAppForm, IFormPathTranslator, OnInit, OnDestroy {
+  private _subscription = new Subscription();
 
-  protected translate: TranslateService;
-  protected _cd: ChangeDetectorRef;
+  protected readonly _debug: boolean = !environment.production;
+  protected readonly _logPrefix: string;
+
+  protected _form: FormGroup;
+  protected _i18nPrefix: string = 'COMMON.';
+  protected _cd: ChangeDetectorRef = inject(ChangeDetectorRef);
   protected _enable = false;
   protected ready$ = new BehaviorSubject<boolean>(false);
   protected loading$ = new BehaviorSubject<boolean>(true);
 
-  private _subscription = new Subscription();
-  private _form: FormGroup;
+  protected readonly translate: TranslateService = inject(TranslateService);
+  protected readonly errorTranslator = inject(FormErrorTranslator);
 
-  @Input() debug = false;
-  @Input() mobile: boolean;
-  @Input() tabindex: number;
+  @Input({ transform: booleanAttribute }) debug = !environment.production;
+  @Input({ transform: booleanAttribute }) mobile: boolean = inject(SettingsService).mobile;
+  @Input() errorTranslatorOptions: FormErrorTranslatorOptions;
+  @Input({ transform: numberAttribute }) tabindex: number;
+  @Input() error: string = null;
 
   get loading(): boolean {
     return this.loading$.value;
@@ -127,19 +148,34 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
     return this._form;
   }
 
+  get statusChanges() {
+    return this._form.statusChanges;
+  }
+
   @Output() cancel = new EventEmitter<void>();
 
   @Output() validate = new EventEmitter<T>();
 
-  protected constructor(injector: Injector, form?: FormGroup) {
-    this.translate = injector.get(TranslateService);
-    this.mobile = injector.get(SettingsService).mobile;
-    this._cd = injector.get(ChangeDetectorRef);
+  protected constructor(
+    form?: FormGroup,
+    options?: {
+      name?: string;
+    }
+  ) {
     if (form) this.setForm(form);
+
+    // Log
+    this._logPrefix = logPrefix(this.constructor, options);
   }
 
   ngOnInit() {
-    this._enable ? this.enable() : this.disable();
+    // Init defaults
+    this.errorTranslatorOptions = this.errorTranslatorOptions || {
+      pathTranslator: this, // By default, will use translateFormPath() below to translate a form's path
+    };
+
+    if (this._enable) this.enable();
+    else this.disable();
   }
 
   ngOnDestroy() {
@@ -163,7 +199,7 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
    * @param event
    * @param opts allow to skip validation check, using {checkValid: false}
    */
-  async doSubmit(event: any, opts?: { checkValid?: boolean }) {
+  async doSubmit(event: Event, opts?: { checkValid?: boolean }) {
     if (!this._form) {
       this.markAllAsTouched({ emitEvent: true });
       return;
@@ -183,7 +219,7 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
     }
 
     // Emit event
-    this.validate.emit(event);
+    this.validate.emit(this._form.value);
   }
 
   setForm(form: FormGroup) {
@@ -299,7 +335,29 @@ export abstract class AppForm<T> implements IAppForm, OnInit, OnDestroy {
     if (!opts || opts.emitEvent !== false) this.markForCheck();
   }
 
+  translateFormPath(path: string) {
+    const i18nFieldName = this.getFormPathI18nKey(path);
+    return this.translate?.instant(i18nFieldName) || i18nFieldName;
+  }
+
   /* -- protected methods -- */
+
+  protected getFormError(form: FormGroup, opts?: FormErrorTranslatorOptions): string {
+    if (!form || !this.errorTranslator) return undefined;
+    return this.errorTranslator.translateFormErrors(this.form, {
+      pathTranslator: this,
+      ...opts,
+    });
+  }
+
+  /**
+   * Translate path into a i18n key (e.g. 'pubkey' into 'COMMON.PUBKEY')
+   * @param path
+   * @protected
+   */
+  protected getFormPathI18nKey(path: string) {
+    return (this._i18nPrefix || '') + changeCaseToUnderscore(path).toUpperCase();
+  }
 
   protected registerSubscription(sub: Subscription) {
     this._subscription.add(sub);

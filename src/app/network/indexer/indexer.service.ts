@@ -94,7 +94,21 @@ export class IndexerService extends GraphqlService<IndexerState> {
     };
 
     let data$: Observable<LightAccountConnectionFragment>;
-    if (isNotNilOrBlank(filter.address)) {
+    if (isNotNilOrBlank(filter.uid)) {
+      data$ = this.graphqlService
+        .wotSearchByUid(
+          {
+            name: filter.uid,
+            after: options.after,
+            first: options.first,
+            orderBy: { identity: { index: OrderBy.Asc } },
+          },
+          {
+            fetchPolicy: options.fetchPolicy || 'cache-first',
+          }
+        )
+        .pipe(map(({ data }) => data.accountConnection as LightAccountConnectionFragment));
+    } else if (isNotNilOrBlank(filter.address)) {
       data$ = this.graphqlService
         .wotSearchByAddress(
           {

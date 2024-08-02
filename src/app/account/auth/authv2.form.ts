@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { RegisterModal } from '../register/register.modal';
@@ -25,14 +25,12 @@ export class AuthV2Form extends AppForm<AuthData> implements OnInit {
   @Input() canRegister: boolean;
 
   constructor(
-    injector: Injector,
     settings: SettingsService,
     formBuilder: FormBuilder,
     private modalCtrl: ModalController,
     public network: NetworkService
   ) {
     super(
-      injector,
       formBuilder.group({
         mnemonic: [null, Validators.required],
       })

@@ -141,7 +141,9 @@
                 </ion-text>
                 <!-- not member -->
                 @if (!item.meta?.isMember) {
-                  <ion-text color="danger" translate>WOT.NOT_MEMBER_PARENTHESIS</ion-text>
+                  <ion-text color="danger">
+                    ({{ (item.meta?.status ? 'WOT.STATUS_ENUM.' + item.meta.status : 'WOT.NOT_MEMBER_PARENTHESIS') | translate }})
+                  </ion-text>
                 }
               </p>
             </ion-label>

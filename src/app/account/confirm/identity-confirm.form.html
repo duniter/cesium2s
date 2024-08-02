@@ -1,0 +1,35 @@
+<form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" (keyup.enter)="doSubmit($event)">
+  <ion-text color="dark" class="ion-text-wrap ion-text-center">
+    <p [innerHTML]="'ACCOUNT.CONFIRM_IDENTITY.PSEUDO_HELP' | translate"></p>
+  </ion-text>
+
+  <ion-list>
+    <!-- error -->
+    <ion-item lines="none" *ngIf="error && !loading" @slideUpDownAnimation>
+      <ion-icon color="danger" slot="start" name="alert-circle"></ion-icon>
+      <ion-label color="danger" class="error" [innerHTML]="error | translate"></ion-label>
+    </ion-item>
+
+    <!-- Pseudo -->
+    @if (_form | formGetControl: 'pseudo'; as control) {
+      <ion-item lines="none">
+        <ion-input
+          [formControl]="control"
+          [label]="'ACCOUNT.NEW.PSEUDO' | translate"
+          labelPlacement="floating"
+          autocomplete="off"
+          [counter]="true"
+          [helperText]="control.valid ? ('ACCOUNT.NEW.PSEUDO_AVAILABLE' | translate) : ''"
+          [errorText]="control | formError: errorTranslatorOptions"
+          maxlength="42"
+          required="true"
+          inputmode="text"
+          type="text"
+          enterkeyhint="send"
+          [debounce]="450"
+          (ionInput)="markForCheck()"
+        ></ion-input>
+      </ion-item>
+    }
+  </ion-list>
+</form>

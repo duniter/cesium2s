@@ -10,6 +10,7 @@ import { fadeInAnimation } from '@app/shared/animations';
 import { SettingsService } from '@app/settings/settings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
+import { WotController } from './wot/wot.controller';
 
 export interface IMenuItem {
   title: string;
@@ -70,6 +71,7 @@ export class AppComponent {
     protected settings: SettingsService,
     private accountService: AccountsService,
     private transferController: TransferController,
+    private wotController: WotController,
     private translate: TranslateService,
     private alertController: AlertController,
     private router: Router

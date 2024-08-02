@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { IonicModule } from '@ionic/angular';
-import { BlockTimePipe, BlocksToDurationPipe } from './block-timestamp.pipe';
+import { BlocksToDurationPipe, BlockTimePipe } from './block-timestamp.pipe';
 import { DateFormatPipe } from './date-format.pipe';
 import { DateDiffDurationPipe } from './date-diff-duration.pipe';
 import { DateFromNowPipe } from './date-from-now.pipe';
@@ -32,7 +32,7 @@ import {
   TranslatablePipe,
 } from './string.pipes';
 import { NgInitDirective } from './ng-init.pipe';
-import { FormGetArrayPipe, FormGetControlPipe, FormGetGroupPipe, FormGetPipe, FormGetValuePipe } from './form.pipes';
+import { FormErrorPipe, FormGetArrayPipe, FormGetControlPipe, FormGetGroupPipe, FormGetPipe, FormGetValuePipe } from './form.pipes';
 import { PropertyGetPipe } from './property.pipes';
 import { AmountFormatPipe } from '@app/shared/pipes/amount.pipe';
 import { AddressFormatPipe, AddressToPubkeyPipePipe } from '@app/shared/pipes/address.pipes';
@@ -84,6 +84,7 @@ import { BlockNumberPipe } from '@app/shared/pipes/block-number.pipe';
     FormGetArrayPipe,
     FormGetGroupPipe,
     FormGetValuePipe,
+    FormErrorPipe,
     // Block
     BlockTimePipe,
     BlockNumberPipe,
@@ -138,6 +139,7 @@ import { BlockNumberPipe } from '@app/shared/pipes/block-number.pipe';
     FormGetArrayPipe,
     FormGetGroupPipe,
     FormGetValuePipe,
+    FormErrorPipe,
 
     // Block
     BlockTimePipe,

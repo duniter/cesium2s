@@ -91,12 +91,24 @@
       @if (account.meta?.index) {
         <ion-item>
           <ion-icon aria-hidden="true" slot="start" name="calendar-clear-outline"></ion-icon>
-          <ion-label>
-            <h3 translate>COMMON.UID</h3>
-            <p>{{ 'WOT.REGISTERED_SINCE' | translate }}</p>
-          </ion-label>
+          <!-- special case for unconfirmed (UID is not known yet)-->
+          @if (account.meta.status === IdentityStatusEnum.Unconfirmed) {
+            <ion-label color="danger" [innerHTML]="'WOT.IDENTITY_UNCONFIRMED' | translate"></ion-label>
+          } @else {
+            <ion-label>
+              <h3 translate>COMMON.UID</h3>
+              <p>{{ 'WOT.REGISTERED_SINCE' | translate }}</p>
+            </ion-label>
 
-          <ion-badge color="warning" slot="end">{{ account.meta?.uid }}</ion-badge>
+            <ion-buttons slot="end" class="vertical-alignment">
+              <ion-badge [color]="account.meta.isMember ? 'warning' : 'medium'">
+                {{ account.meta?.uid }}
+              </ion-badge>
+              @if (!account.meta.isMember) {
+                <ion-note color="danger">({{ 'WOT.STATUS_ENUM.' + account.meta.status | translate }})</ion-note>
+              }
+            </ion-buttons>
+          }
         </ion-item>
 
         <!-- Received cert count -->

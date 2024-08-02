@@ -3,9 +3,9 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@
 import { Clipboard } from '@capacitor/clipboard';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
-import { isNil, isNotEmptyArray, isNotNilOrBlank } from '@app/shared/functions';
+import { isNil, isNotEmptyArray, isNotNil, isNotNilOrBlank } from '@app/shared/functions';
 import { NetworkService } from '@app/network/network.service';
-import { ActionSheetOptions, IonModal, IonPopover, PopoverOptions } from '@ionic/angular';
+import { ActionSheetOptions, IonModal, IonPopover, ModalController, PopoverOptions } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
 import { distinctUntilChanged, filter, mergeMap, switchMap } from 'rxjs/operators';
@@ -17,6 +17,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppSharedModule } from '@app/shared/shared.module';
 import { AppAccountModule } from '@app/account/account.module';
 import { AppAuthModule } from '@app/account/auth/auth.module';
+import { IdentityStatusEnum } from '@app/network/indexer/indexer-types.generated';
+import { AppIdentityConfirmModule } from '@app/account/confirm/identity-confirm.module';
+import { IdentityConfirmModal } from '@app/account/confirm/identity-confirm.modal';
+import { fadeInOutAnimation, slideUpDownAnimation } from '@app/shared/animations';
 
 export interface WalletState extends AppPageState {
   accounts: Account[];
@@ -26,6 +30,7 @@ export interface WalletState extends AppPageState {
   balance: number;
   receivedCertCount: number;
   givenCertCount: number;
+  status: IdentityStatusEnum;
 }
 
 @Component({
@@ -35,12 +40,15 @@ export interface WalletState extends AppPageState {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [RxState],
   standalone: true,
-  imports: [TranslateModule, AppSharedModule, AppAccountModule, AppAuthModule],
+  animations: [fadeInOutAnimation, slideUpDownAnimation],
+  imports: [TranslateModule, AppSharedModule, AppAccountModule, AppAuthModule, AppIdentityConfirmModule],
 })
 export class WalletPage extends AppPage<WalletState> implements OnInit {
   static NEW = Object.freeze(<Account>{
     address: '',
   });
+
+  IdentityStatusEnum = IdentityStatusEnum;
 
   protected qrCodeValue: string;
   protected qrCodeTitle: string;
@@ -54,6 +62,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
   @RxStateSelect() accounts$: Observable<Account[]>;
   @RxStateSelect() receivedCertCount$: Observable<number>;
   @RxStateSelect() givenCertCount$: Observable<number>;
+  @RxStateSelect() status$: Observable<IdentityStatusEnum>;
 
   get balance(): number {
     if (!this.account?.data) return undefined;
@@ -80,6 +89,7 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
     protected route: ActivatedRoute,
     protected networkService: NetworkService,
     protected accountService: AccountsService,
+    protected modalCtrl: ModalController,
     @Inject(APP_TRANSFER_CONTROLLER) protected transferController: ITransferController
   ) {
     super({
@@ -153,6 +163,14 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
         map(({ total }) => total)
       )
     );
+
+    this._state.connect(
+      'status',
+      this.account$.pipe(
+        map((account) => account?.meta?.status),
+        filter(isNotNil)
+      )
+    );
   }
 
   async ngOnInit() {
@@ -204,5 +222,43 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
 
   transfer(opts?: TransferFormOptions) {
     return this.transferController.transfer({ account: this.account, ...opts });
+  }
+
+  get isUnconfirmed() {
+    return this.account.meta?.status == IdentityStatusEnum.Unconfirmed;
+  }
+
+  async confirmIdentity(): Promise<void> {
+    console.info(`${this._logPrefix}Opening identity confirm modal...`);
+
+    const modal = await this.modalCtrl.create({
+      component: IdentityConfirmModal,
+      presentingElement: this._presentingElement,
+      canDismiss: true,
+    });
+    await modal.present();
+    const { data, role } = await modal.onWillDismiss();
+
+    if (!data || role === 'CANCEL') {
+      console.info(`${this._logPrefix}User cancelled identity confirmation`);
+      this.markAsLoaded();
+      return;
+    }
+
+    console.info(`${this._logPrefix}User confirmed. Pseudo: ${data.pseudo}`);
+    this.markAsLoading();
+
+    try {
+      await this.showToast({ id: 'confirm-identity', message: 'INFO.CONFIRM_IDENTITY_PENDING', duration: -1 });
+
+      // Send confirmation
+      await this.accountService.confirm(this.account, data.pseudo);
+
+      // Show toast
+      await this.showToast({ id: 'confirm-identity', message: 'INFO.CONFIRM_IDENTITY_DONE', swipeGesture: 'vertical', color: 'secondary' });
+    } catch (err) {
+      this.showErrorToast(err, { id: 'confirm-identity' });
+      this.markAsLoaded();
+    }
   }
 }

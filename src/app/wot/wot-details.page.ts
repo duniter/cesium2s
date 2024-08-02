@@ -12,6 +12,7 @@ import { filter, map } from 'rxjs/operators';
 import { firstArrayValue, isNotNilOrBlank } from '@app/shared/functions';
 import { IndexerService } from '@app/network/indexer/indexer.service';
 import { address2PubkeyV1, pubkeyV1Checksum } from '@app/shared/currencies';
+import { IdentityStatusEnum } from '@app/network/indexer/indexer-types.generated';
 
 export interface WotDetailsPageState extends AppPageState {
   address: string;
@@ -155,4 +156,6 @@ export class WotDetailsPage extends AppPage<WotDetailsPageState> implements OnIn
       this.markAsLoaded();
     }
   }
+
+  protected readonly IdentityStatusEnum = IdentityStatusEnum;
 }

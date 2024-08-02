@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AccountsService } from '@app/account/accounts.service';
 import { SettingsService } from '@app/settings/settings.service';
@@ -56,22 +56,21 @@ export class RegisterForm extends AppForm<AuthData> implements OnInit {
   @ViewChild(SwiperDirective) swiperDir: SwiperDirective;
 
   constructor(
-    injector: Injector,
     private accountService: AccountsService,
     private networkService: NetworkService,
     public formBuilder: FormBuilder,
     protected settings?: SettingsService
   ) {
-    super(injector);
+    super();
 
     this.setForm(
       formBuilder.group({
-        words: new FormControl(null, Validators.required),
-        wordNumber: new FormControl(null, Validators.required),
-        code: new FormControl(null, Validators.required),
-        codeConfirmation: new FormControl(null, Validators.compose([Validators.required, this.equalsValidator('code')])),
-        name: new FormControl(null),
-        address: new FormControl(null),
+        words: new FormControl<string>(null, Validators.required),
+        wordNumber: new FormControl<number>(null, Validators.required),
+        code: new FormControl<string>(null, Validators.required),
+        codeConfirmation: new FormControl<string>(null, Validators.compose([Validators.required, this.equalsValidator('code')])),
+        name: new FormControl<string>(null),
+        address: new FormControl<string>(null),
       })
     );
 
