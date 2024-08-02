@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Injector, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { RegisterModal } from '../register/register.modal';
@@ -49,7 +49,6 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
   }
 
   constructor(
-    injector: Injector,
     settings: SettingsService,
     formBuilder: FormBuilder,
     private modalCtrl: ModalController,
@@ -57,7 +56,6 @@ export class AuthForm extends AppForm<AuthData> implements OnInit {
     public network: NetworkService
   ) {
     super(
-      injector,
       formBuilder.group({
         salt: [null, Validators.required],
         password: [null, Validators.required],

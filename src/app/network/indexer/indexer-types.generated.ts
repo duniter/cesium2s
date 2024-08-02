@@ -4788,6 +4788,16 @@ export type WotSearchLastQueryVariables = Exact<{
 
 export type WotSearchLastQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> } };
 
+export type WotSearchByUidQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  orderBy?: InputMaybe<Array<AccountOrderBy> | AccountOrderBy>;
+}>;
+
+
+export type WotSearchByUidQuery = { __typename?: 'query_root', accountConnection: { __typename?: 'AccountConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', id: string, identity?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null } }> } };
+
 export const LightIdentityFragmentDoc = gql`
     fragment LightIdentity on Identity {
   id
@@ -5142,6 +5152,29 @@ export const WotSearchLastDocument = gql`
       super(apollo);
     }
   }
+export const WotSearchByUidDocument = gql`
+    query WotSearchByUid($name: String!, $first: Int!, $after: String, $orderBy: [AccountOrderBy!]) {
+  accountConnection(
+    first: $first
+    after: $after
+    orderBy: $orderBy
+    where: {identity: {name: {_eq: $name}}}
+  ) {
+    ...LightAccountConnection
+  }
+}
+    ${LightAccountConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class WotSearchByUidGQL extends Apollo.Query<WotSearchByUidQuery, WotSearchByUidQueryVariables> {
+    document = WotSearchByUidDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 
   type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -5159,7 +5192,8 @@ export const WotSearchLastDocument = gql`
       private transferConnectionByAddressGql: TransferConnectionByAddressGQL,
       private wotSearchByTextGql: WotSearchByTextGQL,
       private wotSearchByAddressGql: WotSearchByAddressGQL,
-      private wotSearchLastGql: WotSearchLastGQL
+      private wotSearchLastGql: WotSearchLastGQL,
+      private wotSearchByUidGql: WotSearchByUidGQL
     ) {}
       
     blockById(variables: BlockByIdQueryVariables, options?: QueryOptionsAlone<BlockByIdQueryVariables>) {
@@ -5224,6 +5258,14 @@ export const WotSearchLastDocument = gql`
     
     wotSearchLastWatch(variables: WotSearchLastQueryVariables, options?: WatchQueryOptionsAlone<WotSearchLastQueryVariables>) {
       return this.wotSearchLastGql.watch(variables, options)
+    }
+    
+    wotSearchByUid(variables: WotSearchByUidQueryVariables, options?: QueryOptionsAlone<WotSearchByUidQueryVariables>) {
+      return this.wotSearchByUidGql.fetch(variables, options)
+    }
+    
+    wotSearchByUidWatch(variables: WotSearchByUidQueryVariables, options?: WatchQueryOptionsAlone<WotSearchByUidQueryVariables>) {
+      return this.wotSearchByUidGql.watch(variables, options)
     }
   }
 

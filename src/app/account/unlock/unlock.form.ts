@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnInit, Optional, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Optional, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormGroupDirective, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { SettingsService } from '@app/settings/settings.service';
 import { environment } from '@environments/environment';
@@ -35,12 +35,11 @@ export class UnlockForm extends AppForm<string> implements OnInit {
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
   constructor(
-    injector: Injector,
     public formBuilder: FormBuilder,
     protected settings?: SettingsService,
     @Optional() protected formGroupDir?: FormGroupDirective
   ) {
-    super(injector);
+    super();
 
     this.debug = !environment.production;
   }
