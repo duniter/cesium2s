@@ -65,9 +65,9 @@ export const environment = <Environment>{
     /* Local endpoint */
     //'http://localhost:8080/v1/graphql',
     /* GDev endpoints */
-    'https://gdev-squid.axiom-team.fr/v1beta1/relay',
     'https://squid.gdev.coinduf.eu/v1beta1/relay',
     //'https://gdev-squid.axiom-team.fr/graphql'
+    // 'https://gdev-squid.axiom-team.fr/v1beta1/relay',
   ],
 
   defaultPods: [

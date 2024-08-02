@@ -4,6 +4,7 @@
     "APP_VERSION": "v{{version}}",
     "APP_BUILD": "build {{build}}",
     "PUBKEY": "Public key",
+    "ADDRESS": "SS58 Address",
     "MEMBER": "Member",
     "BLOCK": "Block",
     "BTN_OK": "OK",

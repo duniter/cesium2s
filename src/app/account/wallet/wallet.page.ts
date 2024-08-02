@@ -106,23 +106,29 @@ export class WalletPage extends AppPage<WalletState> implements OnInit {
       'account',
       this._state.$.pipe(
         filter((s) => isNotEmptyArray(s.accounts) && isNil(s.account) && isNotNilOrBlank(s.address)),
+        // TODO find a way to avoid multiple call, on address='default'
+        //distinctUntilKeyChanged('address'),
         mergeMap(async (s) => {
           console.debug(this._logPrefix + 'Loading account from address: ' + s.address);
 
           let account: Account;
           if (s.address === 'default') {
-            account = await this.accountService.getDefault();
+            account = await this.accountService.getDefault({ withMembership: true });
+            console.debug(this._logPrefix + 'Loaded account by default', account);
             return account;
           }
 
           // Load by address
           const exists = await this.accountService.isAvailable(s.address);
           if (exists) {
-            return this.accountService.getByAddress(s.address);
+            account = await this.accountService.getByAddress(s.address, { withMembership: true });
+            console.debug(this._logPrefix + 'Loaded account by address', account);
+            return account;
           }
 
           // Try by name
-          account = await this.accountService.getByName(s.address);
+          account = await this.accountService.getByName(s.address, { withMembership: true });
+          console.debug(this._logPrefix + 'Loaded account by name', account);
           return account;
         })
       )
