@@ -48,7 +48,6 @@
         [interfaceOptions]="mobile ? actionSheetOptions : popoverOptions"
         [okText]="'COMMON.BTN_OK' | translate"
         [cancelText]="'COMMON.BTN_CANCEL' | translate"
-        aria-label="{{ 'ACCOUNT.WALLET_LIST.TITLE' | translate }}"
       >
         <ion-select-option *rxFor="let account of accounts$" [value]="account">
           {{ account | accountName }}
