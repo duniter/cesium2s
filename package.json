@@ -191,7 +191,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.3",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "^2.0.0",
-    "lint-staged": "^15.2.0",
+    "lint-staged": "^15.2.9",
     "prettier": "~3.1.1",
     "shelljs": "~0.8.5",
     "stdio": "^2.1.3",
