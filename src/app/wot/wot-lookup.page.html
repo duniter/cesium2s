@@ -60,7 +60,8 @@
         autocomplete="off"
         animated="true"
         showClearButton="true"
-        [debounce]="debounceTime"
+        [ngModel]="searchText"
+        [debounce]="mobile ? debounceTime : 0"
         (ionClear)="clearSearch($event)"
         (ionInput)="searchChanged($event, $event.detail.value)"
         (search)="searchChanged($event, searchBar.value)"
@@ -70,99 +71,104 @@
       ></ion-searchbar>
     }
 
-    <ion-list-header *ngIf="!mobile">
-      <ion-grid>
-        <ion-col>&nbsp;</ion-col>
-        <ion-col class="ion-float-end" size="auto">
-          @if (showFilterButtons) {
-            <ion-button
-              fill="clear"
-              [color]="filter?.last && !filter.pending ? 'secondary' : 'dark'"
-              (click)="applyFilter({ last: true, pending: false, searchText: '' })"
-            >
-              <ion-icon name="people" slot="start"></ion-icon>
-              <ion-label translate>WOT.LOOKUP.NEWCOMERS</ion-label>
-            </ion-button>
-            <ion-button
-              fill="clear"
-              [color]="filter?.last && filter.pending ? 'secondary' : 'dark'"
-              (click)="applyFilter({ last: true, pending: true, searchText: '' })"
-            >
-              <ion-icon name="time-outline" slot="start"></ion-icon>
-              <ion-label translate>WOT.LOOKUP.PENDING</ion-label>
-            </ion-button>
-          }
+    @if (!mobile) {
+      <ion-list-header>
+        <ion-grid>
+          <ion-col>&nbsp;</ion-col>
+          <ion-col class="ion-float-end" size="auto">
+            @if (showFilterButtons) {
+              <ion-button
+                fill="clear"
+                [color]="filter?.last && !filter.pending ? 'secondary' : 'dark'"
+                (click)="applyFilter({ last: true, pending: false, searchText: '' })"
+              >
+                <ion-icon name="people" slot="start"></ion-icon>
+                <ion-label translate>WOT.LOOKUP.NEWCOMERS</ion-label>
+              </ion-button>
+              <ion-button
+                fill="clear"
+                [color]="filter?.last && filter.pending ? 'secondary' : 'dark'"
+                (click)="applyFilter({ last: true, pending: true, searchText: '' })"
+              >
+                <ion-icon name="time-outline" slot="start"></ion-icon>
+                <ion-label translate>WOT.LOOKUP.PENDING</ion-label>
+              </ion-button>
+            }
 
-          <ion-button fill="solid" color="light" (click)="refresh.emit($event)">
-            <ion-label translate>COMMON.BTN_SEARCH</ion-label>
-          </ion-button>
-        </ion-col>
-      </ion-grid>
-    </ion-list-header>
+            <ion-button fill="solid" color="light" (click)="refresh.emit($event)">
+              <ion-label translate>COMMON.BTN_SEARCH</ion-label>
+            </ion-button>
+          </ion-col>
+        </ion-grid>
+      </ion-list-header>
+    }
 
     <ion-list>
-      @if (loading$ | async) {
+      @if (loading$ | push) {
         <!-- loading spinner -->
         <ng-template [ngTemplateOutlet]="itemSkeleton"></ng-template>
       } @else {
-        <ion-item-sliding *rxFor="let item of items$; index as index; trackBy: 'address'">
-          <ion-item [detail]="!itemClick.observed" (click)="click($event, item)" class="ion-activatable ion-focusable" tappable>
-            <ion-avatar slot="start">
-              <app-account-image [account]="item"></app-account-image>
-            </ion-avatar>
-            <ion-label>
-              <h2>
-                <ion-text [color]="item.meta?.isMember && !item.meta.name ? 'primary' : 'dark'">
-                  @if (!item.meta?.name) {
-                    <ion-icon name="person"></ion-icon>
-                  }
-                  @if (filter?.last) {
-                    <span>{{ item | accountName: { listenChanges: false } }}</span>
-                  } @else {
-                    <span [innerHTML]="item | accountName: { listenChanges: false } | highlight: { search: searchText }"></span>
-                  }
-                </ion-text>
-              </h2>
-              <p>
-                @if (item.meta.name && item.meta.uid) {
-                  <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
-                    <ion-icon name="person"></ion-icon>
+        <!-- Items -->
+        @for (item of items$ | async; track 'address'; let index = $index) {
+          <ion-item-sliding>
+            <ion-item [detail]="!itemClick.observed" (click)="click($event, item)" class="ion-activatable ion-focusable" tappable>
+              <ion-avatar slot="start">
+                <app-account-image [account]="item"></app-account-image>
+              </ion-avatar>
+              <ion-label>
+                <h2>
+                  <ion-text [color]="item.meta?.isMember && !item.meta.name ? 'primary' : 'dark'">
+                    @if (!item.meta?.name) {
+                      <ion-icon name="person"></ion-icon>
+                    }
                     @if (filter?.last) {
-                      <span>{{ item.meta.uid }}</span>
+                      <span>{{ item | accountName: { listenChanges: false } }}</span>
                     } @else {
-                      <span [innerHTML]="item.meta.uid | highlight: { search: searchText }"></span>
+                      <span [innerHTML]="item | accountName: { listenChanges: false } | highlight: { search: searchText }"></span>
                     }
                   </ion-text>
-                }
-                <!-- address -->
-                <ion-text>
-                  <ion-icon name="key"></ion-icon>
-                  <span>{{ item.address | addressFormat }}</span>
-                </ion-text>
-                <!-- not member -->
-                @if (!item.meta?.isMember) {
-                  <ion-text color="danger">
-                    ({{ (item.meta?.status ? 'WOT.STATUS_ENUM.' + item.meta.status : 'WOT.NOT_MEMBER_PARENTHESIS') | translate }})
+                </h2>
+                <p>
+                  @if (item.meta.name && item.meta.uid) {
+                    <ion-text [color]="item.meta?.isMember ? 'primary' : 'dark'">
+                      <ion-icon name="person"></ion-icon>
+                      @if (filter?.last) {
+                        <span>{{ item.meta.uid }}</span>
+                      } @else {
+                        <span [innerHTML]="item.meta.uid | highlight: { search: searchText }"></span>
+                      }
+                    </ion-text>
+                  }
+                  <!-- address -->
+                  <ion-text>
+                    <ion-icon name="key"></ion-icon>
+                    <span>{{ item.address | addressFormat }}</span>
                   </ion-text>
-                }
-              </p>
-            </ion-label>
-            <ion-button
-              slot="end"
-              *ngIf="showItemActions && !mobile"
-              (click)="transferTo($event, item)"
-              [title]="'COMMON.BTN_SEND_MONEY' | translate"
-            >
-              <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
-            </ion-button>
-          </ion-item>
+                  <!-- not member -->
+                  @if (!item.meta?.isMember) {
+                    <ion-text color="danger">
+                      ({{ (item.meta?.status ? 'WOT.STATUS_ENUM.' + item.meta.status : 'WOT.NOT_MEMBER_PARENTHESIS') | translate }})
+                    </ion-text>
+                  }
+                </p>
+              </ion-label>
+              <ion-button
+                slot="end"
+                *ngIf="showItemActions && !mobile"
+                (click)="transferTo($event, item)"
+                [title]="'COMMON.BTN_SEND_MONEY' | translate"
+              >
+                <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
+              </ion-button>
+            </ion-item>
 
-          <ion-item-options *ngIf="mobile && showItemActions">
-            <ion-item-option (click)="transferTo($event, item)" [title]="'COMMON.BTN_SEND_MONEY' | translate">
-              <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
+            <ion-item-options *ngIf="mobile && showItemActions">
+              <ion-item-option (click)="transferTo($event, item)" [title]="'COMMON.BTN_SEND_MONEY' | translate">
+                <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        }
 
         <!-- no result -->
         <ion-item *rxIf="(count$ | push) === 0" lines="none">

@@ -2,6 +2,7 @@ import { equals, isNil, isNilOrBlank } from '@app/shared/functions';
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { InjectionToken } from '@angular/core';
 import { WotController } from './wot.controller';
+import { Account } from '@app/account/account.model';
 
 export interface WotLookupOptions {
   debounceTime?: number;
@@ -12,6 +13,7 @@ export interface WotLookupOptions {
   toolbarColor?: PredefinedColors;
   searchText?: string;
   filter?: WotSearchFilter;
+  autoLoad?: boolean;
 }
 
 export interface WotSearchFilter {
@@ -33,4 +35,8 @@ export class WotSearchFilterUtils {
   }
 }
 
-export const APP_WOT_CONTROLLER = new InjectionToken<WotController>('WotController');
+export interface IWotController {
+  select(options?: WotLookupOptions): Promise<Account | undefined>;
+}
+
+export const APP_WOT_CONTROLLER = new InjectionToken<IWotController>('WotController');

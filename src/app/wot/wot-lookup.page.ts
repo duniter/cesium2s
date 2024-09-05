@@ -4,8 +4,8 @@ import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { Account } from '@app/account/account.model';
 import { WotLookupOptions, WotSearchFilter, WotSearchFilterUtils } from '@app/wot/wot.model';
 import { arraySize, isNilOrBlank, isNotNilOrBlank, toBoolean, toNumber } from '@app/shared/functions';
-import { merge, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, mergeMap, tap } from 'rxjs/operators';
+import { merge, Observable, switchMap } from 'rxjs';
+import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 
 import { PredefinedColors } from '@app/shared/colors/colors.utils';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
@@ -81,8 +81,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
       'filter',
       this._state.select('searchText').pipe(
         distinctUntilChanged(),
-        tap(() => this.autoLoad && this.markAsLoading()),
-        debounceTime(this.mobile ? this.debounceTime : 0)
+        tap(() => this.autoLoad && this.markAsLoading())
       ),
       (s, searchText) => {
         return {
@@ -97,7 +96,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
       merge(
         this.refresh.pipe(
           tap(() => this.markAsLoading()),
-          debounceTime(100), // Wait filter to be update
+          //debounceTime(this.debounceTime + 10), // Wait filter to be update
           map(() => ({ filter: this.filter, fetchSize: this.fetchSize, autoLoad: true }))
         ),
         this._state.select(['filter', 'fetchSize', 'autoLoad'], (res) => res, {
@@ -107,7 +106,7 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
       ).pipe(
         filter(({ autoLoad }) => autoLoad || this.mobile),
         filter(({ filter }) => !WotSearchFilterUtils.isEmpty(filter) && filter.address !== 'default'),
-        mergeMap(({ filter, fetchSize }) => this.search(filter, { after: null, first: fetchSize })),
+        switchMap(({ filter, fetchSize }) => this.search(filter, { after: null, first: fetchSize })),
         map(({ data, fetchMore }) => {
           this.fetchMoreFn = fetchMore;
           this.canFetchMore = !!fetchMore;
@@ -118,6 +117,10 @@ export class WotLookupPage extends AppPage<WotLookupState> implements OnInit, Wo
     );
 
     this._state.connect('count', this.items$.pipe(map(arraySize)));
+
+    if (isNotNilOrBlank(this.searchText)) {
+      this.form.setValue({ searchText: this.searchText });
+    }
   }
 
   ngOnInit() {

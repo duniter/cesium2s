@@ -259,7 +259,7 @@ export class TransferPage extends AppPage<TransferPageState> implements Transfer
     const data = await this.wotCtrl.select({ searchText, showItemActions: false, showFilterButtons: false });
 
     if (!data) {
-      console.log('TODO cancelled');
+      console.debug('User cancelled');
       return; // User cancelled
     }
 

@@ -125,11 +125,25 @@ export class AccountBalancePipe extends AccountAbstractPipe<number> implements P
 })
 export class AccountNamePipe extends AccountAbstractPipe<string> implements PipeTransform {
   constructor(cd: ChangeDetectorRef) {
-    super(cd, { withBalance: false });
+    super(cd, { withBalance: false, withProfile: true });
   }
 
   protected _transform(account: Partial<Account>): string {
     return AccountUtils.getDisplayName(account);
+  }
+}
+
+@Pipe({
+  name: 'accountAvatar',
+  pure: false,
+})
+export class AccountAvatarPipe extends AccountAbstractPipe<string> implements PipeTransform {
+  constructor(cd: ChangeDetectorRef) {
+    super(cd, { withBalance: false, withProfile: true });
+  }
+
+  protected _transform(account: Partial<Account>): string {
+    return account?.meta && (account.meta.profile?.avatar || account.meta.avatar);
   }
 }
 

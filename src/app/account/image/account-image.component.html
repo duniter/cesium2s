@@ -1,6 +1,6 @@
 @if (account) {
-  @if (account.meta?.avatar) {
-    <ion-img [src]="account.meta.avatar"></ion-img>
+  @if (account | accountAvatar; as avatar) {
+    <ion-img [src]="avatar"></ion-img>
   } @else {
     <svg width="40" height="40" [data-jdenticon-value]="account.address"></svg>
   }

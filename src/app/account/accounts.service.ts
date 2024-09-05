@@ -33,6 +33,8 @@ import { AppEvent } from '@app/shared/types';
 import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
 import { ExtrinsicError, ExtrinsicUtils } from '@app/shared/substrate/extrinsic.utils';
 import { IdentityStatusEnum } from '@app/network/indexer/indexer-types.generated';
+import { PodService } from '@app/network/pod/pod.service';
+import { FetchPolicy } from '@apollo/client';
 
 // kind of certify action
 enum CertType {
@@ -51,6 +53,8 @@ export interface LoadAccountDataOptions {
   withBalance?: boolean;
   withMembership?: boolean;
   emitEvent?: boolean;
+  withProfile?: boolean;
+  fetchPolicy?: FetchPolicy;
 }
 export interface WatchAccountDataOptions extends LoadAccountDataOptions {}
 
@@ -81,6 +85,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
   constructor(
     protected network: NetworkService,
     protected indexer: IndexerService,
+    protected pod: PodService,
     protected settings: SettingsService,
     @Inject(APP_STORAGE) protected storage: IStorage,
     @Inject(APP_AUTH_CONTROLLER) protected authController: IAuthController
@@ -186,7 +191,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
       // Load account's data
       try {
-        await Promise.all(accounts.map((a) => this.loadData(a, { withMembership: true })));
+        await Promise.all(accounts.map((a) => this.loadData(a, { withMembership: true, withProfile: true })));
 
         // DEBUG
         console.info(this._logPrefix + `Loading accounts [OK] ${accounts.length} accounts loaded in ${Date.now() - now}ms`);
@@ -262,6 +267,12 @@ export class AccountsService extends RxStartableService<AccountsState> {
     if (isNotNilOrBlank(this._password)) {
       console.debug(`${this._logPrefix}Already authenticated. Skip`);
       return true; // ok
+    }
+
+    const hasPassword = this.settings.get('hasPassword') || false;
+    if (!hasPassword) {
+      console.error(`${this._logPrefix}No password defined. Cannot auth`);
+      return false; // KO
     }
 
     console.debug(`${this._logPrefix}Not auth: opening unlock modal...`);
@@ -464,17 +475,33 @@ export class AccountsService extends RxStartableService<AccountsState> {
     return await this.loadData(account, opts);
   }
 
+  /*private cacheByAddress: {
+    [address: string]: {
+      time: number;
+      options: WatchAccountDataOptions;
+      account$: Observable<Account>;
+    };
+  } = {};*/
+
   watchByAddress(address: string, opts?: WatchAccountDataOptions): Observable<Account> {
     // Wait start if need, then loop
     if (!this.started) return from(this.ready()).pipe(switchMap(() => this.watchByAddress(address, opts)));
 
     if (this.isAvailableSync(address)) {
-      return this.accounts$.pipe(map((accounts) => accounts?.find((a) => a.address === address)));
+      return this.accounts$.pipe(
+        map((accounts) => accounts?.find((a) => a.address === address)),
+        mergeMap(async (account) => this.loadData(account, { ...opts, withMembership: false, fetchPolicy: 'cache-first' }))
+      );
     }
 
-    return this.indexer.wotSearch({ address }, { first: 1 }).pipe(
+    // TODO use cache
+    // Exists in cache
+    //if (this.cacheByAddress[address]) {
+    //}
+
+    return this.indexer.wotSearch({ address }, { first: 1, fetchPolicy: 'cache-first' }).pipe(
       map(({ data }) => firstArrayValue(data)),
-      mergeMap(async (account) => this.loadData(account, { ...opts, withMembership: false }))
+      mergeMap(async (account) => this.loadData(account, { ...opts, withMembership: false, fetchPolicy: 'cache-first' }))
     );
   }
 
@@ -714,6 +741,7 @@ export class AccountsService extends RxStartableService<AccountsState> {
       reload: false,
       withBalance: true,
       withTx: false, // disable by default
+      withProfile: false,
       ...opts,
     };
 
@@ -767,6 +795,27 @@ export class AccountsService extends RxStartableService<AccountsState> {
       if (opts.withCert === true) {
         // const certs = await this.api.query.cert.certsByReceiver(account.address);
         // console.debug(`${this._logPrefix} Loaded certs:`, certs);
+      }
+
+      // Load profile
+      if (opts.withProfile === true && (isNil(account.meta.profile) || opts.reload === true)) {
+        const { data } = await firstValueFrom(this.pod.profileSearch({ address: account.address }, { first: 1 }));
+        const profile = firstArrayValue(data);
+        if (profile?.meta) {
+          account.meta = {
+            ...account.meta,
+            profile: {
+              name: profile.meta.name,
+              avatar: profile.meta.avatar,
+            },
+          };
+          changed = true;
+        } else {
+          account.meta = {
+            ...account.meta,
+            profile: {}, // Remember that we already try to load it
+          };
+        }
       }
 
       // Emit change event

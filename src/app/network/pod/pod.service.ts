@@ -55,8 +55,9 @@ export class PodService extends GraphqlService<PodState> {
     filter: WotSearchFilter,
     options: { after?: string; first?: number; fetchPolicy?: FetchPolicy; total?: number; withTotal?: boolean }
   ): Observable<LoadResult<Account>> {
-    console.info(`${this._logPrefix}Searching profile by filter...`, filter);
+    console.debug(`${this._logPrefix}Searching profiles by filter...`, filter);
 
+    const now = Date.now();
     const offset = toNumber(+options?.after, 0);
     const limit = toNumber(+options?.first, this.fetchSize);
     const withTotal = offset === 0 && options?.withTotal !== false;
@@ -74,7 +75,7 @@ export class PodService extends GraphqlService<PodState> {
         .pipe(
           map(({ data }) => {
             return {
-              data: [data.profiles_by_pk as ProfileFragment],
+              data: [data.profiles_by_pk],
               total: isNil(data.profiles_by_pk) ? 0 : 1,
             };
           })
@@ -121,6 +122,12 @@ export class PodService extends GraphqlService<PodState> {
     return data$.pipe(
       map((res) => {
         const data = AccountConverter.profileToAccounts(res.data, { ipfsGateway: this.ipfsService.gatewayBaseUrl });
+
+        const duration = Date.now() - now;
+        if (duration > 10) {
+          console.info(`${this._logPrefix}${data.length} profiles loaded in ${duration}ms`);
+        }
+
         const total = toNumber(res?.total, options?.total);
         const result: LoadResult<Account> = { data, total };
         const nextOffset = offset + limit;

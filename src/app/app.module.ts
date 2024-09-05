@@ -28,6 +28,7 @@ import { POD_GRAPHQL_TYPE_POLICIES } from '@app/network/pod/pod.config';
 import { AppWotModule } from './wot/wot.module';
 import { APP_FORM_ERROR_I18N_KEYS } from '@app/shared/form/form-error-translator.service';
 import { IdentityConfirmValidators } from '@app/account/confirm/identity-confirm.validator';
+import { CodeInputModule } from 'angular-code-input';
 
 export function createTranslateLoader(http: HttpClient) {
   if (environment.production) {
@@ -57,12 +58,17 @@ export function createTranslateLoader(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
+    CodeInputModule.forRoot({
+      codeLength: 6,
+      isCharsCode: true,
+      code: 'AAAAA',
+    }),
 
     AppRoutingModule,
     AppSharedModule,
+    AppWotModule.forRoot(),
     AppAccountModule.forRoot(),
     AppTransferModule.forRoot(),
-    AppWotModule.forRoot(),
   ],
   providers: [
     PlatformService,

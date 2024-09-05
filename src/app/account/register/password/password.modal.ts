@@ -1,23 +1,17 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AccountsService } from '@app/account/accounts.service';
-import { AuthV2Form } from './authv2.form';
 import { firstNotNilPromise } from '@app/shared/observables';
-
-import { AuthModalRole } from '@app/account/auth/auth.modal';
-import { AuthData } from '@app/account/auth/auth.model';
-
-export interface AuthV2ModalOptions {
-  auth?: boolean;
-  title?: string;
-}
+import { UnlockForm } from '@app/account/unlock/unlock.form';
+import { UnlockOptions } from '@app/account/account.model';
 
 @Component({
-  selector: 'app-authv2-modal',
-  templateUrl: 'authv2.modal.html',
+  selector: 'app-password-modal',
+  templateUrl: 'password.modal.html',
+  styleUrls: ['./password.modal.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
+export class PasswordModal implements OnInit, UnlockOptions {
   get loading() {
     return this.form?.loading;
   }
@@ -26,10 +20,12 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
     return this.form?.mobile;
   }
 
-  @Input() auth = false; // false for login, true for auth
-  @Input() title: string = null;
+  @Input() title = 'UNLOCK.TITLE';
+  @Input() expectedCode: string = null;
+  @Input() minLength: number = 5;
+  @Input() maxLength: number = 5;
 
-  @ViewChild('form', { static: true }) private form: AuthV2Form;
+  @ViewChild('form', { static: true }) private form: UnlockForm;
 
   constructor(
     private accountService: AccountsService,
@@ -38,16 +34,17 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
   ) {}
 
   ngOnInit() {
-    this.title = this.title || (this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE');
     this.form.markAsReady({ emitEvent: false });
     this.form.markAsLoaded();
+    this.form.enable();
   }
 
   cancel() {
-    this.viewCtrl.dismiss(null, <AuthModalRole>'CANCEL');
+    this.viewCtrl.dismiss();
   }
 
-  async doSubmit(data?: AuthData): Promise<boolean | undefined> {
+  async doSubmit(data?: string): Promise<any> {
+    console.debug('[auth-modal] Submit...');
     if (this.form.disabled) return;
     if (!this.form.valid) {
       this.form.markAllAsTouched();
@@ -61,9 +58,7 @@ export class AuthV2Modal implements OnInit, AuthV2ModalOptions {
       // Disable the form
       this.form.disable();
 
-      const account = await this.accountService.addAccount(data);
-
-      return this.viewCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
+      return this.viewCtrl.dismiss(data);
     } catch (err) {
       this.form.error = (err && err.message) || err;
       this.markAsLoaded();

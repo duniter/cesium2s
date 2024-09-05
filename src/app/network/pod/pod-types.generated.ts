@@ -496,27 +496,6 @@ export type ProfileSearchByAddressesQueryVariables = Exact<{
 
 export type ProfileSearchByAddressesQuery = { __typename?: 'query_root', profiles: Array<{ __typename: 'profiles', title?: string | null, time: any, id?: string | null, address: string, avatar_cid?: string | null }> };
 
-export type ProfileSearchByAddressQueryVariables = Exact<{
-  address: Scalars['String']['input'];
-}>;
-
-
-export type ProfileSearchByAddressQuery = { __typename?: 'query_root', profiles_by_pk?: { __typename: 'profiles', description?: string | null, city?: string | null, geoloc?: any | null, socials?: any | null, index_request_cid: string, title?: string | null, time: any, id?: string | null, address: string, avatar_cid?: string | null } | null };
-
-export type LightProfileByAddressesQueryVariables = Exact<{
-  addresses: Array<Scalars['String']['input']> | Scalars['String']['input'];
-}>;
-
-
-export type LightProfileByAddressesQuery = { __typename?: 'query_root', profiles: Array<{ __typename: 'profiles', title?: string | null, time: any, id?: string | null, address: string, avatar_cid?: string | null }> };
-
-export type LightProfileByAddressQueryVariables = Exact<{
-  address: Scalars['String']['input'];
-}>;
-
-
-export type LightProfileByAddressQuery = { __typename?: 'query_root', profiles_by_pk?: { __typename: 'profiles', title?: string | null, time: any, id?: string | null, address: string, avatar_cid?: string | null } | null };
-
 export const LightProfileFragmentDoc = gql`
     fragment LightProfile on profiles {
   id: data_cid
@@ -601,60 +580,6 @@ export const ProfileSearchByAddressesDocument = gql`
       super(apollo);
     }
   }
-export const ProfileSearchByAddressDocument = gql`
-    query ProfileSearchByAddress($address: String!) {
-  profiles_by_pk(pubkey: $address) {
-    ...Profile
-  }
-}
-    ${ProfileFragmentDoc}`;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class ProfileSearchByAddressGQL extends Apollo.Query<ProfileSearchByAddressQuery, ProfileSearchByAddressQueryVariables> {
-    document = ProfileSearchByAddressDocument;
-    client = 'pod';
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
-export const LightProfileByAddressesDocument = gql`
-    query LightProfileByAddresses($addresses: [String!]!) {
-  profiles(where: {pubkey: {_in: $addresses}}) {
-    ...LightProfile
-  }
-}
-    ${LightProfileFragmentDoc}`;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class LightProfileByAddressesGQL extends Apollo.Query<LightProfileByAddressesQuery, LightProfileByAddressesQueryVariables> {
-    document = LightProfileByAddressesDocument;
-    client = 'pod';
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
-export const LightProfileByAddressDocument = gql`
-    query LightProfileByAddress($address: String!) {
-  profiles_by_pk(pubkey: $address) {
-    ...LightProfile
-  }
-}
-    ${LightProfileFragmentDoc}`;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class LightProfileByAddressGQL extends Apollo.Query<LightProfileByAddressQuery, LightProfileByAddressQueryVariables> {
-    document = LightProfileByAddressDocument;
-    client = 'pod';
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
 
   type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -667,10 +592,7 @@ export const LightProfileByAddressDocument = gql`
     constructor(
       private profileSearchByTextGql: ProfileSearchByTextGQL,
       private profileByAddressGql: ProfileByAddressGQL,
-      private profileSearchByAddressesGql: ProfileSearchByAddressesGQL,
-      private profileSearchByAddressGql: ProfileSearchByAddressGQL,
-      private lightProfileByAddressesGql: LightProfileByAddressesGQL,
-      private lightProfileByAddressGql: LightProfileByAddressGQL
+      private profileSearchByAddressesGql: ProfileSearchByAddressesGQL
     ) {}
       
     profileSearchByText(variables: ProfileSearchByTextQueryVariables, options?: QueryOptionsAlone<ProfileSearchByTextQueryVariables>) {
@@ -695,30 +617,6 @@ export const LightProfileByAddressDocument = gql`
     
     profileSearchByAddressesWatch(variables: ProfileSearchByAddressesQueryVariables, options?: WatchQueryOptionsAlone<ProfileSearchByAddressesQueryVariables>) {
       return this.profileSearchByAddressesGql.watch(variables, options)
-    }
-    
-    profileSearchByAddress(variables: ProfileSearchByAddressQueryVariables, options?: QueryOptionsAlone<ProfileSearchByAddressQueryVariables>) {
-      return this.profileSearchByAddressGql.fetch(variables, options)
-    }
-    
-    profileSearchByAddressWatch(variables: ProfileSearchByAddressQueryVariables, options?: WatchQueryOptionsAlone<ProfileSearchByAddressQueryVariables>) {
-      return this.profileSearchByAddressGql.watch(variables, options)
-    }
-    
-    lightProfileByAddresses(variables: LightProfileByAddressesQueryVariables, options?: QueryOptionsAlone<LightProfileByAddressesQueryVariables>) {
-      return this.lightProfileByAddressesGql.fetch(variables, options)
-    }
-    
-    lightProfileByAddressesWatch(variables: LightProfileByAddressesQueryVariables, options?: WatchQueryOptionsAlone<LightProfileByAddressesQueryVariables>) {
-      return this.lightProfileByAddressesGql.watch(variables, options)
-    }
-    
-    lightProfileByAddress(variables: LightProfileByAddressQueryVariables, options?: QueryOptionsAlone<LightProfileByAddressQueryVariables>) {
-      return this.lightProfileByAddressGql.fetch(variables, options)
-    }
-    
-    lightProfileByAddressWatch(variables: LightProfileByAddressQueryVariables, options?: WatchQueryOptionsAlone<LightProfileByAddressQueryVariables>) {
-      return this.lightProfileByAddressGql.watch(variables, options)
     }
   }
 

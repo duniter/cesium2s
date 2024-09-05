@@ -8,10 +8,12 @@ import { AppEvent } from '@app/shared/types';
 import { LoginMethodType } from '@app/account/account.model';
 import { SettingsService } from '@app/settings/settings.service';
 import { AppForm } from '@app/shared/form.class';
+import { toBoolean } from '@app/shared/functions';
 
 export interface AuthModalOptions {
   auth?: boolean;
   title?: string;
+  loginMethod?: LoginMethodType;
 }
 
 export declare type AuthModalRole = 'CANCEL' | 'VALIDATE';
@@ -36,18 +38,22 @@ export class AuthModal implements OnInit, AuthModalOptions {
 
   @Input() auth = false; // false for login, true for auth
   @Input() title: string = null;
-  @Input() loginMethod: LoginMethodType = 'v1';
+  @Input() canRegister: boolean;
+  @Input() loginMethod: LoginMethodType;
 
   constructor(
+    private modalCtrl: ModalController,
     private settingsService: SettingsService,
     private accountService: AccountsService,
-    private viewCtrl: ModalController,
     private cd: ChangeDetectorRef,
     @Inject(APP_AUTH_CONTROLLER) private authController: IAuthController
   ) {}
 
   ngOnInit() {
     this.title = this.title || (this.auth ? 'AUTH.TITLE' : 'LOGIN.TITLE');
+    this.loginMethod = this.loginMethod || 'v1';
+
+    this.canRegister = toBoolean(this.canRegister, true);
   }
 
   setForm(form: AppForm<AuthData>) {
@@ -57,7 +63,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
   }
 
   cancel() {
-    this.viewCtrl.dismiss(null, <AuthModalRole>'CANCEL');
+    this.modalCtrl.dismiss(null, <AuthModalRole>'CANCEL');
   }
 
   async doSubmit(data?: AuthData): Promise<boolean | undefined> {
@@ -76,7 +82,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
 
       const account = await this.accountService.addAccount(data);
 
-      return this.viewCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
+      return this.modalCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
     } catch (err) {
       this.form.error = (err && err.message) || err;
       this.markAsLoaded();

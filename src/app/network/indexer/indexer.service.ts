@@ -85,7 +85,8 @@ export class IndexerService extends GraphqlService<IndexerState> {
   }
 
   wotSearch(filter: WotSearchFilter, options: { after?: string; first?: number; fetchPolicy?: FetchPolicy }): Observable<LoadResult<Account>> {
-    console.info(`${this._logPrefix}Searching wot by filter...`, filter);
+    const now = Date.now();
+    console.debug(`${this._logPrefix}Searching wot by filter...`, filter);
 
     options = {
       after: null,
@@ -156,6 +157,12 @@ export class IndexerService extends GraphqlService<IndexerState> {
       map((connection: LightAccountConnectionFragment) => {
         const data = AccountConverter.squidConnectionToAccounts(connection);
         const result: LoadResult<Account> = { data };
+
+        const duration = Date.now() - now;
+        if (duration > 10) {
+          console.info(`${this._logPrefix}${data.length} accounts loaded in ${duration}ms`);
+        }
+
         if (connection.pageInfo.hasNextPage) {
           const endCursor = connection.pageInfo.endCursor;
           result.fetchMore = (first) => {

@@ -38,14 +38,13 @@
       <app-auth-form #formV1 [canRegister]="!auth" (validate)="doSubmit($event)" (cancel)="cancel()" (ngInit)="setForm(formV1)"></app-auth-form>
     }
     @case ('v2') {
-      <app-authv2-form #formV2 [canRegister]="!auth" (validate)="doSubmit($event)" (cancel)="cancel()" (ngInit)="setForm(formV2)"></app-authv2-form>
+      <app-mnemonic-form #formV2 (validate)="doSubmit($event)" (cancel)="cancel()" (ngInit)="setForm(formV2)"></app-mnemonic-form>
     }
     @case ('pubkey-v1') {
-      <ion-item lines="none"><ion-text class="text-help" [innerHTML]="'LOGIN.PUBKEY_FORM_HELP' | translate"></ion-text></ion-item>
-      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+      <app-pubkey-form #pubkeyForm (ngInit)="setForm(pubkeyForm)" (validate)="doSubmit($event)" (cancel)="cancel()"></app-pubkey-form>
     }
     @case ('address') {
-      <ion-item lines="none"><ion-text color="danger" [innerHTML]="'INFO.FEATURES_NOT_IMPLEMENTED' | translate"></ion-text></ion-item>
+      <app-address-form #addressForm (ngInit)="setForm(addressForm)" (validate)="doSubmit($event)" (cancel)="cancel()"></app-address-form>
     }
     @case ('keyfile-v1') {
       <ion-item lines="none"><ion-text class="text-help" [innerHTML]="'LOGIN.FILE_FORM_HELP' | translate"></ion-text></ion-item>
@@ -63,6 +62,17 @@
         <ion-text translate>LOGIN.BTN_METHODS_DOTS</ion-text>
       </ion-button>
     </div>
+  }
+
+  <!-- Not register yet ? -->
+  @if (canRegister) {
+    <p class="ion-padding ion-text-center">
+      <span translate>LOGIN.NO_ACCOUNT_QUESTION</span>
+      <br />
+      <a (click)="register()">
+        <span translate>LOGIN.CREATE_ACCOUNT</span>
+      </a>
+    </p>
   }
 </ion-content>
 

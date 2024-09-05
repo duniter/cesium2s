@@ -1,0 +1,25 @@
+<form [formGroup]="form" novalidate (ngSubmit)="doSubmit($event)" class="form-container ion-padding" (keyup.enter)="doSubmit($event)">
+  <ion-list>
+    <!-- error -->
+    <ion-item lines="none" *ngIf="error && !loading" @slideUpDownAnimation>
+      <ion-icon color="danger" slot="start" name="alert-circle"></ion-icon>
+      <ion-label color="danger" class="error" [innerHTML]="error | translate"></ion-label>
+    </ion-item>
+
+    <!-- Pubkey -->
+    <ion-item>
+      <ion-input type="text" formControlName="pubkey" [label]="'LOGIN.PUBKEY_HELP' | translate" labelPlacement="floating" autocomplete="off" required>
+        <!-- search button-->
+        <ion-button
+          fill="clear"
+          slot="end"
+          [attr.aria-label]="'COMMON.BTN_SEARCH'"
+          (click)="showWotModal($event)"
+          [disabled]="form | formGetValue: 'pubkey' | isNilOrBlank"
+        >
+          <ion-icon slot="icon-only" name="search" aria-hidden="true"></ion-icon>
+        </ion-button>
+      </ion-input>
+    </ion-item>
+  </ion-list>
+</form>

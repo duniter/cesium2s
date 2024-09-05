@@ -448,6 +448,7 @@
     "PASSWORD": "Mot de passe",
     "PASSWORD_HELP": "Mot de passe",
     "PUBKEY_HELP": "Clé publique ou pseudonyme",
+    "ADDRESS_HELP": "Addresse SS58",
     "MNEMONIC": "Phrase de restauration",
     "NO_ACCOUNT_QUESTION": "Vous n'avez pas encore de compte ?",
     "HAVE_ACCOUNT_QUESTION": "Vous avez déjà un compte ?",

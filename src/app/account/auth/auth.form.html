@@ -35,15 +35,15 @@
 
     <!-- Password -->
     <ion-item>
-      <ion-input
-        *ngIf="showPwd; else hidePwd"
-        formControlName="password"
-        [label]="'LOGIN.PASSWORD' | translate"
-        labelPlacement="floating"
-        autocomplete="off"
-        required
-      ></ion-input>
-      <ng-template #hidePwd>
+      @if (showPwd) {
+        <ion-input
+          formControlName="password"
+          [label]="'LOGIN.PASSWORD' | translate"
+          labelPlacement="floating"
+          autocomplete="off"
+          required
+        ></ion-input>
+      } @else {
         <ion-input
           formControlName="password"
           type="password"
@@ -52,7 +52,7 @@
           autocomplete="off"
           required
         ></ion-input>
-      </ng-template>
+      }
 
       <!-- show/hide button -->
       <ion-button slot="end" (click)="toggleShowPwd($event)" fill="clear" color="medium" [tabindex]="-1">
@@ -77,13 +77,4 @@
       </ion-item>
     </ng-container>
   </ion-list>
-
-  <!-- Not register yet ? -->
-  <p *ngIf="canRegister" class="ion-padding ion-text-center">
-    <span translate>LOGIN.NO_ACCOUNT_QUESTION</span>
-    <br />
-    <a (click)="register()">
-      <span translate>LOGIN.CREATE_ACCOUNT</span>
-    </a>
-  </p>
 </form>

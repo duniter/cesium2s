@@ -37,6 +37,7 @@ import { PropertyGetPipe } from './property.pipes';
 import { AmountFormatPipe } from '@app/shared/pipes/amount.pipe';
 import { AddressFormatPipe, AddressToPubkeyPipePipe } from '@app/shared/pipes/address.pipes';
 import {
+  AccountAvatarPipe,
   AccountBalancePipe,
   AccountNamePipe,
   AccountPropertyPipe,
@@ -98,6 +99,7 @@ import { BlockNumberPipe } from '@app/shared/pipes/block-number.pipe';
     AccountPropertyPipe,
     AccountBalancePipe,
     AccountNamePipe,
+    AccountAvatarPipe,
     IsMemberAccountPipe,
     IsUserAccountPipePipe,
   ],
@@ -154,6 +156,7 @@ import { BlockNumberPipe } from '@app/shared/pipes/block-number.pipe';
     AccountPropertyPipe,
     AccountBalancePipe,
     AccountNamePipe,
+    AccountAvatarPipe,
     IsMemberAccountPipe,
     IsUserAccountPipePipe,
   ],

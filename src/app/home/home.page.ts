@@ -74,7 +74,7 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
 
   async login(event: MouseEvent | TouchEvent | PointerEvent | CustomEvent) {
     const data = await this.accountService.login(event, {
-      auth: true,
+      //auth: true,
     });
     if (data?.address) {
       this.defaultAccount = data;

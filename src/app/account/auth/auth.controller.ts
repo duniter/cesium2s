@@ -7,7 +7,6 @@ import { AuthModal, AuthModalOptions } from '@app/account/auth/auth.modal';
 import { Router } from '@angular/router';
 import { RegisterModal, RegisterModalOptions } from '@app/account/register/register.modal';
 import { Account, LoginMethods, LoginMethodType, LoginOptions, SelectAccountOptions, UnlockOptions } from '@app/account/account.model';
-import { AuthV2Modal } from '@app/account/auth/authv2.modal';
 import { UnlockModal } from '@app/account/unlock/unlock.modal';
 import { AccountListComponent, AccountListComponentInputs } from '@app/account/list/account-list.component';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
@@ -43,6 +42,7 @@ export class AuthController implements IAuthController {
     // If desktop, then use popover
     if (!this._mobile) {
       const popover = await this.popoverCtrl.create(<PopoverOptions>{
+        id: 'login-method-popover',
         event,
         backdropDismiss: true,
         component: ListPopover,
@@ -78,27 +78,13 @@ export class AuthController implements IAuthController {
 
     console.info('[auth] Selected login method: ' + loginMethod);
 
-    let modal: HTMLIonModalElement;
-    switch (loginMethod) {
-      case 'v1':
-        modal = await this.modalCtrl.create({
-          component: AuthModal,
-          componentProps: <AuthModalOptions>{
-            auth: opts?.auth,
-          },
-        });
-        break;
-      case 'v2':
-        modal = await this.modalCtrl.create({
-          component: AuthV2Modal,
-          componentProps: <AuthModalOptions>{
-            auth: opts?.auth,
-          },
-        });
-        break;
-      default:
-        console.warn('[account-modal-controller] Unknown login method: ' + loginMethod);
-    }
+    const modal = await this.modalCtrl.create({
+      component: AuthModal,
+      componentProps: <AuthModalOptions>{
+        loginMethod,
+        auth: opts?.auth,
+      },
+    });
     if (!modal) return null; // User cancelled of method not found
 
     await modal.present();

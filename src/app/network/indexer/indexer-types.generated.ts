@@ -4714,6 +4714,11 @@ export type BlocksQueryVariables = Exact<{
 
 export type BlocksQuery = { __typename?: 'query_root', blockConnection: { __typename?: 'BlockConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'BlockEdge', node: { __typename: 'Block', id: string, height: number, hash: any, timestamp: any, callsCount: number, eventsCount: number, extrinsicsCount: number } }> } };
 
+export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LastBlockQuery = { __typename?: 'query_root', blockConnection: { __typename?: 'BlockConnection', pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean }, edges: Array<{ __typename?: 'BlockEdge', node: { __typename: 'Block', id: string, height: number, hash: any, timestamp: any, callsCount: number, eventsCount: number, extrinsicsCount: number } }> } };
+
 export type LightCertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number };
 
 export type CertFragment = { __typename: 'Cert', id: string, expireOn: number, createdOn: number, updatedOn: number, receiver?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null, issuer?: { __typename?: 'Identity', id: string, index: number, name: string, accountId?: string | null, status?: IdentityStatusEnum | null, isMember: boolean, createdOn: number, membershipHistory: Array<{ __typename: 'MembershipEvent', id: string, eventType?: EventTypeEnum | null }> } | null };
@@ -4992,6 +4997,24 @@ export const BlocksDocument = gql`
       super(apollo);
     }
   }
+export const LastBlockDocument = gql`
+    query LastBlock {
+  blockConnection(first: 1, orderBy: {height: DESC}) {
+    ...LightBlockConnection
+  }
+}
+    ${LightBlockConnectionFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class LastBlockGQL extends Apollo.Query<LastBlockQuery, LastBlockQueryVariables> {
+    document = LastBlockDocument;
+    client = 'indexer';
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const CertsConnectionByIssuerDocument = gql`
     query CertsConnectionByIssuer($address: String!, $first: Int!, $orderBy: [CertOrderBy!]!, $after: String) {
   identityConnection(where: {accountId: {_eq: $address}}) {
@@ -5187,6 +5210,7 @@ export const WotSearchByUidDocument = gql`
     constructor(
       private blockByIdGql: BlockByIdGQL,
       private blocksGql: BlocksGQL,
+      private lastBlockGql: LastBlockGQL,
       private certsConnectionByIssuerGql: CertsConnectionByIssuerGQL,
       private certsConnectionByReceiverGql: CertsConnectionByReceiverGQL,
       private transferConnectionByAddressGql: TransferConnectionByAddressGQL,
@@ -5210,6 +5234,14 @@ export const WotSearchByUidDocument = gql`
     
     blocksWatch(variables: BlocksQueryVariables, options?: WatchQueryOptionsAlone<BlocksQueryVariables>) {
       return this.blocksGql.watch(variables, options)
+    }
+    
+    lastBlock(variables?: LastBlockQueryVariables, options?: QueryOptionsAlone<LastBlockQueryVariables>) {
+      return this.lastBlockGql.fetch(variables, options)
+    }
+    
+    lastBlockWatch(variables?: LastBlockQueryVariables, options?: WatchQueryOptionsAlone<LastBlockQueryVariables>) {
+      return this.lastBlockGql.watch(variables, options)
     }
     
     certsConnectionByIssuer(variables: CertsConnectionByIssuerQueryVariables, options?: QueryOptionsAlone<CertsConnectionByIssuerQueryVariables>) {

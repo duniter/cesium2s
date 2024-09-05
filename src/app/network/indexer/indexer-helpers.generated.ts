@@ -1,6 +1,6 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type AccountKeySpecifier = ('id' | 'identity' | 'linkedIdentity' | 'linkedIdentityId' | 'transfersIssued' | 'transfersIssuedAggregate' | 'transfersIssued_connection' | 'transfersReceived' | 'transfersReceivedAggregate' | 'transfersReceived_connection' | 'wasIdentity' | 'wasIdentityAggregate' | 'wasIdentity_connection' | AccountKeySpecifier)[];
-export interface AccountFieldPolicy {
+export type AccountFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	identity?: FieldPolicy<any> | FieldReadFunction<any>,
 	linkedIdentity?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -14,40 +14,40 @@ export interface AccountFieldPolicy {
 	wasIdentity?: FieldPolicy<any> | FieldReadFunction<any>,
 	wasIdentityAggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	wasIdentity_connection?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type AccountAggregateKeySpecifier = ('aggregate' | 'nodes' | AccountAggregateKeySpecifier)[];
-export interface AccountAggregateFieldPolicy {
+export type AccountAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type AccountAggregateFieldsKeySpecifier = ('count' | 'max' | 'min' | AccountAggregateFieldsKeySpecifier)[];
-export interface AccountAggregateFieldsFieldPolicy {
+export type AccountAggregateFieldsFieldPolicy = {
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
 	min?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type AccountConnectionKeySpecifier = ('edges' | 'pageInfo' | AccountConnectionKeySpecifier)[];
-export interface AccountConnectionFieldPolicy {
+export type AccountConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type AccountEdgeKeySpecifier = ('cursor' | 'node' | AccountEdgeKeySpecifier)[];
-export interface AccountEdgeFieldPolicy {
+export type AccountEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type AccountMaxFieldsKeySpecifier = ('id' | 'linkedIdentityId' | AccountMaxFieldsKeySpecifier)[];
-export interface AccountMaxFieldsFieldPolicy {
+export type AccountMaxFieldsFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	linkedIdentityId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type AccountMinFieldsKeySpecifier = ('id' | 'linkedIdentityId' | AccountMinFieldsKeySpecifier)[];
-export interface AccountMinFieldsFieldPolicy {
+export type AccountMinFieldsFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	linkedIdentityId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type BlockKeySpecifier = ('calls' | 'callsAggregate' | 'callsCount' | 'calls_connection' | 'events' | 'eventsAggregate' | 'eventsCount' | 'events_connection' | 'extrinsics' | 'extrinsicsAggregate' | 'extrinsicsCount' | 'extrinsics_connection' | 'extrinsicsicRoot' | 'hash' | 'height' | 'id' | 'implName' | 'implVersion' | 'parentHash' | 'specName' | 'specVersion' | 'stateRoot' | 'timestamp' | 'validator' | BlockKeySpecifier)[];
-export interface BlockFieldPolicy {
+export type BlockFieldPolicy = {
 	calls?: FieldPolicy<any> | FieldReadFunction<any>,
 	callsAggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	callsCount?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -72,19 +72,19 @@ export interface BlockFieldPolicy {
 	stateRoot?: FieldPolicy<any> | FieldReadFunction<any>,
 	timestamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	validator?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type BlockConnectionKeySpecifier = ('edges' | 'pageInfo' | BlockConnectionKeySpecifier)[];
-export interface BlockConnectionFieldPolicy {
+export type BlockConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type BlockEdgeKeySpecifier = ('cursor' | 'node' | BlockEdgeKeySpecifier)[];
-export interface BlockEdgeFieldPolicy {
+export type BlockEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CallKeySpecifier = ('address' | 'args' | 'argsStr' | 'block' | 'blockId' | 'error' | 'events' | 'eventsAggregate' | 'events_connection' | 'extrinsic' | 'extrinsicId' | 'id' | 'name' | 'pallet' | 'parent' | 'parentId' | 'subcalls' | 'subcallsAggregate' | 'subcalls_connection' | 'success' | CallKeySpecifier)[];
-export interface CallFieldPolicy {
+export type CallFieldPolicy = {
 	address?: FieldPolicy<any> | FieldReadFunction<any>,
 	args?: FieldPolicy<any> | FieldReadFunction<any>,
 	argsStr?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -105,30 +105,30 @@ export interface CallFieldPolicy {
 	subcallsAggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	subcalls_connection?: FieldPolicy<any> | FieldReadFunction<any>,
 	success?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CallAggregateKeySpecifier = ('aggregate' | 'nodes' | CallAggregateKeySpecifier)[];
-export interface CallAggregateFieldPolicy {
+export type CallAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CallAggregateFieldsKeySpecifier = ('count' | 'max' | 'min' | CallAggregateFieldsKeySpecifier)[];
-export interface CallAggregateFieldsFieldPolicy {
+export type CallAggregateFieldsFieldPolicy = {
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
 	min?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CallConnectionKeySpecifier = ('edges' | 'pageInfo' | CallConnectionKeySpecifier)[];
-export interface CallConnectionFieldPolicy {
+export type CallConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CallEdgeKeySpecifier = ('cursor' | 'node' | CallEdgeKeySpecifier)[];
-export interface CallEdgeFieldPolicy {
+export type CallEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CallMaxFieldsKeySpecifier = ('address' | 'argsStr' | 'blockId' | 'extrinsicId' | 'id' | 'name' | 'pallet' | 'parentId' | CallMaxFieldsKeySpecifier)[];
-export interface CallMaxFieldsFieldPolicy {
+export type CallMaxFieldsFieldPolicy = {
 	address?: FieldPolicy<any> | FieldReadFunction<any>,
 	argsStr?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockId?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -137,9 +137,9 @@ export interface CallMaxFieldsFieldPolicy {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	pallet?: FieldPolicy<any> | FieldReadFunction<any>,
 	parentId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CallMinFieldsKeySpecifier = ('address' | 'argsStr' | 'blockId' | 'extrinsicId' | 'id' | 'name' | 'pallet' | 'parentId' | CallMinFieldsKeySpecifier)[];
-export interface CallMinFieldsFieldPolicy {
+export type CallMinFieldsFieldPolicy = {
 	address?: FieldPolicy<any> | FieldReadFunction<any>,
 	argsStr?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockId?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -148,9 +148,9 @@ export interface CallMinFieldsFieldPolicy {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	pallet?: FieldPolicy<any> | FieldReadFunction<any>,
 	parentId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertKeySpecifier = ('certHistory' | 'certHistoryAggregate' | 'certHistory_connection' | 'createdIn' | 'createdInId' | 'createdOn' | 'expireOn' | 'id' | 'isActive' | 'issuer' | 'issuerId' | 'receiver' | 'receiverId' | 'updatedIn' | 'updatedInId' | 'updatedOn' | CertKeySpecifier)[];
-export interface CertFieldPolicy {
+export type CertFieldPolicy = {
 	certHistory?: FieldPolicy<any> | FieldReadFunction<any>,
 	certHistoryAggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	certHistory_connection?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -167,14 +167,14 @@ export interface CertFieldPolicy {
 	updatedIn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedInId?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertAggregateKeySpecifier = ('aggregate' | 'nodes' | CertAggregateKeySpecifier)[];
-export interface CertAggregateFieldPolicy {
+export type CertAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertAggregateFieldsKeySpecifier = ('avg' | 'count' | 'max' | 'min' | 'stddev' | 'stddevPop' | 'stddevSamp' | 'sum' | 'varPop' | 'varSamp' | 'variance' | CertAggregateFieldsKeySpecifier)[];
-export interface CertAggregateFieldsFieldPolicy {
+export type CertAggregateFieldsFieldPolicy = {
 	avg?: FieldPolicy<any> | FieldReadFunction<any>,
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -186,25 +186,25 @@ export interface CertAggregateFieldsFieldPolicy {
 	varPop?: FieldPolicy<any> | FieldReadFunction<any>,
 	varSamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	variance?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertAvgFieldsKeySpecifier = ('createdOn' | 'expireOn' | 'updatedOn' | CertAvgFieldsKeySpecifier)[];
-export interface CertAvgFieldsFieldPolicy {
+export type CertAvgFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertConnectionKeySpecifier = ('edges' | 'pageInfo' | CertConnectionKeySpecifier)[];
-export interface CertConnectionFieldPolicy {
+export type CertConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEdgeKeySpecifier = ('cursor' | 'node' | CertEdgeKeySpecifier)[];
-export interface CertEdgeFieldPolicy {
+export type CertEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventKeySpecifier = ('blockNumber' | 'cert' | 'certId' | 'event' | 'eventId' | 'eventType' | 'id' | CertEventKeySpecifier)[];
-export interface CertEventFieldPolicy {
+export type CertEventFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	cert?: FieldPolicy<any> | FieldReadFunction<any>,
 	certId?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -212,14 +212,14 @@ export interface CertEventFieldPolicy {
 	eventId?: FieldPolicy<any> | FieldReadFunction<any>,
 	eventType?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventAggregateKeySpecifier = ('aggregate' | 'nodes' | CertEventAggregateKeySpecifier)[];
-export interface CertEventAggregateFieldPolicy {
+export type CertEventAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventAggregateFieldsKeySpecifier = ('avg' | 'count' | 'max' | 'min' | 'stddev' | 'stddevPop' | 'stddevSamp' | 'sum' | 'varPop' | 'varSamp' | 'variance' | CertEventAggregateFieldsKeySpecifier)[];
-export interface CertEventAggregateFieldsFieldPolicy {
+export type CertEventAggregateFieldsFieldPolicy = {
 	avg?: FieldPolicy<any> | FieldReadFunction<any>,
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -231,65 +231,65 @@ export interface CertEventAggregateFieldsFieldPolicy {
 	varPop?: FieldPolicy<any> | FieldReadFunction<any>,
 	varSamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	variance?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventAvgFieldsKeySpecifier = ('blockNumber' | CertEventAvgFieldsKeySpecifier)[];
-export interface CertEventAvgFieldsFieldPolicy {
+export type CertEventAvgFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventConnectionKeySpecifier = ('edges' | 'pageInfo' | CertEventConnectionKeySpecifier)[];
-export interface CertEventConnectionFieldPolicy {
+export type CertEventConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventEdgeKeySpecifier = ('cursor' | 'node' | CertEventEdgeKeySpecifier)[];
-export interface CertEventEdgeFieldPolicy {
+export type CertEventEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventMaxFieldsKeySpecifier = ('blockNumber' | 'certId' | 'eventId' | 'id' | CertEventMaxFieldsKeySpecifier)[];
-export interface CertEventMaxFieldsFieldPolicy {
+export type CertEventMaxFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	certId?: FieldPolicy<any> | FieldReadFunction<any>,
 	eventId?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventMinFieldsKeySpecifier = ('blockNumber' | 'certId' | 'eventId' | 'id' | CertEventMinFieldsKeySpecifier)[];
-export interface CertEventMinFieldsFieldPolicy {
+export type CertEventMinFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	certId?: FieldPolicy<any> | FieldReadFunction<any>,
 	eventId?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventStddevFieldsKeySpecifier = ('blockNumber' | CertEventStddevFieldsKeySpecifier)[];
-export interface CertEventStddevFieldsFieldPolicy {
+export type CertEventStddevFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventStddevPopFieldsKeySpecifier = ('blockNumber' | CertEventStddevPopFieldsKeySpecifier)[];
-export interface CertEventStddevPopFieldsFieldPolicy {
+export type CertEventStddevPopFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventStddevSampFieldsKeySpecifier = ('blockNumber' | CertEventStddevSampFieldsKeySpecifier)[];
-export interface CertEventStddevSampFieldsFieldPolicy {
+export type CertEventStddevSampFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventSumFieldsKeySpecifier = ('blockNumber' | CertEventSumFieldsKeySpecifier)[];
-export interface CertEventSumFieldsFieldPolicy {
+export type CertEventSumFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventVarPopFieldsKeySpecifier = ('blockNumber' | CertEventVarPopFieldsKeySpecifier)[];
-export interface CertEventVarPopFieldsFieldPolicy {
+export type CertEventVarPopFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventVarSampFieldsKeySpecifier = ('blockNumber' | CertEventVarSampFieldsKeySpecifier)[];
-export interface CertEventVarSampFieldsFieldPolicy {
+export type CertEventVarSampFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertEventVarianceFieldsKeySpecifier = ('blockNumber' | CertEventVarianceFieldsKeySpecifier)[];
-export interface CertEventVarianceFieldsFieldPolicy {
+export type CertEventVarianceFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertMaxFieldsKeySpecifier = ('createdInId' | 'createdOn' | 'expireOn' | 'id' | 'issuerId' | 'receiverId' | 'updatedInId' | 'updatedOn' | CertMaxFieldsKeySpecifier)[];
-export interface CertMaxFieldsFieldPolicy {
+export type CertMaxFieldsFieldPolicy = {
 	createdInId?: FieldPolicy<any> | FieldReadFunction<any>,
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -298,9 +298,9 @@ export interface CertMaxFieldsFieldPolicy {
 	receiverId?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedInId?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertMinFieldsKeySpecifier = ('createdInId' | 'createdOn' | 'expireOn' | 'id' | 'issuerId' | 'receiverId' | 'updatedInId' | 'updatedOn' | CertMinFieldsKeySpecifier)[];
-export interface CertMinFieldsFieldPolicy {
+export type CertMinFieldsFieldPolicy = {
 	createdInId?: FieldPolicy<any> | FieldReadFunction<any>,
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -309,51 +309,51 @@ export interface CertMinFieldsFieldPolicy {
 	receiverId?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedInId?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertStddevFieldsKeySpecifier = ('createdOn' | 'expireOn' | 'updatedOn' | CertStddevFieldsKeySpecifier)[];
-export interface CertStddevFieldsFieldPolicy {
+export type CertStddevFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertStddevPopFieldsKeySpecifier = ('createdOn' | 'expireOn' | 'updatedOn' | CertStddevPopFieldsKeySpecifier)[];
-export interface CertStddevPopFieldsFieldPolicy {
+export type CertStddevPopFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertStddevSampFieldsKeySpecifier = ('createdOn' | 'expireOn' | 'updatedOn' | CertStddevSampFieldsKeySpecifier)[];
-export interface CertStddevSampFieldsFieldPolicy {
+export type CertStddevSampFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertSumFieldsKeySpecifier = ('createdOn' | 'expireOn' | 'updatedOn' | CertSumFieldsKeySpecifier)[];
-export interface CertSumFieldsFieldPolicy {
+export type CertSumFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertVarPopFieldsKeySpecifier = ('createdOn' | 'expireOn' | 'updatedOn' | CertVarPopFieldsKeySpecifier)[];
-export interface CertVarPopFieldsFieldPolicy {
+export type CertVarPopFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertVarSampFieldsKeySpecifier = ('createdOn' | 'expireOn' | 'updatedOn' | CertVarSampFieldsKeySpecifier)[];
-export interface CertVarSampFieldsFieldPolicy {
+export type CertVarSampFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type CertVarianceFieldsKeySpecifier = ('createdOn' | 'expireOn' | 'updatedOn' | CertVarianceFieldsKeySpecifier)[];
-export interface CertVarianceFieldsFieldPolicy {
+export type CertVarianceFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	expireOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyKeySpecifier = ('blockNumber' | 'id' | 'identity' | 'identityId' | 'next' | 'nextId' | 'previous' | 'previousId' | ChangeOwnerKeyKeySpecifier)[];
-export interface ChangeOwnerKeyFieldPolicy {
+export type ChangeOwnerKeyFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	identity?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -362,14 +362,14 @@ export interface ChangeOwnerKeyFieldPolicy {
 	nextId?: FieldPolicy<any> | FieldReadFunction<any>,
 	previous?: FieldPolicy<any> | FieldReadFunction<any>,
 	previousId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyAggregateKeySpecifier = ('aggregate' | 'nodes' | ChangeOwnerKeyAggregateKeySpecifier)[];
-export interface ChangeOwnerKeyAggregateFieldPolicy {
+export type ChangeOwnerKeyAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyAggregateFieldsKeySpecifier = ('avg' | 'count' | 'max' | 'min' | 'stddev' | 'stddevPop' | 'stddevSamp' | 'sum' | 'varPop' | 'varSamp' | 'variance' | ChangeOwnerKeyAggregateFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyAggregateFieldsFieldPolicy {
+export type ChangeOwnerKeyAggregateFieldsFieldPolicy = {
 	avg?: FieldPolicy<any> | FieldReadFunction<any>,
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -381,67 +381,67 @@ export interface ChangeOwnerKeyAggregateFieldsFieldPolicy {
 	varPop?: FieldPolicy<any> | FieldReadFunction<any>,
 	varSamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	variance?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyAvgFieldsKeySpecifier = ('blockNumber' | ChangeOwnerKeyAvgFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyAvgFieldsFieldPolicy {
+export type ChangeOwnerKeyAvgFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyConnectionKeySpecifier = ('edges' | 'pageInfo' | ChangeOwnerKeyConnectionKeySpecifier)[];
-export interface ChangeOwnerKeyConnectionFieldPolicy {
+export type ChangeOwnerKeyConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyEdgeKeySpecifier = ('cursor' | 'node' | ChangeOwnerKeyEdgeKeySpecifier)[];
-export interface ChangeOwnerKeyEdgeFieldPolicy {
+export type ChangeOwnerKeyEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyMaxFieldsKeySpecifier = ('blockNumber' | 'id' | 'identityId' | 'nextId' | 'previousId' | ChangeOwnerKeyMaxFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyMaxFieldsFieldPolicy {
+export type ChangeOwnerKeyMaxFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	identityId?: FieldPolicy<any> | FieldReadFunction<any>,
 	nextId?: FieldPolicy<any> | FieldReadFunction<any>,
 	previousId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyMinFieldsKeySpecifier = ('blockNumber' | 'id' | 'identityId' | 'nextId' | 'previousId' | ChangeOwnerKeyMinFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyMinFieldsFieldPolicy {
+export type ChangeOwnerKeyMinFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	identityId?: FieldPolicy<any> | FieldReadFunction<any>,
 	nextId?: FieldPolicy<any> | FieldReadFunction<any>,
 	previousId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyStddevFieldsKeySpecifier = ('blockNumber' | ChangeOwnerKeyStddevFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyStddevFieldsFieldPolicy {
+export type ChangeOwnerKeyStddevFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyStddevPopFieldsKeySpecifier = ('blockNumber' | ChangeOwnerKeyStddevPopFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyStddevPopFieldsFieldPolicy {
+export type ChangeOwnerKeyStddevPopFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyStddevSampFieldsKeySpecifier = ('blockNumber' | ChangeOwnerKeyStddevSampFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyStddevSampFieldsFieldPolicy {
+export type ChangeOwnerKeyStddevSampFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeySumFieldsKeySpecifier = ('blockNumber' | ChangeOwnerKeySumFieldsKeySpecifier)[];
-export interface ChangeOwnerKeySumFieldsFieldPolicy {
+export type ChangeOwnerKeySumFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyVarPopFieldsKeySpecifier = ('blockNumber' | ChangeOwnerKeyVarPopFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyVarPopFieldsFieldPolicy {
+export type ChangeOwnerKeyVarPopFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyVarSampFieldsKeySpecifier = ('blockNumber' | ChangeOwnerKeyVarSampFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyVarSampFieldsFieldPolicy {
+export type ChangeOwnerKeyVarSampFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ChangeOwnerKeyVarianceFieldsKeySpecifier = ('blockNumber' | ChangeOwnerKeyVarianceFieldsKeySpecifier)[];
-export interface ChangeOwnerKeyVarianceFieldsFieldPolicy {
+export type ChangeOwnerKeyVarianceFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventKeySpecifier = ('args' | 'argsStr' | 'block' | 'blockId' | 'call' | 'callId' | 'extrinsic' | 'extrinsicId' | 'id' | 'index' | 'name' | 'pallet' | 'phase' | EventKeySpecifier)[];
-export interface EventFieldPolicy {
+export type EventFieldPolicy = {
 	args?: FieldPolicy<any> | FieldReadFunction<any>,
 	argsStr?: FieldPolicy<any> | FieldReadFunction<any>,
 	block?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -455,14 +455,14 @@ export interface EventFieldPolicy {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	pallet?: FieldPolicy<any> | FieldReadFunction<any>,
 	phase?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventAggregateKeySpecifier = ('aggregate' | 'nodes' | EventAggregateKeySpecifier)[];
-export interface EventAggregateFieldPolicy {
+export type EventAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventAggregateFieldsKeySpecifier = ('avg' | 'count' | 'max' | 'min' | 'stddev' | 'stddevPop' | 'stddevSamp' | 'sum' | 'varPop' | 'varSamp' | 'variance' | EventAggregateFieldsKeySpecifier)[];
-export interface EventAggregateFieldsFieldPolicy {
+export type EventAggregateFieldsFieldPolicy = {
 	avg?: FieldPolicy<any> | FieldReadFunction<any>,
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -474,23 +474,23 @@ export interface EventAggregateFieldsFieldPolicy {
 	varPop?: FieldPolicy<any> | FieldReadFunction<any>,
 	varSamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	variance?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventAvgFieldsKeySpecifier = ('index' | EventAvgFieldsKeySpecifier)[];
-export interface EventAvgFieldsFieldPolicy {
+export type EventAvgFieldsFieldPolicy = {
 	index?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventConnectionKeySpecifier = ('edges' | 'pageInfo' | EventConnectionKeySpecifier)[];
-export interface EventConnectionFieldPolicy {
+export type EventConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventEdgeKeySpecifier = ('cursor' | 'node' | EventEdgeKeySpecifier)[];
-export interface EventEdgeFieldPolicy {
+export type EventEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventMaxFieldsKeySpecifier = ('argsStr' | 'blockId' | 'callId' | 'extrinsicId' | 'id' | 'index' | 'name' | 'pallet' | 'phase' | EventMaxFieldsKeySpecifier)[];
-export interface EventMaxFieldsFieldPolicy {
+export type EventMaxFieldsFieldPolicy = {
 	argsStr?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockId?: FieldPolicy<any> | FieldReadFunction<any>,
 	callId?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -500,9 +500,9 @@ export interface EventMaxFieldsFieldPolicy {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	pallet?: FieldPolicy<any> | FieldReadFunction<any>,
 	phase?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventMinFieldsKeySpecifier = ('argsStr' | 'blockId' | 'callId' | 'extrinsicId' | 'id' | 'index' | 'name' | 'pallet' | 'phase' | EventMinFieldsKeySpecifier)[];
-export interface EventMinFieldsFieldPolicy {
+export type EventMinFieldsFieldPolicy = {
 	argsStr?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockId?: FieldPolicy<any> | FieldReadFunction<any>,
 	callId?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -512,37 +512,37 @@ export interface EventMinFieldsFieldPolicy {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	pallet?: FieldPolicy<any> | FieldReadFunction<any>,
 	phase?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventStddevFieldsKeySpecifier = ('index' | EventStddevFieldsKeySpecifier)[];
-export interface EventStddevFieldsFieldPolicy {
+export type EventStddevFieldsFieldPolicy = {
 	index?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventStddevPopFieldsKeySpecifier = ('index' | EventStddevPopFieldsKeySpecifier)[];
-export interface EventStddevPopFieldsFieldPolicy {
+export type EventStddevPopFieldsFieldPolicy = {
 	index?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventStddevSampFieldsKeySpecifier = ('index' | EventStddevSampFieldsKeySpecifier)[];
-export interface EventStddevSampFieldsFieldPolicy {
+export type EventStddevSampFieldsFieldPolicy = {
 	index?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventSumFieldsKeySpecifier = ('index' | EventSumFieldsKeySpecifier)[];
-export interface EventSumFieldsFieldPolicy {
+export type EventSumFieldsFieldPolicy = {
 	index?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventVarPopFieldsKeySpecifier = ('index' | EventVarPopFieldsKeySpecifier)[];
-export interface EventVarPopFieldsFieldPolicy {
+export type EventVarPopFieldsFieldPolicy = {
 	index?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventVarSampFieldsKeySpecifier = ('index' | EventVarSampFieldsKeySpecifier)[];
-export interface EventVarSampFieldsFieldPolicy {
+export type EventVarSampFieldsFieldPolicy = {
 	index?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type EventVarianceFieldsKeySpecifier = ('index' | EventVarianceFieldsKeySpecifier)[];
-export interface EventVarianceFieldsFieldPolicy {
+export type EventVarianceFieldsFieldPolicy = {
 	index?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicKeySpecifier = ('block' | 'blockId' | 'call' | 'callId' | 'calls' | 'callsAggregate' | 'calls_connection' | 'error' | 'events' | 'eventsAggregate' | 'events_connection' | 'fee' | 'hash' | 'id' | 'index' | 'signature' | 'success' | 'tip' | 'version' | ExtrinsicKeySpecifier)[];
-export interface ExtrinsicFieldPolicy {
+export type ExtrinsicFieldPolicy = {
 	block?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockId?: FieldPolicy<any> | FieldReadFunction<any>,
 	call?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -562,14 +562,14 @@ export interface ExtrinsicFieldPolicy {
 	success?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicAggregateKeySpecifier = ('aggregate' | 'nodes' | ExtrinsicAggregateKeySpecifier)[];
-export interface ExtrinsicAggregateFieldPolicy {
+export type ExtrinsicAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicAggregateFieldsKeySpecifier = ('avg' | 'count' | 'max' | 'min' | 'stddev' | 'stddevPop' | 'stddevSamp' | 'sum' | 'varPop' | 'varSamp' | 'variance' | ExtrinsicAggregateFieldsKeySpecifier)[];
-export interface ExtrinsicAggregateFieldsFieldPolicy {
+export type ExtrinsicAggregateFieldsFieldPolicy = {
 	avg?: FieldPolicy<any> | FieldReadFunction<any>,
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -581,26 +581,26 @@ export interface ExtrinsicAggregateFieldsFieldPolicy {
 	varPop?: FieldPolicy<any> | FieldReadFunction<any>,
 	varSamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	variance?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicAvgFieldsKeySpecifier = ('fee' | 'index' | 'tip' | 'version' | ExtrinsicAvgFieldsKeySpecifier)[];
-export interface ExtrinsicAvgFieldsFieldPolicy {
+export type ExtrinsicAvgFieldsFieldPolicy = {
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicConnectionKeySpecifier = ('edges' | 'pageInfo' | ExtrinsicConnectionKeySpecifier)[];
-export interface ExtrinsicConnectionFieldPolicy {
+export type ExtrinsicConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicEdgeKeySpecifier = ('cursor' | 'node' | ExtrinsicEdgeKeySpecifier)[];
-export interface ExtrinsicEdgeFieldPolicy {
+export type ExtrinsicEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicMaxFieldsKeySpecifier = ('blockId' | 'callId' | 'fee' | 'id' | 'index' | 'tip' | 'version' | ExtrinsicMaxFieldsKeySpecifier)[];
-export interface ExtrinsicMaxFieldsFieldPolicy {
+export type ExtrinsicMaxFieldsFieldPolicy = {
 	blockId?: FieldPolicy<any> | FieldReadFunction<any>,
 	callId?: FieldPolicy<any> | FieldReadFunction<any>,
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -608,9 +608,9 @@ export interface ExtrinsicMaxFieldsFieldPolicy {
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicMinFieldsKeySpecifier = ('blockId' | 'callId' | 'fee' | 'id' | 'index' | 'tip' | 'version' | ExtrinsicMinFieldsKeySpecifier)[];
-export interface ExtrinsicMinFieldsFieldPolicy {
+export type ExtrinsicMinFieldsFieldPolicy = {
 	blockId?: FieldPolicy<any> | FieldReadFunction<any>,
 	callId?: FieldPolicy<any> | FieldReadFunction<any>,
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -618,58 +618,58 @@ export interface ExtrinsicMinFieldsFieldPolicy {
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicStddevFieldsKeySpecifier = ('fee' | 'index' | 'tip' | 'version' | ExtrinsicStddevFieldsKeySpecifier)[];
-export interface ExtrinsicStddevFieldsFieldPolicy {
+export type ExtrinsicStddevFieldsFieldPolicy = {
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicStddevPopFieldsKeySpecifier = ('fee' | 'index' | 'tip' | 'version' | ExtrinsicStddevPopFieldsKeySpecifier)[];
-export interface ExtrinsicStddevPopFieldsFieldPolicy {
+export type ExtrinsicStddevPopFieldsFieldPolicy = {
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicStddevSampFieldsKeySpecifier = ('fee' | 'index' | 'tip' | 'version' | ExtrinsicStddevSampFieldsKeySpecifier)[];
-export interface ExtrinsicStddevSampFieldsFieldPolicy {
+export type ExtrinsicStddevSampFieldsFieldPolicy = {
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicSumFieldsKeySpecifier = ('fee' | 'index' | 'tip' | 'version' | ExtrinsicSumFieldsKeySpecifier)[];
-export interface ExtrinsicSumFieldsFieldPolicy {
+export type ExtrinsicSumFieldsFieldPolicy = {
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicVarPopFieldsKeySpecifier = ('fee' | 'index' | 'tip' | 'version' | ExtrinsicVarPopFieldsKeySpecifier)[];
-export interface ExtrinsicVarPopFieldsFieldPolicy {
+export type ExtrinsicVarPopFieldsFieldPolicy = {
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicVarSampFieldsKeySpecifier = ('fee' | 'index' | 'tip' | 'version' | ExtrinsicVarSampFieldsKeySpecifier)[];
-export interface ExtrinsicVarSampFieldsFieldPolicy {
+export type ExtrinsicVarSampFieldsFieldPolicy = {
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ExtrinsicVarianceFieldsKeySpecifier = ('fee' | 'index' | 'tip' | 'version' | ExtrinsicVarianceFieldsKeySpecifier)[];
-export interface ExtrinsicVarianceFieldsFieldPolicy {
+export type ExtrinsicVarianceFieldsFieldPolicy = {
 	fee?: FieldPolicy<any> | FieldReadFunction<any>,
 	index?: FieldPolicy<any> | FieldReadFunction<any>,
 	tip?: FieldPolicy<any> | FieldReadFunction<any>,
 	version?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type IdentityKeySpecifier = ('account' | 'accountId' | 'certIssued' | 'certIssuedAggregate' | 'certIssued_connection' | 'certReceived' | 'certReceivedAggregate' | 'certReceived_connection' | 'createdIn' | 'createdInId' | 'createdOn' | 'expireOn' | 'id' | 'index' | 'isMember' | 'lastChangeOn' | 'linkedAccount' | 'linkedAccountAggregate' | 'linkedAccount_connection' | 'membershipHistory' | 'membershipHistoryAggregate' | 'membershipHistory_connection' | 'name' | 'ownerKeyChange' | 'ownerKeyChangeAggregate' | 'ownerKeyChange_connection' | 'smithCertIssued' | 'smithCertIssuedAggregate' | 'smithCertIssued_connection' | 'smithCertReceived' | 'smithCertReceivedAggregate' | 'smithCertReceived_connection' | 'smithStatus' | 'status' | 'udHistory' | IdentityKeySpecifier)[];
-export interface IdentityFieldPolicy {
+export type IdentityFieldPolicy = {
 	account?: FieldPolicy<any> | FieldReadFunction<any>,
 	accountId?: FieldPolicy<any> | FieldReadFunction<any>,
 	certIssued?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -705,36 +705,36 @@ export interface IdentityFieldPolicy {
 	smithStatus?: FieldPolicy<any> | FieldReadFunction<any>,
 	status?: FieldPolicy<any> | FieldReadFunction<any>,
 	udHistory?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type IdentityConnectionKeySpecifier = ('edges' | 'pageInfo' | IdentityConnectionKeySpecifier)[];
-export interface IdentityConnectionFieldPolicy {
+export type IdentityConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type IdentityEdgeKeySpecifier = ('cursor' | 'node' | IdentityEdgeKeySpecifier)[];
-export interface IdentityEdgeFieldPolicy {
+export type IdentityEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ItemsCounterKeySpecifier = ('id' | 'level' | 'total' | 'type' | ItemsCounterKeySpecifier)[];
-export interface ItemsCounterFieldPolicy {
+export type ItemsCounterFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	level?: FieldPolicy<any> | FieldReadFunction<any>,
 	total?: FieldPolicy<any> | FieldReadFunction<any>,
 	type?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ItemsCounterConnectionKeySpecifier = ('edges' | 'pageInfo' | ItemsCounterConnectionKeySpecifier)[];
-export interface ItemsCounterConnectionFieldPolicy {
+export type ItemsCounterConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type ItemsCounterEdgeKeySpecifier = ('cursor' | 'node' | ItemsCounterEdgeKeySpecifier)[];
-export interface ItemsCounterEdgeFieldPolicy {
+export type ItemsCounterEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventKeySpecifier = ('blockNumber' | 'event' | 'eventId' | 'eventType' | 'id' | 'identity' | 'identityId' | MembershipEventKeySpecifier)[];
-export interface MembershipEventFieldPolicy {
+export type MembershipEventFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	event?: FieldPolicy<any> | FieldReadFunction<any>,
 	eventId?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -742,14 +742,14 @@ export interface MembershipEventFieldPolicy {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	identity?: FieldPolicy<any> | FieldReadFunction<any>,
 	identityId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventAggregateKeySpecifier = ('aggregate' | 'nodes' | MembershipEventAggregateKeySpecifier)[];
-export interface MembershipEventAggregateFieldPolicy {
+export type MembershipEventAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventAggregateFieldsKeySpecifier = ('avg' | 'count' | 'max' | 'min' | 'stddev' | 'stddevPop' | 'stddevSamp' | 'sum' | 'varPop' | 'varSamp' | 'variance' | MembershipEventAggregateFieldsKeySpecifier)[];
-export interface MembershipEventAggregateFieldsFieldPolicy {
+export type MembershipEventAggregateFieldsFieldPolicy = {
 	avg?: FieldPolicy<any> | FieldReadFunction<any>,
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -761,90 +761,90 @@ export interface MembershipEventAggregateFieldsFieldPolicy {
 	varPop?: FieldPolicy<any> | FieldReadFunction<any>,
 	varSamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	variance?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventAvgFieldsKeySpecifier = ('blockNumber' | MembershipEventAvgFieldsKeySpecifier)[];
-export interface MembershipEventAvgFieldsFieldPolicy {
+export type MembershipEventAvgFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventConnectionKeySpecifier = ('edges' | 'pageInfo' | MembershipEventConnectionKeySpecifier)[];
-export interface MembershipEventConnectionFieldPolicy {
+export type MembershipEventConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventEdgeKeySpecifier = ('cursor' | 'node' | MembershipEventEdgeKeySpecifier)[];
-export interface MembershipEventEdgeFieldPolicy {
+export type MembershipEventEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventMaxFieldsKeySpecifier = ('blockNumber' | 'eventId' | 'id' | 'identityId' | MembershipEventMaxFieldsKeySpecifier)[];
-export interface MembershipEventMaxFieldsFieldPolicy {
+export type MembershipEventMaxFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	eventId?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	identityId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventMinFieldsKeySpecifier = ('blockNumber' | 'eventId' | 'id' | 'identityId' | MembershipEventMinFieldsKeySpecifier)[];
-export interface MembershipEventMinFieldsFieldPolicy {
+export type MembershipEventMinFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	eventId?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	identityId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventStddevFieldsKeySpecifier = ('blockNumber' | MembershipEventStddevFieldsKeySpecifier)[];
-export interface MembershipEventStddevFieldsFieldPolicy {
+export type MembershipEventStddevFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventStddevPopFieldsKeySpecifier = ('blockNumber' | MembershipEventStddevPopFieldsKeySpecifier)[];
-export interface MembershipEventStddevPopFieldsFieldPolicy {
+export type MembershipEventStddevPopFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventStddevSampFieldsKeySpecifier = ('blockNumber' | MembershipEventStddevSampFieldsKeySpecifier)[];
-export interface MembershipEventStddevSampFieldsFieldPolicy {
+export type MembershipEventStddevSampFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventSumFieldsKeySpecifier = ('blockNumber' | MembershipEventSumFieldsKeySpecifier)[];
-export interface MembershipEventSumFieldsFieldPolicy {
+export type MembershipEventSumFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventVarPopFieldsKeySpecifier = ('blockNumber' | MembershipEventVarPopFieldsKeySpecifier)[];
-export interface MembershipEventVarPopFieldsFieldPolicy {
+export type MembershipEventVarPopFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventVarSampFieldsKeySpecifier = ('blockNumber' | MembershipEventVarSampFieldsKeySpecifier)[];
-export interface MembershipEventVarSampFieldsFieldPolicy {
+export type MembershipEventVarSampFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type MembershipEventVarianceFieldsKeySpecifier = ('blockNumber' | MembershipEventVarianceFieldsKeySpecifier)[];
-export interface MembershipEventVarianceFieldsFieldPolicy {
+export type MembershipEventVarianceFieldsFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
-export interface NodeFieldPolicy {
+export type NodeFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type PageInfoKeySpecifier = ('endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | PageInfoKeySpecifier)[];
-export interface PageInfoFieldPolicy {
+export type PageInfoFieldPolicy = {
 	endCursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>,
 	hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>,
 	startCursor?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertKeySpecifier = ('createdOn' | 'id' | 'issuer' | 'issuerId' | 'receiver' | 'receiverId' | SmithCertKeySpecifier)[];
-export interface SmithCertFieldPolicy {
+export type SmithCertFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	issuer?: FieldPolicy<any> | FieldReadFunction<any>,
 	issuerId?: FieldPolicy<any> | FieldReadFunction<any>,
 	receiver?: FieldPolicy<any> | FieldReadFunction<any>,
 	receiverId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertAggregateKeySpecifier = ('aggregate' | 'nodes' | SmithCertAggregateKeySpecifier)[];
-export interface SmithCertAggregateFieldPolicy {
+export type SmithCertAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertAggregateFieldsKeySpecifier = ('avg' | 'count' | 'max' | 'min' | 'stddev' | 'stddevPop' | 'stddevSamp' | 'sum' | 'varPop' | 'varSamp' | 'variance' | SmithCertAggregateFieldsKeySpecifier)[];
-export interface SmithCertAggregateFieldsFieldPolicy {
+export type SmithCertAggregateFieldsFieldPolicy = {
 	avg?: FieldPolicy<any> | FieldReadFunction<any>,
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -856,65 +856,65 @@ export interface SmithCertAggregateFieldsFieldPolicy {
 	varPop?: FieldPolicy<any> | FieldReadFunction<any>,
 	varSamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	variance?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertAvgFieldsKeySpecifier = ('createdOn' | SmithCertAvgFieldsKeySpecifier)[];
-export interface SmithCertAvgFieldsFieldPolicy {
+export type SmithCertAvgFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertConnectionKeySpecifier = ('edges' | 'pageInfo' | SmithCertConnectionKeySpecifier)[];
-export interface SmithCertConnectionFieldPolicy {
+export type SmithCertConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertEdgeKeySpecifier = ('cursor' | 'node' | SmithCertEdgeKeySpecifier)[];
-export interface SmithCertEdgeFieldPolicy {
+export type SmithCertEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertMaxFieldsKeySpecifier = ('createdOn' | 'id' | 'issuerId' | 'receiverId' | SmithCertMaxFieldsKeySpecifier)[];
-export interface SmithCertMaxFieldsFieldPolicy {
+export type SmithCertMaxFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	issuerId?: FieldPolicy<any> | FieldReadFunction<any>,
 	receiverId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertMinFieldsKeySpecifier = ('createdOn' | 'id' | 'issuerId' | 'receiverId' | SmithCertMinFieldsKeySpecifier)[];
-export interface SmithCertMinFieldsFieldPolicy {
+export type SmithCertMinFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	issuerId?: FieldPolicy<any> | FieldReadFunction<any>,
 	receiverId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertStddevFieldsKeySpecifier = ('createdOn' | SmithCertStddevFieldsKeySpecifier)[];
-export interface SmithCertStddevFieldsFieldPolicy {
+export type SmithCertStddevFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertStddevPopFieldsKeySpecifier = ('createdOn' | SmithCertStddevPopFieldsKeySpecifier)[];
-export interface SmithCertStddevPopFieldsFieldPolicy {
+export type SmithCertStddevPopFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertStddevSampFieldsKeySpecifier = ('createdOn' | SmithCertStddevSampFieldsKeySpecifier)[];
-export interface SmithCertStddevSampFieldsFieldPolicy {
+export type SmithCertStddevSampFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertSumFieldsKeySpecifier = ('createdOn' | SmithCertSumFieldsKeySpecifier)[];
-export interface SmithCertSumFieldsFieldPolicy {
+export type SmithCertSumFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertVarPopFieldsKeySpecifier = ('createdOn' | SmithCertVarPopFieldsKeySpecifier)[];
-export interface SmithCertVarPopFieldsFieldPolicy {
+export type SmithCertVarPopFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertVarSampFieldsKeySpecifier = ('createdOn' | SmithCertVarSampFieldsKeySpecifier)[];
-export interface SmithCertVarSampFieldsFieldPolicy {
+export type SmithCertVarSampFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type SmithCertVarianceFieldsKeySpecifier = ('createdOn' | SmithCertVarianceFieldsKeySpecifier)[];
-export interface SmithCertVarianceFieldsFieldPolicy {
+export type SmithCertVarianceFieldsFieldPolicy = {
 	createdOn?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferKeySpecifier = ('amount' | 'blockNumber' | 'comment' | 'from' | 'fromId' | 'id' | 'timestamp' | 'to' | 'toId' | TransferKeySpecifier)[];
-export interface TransferFieldPolicy {
+export type TransferFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	comment?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -924,14 +924,14 @@ export interface TransferFieldPolicy {
 	timestamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	to?: FieldPolicy<any> | FieldReadFunction<any>,
 	toId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferAggregateKeySpecifier = ('aggregate' | 'nodes' | TransferAggregateKeySpecifier)[];
-export interface TransferAggregateFieldPolicy {
+export type TransferAggregateFieldPolicy = {
 	aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferAggregateFieldsKeySpecifier = ('avg' | 'count' | 'max' | 'min' | 'stddev' | 'stddevPop' | 'stddevSamp' | 'sum' | 'varPop' | 'varSamp' | 'variance' | TransferAggregateFieldsKeySpecifier)[];
-export interface TransferAggregateFieldsFieldPolicy {
+export type TransferAggregateFieldsFieldPolicy = {
 	avg?: FieldPolicy<any> | FieldReadFunction<any>,
 	count?: FieldPolicy<any> | FieldReadFunction<any>,
 	max?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -943,24 +943,24 @@ export interface TransferAggregateFieldsFieldPolicy {
 	varPop?: FieldPolicy<any> | FieldReadFunction<any>,
 	varSamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	variance?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferAvgFieldsKeySpecifier = ('amount' | 'blockNumber' | TransferAvgFieldsKeySpecifier)[];
-export interface TransferAvgFieldsFieldPolicy {
+export type TransferAvgFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferConnectionKeySpecifier = ('edges' | 'pageInfo' | TransferConnectionKeySpecifier)[];
-export interface TransferConnectionFieldPolicy {
+export type TransferConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferEdgeKeySpecifier = ('cursor' | 'node' | TransferEdgeKeySpecifier)[];
-export interface TransferEdgeFieldPolicy {
+export type TransferEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferMaxFieldsKeySpecifier = ('amount' | 'blockNumber' | 'comment' | 'fromId' | 'id' | 'timestamp' | 'toId' | TransferMaxFieldsKeySpecifier)[];
-export interface TransferMaxFieldsFieldPolicy {
+export type TransferMaxFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	comment?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -968,9 +968,9 @@ export interface TransferMaxFieldsFieldPolicy {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	timestamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	toId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferMinFieldsKeySpecifier = ('amount' | 'blockNumber' | 'comment' | 'fromId' | 'id' | 'timestamp' | 'toId' | TransferMinFieldsKeySpecifier)[];
-export interface TransferMinFieldsFieldPolicy {
+export type TransferMinFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	comment?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -978,63 +978,63 @@ export interface TransferMinFieldsFieldPolicy {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	timestamp?: FieldPolicy<any> | FieldReadFunction<any>,
 	toId?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferStddevFieldsKeySpecifier = ('amount' | 'blockNumber' | TransferStddevFieldsKeySpecifier)[];
-export interface TransferStddevFieldsFieldPolicy {
+export type TransferStddevFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferStddevPopFieldsKeySpecifier = ('amount' | 'blockNumber' | TransferStddevPopFieldsKeySpecifier)[];
-export interface TransferStddevPopFieldsFieldPolicy {
+export type TransferStddevPopFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferStddevSampFieldsKeySpecifier = ('amount' | 'blockNumber' | TransferStddevSampFieldsKeySpecifier)[];
-export interface TransferStddevSampFieldsFieldPolicy {
+export type TransferStddevSampFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferSumFieldsKeySpecifier = ('amount' | 'blockNumber' | TransferSumFieldsKeySpecifier)[];
-export interface TransferSumFieldsFieldPolicy {
+export type TransferSumFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferVarPopFieldsKeySpecifier = ('amount' | 'blockNumber' | TransferVarPopFieldsKeySpecifier)[];
-export interface TransferVarPopFieldsFieldPolicy {
+export type TransferVarPopFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferVarSampFieldsKeySpecifier = ('amount' | 'blockNumber' | TransferVarSampFieldsKeySpecifier)[];
-export interface TransferVarSampFieldsFieldPolicy {
+export type TransferVarSampFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type TransferVarianceFieldsKeySpecifier = ('amount' | 'blockNumber' | TransferVarianceFieldsKeySpecifier)[];
-export interface TransferVarianceFieldsFieldPolicy {
+export type TransferVarianceFieldsFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UdHistoryKeySpecifier = ('amount' | 'blockNumber' | 'id' | 'identity' | 'identityId' | 'timestamp' | UdHistoryKeySpecifier)[];
-export interface UdHistoryFieldPolicy {
+export type UdHistoryFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	identity?: FieldPolicy<any> | FieldReadFunction<any>,
 	identityId?: FieldPolicy<any> | FieldReadFunction<any>,
 	timestamp?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UdHistoryConnectionKeySpecifier = ('edges' | 'pageInfo' | UdHistoryConnectionKeySpecifier)[];
-export interface UdHistoryConnectionFieldPolicy {
+export type UdHistoryConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UdHistoryEdgeKeySpecifier = ('cursor' | 'node' | UdHistoryEdgeKeySpecifier)[];
-export interface UdHistoryEdgeFieldPolicy {
+export type UdHistoryEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UdReevalKeySpecifier = ('blockNumber' | 'event' | 'eventId' | 'id' | 'membersCount' | 'monetaryMass' | 'newUdAmount' | 'timestamp' | UdReevalKeySpecifier)[];
-export interface UdReevalFieldPolicy {
+export type UdReevalFieldPolicy = {
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	event?: FieldPolicy<any> | FieldReadFunction<any>,
 	eventId?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1043,19 +1043,19 @@ export interface UdReevalFieldPolicy {
 	monetaryMass?: FieldPolicy<any> | FieldReadFunction<any>,
 	newUdAmount?: FieldPolicy<any> | FieldReadFunction<any>,
 	timestamp?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UdReevalConnectionKeySpecifier = ('edges' | 'pageInfo' | UdReevalConnectionKeySpecifier)[];
-export interface UdReevalConnectionFieldPolicy {
+export type UdReevalConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UdReevalEdgeKeySpecifier = ('cursor' | 'node' | UdReevalEdgeKeySpecifier)[];
-export interface UdReevalEdgeFieldPolicy {
+export type UdReevalEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UniversalDividendKeySpecifier = ('amount' | 'blockNumber' | 'event' | 'eventId' | 'id' | 'membersCount' | 'monetaryMass' | 'timestamp' | UniversalDividendKeySpecifier)[];
-export interface UniversalDividendFieldPolicy {
+export type UniversalDividendFieldPolicy = {
 	amount?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockNumber?: FieldPolicy<any> | FieldReadFunction<any>,
 	event?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1064,19 +1064,19 @@ export interface UniversalDividendFieldPolicy {
 	membersCount?: FieldPolicy<any> | FieldReadFunction<any>,
 	monetaryMass?: FieldPolicy<any> | FieldReadFunction<any>,
 	timestamp?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UniversalDividendConnectionKeySpecifier = ('edges' | 'pageInfo' | UniversalDividendConnectionKeySpecifier)[];
-export interface UniversalDividendConnectionFieldPolicy {
+export type UniversalDividendConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type UniversalDividendEdgeKeySpecifier = ('cursor' | 'node' | UniversalDividendEdgeKeySpecifier)[];
-export interface UniversalDividendEdgeFieldPolicy {
+export type UniversalDividendEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type query_rootKeySpecifier = ('accountConnection' | 'blockConnection' | 'callConnection' | 'certConnection' | 'certEventConnection' | 'changeOwnerKeyConnection' | 'eventConnection' | 'extrinsicConnection' | 'getUdHistory_connection' | 'identityConnection' | 'itemsCounterConnection' | 'membershipEventConnection' | 'node' | 'smithCertConnection' | 'transferConnection' | 'udHistoryConnection' | 'udReevalConnection' | 'universalDividendConnection' | query_rootKeySpecifier)[];
-export interface query_rootFieldPolicy {
+export type query_rootFieldPolicy = {
 	accountConnection?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockConnection?: FieldPolicy<any> | FieldReadFunction<any>,
 	callConnection?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1095,9 +1095,9 @@ export interface query_rootFieldPolicy {
 	udHistoryConnection?: FieldPolicy<any> | FieldReadFunction<any>,
 	udReevalConnection?: FieldPolicy<any> | FieldReadFunction<any>,
 	universalDividendConnection?: FieldPolicy<any> | FieldReadFunction<any>
-}
+};
 export type subscription_rootKeySpecifier = ('accountConnection' | 'blockConnection' | 'callConnection' | 'certConnection' | 'certEventConnection' | 'changeOwnerKeyConnection' | 'eventConnection' | 'extrinsicConnection' | 'getUdHistory_connection' | 'identityConnection' | 'itemsCounterConnection' | 'membershipEventConnection' | 'node' | 'smithCertConnection' | 'transferConnection' | 'udHistoryConnection' | 'udReevalConnection' | 'universalDividendConnection' | subscription_rootKeySpecifier)[];
-export interface subscription_rootFieldPolicy {
+export type subscription_rootFieldPolicy = {
 	accountConnection?: FieldPolicy<any> | FieldReadFunction<any>,
 	blockConnection?: FieldPolicy<any> | FieldReadFunction<any>,
 	callConnection?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1116,8 +1116,8 @@ export interface subscription_rootFieldPolicy {
 	udHistoryConnection?: FieldPolicy<any> | FieldReadFunction<any>,
 	udReevalConnection?: FieldPolicy<any> | FieldReadFunction<any>,
 	universalDividendConnection?: FieldPolicy<any> | FieldReadFunction<any>
-}
-export interface StrictTypedTypePolicies {
+};
+export type StrictTypedTypePolicies = {
 	Account?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier),
 		fields?: AccountFieldPolicy,
@@ -1742,5 +1742,5 @@ export interface StrictTypedTypePolicies {
 		keyFields?: false | subscription_rootKeySpecifier | (() => undefined | subscription_rootKeySpecifier),
 		fields?: subscription_rootFieldPolicy,
 	}
-}
+};
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

@@ -42,6 +42,9 @@ export interface AccountMeta {
   isMember?: boolean;
   status?: IdentityStatusEnum;
 
+  // Profile
+  profile?: AccountProfile;
+
   [key: string]: unknown;
 }
 
@@ -52,6 +55,10 @@ export interface AccountData {
   txs?: any[];
 }
 
+export interface AccountProfile {
+  name?: string;
+  avatar?: string;
+}
 /**
  * Parse the base64 encoded json data from squid to an AddressSquid object
  */
@@ -76,7 +83,7 @@ export class AccountUtils {
 
   static getDisplayName(account: Partial<Account>) {
     if (!account) return '';
-    return account.meta?.name || account.meta?.uid || formatAddress(account.address) || '';
+    return account.meta?.profile?.name || account.meta?.name || account.meta?.uid || formatAddress(account.address) || '';
   }
 
   static isEquals(a1: Account, a2: Account) {

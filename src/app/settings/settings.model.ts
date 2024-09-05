@@ -23,6 +23,7 @@ export interface Settings {
   locale?: string;
   mobile?: boolean;
   properties?: PropertiesMap;
+  hasPassword: boolean;
   unAuthDelayMs?: number;
   darkMode: boolean;
   displayUnit: CurrencyDisplayUnit;
