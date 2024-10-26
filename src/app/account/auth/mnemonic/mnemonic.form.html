@@ -7,7 +7,7 @@
     </ion-item>
 
     <!-- Mnemonic -->
-    <ion-item>
+    <ion-item [class.invalid]="form.get('mnemonic').invalid && form.get('mnemonic').touched">
       <ion-textarea
         *ngIf="showMnemonic; else hideMnemonic"
         formControlName="mnemonic"

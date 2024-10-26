@@ -8,6 +8,23 @@ import { FormUtils } from '@app/shared/forms';
 import { isNil } from '@app/shared/functions';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 import { AuthData } from '@app/account/auth/auth.model';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
+import { mnemonicValidate } from '@polkadot/util-crypto';
+
+export function mnemonicValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) {
+      return { invalidMnemonic: true };
+    }
+
+    const [mnemonic] = value.split('//');
+
+    const isValid = mnemonicValidate(mnemonic.trim());
+    return isValid ? null : { invalidMnemonic: true };
+  };
+}
 
 @Component({
   selector: 'app-mnemonic-form',
@@ -21,12 +38,20 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
   constructor(settings: SettingsService, formBuilder: FormBuilder) {
     super(
       formBuilder.group({
-        mnemonic: [null, Validators.required],
+        mnemonic: [null, [Validators.required, mnemonicValidator()]],
       })
     );
 
     this.mobile = settings.mobile;
     this._enable = true;
+
+    this.form
+      .get('mnemonic')
+      .valueChanges.pipe(debounceTime(300))
+      .subscribe(() => {
+        this.form.get('mnemonic').updateValueAndValidity();
+        this.markForCheck();
+      });
   }
 
   disable(opts?: { onlySelf?: boolean; emitEvent?: boolean }) {
