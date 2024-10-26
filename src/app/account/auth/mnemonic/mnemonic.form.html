@@ -34,8 +34,8 @@
     </ion-item>
 
     <!-- Address -->
-    <ion-item *ngIf="address; let address" @slideUpDownAnimation>
-      <ion-textarea [value]="address" [label]="'COMMON.ADDRESS' | translate" labelPlacement="floating" [disabled]="true"></ion-textarea>
+    <ion-item *ngIf="generatedAddress" @slideUpDownAnimation>
+      <ion-textarea [value]="generatedAddress" [label]="'COMMON.ADDRESS' | translate" labelPlacement="floating" [disabled]="true"></ion-textarea>
     </ion-item>
   </ion-list>
 

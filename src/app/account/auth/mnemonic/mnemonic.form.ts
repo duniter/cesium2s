@@ -1,16 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { slideUpDownAnimation } from '@app/shared/animations';
 import { AppForm } from '@app/shared/form.class';
 import { SettingsService } from '@app/settings/settings.service';
 import { environment } from '@environments/environment';
 import { FormUtils } from '@app/shared/forms';
-import { isNil } from '@app/shared/functions';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 import { AuthData } from '@app/account/auth/auth.model';
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
-import { mnemonicValidate } from '@polkadot/util-crypto';
+import { mnemonicValidate, encodeAddress } from '@polkadot/util-crypto';
+import { Keyring } from '@polkadot/keyring';
 
 export function mnemonicValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -34,6 +33,7 @@ export function mnemonicValidator(): ValidatorFn {
 })
 export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
   protected showMnemonic = false;
+  protected generatedAddress: string = '';
 
   constructor(settings: SettingsService, formBuilder: FormBuilder) {
     super(
@@ -49,7 +49,12 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
       .get('mnemonic')
       .valueChanges.pipe(debounceTime(300))
       .subscribe(() => {
-        this.form.get('mnemonic').updateValueAndValidity();
+        const mnemonicControl = this.form.get('mnemonic');
+        if (mnemonicControl.valid) {
+          this.generatedAddress = this.generateAddress(mnemonicControl.value);
+        } else {
+          this.generatedAddress = '';
+        }
         this.markForCheck();
       });
   }
@@ -109,10 +114,10 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
   get address(): string {
     const data = this.form.value;
     // prevent displaying for empty credentials
-    if (isNil(data.mnemonic)) {
+    if (!data.mnemonic) {
       return '';
     }
-    return '';
+    return this.generateAddress(data.mnemonic);
   }
 
   /* -- protected functions -- */
@@ -135,5 +140,19 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
 
   protected markForCheck() {
     this._cd.markForCheck();
+  }
+
+  protected generateAddress(mnemonicWithDerivation: string): string {
+    try {
+      const keyring = new Keyring({ type: 'sr25519' });
+      const pair = keyring.createFromUri(mnemonicWithDerivation);
+
+      console.log('Generated address:', pair.address);
+
+      return encodeAddress(pair.address);
+    } catch (error) {
+      console.error('Error generating address from mnemonic:', error);
+      return '';
+    }
   }
 }
