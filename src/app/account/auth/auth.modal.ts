@@ -87,7 +87,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
         return this.modalCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
       } else {
         // Scan derivations to import one with a balance
-        this.showDerivationSelection(data.v2.mnemonic);
+        await this.showDerivationSelection(data.v2.mnemonic);
         return;
       }
     } catch (err) {
@@ -117,20 +117,25 @@ export class AuthModal implements OnInit, AuthModalOptions {
       componentProps: { mnemonic },
     });
 
+    await modal.present();
+
     modal.onDidDismiss().then((result) => {
       if (result.data) {
         this.importWithDerivation(result.data);
       } else {
-        this.importWithDerivation('');
+        this.markAsLoaded();
+        this.form.enable();
+        this.cd.detectChanges();
       }
     });
-
-    return await modal.present();
   }
 
   protected async importWithDerivation(derivation: string) {
     const data = this.value;
-    data.v2.mnemonic += derivation;
+
+    if (derivation !== 'root') {
+      data.v2.mnemonic += derivation;
+    }
 
     try {
       const account = await this.accountService.addAccount(data);
@@ -174,5 +179,15 @@ export class AuthModal implements OnInit, AuthModalOptions {
   protected markAsLoaded(opts?: { emitEvent?: boolean }) {
     this.form.markAsLoaded(opts);
     this.markForCheck();
+  }
+
+  private handleError(err: any) {
+    this.form.error = (err && err.message) || err;
+
+    // Reset form error on next changes
+    firstNotNilPromise(this.form.form.valueChanges).then(() => {
+      this.form.error = null;
+      this.markForCheck();
+    });
   }
 }

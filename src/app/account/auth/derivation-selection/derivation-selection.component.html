@@ -27,10 +27,27 @@
   </ng-template>
 </ion-content>
 
-<ion-footer *ngIf="!loading">
+<ion-footer>
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button (click)="onSelect()" [disabled]="!selectedDerivation">Importer</ion-button>
-    </ion-buttons>
+    <ion-row class="ion-no-padding" nowrap>
+      <ion-col></ion-col>
+
+      <!-- buttons -->
+      <ion-col size="auto">
+        <ion-button fill="clear" color="dark" (click)="onCancel()">
+          <ion-label translate>COMMON.BTN_CANCEL</ion-label>
+        </ion-button>
+
+        <ion-button
+          [fill]="invalid ? 'clear' : 'solid'"
+          [disabled]="!selectedDerivation"
+          (click)="onSelect()"
+          (keyup.enter)="onSelect()"
+          [color]="auth ? 'danger' : 'tertiary'"
+        >
+          <ion-label translate>{{ auth ? 'AUTH.BTN_AUTH' : 'COMMON.BTN_LOGIN' }}</ion-label>
+        </ion-button>
+      </ion-col>
+    </ion-row>
   </ion-toolbar>
 </ion-footer>

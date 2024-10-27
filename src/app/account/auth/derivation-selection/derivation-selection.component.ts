@@ -10,7 +10,6 @@ const numberOfDerivations = 30;
 @Component({
   selector: 'app-derivation-selection',
   templateUrl: 'derivation-selection.component.html',
-  styleUrls: ['derivation-selection.component.scss'],
 })
 export class DerivationSelectionComponent implements OnInit {
   @Input() mnemonic: string;
@@ -56,7 +55,7 @@ export class DerivationSelectionComponent implements OnInit {
     this.cd.detectChanges();
 
     if (this.derivations.length === 0) {
-      await this.modalCtrl.dismiss('');
+      await this.modalCtrl.dismiss('root');
     }
   }
 
@@ -88,5 +87,9 @@ export class DerivationSelectionComponent implements OnInit {
     if (this.selectedDerivation) {
       await this.modalCtrl.dismiss(this.selectedDerivation);
     }
+  }
+
+  async onCancel() {
+    await this.modalCtrl.dismiss();
   }
 }
