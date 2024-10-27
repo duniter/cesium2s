@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders, NgModule } from '@angular/core';
 import { AppSharedModule } from '@app/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppAuthModule } from '@app/account/auth/auth.module';
@@ -9,10 +9,13 @@ import { AuthController } from '@app/account/auth/auth.controller';
 import { AccountListModule } from '@app/account/list/account-list.module';
 import { APP_AUTH_CONTROLLER } from '@app/account/auth/auth.model';
 import { AccountImageModule } from '@app/account/image/account-image.module';
+import { DerivationSelectionComponent } from '@app/account/auth/derivation-selection/derivation-selection.component';
 
 @NgModule({
+  declarations: [DerivationSelectionComponent],
   imports: [TranslateModule.forChild(), AppSharedModule, AppAuthModule, AppRegisterModule, AppUnlockModule, AccountListModule, AccountImageModule],
-  exports: [TranslateModule, AccountListModule, AccountImageModule],
+  exports: [TranslateModule, AccountListModule, AccountImageModule, DerivationSelectionComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppAccountModule {
   static forRoot(): ModuleWithProviders<AppAccountModule> {

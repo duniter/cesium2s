@@ -9,6 +9,7 @@ import { LoginMethodType } from '@app/account/account.model';
 import { SettingsService } from '@app/settings/settings.service';
 import { AppForm } from '@app/shared/form.class';
 import { toBoolean } from '@app/shared/functions';
+import { DerivationSelectionComponent } from '@app/account/auth/derivation-selection/derivation-selection.component';
 
 export interface AuthModalOptions {
   auth?: boolean;
@@ -80,9 +81,15 @@ export class AuthModal implements OnInit, AuthModalOptions {
       // Disable the form
       this.form.disable();
 
-      const account = await this.accountService.addAccount(data);
+      if (data.v2.mnemonic.includes('//')) {
+        const account = await this.accountService.addAccount(data);
 
-      return this.modalCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
+        return this.modalCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
+      } else {
+        // Scan derivations to import one with a balance
+        this.showDerivationSelection(data.v2.mnemonic);
+        return;
+      }
     } catch (err) {
       this.form.error = (err && err.message) || err;
       this.markAsLoaded();
@@ -97,6 +104,49 @@ export class AuthModal implements OnInit, AuthModalOptions {
       });
 
       return;
+    }
+  }
+
+  get value(): AuthData {
+    return this.form.value;
+  }
+
+  protected async showDerivationSelection(mnemonic: string) {
+    const modal = await this.modalCtrl.create({
+      component: DerivationSelectionComponent,
+      componentProps: { mnemonic },
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.importWithDerivation(result.data);
+      } else {
+        this.importWithDerivation('');
+      }
+    });
+
+    return await modal.present();
+  }
+
+  protected async importWithDerivation(derivation: string) {
+    const data = this.value;
+    data.v2.mnemonic += derivation;
+
+    try {
+      const account = await this.accountService.addAccount(data);
+      return this.modalCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
+    } catch (err) {
+      this.form.error = (err && err.message) || err;
+      this.markAsLoaded();
+
+      // Enable the form
+      this.form.enable();
+
+      // Reset form error on next changes
+      firstNotNilPromise(this.form.form.valueChanges).then(() => {
+        this.form.error = null;
+        this.markForCheck();
+      });
     }
   }
 

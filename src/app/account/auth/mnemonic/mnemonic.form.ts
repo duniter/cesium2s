@@ -10,6 +10,7 @@ import { AuthData } from '@app/account/auth/auth.model';
 import { debounceTime } from 'rxjs/operators';
 import { mnemonicValidate, encodeAddress } from '@polkadot/util-crypto';
 import { Keyring } from '@polkadot/keyring';
+import { formatAddress } from '@app/shared/currencies';
 
 export function mnemonicValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -149,7 +150,7 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
 
       console.log('Generated address:', pair.address);
 
-      return encodeAddress(pair.address);
+      return formatAddress(encodeAddress(pair.address));
     } catch (error) {
       console.error('Error generating address from mnemonic:', error);
       return '';

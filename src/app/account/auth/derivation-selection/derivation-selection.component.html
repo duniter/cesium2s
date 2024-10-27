@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Choisissez un portefeuille</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="!loading; else loadingTemplate">
+    <ion-radio-group [(ngModel)]="selectedDerivation" (ngModelChange)="onSelectionChange()">
+      <ion-list-header>
+        <label>Portefeuilles disponibles</label>
+      </ion-list-header>
+      <ion-item *ngFor="let derivation of derivations" class="derivation-item" (click)="selectDerivation(derivation.derivation)">
+        <label>
+          <div>{{ derivation.address }}</div>
+          <div>{{ derivation.balance | number: '1.2-2' }} {{ currencySymbol }}</div>
+        </label>
+        <ion-radio slot="end" [value]="derivation.derivation"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+  <ng-template #loadingTemplate>
+    <ion-item lines="none">
+      <label>Scanning derivations...</label>
+      <ion-progress-bar [value]="progress / 100"></ion-progress-bar>
+    </ion-item>
+  </ng-template>
+</ion-content>
+
+<ion-footer *ngIf="!loading">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="onSelect()" [disabled]="!selectedDerivation">Importer</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

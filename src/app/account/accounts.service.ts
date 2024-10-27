@@ -729,6 +729,16 @@ export class AccountsService extends RxStartableService<AccountsState> {
     // TODO process status
   }
 
+  public async getBalance(address: string): Promise<number> {
+    try {
+      const balanceResult = await this.api.query.system.account(address);
+      return balanceResult.data.free.toNumber();
+    } catch (err) {
+      console.error(`${this._logPrefix}Failed to get balance for ${address}:`, err);
+      throw new Error('ERROR.GET_BALANCE_FAILED');
+    }
+  }
+
   /**
    * Load account data (balance, tx history, etc.).
    * This load can be skipped, when data already loaded (See options)
