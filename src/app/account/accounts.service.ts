@@ -5,7 +5,7 @@ import { Account, AccountUtils, LoginOptions, SelectAccountOptions } from './acc
 import { keyring } from '@polkadot/ui-keyring';
 import { environment } from '@environments/environment';
 import { KeyringStorage } from '@app/shared/services/storage/keyring-storage';
-import { base58Encode, cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
+import { base58Encode, cryptoWaitReady, encodeAddress, mnemonicGenerate } from '@polkadot/util-crypto';
 import {
   firstArrayValue,
   isEmptyArray,
@@ -312,6 +312,16 @@ export class AccountsService extends RxStartableService<AccountsState> {
 
     // generate a random mnemonic
     return mnemonicGenerate(numWords);
+  }
+
+  generateAddress(mnemonicWithDerivation: string): string {
+    try {
+      const pair = keyring.createFromUri(mnemonicWithDerivation, null, 'sr25519');
+      return encodeAddress(pair.address);
+    } catch (error) {
+      console.error('Error generating address from mnemonic:', error);
+      return '';
+    }
   }
 
   async createPair(data: AuthData): Promise<KeyringPair> {

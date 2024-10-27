@@ -8,8 +8,8 @@ import { FormUtils } from '@app/shared/forms';
 import { setTimeout } from '@rx-angular/cdk/zone-less/browser';
 import { AuthData } from '@app/account/auth/auth.model';
 import { debounceTime } from 'rxjs/operators';
-import { mnemonicValidate, encodeAddress } from '@polkadot/util-crypto';
-import { Keyring } from '@polkadot/keyring';
+import { mnemonicValidate } from '@polkadot/util-crypto';
+import { AccountsService } from '@app/account/accounts.service';
 import { formatAddress } from '@app/shared/currencies';
 
 export function mnemonicValidator(): ValidatorFn {
@@ -36,7 +36,11 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
   protected showMnemonic = false;
   protected generatedAddress: string = '';
 
-  constructor(settings: SettingsService, formBuilder: FormBuilder) {
+  constructor(
+    settings: SettingsService,
+    formBuilder: FormBuilder,
+    private accountService: AccountsService
+  ) {
     super(
       formBuilder.group({
         mnemonic: [null, [Validators.required, mnemonicValidator()]],
@@ -52,7 +56,7 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
       .subscribe(() => {
         const mnemonicControl = this.form.get('mnemonic');
         if (mnemonicControl.valid) {
-          this.generatedAddress = this.generateAddress(mnemonicControl.value);
+          this.generatedAddress = formatAddress(this.accountService.generateAddress(mnemonicControl.value));
         } else {
           this.generatedAddress = '';
         }
@@ -118,7 +122,7 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
     if (!data.mnemonic) {
       return '';
     }
-    return this.generateAddress(data.mnemonic);
+    return formatAddress(this.accountService.generateAddress(data.mnemonic));
   }
 
   /* -- protected functions -- */
@@ -141,19 +145,5 @@ export class MmnemonicForm extends AppForm<AuthData> implements OnInit {
 
   protected markForCheck() {
     this._cd.markForCheck();
-  }
-
-  protected generateAddress(mnemonicWithDerivation: string): string {
-    try {
-      const keyring = new Keyring({ type: 'sr25519' });
-      const pair = keyring.createFromUri(mnemonicWithDerivation);
-
-      console.log('Generated address:', pair.address);
-
-      return formatAddress(encodeAddress(pair.address));
-    } catch (error) {
-      console.error('Error generating address from mnemonic:', error);
-      return '';
-    }
   }
 }
