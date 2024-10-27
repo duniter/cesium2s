@@ -6,9 +6,9 @@ import { abbreviate, WELL_KNOWN_CURRENCIES } from '@app/shared/currencies';
 import { Currency } from '../currency/currency.model';
 import { RxStartableService } from '@app/shared/services/rx-startable-service.class';
 import { RxStateProperty, RxStateSelect } from '@app/shared/decorator/state.decorator';
-import { mergeMap, Observable, tap } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { arrayRandomPick, isNotNil, isNotNilOrBlank, toNumber } from '@app/shared/functions';
+import { mergeMap, Observable, tap, firstValueFrom, race, EMPTY, of } from 'rxjs';
+import { filter, map, catchError, timeout } from 'rxjs/operators';
+import { arrayRandomPick, isNotNilOrBlank, toNumber } from '@app/shared/functions';
 import { IndexerService } from './indexer/indexer.service';
 import { fromDateISOString } from '@app/shared/dates';
 import { ContextService } from '@app/shared/services/storage/context.service';
@@ -169,29 +169,54 @@ export class NetworkService extends RxStartableService<NetworkState> {
     return super.ngOnStop();
   }
 
-  protected async filterAlivePeers(
-    peers: string[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    opts?: {
-      timeout?: number;
+  protected async filterAlivePeers(peers: string[]): Promise<Peer[]> {
+    const peerObjects = peers.map((peer) => Peers.fromUri(peer));
+
+    try {
+      // Try to get the first responding peer
+      const firstPeer = await firstValueFrom(race(peerObjects.map((peer) => this.isPeerAlive(peer))));
+      return [firstPeer];
+    } catch {
+      // If no quick response, check all peers
+      console.warn(`${this._logPrefix}No quick response, checking all peers...`);
+      const results = await Promise.all(peerObjects.map((peer) => firstValueFrom(this.isPeerAlive(peer).pipe(catchError(() => of(undefined))))));
+      return results.filter((peer): peer is Peer => !!peer);
     }
-  ): Promise<Peer[]> {
-    return (
-      await Promise.all(
-        peers.map((peer) => Peers.fromUri(peer)).map((peer) => this.isPeerAlive(peer, opts).then((alive) => (alive ? peer : undefined)))
-      )
-    ).filter(isNotNil);
   }
 
-  protected async isPeerAlive(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    peer: Peer,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    opts?: {
-      timeout?: number;
-    }
-  ): Promise<boolean> {
-    // TODO
-    return Promise.resolve(true);
+  private isPeerAlive(peer: Peer): Observable<Peer> {
+    const timeoutDuration = 4000;
+    return new Observable<Peer>((subscriber) => {
+      const wsUri = Peers.getWsUri(peer);
+      const ws = new WebSocket(wsUri);
+
+      ws.onopen = () => {
+        const healthRequest = {
+          id: 1,
+          jsonrpc: '2.0',
+          method: 'system_health',
+          params: [],
+        };
+        ws.send(JSON.stringify(healthRequest));
+      };
+
+      ws.onmessage = () => {
+        subscriber.next(peer);
+        subscriber.complete();
+        ws.close();
+      };
+
+      ws.onerror = () => {
+        subscriber.error(new Error('Connection error'));
+        ws.close();
+      };
+
+      return () => {
+        ws.close();
+      };
+    }).pipe(
+      timeout(timeoutDuration),
+      catchError(() => EMPTY) // Return an empty Observable on error
+    );
   }
 }
