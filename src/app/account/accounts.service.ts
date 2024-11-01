@@ -852,11 +852,9 @@ export class AccountsService extends RxStartableService<AccountsState> {
   }
 
   forgetAll() {
-    if (environment.production) {
-      (this.accounts || []).forEach((account) => {
-        keyring.forgetAccount(account.address);
-      });
-    }
+    (this.accounts || []).forEach((account) => {
+      keyring.forgetAccount(account.address);
+    });
     this.accounts = [];
   }
 }
