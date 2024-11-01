@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
-import { ModalController, LoadingController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { AccountsService } from '@app/account/accounts.service';
 import { firstNotNilPromise } from '@app/shared/observables';
-import { TranslateService } from '@ngx-translate/core';
 
 import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
 import { AppEvent } from '@app/shared/types';
@@ -48,9 +47,7 @@ export class AuthModal implements OnInit, AuthModalOptions {
     private settingsService: SettingsService,
     private accountService: AccountsService,
     private cd: ChangeDetectorRef,
-    @Inject(APP_AUTH_CONTROLLER) private authController: IAuthController,
-    private loadingCtrl: LoadingController,
-    private translate: TranslateService
+    @Inject(APP_AUTH_CONTROLLER) private authController: IAuthController
   ) {}
 
   ngOnInit() {
@@ -87,22 +84,12 @@ export class AuthModal implements OnInit, AuthModalOptions {
         return this.modalCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
       }
 
-      // Show loading during scan
-      const loading = await this.loadingCtrl.create({
-        message: this.translate.instant('LOGIN.SCAN_DERIVATIONS'),
-        translucent: true,
-      });
-      await loading.present();
-
       // Create temporary component to scan derivations
       const derivationComponent = new DerivationSelectionComponent(this.accountService, this.cd, this.modalCtrl);
       derivationComponent.mnemonic = data.v2.mnemonic;
 
       // Scan for derivations
       const derivations = await derivationComponent.scanDerivations();
-
-      // Hide loading
-      await loading.dismiss();
 
       // Present modal only if multiple derivations found
       if (derivations.length > 1) {
@@ -129,7 +116,6 @@ export class AuthModal implements OnInit, AuthModalOptions {
       this.form.enable();
       this.cd.detectChanges();
     } catch (err) {
-      this.loadingCtrl.dismiss();
       this.handleError(err);
       return;
     }
@@ -192,8 +178,8 @@ export class AuthModal implements OnInit, AuthModalOptions {
     this.markForCheck();
   }
 
-  private handleError(err: any) {
-    this.form.error = (err && err.message) || err;
+  private handleError(err: Error | string) {
+    this.form.error = err instanceof Error ? err.message : err;
 
     // Reset form error on next changes
     firstNotNilPromise(this.form.form.valueChanges).then(() => {
