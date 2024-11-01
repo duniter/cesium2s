@@ -480,7 +480,9 @@
     },
     "FILE": {
       "HELP": "Expected file format: <b>.dunikey</b> (type PubSec). Other formats are under development (EWIF, WIF)."
-    }
+    },
+    "AVAILABLE_WALLETS": "Available wallets",
+    "SCAN_DERIVATIONS": "Scanning derivations..."
   },
   "AUTH": {
     "TITLE": "<i class=\"icon ion-locked\"></i> Authentication",

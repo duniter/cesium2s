@@ -11,11 +11,10 @@ const numberOfDerivations = 30;
 })
 export class DerivationSelectionComponent implements OnInit {
   @Input() mnemonic: string;
+  @Input() derivations: { derivation: string; address: string; balance: number }[] = [];
 
-  derivations: { derivation: string; address: string; balance: number }[] = [];
   selectedDerivation: string;
-  progress: number = 0;
-  loading: boolean = true;
+  loading: boolean = false;
 
   constructor(
     private accountService: AccountsService,
@@ -24,27 +23,30 @@ export class DerivationSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.scanDerivations();
+    if (this.derivations.length > 0) {
+      this.loading = false;
+    } else if (this.mnemonic) {
+      this.scanDerivations();
+    }
   }
 
   async scanDerivations() {
+    this.loading = true;
     const promises = [];
 
-    for (let i = 0; i <= numberOfDerivations; i++) {
-      const derivationPath = `//${i}`;
+    for (let i = -1; i <= numberOfDerivations; i++) {
       const promise = (async () => {
+        let derivationPath = i === -1 ? '' : `//${i}`;
         const address = this.accountService.generateAddress(`${this.mnemonic}${derivationPath}`);
         const balance = await this.accountService.getBalance(address);
         if (balance > 0) {
           const shortAddress = formatAddress(address);
+          if (derivationPath === '') {
+            derivationPath = 'root';
+          }
           this.derivations.push({ derivation: derivationPath, address: shortAddress, balance });
         }
-
-        // Update progress bar
-        this.updateProgress(i, numberOfDerivations);
-        this.cd.detectChanges();
       })();
-
       promises.push(promise);
     }
 
@@ -52,13 +54,7 @@ export class DerivationSelectionComponent implements OnInit {
     this.loading = false;
     this.cd.detectChanges();
 
-    if (this.derivations.length === 0) {
-      await this.modalCtrl.dismiss('root');
-    }
-  }
-
-  updateProgress(current: number, total: number) {
-    this.progress = (current / total) * 100;
+    return this.derivations;
   }
 
   selectDerivation(derivation: string) {

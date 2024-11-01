@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, LoadingController } from '@ionic/angular';
 import { AccountsService } from '@app/account/accounts.service';
 import { firstNotNilPromise } from '@app/shared/observables';
+import { TranslateService } from '@ngx-translate/core';
 
 import { APP_AUTH_CONTROLLER, AuthData, IAuthController } from '@app/account/auth/auth.model';
 import { AppEvent } from '@app/shared/types';
@@ -47,7 +48,9 @@ export class AuthModal implements OnInit, AuthModalOptions {
     private settingsService: SettingsService,
     private accountService: AccountsService,
     private cd: ChangeDetectorRef,
-    @Inject(APP_AUTH_CONTROLLER) private authController: IAuthController
+    @Inject(APP_AUTH_CONTROLLER) private authController: IAuthController,
+    private loadingCtrl: LoadingController,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -77,32 +80,57 @@ export class AuthModal implements OnInit, AuthModalOptions {
 
     try {
       data = data || this.form.value;
-
-      // Disable the form
       this.form.disable();
 
       if (data.v2.mnemonic.includes('//')) {
         const account = await this.accountService.addAccount(data);
-
         return this.modalCtrl.dismiss(account, <AuthModalRole>'VALIDATE');
-      } else {
-        // Scan derivations to import one with a balance
-        await this.showDerivationSelection(data.v2.mnemonic);
-        return;
       }
-    } catch (err) {
-      this.form.error = (err && err.message) || err;
-      this.markAsLoaded();
 
-      // Enable the form
-      this.form.enable();
-
-      // Reset form error on next changes
-      firstNotNilPromise(this.form.form.valueChanges).then(() => {
-        this.form.error = null;
-        this.markForCheck();
+      // Show loading during scan
+      const loading = await this.loadingCtrl.create({
+        message: this.translate.instant('LOGIN.SCAN_DERIVATIONS'),
+        translucent: true,
       });
+      await loading.present();
 
+      // Create temporary component to scan derivations
+      const derivationComponent = new DerivationSelectionComponent(this.accountService, this.cd, this.modalCtrl);
+      derivationComponent.mnemonic = data.v2.mnemonic;
+
+      // Scan for derivations
+      const derivations = await derivationComponent.scanDerivations();
+
+      // Hide loading
+      await loading.dismiss();
+
+      // Present modal only if multiple derivations found
+      if (derivations.length > 1) {
+        const modal = await this.modalCtrl.create({
+          component: DerivationSelectionComponent,
+          componentProps: {
+            mnemonic: data.v2.mnemonic,
+            derivations,
+          },
+        });
+
+        await modal.present();
+        const { data: selectedDerivation } = await modal.onDidDismiss();
+        if (selectedDerivation) {
+          return this.importWithDerivation(selectedDerivation);
+        }
+      } else if (derivations.length === 1) {
+        return this.importWithDerivation(derivations[0].derivation);
+      } else {
+        return this.importWithDerivation('root');
+      }
+
+      this.markAsLoaded();
+      this.form.enable();
+      this.cd.detectChanges();
+    } catch (err) {
+      this.loadingCtrl.dismiss();
+      this.handleError(err);
       return;
     }
   }
@@ -111,26 +139,9 @@ export class AuthModal implements OnInit, AuthModalOptions {
     return this.form.value;
   }
 
-  protected async showDerivationSelection(mnemonic: string) {
-    const modal = await this.modalCtrl.create({
-      component: DerivationSelectionComponent,
-      componentProps: { mnemonic },
-    });
-
-    await modal.present();
-
-    modal.onDidDismiss().then((result) => {
-      if (result.data) {
-        this.importWithDerivation(result.data);
-      } else {
-        this.markAsLoaded();
-        this.form.enable();
-        this.cd.detectChanges();
-      }
-    });
-  }
-
   protected async importWithDerivation(derivation: string) {
+    console.info(`Adding derivation: ${derivation}`);
+
     const data = this.value;
 
     if (derivation !== 'root') {

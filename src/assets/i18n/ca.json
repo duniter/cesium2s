@@ -474,7 +474,9 @@
     },
     "FILE": {
       "HELP": "Format d'arxiu esperat: <b>.yml</b> o <b>.dunikey</b> (tipus PubSec, WIF o EWIF)."
-    }
+    },
+    "AVAILABLE_WALLETS": "Monederos disponibles",
+    "SCAN_DERIVATIONS": "Escaneando derivaciones..."
   },
   "AUTH": {
     "TITLE": "<i class=\"icon ion-locked\"></i> Autenticació",
