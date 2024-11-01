@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { APP_LOCALES, LocaleConfig, Settings } from '@app/settings/settings.model';
 import { AppPage, AppPageState } from '@app/shared/pages/base-page.class';
 import { NetworkService } from '@app/network/network.service';
@@ -45,6 +45,7 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
     protected authController: AuthController,
     protected transferController: TransferController,
     protected router: Router,
+    private cd: ChangeDetectorRef,
     @Inject(APP_LOCALES) public locales: LocaleConfig[]
   ) {
     super({ name: 'home' });
@@ -79,6 +80,7 @@ export class HomePage extends AppPage<HomePageState> implements OnInit {
     if (data?.address) {
       this.defaultAccount = data;
       setTimeout(() => this.router.navigate(['/wallet', data.address]));
+      setTimeout(() => this.cd.detectChanges());
     }
   }
 
