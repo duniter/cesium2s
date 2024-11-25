@@ -137,7 +137,7 @@ export class ColorScale {
    **/
   static fix(length?: number, colorName?: ColorName): string[] {
     const color = Color.get(colorName || 'primary').rgba(0.5);
-    return new Array<T>(length || 25).fill(color);
+    return new Array<string>(length || 25).fill(color);
   }
 
   private _min: number;
